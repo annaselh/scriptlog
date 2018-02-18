@@ -48,29 +48,21 @@ if (version_compare(PHP_VERSION, '5.4', '>=')) {
         
     }
     
+} 
+
+if (file_exists(APP_ROOT . 'config'.APP_EXT)) {
+    
+   require(APP_ROOT . 'config'. APP_EXT);
+   
 } else {
-    
-    function __autoload($class)
-    {
-        if (is_readable(APP_SYSPATH . APP_LIBRARY . DS . $class.'.php')) {
-            
-            require(APP_SYSPATH . APP_LIBRARY . DS . $class . '.php');
-            
-        } elseif (is_readable(APP_SYSPATH . APP_CLASS . DS . $class . '.php')) {
-            
-            require(APP_SYSPATH . APP_CLASS . DS . $class . '.php');
-            
-        }
-        
-    }
-    
+
+   require(APP_ROOT.'config.sample'.APP_EXT);
+   
 }
 
-if (file_exists(dirname(__FILE__) . '/../config'.APP_EXT)) { 
 $dbc = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
 $dbc -> setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-$dbc -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}
+$dbc -> setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 
 Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
 
