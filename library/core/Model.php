@@ -1,4 +1,9 @@
 <?php 
+/**
+ * class Model
+ * @author maoelana
+ *
+ */
 
 class Model
 {

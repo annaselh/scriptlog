@@ -1,4 +1,17 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+/**
+ * class PostCategory extends Model
+ * Interacting with database to insert, update,
+ * delete and select records from table post_category
+ * 
+ * @package   SCRIPTLOG
+ * @author    Maoelana Noermoehammad
+ * @copyright 2018 kartatopia.com
+ * @license   MIT
+ * @version   1.0
+ * @since     Since Release 1.0
+ *
+ */
 
 class PostCategory extends Model
 {

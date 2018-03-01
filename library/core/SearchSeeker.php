@@ -93,7 +93,7 @@ class SearchSeeker
     $bind = array(":keyword1" => "%$data%", ":keyword2" => "%$data%");
      
  	$this->sql = "SELECT 
-                     postID,
+                     ID,
                      post_author, date_created, 
                      post_title, post_slug, 
                      post_content, post_status, 

@@ -48,7 +48,7 @@ class Page extends Model
  	$sql = "UPDATE posts SET date_modified = ?,
  		post_title = ?, post_slug = ?,
  		post_content = ?, post_status = ?, comment_status = ?
- 		WHERE postID = ? AND post_type = ?";
+ 		WHERE ID = ? AND post_type = ?";
  	
  	$data = array($date_modified, $title, $slug, $content, 
  	    $post_setting, $comment_setting, $id, $type);
@@ -58,7 +58,7 @@ class Page extends Model
  	$sql = "UPDATE posts SET post_image = ?, date_modified = ?,
  		post_title = ?, post_slug = ?,
  		post_content = ?, post_status = ?, comment_status = ?
- 		WHERE postID = ? AND post_type = ?";
+ 		WHERE ID = ? AND post_type = ?";
  	
  	$data = array($picture, $date_modified, $title, $slug, 
  	    $content, $post_setting, $comment_setting, $id, $type);
@@ -73,7 +73,7 @@ class Page extends Model
  public function deletePage($id, $sanitizing, $type)
  {
    
- $sql = "DELETE FROM posts WHERE postID = ? AND post_type = ?";
+ $sql = "DELETE FROM posts WHERE ID = ? AND post_type = ?";
  
  $sanitized_id = $this->filteringId($sanitizing, $id, 'sql');
    
@@ -88,10 +88,10 @@ class Page extends Model
  
  try {
  
- 	$sql = "SELECT postID, post_author, date_created, date_modified,
+ 	$sql = "SELECT ID, post_author, date_created, date_modified,
   		  post_title, post_type
   		  FROM posts WHERE post_type = :type
-  		  ORDER BY postID
+  		  ORDER BY ID
   		  LIMIT :position, :limit";
  	
  	$stmt = $this->dbc->prepare($sql);
@@ -107,7 +107,7 @@ class Page extends Model
  	 $items[] = $row;
  	}
  	
- 	$numbers = "SELECT postID FROM posts WHERE post_type = '$type'";
+ 	$numbers = "SELECT ID FROM posts WHERE post_type = '$type'";
  	$stmt = $this->dbc->query($numbers);
  	$totalPages = $stmt -> rowCount();
  	
@@ -126,12 +126,12 @@ class Page extends Model
  
  public function findPageById($pageId, $post_type, $sanitizing)
  {
-   $sql = "SELECT postID, post_image, post_author, 
+   $sql = "SELECT ID, post_image, post_author, 
   	  	   date_created, date_modified, post_title, 
   	  	   post_slug, post_content, post_status, 
   	  	   post_type, comment_status
   	  	   FROM posts 
-  	  	   WHERE postID = ? AND post_type = ? ";
+  	  	   WHERE ID = ? AND post_type = ? ";
    
    $id_sanitized = $this -> filteringId($sanitizing, $pageId, 'sql');
    
@@ -146,7 +146,7 @@ class Page extends Model
  public function findPageBySlug($slug, $sanitizing = null)
  {
    $sql = "SELECT 
-              posts.postID, posts.post_image, posts.post_author, 
+              posts.ID, posts.post_image, posts.post_author, 
   	  	      posts.date_created, posts.date_modified, posts.post_title, 
   	  	      posts.post_slug, posts.post_content, posts.post_status, 
   	  	      posts.post_type, posts.comment_status, volunteer.volunteer_login 
@@ -176,7 +176,7 @@ class Page extends Model
  
  public function checkPageId($id, $sanitizing)
  {
-   $sql = "SELECT postID FROM posts WHERE postID = ?";
+   $sql = "SELECT ID FROM posts WHERE ID = ?";
    
    $cleanUpId = $this->filteringId($sanitizing, $id, 'sql'); 
    

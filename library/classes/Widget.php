@@ -11,10 +11,10 @@ class Widget extends Model
  {
   $id_sanitized = $sanitize -> sanitasi($currentId, 'sql');
   
-  $nextQuery = "SELECT postID, post_title, post_slug, post_type
-                FROM posts WHERE postID > '$id_sanitized' 
+  $nextQuery = "SELECT ID, post_title, post_slug, post_type
+                FROM posts WHERE ID > '$id_sanitized' 
                 AND post_type = 'blog' 
-                ORDER BY postID LIMIT 1";
+                ORDER BY ID LIMIT 1";
   
   $stmt = $this->dbc->query($nextQuery);
   
@@ -35,10 +35,10 @@ class Widget extends Model
      
    $id_sanitized = $sanitize -> sanitasi($currentId, 'sql');
      
-   $prevQuery = "SELECT postID, post_title, post_slug, post_type 
-                 FROM posts WHERE postID < '$id_sanitized' 
+   $prevQuery = "SELECT ID, post_title, post_slug, post_type 
+                 FROM posts WHERE ID < '$id_sanitized' 
                  AND post_type = 'blog' 
-                 ORDER BY postID LIMIT 1";
+                 ORDER BY ID LIMIT 1";
      
    $stmt = $this->dbc-> query($prevQuery);
      
@@ -57,7 +57,7 @@ class Widget extends Model
  public function setSidebarCategories()
  {
      
-  $catQuery = "SELECT categoryID, category_title, category_slug, status
+  $catQuery = "SELECT ID, category_title, category_slug, status
               FROM category WHERE status = 'Y' ORDER BY category_title DESC";
      
   $stmt = $this->dbc->query($catQuery);
@@ -81,14 +81,14 @@ class Widget extends Model
   try {
   
   $sql = "SELECT
-             postID, post_image, post_author,
+             ID, post_image, post_author,
              date_created, date_modified, post_title, post_slug,
              post_content, post_status, post_type
   		FROM
             posts
   		WHERE
             post_status = :status AND post_type = 'blog'
-  		ORDER BY postID DESC LIMIT :position, :limit";
+  		ORDER BY ID DESC LIMIT :position, :limit";
       
       $stmt = $this->dbc->prepare($sql);
       $stmt -> bindParam(':status', $status, PDO::PARAM_STR);
@@ -120,7 +120,7 @@ class Widget extends Model
    
    try {
        
-    $sql = "SELECT e.event_id, e.event_image, e.name, e.slug, e.description,
+    $sql = "SELECT e.ID, e.event_image, e.name, e.slug, e.description,
             e.location, e.time_started, e.time_ended, e.start_date, e.end_date 
             FROM event AS e 
             WHERE TIMESTAMP(e.start_date, e.time_started) >= NOW() LIMIT 1";
@@ -152,7 +152,7 @@ class Widget extends Model
      
      try {
          
-         $sql = "SELECT e. event_id, e.event_image, 
+         $sql = "SELECT e.ID, e.event_image, 
                    e.name, e.slug, e.description,
                    e.location, e.time_started, e.time_ended, 
                    e.start_date, e.end_date

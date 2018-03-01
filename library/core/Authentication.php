@@ -14,7 +14,7 @@ class Authentication
  
  public function findIdByEmail($email)
  {
- 	$sql = "SELECT ID FROM volunteer WHERE volunteer_email = :email";
+ 	$sql = "SELECT ID FROM users WHERE user_email = :email";
  	
  	$stmt = $this->dbc->prepare($sql);
  	
@@ -28,7 +28,7 @@ class Authentication
  
  public function isEmailExists($email)
  {
- 	$sql = "SELECT `volunteer_email` FROM `volunteer` WHERE `volunteer_email` = ? ";
+ 	$sql = "SELECT `user_email` FROM `users` WHERE `user_email` = ? ";
  	
  	$stmt = $this->dbc->prepare($sql);
  	$stmt -> bindValue(1, $email);
@@ -58,17 +58,16 @@ class Authentication
  	
  }
  
- public function validateVolunteer($email, $password)
+ public function validateUser($email, $password)
  {
  	$volunteer_id = $this->findIdByEmail($email);
  	
     $hash_password = $this -> _verifyHashPassword($password, $volunteer_id);
  	
- 	$sql = "SELECT ID, volunteer_firstName, 
-            volunteer_lastName, volunteer_login, volunteer_email, volunteer_pass, 
-            volunteer_level, volunteer_session
-            FROM volunteer WHERE volunteer_email = :email 
-            AND volunteer_pass = :password ";
+ 	$sql = "SELECT ID, user_login, user_email, user_pass, 
+            user_level, user_session
+            FROM users WHERE user_email = :email 
+            AND user_pass = :password ";
  	
  	$stmt = $this->dbc->prepare($sql);
  	$stmt -> bindParam(":email", $email, PDO::PARAM_STR);
@@ -95,8 +94,8 @@ class Authentication
  {
 
    // update session
- 	$sql = "UPDATE volunteer SET volunteer_session = :session 
-           WHERE volunteer_email = :email";
+ 	$sql = "UPDATE users SET user_session = :session 
+           WHERE user_email = :email";
  	
  	$generateKey = generateSessionKey($sessionKey);
  	
@@ -105,22 +104,27 @@ class Authentication
  	$stmt -> bindparam(":email", $email, PDO::PARAM_STR);
  	$stmt -> execute();
  	
- 	// retrieve data volunteer
- 	$dataVolunteer = $this->findPrivilege($email);
+ 	// retrieve data users
+ 	$dataUser = $this->findPrivilege($email);
  	
  	if (isset($_SESSION['volunteerLoggedIn']) && $_SESSION['volunteerLoggedIn'] == true) {
   	 
- 	 $_SESSION['ID'] = $dataVolunteer['ID'];
- 	 $_SESSION['Login'] = $dataVolunteer['volunteer_login'];
- 	 $_SESSION['FirstName'] = $dataVolunteer['volunteer_firstName'];
- 	 $_SESSION['LastName'] = $dataVolunteer['volunteer_lastName'];
- 	 $_SESSION['Email'] = $dataVolunteer['volunteer_email'];
- 	 $_SESSION['Level'] = $dataVolunteer['volunteer_level'];
- 	 $_SESSION['Token'] = $dataVolunteer['volunteer_session'];
+ 	 $_SESSION['ID'] = $dataUser['ID'];
+ 	 $_SESSION['Login'] = $dataUser['user_login'];
+ 	 $_SESSION['FirstName'] = $dataUser['volunteer_firstName'];
+ 	 $_SESSION['LastName'] = $dataUser['volunteer_lastName'];
+ 	 $_SESSION['Email'] = $dataUser['user_email'];
+ 	 $_SESSION['Level'] = $dataUser['user_level'];
+ 	 $_SESSION['Token'] = $dataUser['user_session'];
  	 $_SESSION['agent'] = sha1($_SERVER['HTTP_USER_AGENT']);
+ 	 	
+ 	 $protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https';
+ 	 $host     = $_SERVER['HTTP_HOST'];
  	 
- 	 header('Location:' . APP_CONTROL_PANEL. DS .'index.php?module=dashboard');
- 		
+ 	 $logInPage = $protocol . '://' . $host . dirname($_SERVER['PHP_SELF']) . '/index.php?module=dashboard';
+ 	 
+ 	 header('Location:' . $logInPage);
+ 	 
  	}
  	
  }
@@ -181,8 +185,8 @@ class Authentication
  public function recoverPassword($id, $password, $token)
  {
   
- $sql = "UPDATE volunteer SET volunteer_pass = :password, volunteer_resetComplete = 'Yes' 
-          WHERE volunteer_resetKey = :token AND ID = :id";
+ $sql = "UPDATE users SET user_pass = :password, user_reset_complete = 'Yes' 
+          WHERE user_reset_key = :token AND ID = :id";
  
  $hash_password = shieldPass($password, $id);
  
@@ -219,10 +223,10 @@ class Authentication
  
  protected function findPrivilege($email) 
  {
-  $sql = "SELECT ID, volunteer_firstName, volunteer_lastName, volunteer_login,
-         volunteer_email, volunteer_phone, volunteer_level, volunteer_resetKey,
-         volunteer_resetComplete, volunteer_session, date_registered, 
-         time_registered FROM volunteer WHERE volunteer_email = :email";
+  $sql = "SELECT ID, user_login,
+         user_email, user_fullname, user_level, user_reset_key,
+         user_reset_complete, user_session, user_registered, 
+         FROM users WHERE user_email = :email";
   
   $stmt = $this->dbc->prepare($sql);
   

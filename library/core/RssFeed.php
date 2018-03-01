@@ -15,14 +15,14 @@ class RssFeed
  {
    $postFeed = array();
    
-   $sql = "SELECT p.postID, p.post_image, p.post_author,
+   $sql = "SELECT p.ID, p.post_image, p.post_author,
              p.date_created, p.date_modified, p.post_title,
              p.post_slug, p.post_content, p.post_type,
-             p.post_status, v.volunteer_login
+             p.post_status, u.user_login
   		   FROM posts AS p
-  		   INNER JOIN volunteer AS v ON p.post_author = v.ID
+  		   INNER JOIN users AS u ON p.post_author = u.ID
   		   WHERE p.post_type = 'blog' AND p.post_status = 'publish'
-  		   ORDER BY p.postID DESC LIMIT 10";
+  		   ORDER BY p.ID DESC LIMIT 10";
    
    $stmt = $this->dbc->query($sql);
    
@@ -61,7 +61,7 @@ class RssFeed
    foreach ($dataPosts as $dataPost) {
        
      //build the full URL to the post
-     $url = APP_DIR . 'post'.'/'.(int)$dataPost['postID'].'/'.$dataPost['post_slug'];
+     $url = APP_URL . 'post'.'/'.(int)$dataPost['ID'].'/'.$dataPost['post_slug'];
      
      // date post created
      $published = date(DATE_RSS, strtotime($dataPost['date_created']));
@@ -72,7 +72,7 @@ class RssFeed
      $paragraph = substr($content, 0, strrpos($paragraph," "));
      
      // uniquid
-     $guid = uniqid($dataPost['postID']);
+     $guid = uniqid($dataPost['ID']);
      
      $body = '<item>
              <title>'.$dataPost['post_title'].'</title>

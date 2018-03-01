@@ -204,8 +204,8 @@ class Mailer
 			{
 				$headers[] = 'MIME-Version: 1.0';
 				$headers[] = 'Content-type: text/html; charset="iso-8859-1"';
-				$headers[] = 'From: <'.APP_SITEMAIL.'>';
-				$headers[] = 'Reply-To: '.APP_SITEMAIL;
+				$headers[] = 'From: <'.APP_EMAIL.'>';
+				$headers[] = 'Reply-To: '.APP_EMAIL;
 
 
 				$message = $this->_HTMLBody;
@@ -215,8 +215,8 @@ class Mailer
 			{
 
 				$headers[] = 'MIME-Version: 1.0';
-				$headers[] = "From: <".APP_SITEMAIL.">";
-				$headers[] = "Reply-To:".APP_SITEMAIL;
+				$headers[] = "From: <".APP_EMAIL.">";
+				$headers[] = "Reply-To:".APP_EMAIL;
 
 
 				$message .= 'Content-type: text/plain; charset="iso-8859-1"';

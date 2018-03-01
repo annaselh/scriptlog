@@ -1,3 +1,3 @@
 <?php 
 
-require 'main.php';
+require 'library/main.php';

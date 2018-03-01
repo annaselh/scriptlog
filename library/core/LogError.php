@@ -1,14 +1,14 @@
 <?php 
 /**
- * Class LogError
- * Handling Error Log
- *
- * @package   PiLUS_CART
+ * class LogError
+ * Error Handling and Logging
+ * 
+ * @package   SCRIPTLOG
  * @author    Maoelana Noermoehammad
- * @copyright 2014 kartatopia.com
- * @license   GPL version 3.0
- * @version   1.4.2
- * @since     Since Release 1.5
+ * @copyright 2018 kartatopia.com
+ * @license   MIT
+ * @version   1.0
+ * @since     Since Release 1.0
  *
  */
 
@@ -20,24 +20,41 @@ class LogError
 	 */
 	private static $_printError = false;
 	
+	protected static $logFilePath = APP_ROOT . APP_PUBLIC . '/log/';
+	
+	public static function logPath()
+	{
+	   return self::$logFilePath;
+	}
 	/**
 	 * @method customErrorMessage
 	 */
 	public static function customErrorMessage()
 	{
 		 
-	 echo '<article>';
-	 echo '<div class="container">';
-	 echo '<div class="row">';
-	 echo '<div class="col-lg-8 col-md-10 mx-auto">';
-	 echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <strong>ERROR!</strong><br>
-          Please check your error log and send it to: alanmoehammad@gmail.com
-          </div>';
-	 echo '</div>';
-	 echo '</div>';
-	 echo '</div>';
-	 echo '</article>';
+	echo '<section class="row page-header">
+          <div class="container">
+           <h4>ERROR</h4>
+          </div>
+          </section>';
+	    
+	  echo '<section class="row blog-content page-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                            
+   <div class="alert alert-danger alert-dismissable">
+			
+          <h3>ERROR!</h3>	
+          <p> 
+           Please check your error log and send it to - email: webdev@kartatopia.com </p>
+				
+    </div>      
+                     
+                </div>
+             </div>
+        </div>
+    </section>';
 	  
 	  exit();
 			
@@ -157,17 +174,17 @@ class LogError
 		<pre>{$trace}</pre>\n
 		<hr />\n";
 	    
-	    if( is_file($error_file) === false ) {
-	        file_put_contents($error_file, '');
+	    if(is_readable(self::logPath() . $error_file)===false) {
+	        file_put_contents(self::logPath() . $error_file, '');
 	    }
 	    
-	    if( $clear ) {
+	    if($clear) {
 	        $content = '';
 	    } else {
-	        $content = file_get_contents($error_file);
+	        $content = file_get_contents(self::logPath() . $error_file);
 	    }
 	    
-	    file_put_contents($error_file, $log_message . $content);
+	    file_put_contents(self::logPath() . $error_file, $log_message . $content);
 	    
 	    if($_printError == true){
 	        echo $log_message;
@@ -190,12 +207,12 @@ class LogError
 	    $date = date('M d, Y G:iA');
 	    $log_message = "<p>Error on $date - $error</p>";
 	    
-	    if( is_file($error_file) === false ) {
-	        file_put_contents($error_file, '');
+	    if(is_file(self::logPath() . $error_file) === false ) {
+	        file_put_contents(self::logPath() . $error_file, '');
 	    }
 	    
-	    $content = file_get_contents($error_file);
-	    file_put_contents($error_file, $log_message . $content);
+	    $content = file_get_contents(self::logPath() . $error_file);
+	    file_put_contents(self::logPath() . $error_file, $log_message . $content);
 	    
 	    if($_printError == true){
 	        echo $log_message;

@@ -84,11 +84,11 @@ public function URLDispatcher($action = '', $param = null)
               
            if (!empty($action) && $action == $r) $fileName = strtolower($r) . '.php';
            
-           if (is_readable(APP_SYSPATH . 'public' . DS . $fileName)) {
+           if (is_readable(APP_ROOT . 'public' . DS . $fileName)) {
           
                if (!is_null($param)) $views['param'] = preventInject($param);
                
-               include(APP_SYSPATH . 'public' . DS . $fileName);
+               include(APP_ROOT . 'public' . DS . $fileName);
            
            }
         }

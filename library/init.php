@@ -1,94 +1,31 @@
 <?php
 
-spl_autoload_register(null, false);
+require 'Scriptloader.php';
 
-// spesifikasi file php yang akan diload
-spl_autoload_extensions(".php");
+$loader = new Scriptloader();
+$loader -> setLibraryPaths(array(
+  APP_ROOT . APP_LIBRARY . '/classes/',
+  APP_ROOT . APP_LIBRARY . '/core/',
+  APP_ROOT . APP_LIBRARY . '/plugins/'
+));
 
-if (!function_exists('autoloader')) {
-    
-    function autoloader($class)
-    {
-        try {
-            
-            $classPath = APP_LIBRARY . 'classes/'.$class . '.php';
-            $corePath = APP_LIBRARY . 'core/' . $class . '.php';
-            $pluginPath = APP_LIBRARY . 'plugins/'. $class . '.php';
-            
-            if (is_file($corePath) && !class_exists($corePath)) {
-                
-                require($corePath);
-                
-            } elseif (is_readable($classPath) && !class_exists($classPath)) {
-                
-                require($classPath);
-                
-            } elseif (is_readable($pluginPath) && !class_exists($pluginPath)) {
-                
-                require($pluginPath);
-                
-            }
-            
-            
-        } catch (Exception $e) {
-            
-            echo 'Exception caught :', $e -> getMessage(), "\n";
-            
-        }
-        
-    }
-}
+$loader -> runLoader();
 
-
-if (version_compare(PHP_VERSION, '5.4', '>=')) {
-    
-    if (version_compare(PHP_VERSION, '5.6', '>=')) {
-        
-        spl_autoload_register('autoloader');
-        
-    }
-    
-} 
-
-if (file_exists(APP_ROOT . 'config'.APP_EXT)) {
-    
-   require(APP_ROOT . 'config'. APP_EXT);
-   
-} else {
-
-   require(APP_ROOT.'config.sample'.APP_EXT);
-   
-}
-
-$dbc = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
+$dbc = new PDO(DB_CONNECTION, DB_USER, DB_PASS);
 $dbc -> setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-$dbc -> setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+$dbc -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
 
 $authentication = new Authentication($dbc);
-$sanitize = new Sanitize();
-$volunteers = new Volunteer();
-$categories = new Category();
 $configurations = new Configuration($dbc);
-$albums = new Album();
-$events = new Event();
-$photos = new Photo();
-$files =  new Files();
-$pages = new Page();
-$posts = new Post();
-$post_cats = new PostCategory();
-$productFlavours = new ProductFlavour();
-$products = new Product();
 $searchPost = new SearchSeeker($dbc);
-$inbox = new Inbox();
-$menus = new Menu();
-$dashboards = new Dashboard();
-$widgets = new Widget();
-$dispatching = new Dispatcher();
-$frontContent = new FrontContent();
-$frontPaginator = new Paginator(12, 'p');
+$frontPaginator = new Paginator(10, 'p');
 $postFeeds = new RssFeed($dbc);
+$dispatching = new Dispatcher();
+
+set_exception_handler('LogError::exceptionHandler');
+set_error_handler('LogError::errorHandler');
 
 if (!isset($_SESSION)) {
     

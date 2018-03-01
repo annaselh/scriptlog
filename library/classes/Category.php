@@ -1,8 +1,24 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+/**
+ * class Category extends Model
+ * Interacting with database to insert, update, 
+ * delete and select records from table category 
+ *
+ * @package   SCRIPTLOG
+ * @author    Maoelana Noermoehammad
+ * @copyright 2018 kartatopia.com
+ * @license   MIT
+ * @version   1.0
+ * @since     Since Release 1.0
+ *
+ */
 
 class Category extends Model
 {
-   
+  
+  /**
+   * overide parent constructor
+   */
   public function __construct()
   {
 	
@@ -10,6 +26,13 @@ class Category extends Model
 	
   }
   
+  /**
+   * Insert a new records
+   * 
+   * @method createCategory
+   * @param string $title
+   * @param string $slug
+   */
   public function createCategory($title, $slug)
   {
 	$sql = "INSERT INTO category(category_title, category_slug)VALUES(?, ?)";
@@ -20,23 +43,37 @@ class Category extends Model
 		
 	return $this->lastId();
   }
-	
-  public function updateCategory($title, $slug, $status, $categoryID)
+
+  /**
+   * Update an existing records
+   * 
+   * @param string $title
+   * @param string $slug
+   * @param string $status
+   * @param integer $ID
+   */
+  public function updateCategory($title, $slug, $status, $ID)
   {
 	$sql = "UPDATE category SET category_title = ?, category_slug = ?, status = ?
-				WHERE categoryID = ?";
+				WHERE ID = ?";
 		
-	$data = array($title, $slug, $status, $categoryID);
+	$data = array($title, $slug, $status, $ID);
 		
 	$stmt = $this->statementHandle($sql, $data);
 	
   }
-	
-  public function deleteCategoryById($categoryID, $sanitizing)
+
+  /**
+   * Delete an existing records
+   * 
+   * @param integer $ID
+   * @param string $sanitizing
+   */
+  public function deleteCategoryById($ID, $sanitizing)
   {  	
-  	$cleanCategoryId = $this->filteringId($sanitizing, $categoryID, 'sql');
+  	$cleanCategoryId = $this->filteringId($sanitizing, $ID, 'sql');
   	
-	$sql = "DELETE FROM category WHERE categoryID = ?";
+	$sql = "DELETE FROM category WHERE ID = ?";
 	  
 	$data = array($cleanCategoryId);
 	  
@@ -53,7 +90,7 @@ class Category extends Model
       
   	if ((!is_null($position)) && (!is_null($limit))) {
   		
-  		$sql = "SELECT categoryID, category_title, category_slug, status
+  		$sql = "SELECT ID, category_title, category_slug, status
 				FROM category 
                 ORDER BY category_title
 				DESC LIMIT :position, :limit";
@@ -69,7 +106,7 @@ class Category extends Model
   			$categories[] = $row;
   		}
   		
-  		$numbers = "SELECT categoryID FROM category";
+  		$numbers = "SELECT ID FROM category";
   		$stmt = $this->dbc->query($numbers);
   		$totalCategories = $stmt -> rowCount();
   		
@@ -77,7 +114,7 @@ class Category extends Model
   		
   	} else {
   		
-  		$sql = "SELECT categoryID, category_title 
+  		$sql = "SELECT ID, category_title 
                FROM category ORDER BY category_title";
   		
   		$stmt = $this->dbc->query($sql);
@@ -103,13 +140,13 @@ class Category extends Model
 	
  }
 	
- public function findCategory($categoryID, $sanitizing)
+ public function findCategory($ID, $sanitizing)
  {
 
- $sql = "SELECT categoryID, category_title, category_slug, status
-		FROM category WHERE categoryID = ?";
+ $sql = "SELECT ID, category_title, category_slug, status
+		FROM category WHERE ID = ?";
 
- $id_sanitized = $this->filteringId($sanitizing, $categoryID, 'sql');
+ $id_sanitized = $this->filteringId($sanitizing, $ID, 'sql');
  
  $data = array($id_sanitized);
 		
@@ -121,7 +158,7 @@ class Category extends Model
 
  public function findCategoryBySlug($slug, $sanitize)
  {
-  $sql = "SELECT categoryID, category_title
+  $sql = "SELECT ID, category_title
           FROM category WHERE category_slug = :category_slug AND status = 'Y'";
   
   $slug_sanitized = $this->filteringId($sanitize, $slug, 'xss');
@@ -136,10 +173,10 @@ class Category extends Model
  
  public function getPostCategory($categoryId, $postId)
  {
-     $sql = "SELECT categoryID FROM post_category 
-             WHERE categoryID = :categoryID AND postID = :postID";
+     $sql = "SELECT ID FROM post_category 
+             WHERE ID = :ID AND postID = :postID";
      $stmt = $this->dbc->prepare($sql);
-     $stmt -> execute(array(':categoryID' => $categoryId, ':postID' => $postId));
+     $stmt -> execute(array(':ID' => $categoryId, ':postID' => $postId));
      return $stmt -> fetch();
  }
  
@@ -178,7 +215,7 @@ class Category extends Model
       }
     
       $html[] = '<label class="checkbox-inline">';
-      $html[] = '<input type="checkbox" name="catID[]" value="'.$item['categoryID'].'"'.$checked.'>'.$item['category_title'];
+      $html[] = '<input type="checkbox" name="catID[]" value="'.$item['ID'].'"'.$checked.'>'.$item['category_title'];
       $html[] = '</label>';
       
     }
@@ -187,9 +224,9 @@ class Category extends Model
      
      foreach ($items as $i => $item) {
          
-      $post_category = $this->getPostCategory($item['categoryID'], $postId);
+      $post_category = $this->getPostCategory($item['ID'], $postId);
          
-      if ($post_category['categoryID'] == $item['categoryID']) {
+      if ($post_category['ID'] == $item['ID']) {
         
         $checked="checked='checked'";
       
@@ -199,14 +236,14 @@ class Category extends Model
       }
          
          $html[] = '<label class="checkbox-inline">';
-         $html[] = '<input type="checkbox" name="catID[]" value="'.$item['categoryID'].'"'.$checked.'>'.$item['category_title'];
+         $html[] = '<input type="checkbox" name="catID[]" value="'.$item['ID'].'"'.$checked.'>'.$item['category_title'];
          $html[] = '</label>';
          
      }
      
  }
  
- if (empty($item['categoryID'])) {
+ if (empty($item['ID'])) {
      
      $html[] = '<label class="checkbox-inline">';
      $html[] = '<input type="checkbox" name="catID" value="0" checked>Uncategorized';
@@ -223,7 +260,7 @@ class Category extends Model
  public function checkCategoryId($id, $sanitizing)
  {
  	
- 	$sql = "SELECT categoryID FROM category WHERE categoryID = ?";
+ 	$sql = "SELECT ID FROM category WHERE ID = ?";
  	
  	$cleanUpId = $this->filteringId($sanitizing, $id, 'sql');
  	
