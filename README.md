@@ -1,1 +1,1 @@
-Our internally PHP Content Management System. We're refactoring our legacy blog code to improve readability and clean code.
+Scriptlog is our PHP blogging system. We're refactoring our legacy blog code to improve readability and clean code. We always use scriptlog for our clients that need simple lite blog that run on their personal or company website.
