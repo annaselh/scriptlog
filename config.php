@@ -1,0 +1,1 @@
+<?php $config = ["database"=>["host"=>"localhost","user"=>"root","pass"=>"kartatopia","name"=>"setupdb"],"application"=>["url"=>"http://localhost/scriptlog/","email"=>"alanmoehammad@gmail.com","key"=>"GP9HCB-65VG9R-7JK2SU-E1D582E3F6C5A"]];

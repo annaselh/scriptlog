@@ -47,7 +47,7 @@ class LogError
 			
           <h3>ERROR!</h3>	
           <p> 
-           Please check your error log and send it to - email: webdev@kartatopia.com </p>
+           Please check your error log and send it to - email: scriptlog@yandex.com </p>
 				
     </div>      
                      

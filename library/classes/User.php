@@ -9,53 +9,11 @@ class User extends Model
 	}
 	
 	
-	public function createUser($user_login, $email, $user_fullname, $password, $level, $user_session, $dateReg) 
+	public function createUser($bind) 
 	{
 		
-		// check email
-		$this->checkUserEmail($email);
-		
-		$sql = "INSERT INTO users(user_login, user_email, user_fullname, user_pass, 
-		        user_level, user_session, user_registered)
-			    VALUES(:user_login, :user_email, 
-                       :user_fullname, :user_pass, :user_level, 
-                       :user_session, :user_registered)";
-		
-		$volunteerSesi = self::createSessionKey($user_session);
-		
-		$data = array(
-		     
-		     ":user_login"=>$user_login, ":user_email"=>$email, 
-		     ":user_fullname"=>$user_fullname, 
-		     ":user_pass"=>$password, 
-		     ":user_level"=>$level, 
-		     ":user_session"=>$user_session, 
-		     ":user_registered"=>$dateReg
-		    
-		 );
-		
-		$stmt = $this->statementHandle($sql, $data);
-		
-		$volunteer_id = $this -> lastId();
-		
-		if ($volunteer_id) {
-			
-			$shield_pass = shield_pass($password, $volunteer_id);
-			
-			$sesiVolunteer = date("H:i:s") . $password;
-		    
-			$newSession = self::createSessionKey($shield_pass);
-		 
-			$updatePassword = "UPDATE users SET user_pass = ?, user_session = ? WHERE ID = '$volunteer_id' ";
-			
-			$dataPassUpdated = array($shield_pass, $newSession);
-			
-			$stmt = $this->statementHandle($updatePassword, $dataPassUpdated);
-			
-			$this -> closeDbConnection();
-			
-		}
-		
+	   $stmt = $this->dbInsert("users", $bind);
+	
 	}
 	
 	public function updateUser($email, $user_fullname, $phone, 

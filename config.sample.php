@@ -1,12 +1,21 @@
 <?php
-
-//database credentials
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', 'kartatopia');
-define('DB_NAME', 'kartatopia');
-
-// Site configuration
-define('APP_URL', "http://localhost/legacysite" . '/');  // define site path
-define('APP_EMAIL', 'alanmoehammad@gmail.com');
-define('APP_EKEY', 'd0d48739c3b82db413b3be8fbc5d7ea1c1fd3e2792605d3cbfda1HEM78!!');
+/**
+$config = [
+    
+    'database' => [
+        
+        'host' => 'hostname or the database server IP',
+        'name' => 'database_name',
+        'user' => 'database_user',
+        'pass' => 'database_password'
+    ],
+    
+    'config' => [
+        
+        'url' => 'application_url',
+        'email' => 'application_email',
+        'key' => 'application_key'
+    ]
+    
+];
+**/

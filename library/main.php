@@ -1,20 +1,19 @@
 <?php
 
-ini_set('memory_limit', '16M');
+ini_set('memory_limit', '5M');
+
+$key = '5c12IpTl0g!@#';
+$checkIncKey = sha1(mt_rand(1, 1000).$key);
 
 define('DS', DIRECTORY_SEPARATOR);
+define('APP_ADMIN', 'admin');
+define('APP_PUBLIC', 'public');
+define('APP_LIBRARY', 'library');
+define('SCRIPTLOG', $checkIncKey);
 
 if (!defined('APP_ROOT')) define('APP_ROOT', dirname(dirname(__FILE__)) . DS);
 
 if (!defined('PHP_EOL')) define('PHP_EOL', strtoupper(substr(PHP_OS, 0, 3) == 'WIN') ? "\r\n" : "\n");
-
-define('APP_ADMIN', 'admin');
-define('APP_PUBLIC', 'public');
-define('APP_LIBRARY', 'library');
-
-$key = '5c12IpTl0g!@#';
-$checkIncKey = sha1(mt_rand(1, 1000).$key);
-define('SCRIPTLOG', $checkIncKey);
 
 if (!defined('SCRIPTLOG_START_TIME')) {
     

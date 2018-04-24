@@ -13,7 +13,7 @@ class Widget extends Model
   
   $nextQuery = "SELECT ID, post_title, post_slug, post_type
                 FROM posts WHERE ID > '$id_sanitized' 
-                AND post_type = 'blog' 
+                AND post_status = 'publish' AND post_type = 'blog' 
                 ORDER BY ID LIMIT 1";
   
   $stmt = $this->dbc->query($nextQuery);
@@ -37,7 +37,7 @@ class Widget extends Model
      
    $prevQuery = "SELECT ID, post_title, post_slug, post_type 
                  FROM posts WHERE ID < '$id_sanitized' 
-                 AND post_type = 'blog' 
+                 AND post_status = 'publish' AND post_type = 'blog' 
                  ORDER BY ID LIMIT 1";
      
    $stmt = $this->dbc-> query($prevQuery);
@@ -112,71 +112,6 @@ class Widget extends Model
     
   }
   
- }
- 
- public function showUpcomingEvents()
- {
-   $eventListing = array();
-   
-   try {
-       
-    $sql = "SELECT e.ID, e.event_image, e.name, e.slug, e.description,
-            e.location, e.time_started, e.time_ended, e.start_date, e.end_date 
-            FROM event AS e 
-            WHERE TIMESTAMP(e.start_date, e.time_started) >= NOW() LIMIT 1";
-    
-    $stmt = $this->dbc->query($sql);
-    
-    while ($row = $stmt -> fetch()) {
-        
-        $eventListing[] = $row;
-    }
-    
-    return(array("upcomingEvents" => $eventListing));
-    
-     
-   } catch (PDOException $e) {
-       
-      $this->closeDbConnection();
-      
-      $this->error = LogError::newMessage($e);
-      $this->error = LogError::customErrorMessage();
-      
-   }
-   
- }
- 
- public function showPastEvents()
- {
-     $eventListing = array();
-     
-     try {
-         
-         $sql = "SELECT e.ID, e.event_image, 
-                   e.name, e.slug, e.description,
-                   e.location, e.time_started, e.time_ended, 
-                   e.start_date, e.end_date
-            FROM event AS e
-            WHERE TIMESTAMP(e.start_date, e.time_started) <= NOW() LIMIT 3";
-         
-         $stmt = $this->dbc->query($sql);
-         
-         while ($row = $stmt -> fetch()) {
-             
-             $eventListing[] = $row;
-         }
-         
-         return(array("pastEvents" => $eventListing));
-         
-         
-     } catch (PDOException $e) {
-         
-         $this->closeDbConnection();
-         
-         $this->error = LogError::newMessage($e);
-         $this->error = LogError::customErrorMessage();
-         
-     }
  }
   
 }

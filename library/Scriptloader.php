@@ -1,34 +1,38 @@
 <?php
-
+/**
+ * Class Scriptload
+ * Load all class files in any directories selected
+ * 
+ * @author maoelana
+ *
+ */
 class Scriptloader
 {
- protected $librayPaths = array();
+ protected static $librayPaths = [];
  
- protected $fileExtensionName = '/^.+\.php$/i';
+ protected static $fileExtensionName = '.php';
  
- protected $excludeDirName = '/^git|\..*$/';
- 
- protected $directoryIterator;
+ protected static $excludeDirName = '/^git|\..*$/';
  
  public function setLibraryPaths($paths)
  {
-   $this->librayPaths = $paths;
+   self::$librayPaths = $paths;
  }
  
  public function addLibraryPath($path)
  {
-   $this->librayPaths[] = $path;
+   self::$librayPaths[] = $path;
  }
  
  public function setFileExtension($extension)
  {
-    $this->fileExtension = $extension;
+    self::$fileExtensionName = $extension;
  }
  
  public function loadLibrary($class)
  {
      $libraryPath = '';
-     foreach ($this->librayPaths as $path) {
+     foreach (self::$librayPaths as $path) {
          
          if ($libraryPath = self::isLibraryFile($class, $path)) {
              
@@ -45,15 +49,15 @@ class Scriptloader
  {
      if (is_dir($directory) && is_readable($directory)) {
          
-         $this->directoryIterator = dir($directory);
+        $directoryIterator = dir($directory);
          
-        while ($filename = $this->directoryIterator->read()) {
+        while ($filename = $directoryIterator->read()) {
             
             $subLibrary = $directory . $filename;
             
             if (is_dir($subLibrary)) {
                 
-                if (!preg_match($this->excludeDirName, $filename)) {
+                if (!preg_match(self::$excludeDirName, $filename)) {
                     
                     if ($fileLibraryPath = self::isLibraryFile($class, $subLibrary. '/')) {
                         
@@ -65,7 +69,7 @@ class Scriptloader
                 
             } else {
                 
-                if ($filename == $class . $this->fileExtensionName) {
+                if ($filename == $class . self::$fileExtensionName) {
                     
                     return $subLibrary;
                     
