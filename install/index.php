@@ -454,8 +454,7 @@ if ($install != 'install') {
         if (count($errors) && !empty($errors['errorChecking']) === true) :
         ?>
          <div class="alert alert-danger" role="alert">
-         the tests have failed, consult the <a href="https://scriptlog.kartatopia.com/doc/installation">documentation</a>
-		for more information on how to correct the problem.
+          Scriptlog may not work correctly with your environment
         </div>
         <?php 
         elseif (isset($errors['errorSetup']) && (!$completed)) :
@@ -467,7 +466,7 @@ if ($install != 'install') {
         else:
         ?>
           <div class="alert alert-success" role="alert">
-             Test have been run successfully. Please accomplish below settings:
+              Your environment passed all requirements. Please do the installation procedure below:
           </div>
         <?php 
         endif;

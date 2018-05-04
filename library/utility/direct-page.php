@@ -3,12 +3,8 @@
 // function redirect page
 function direct_page($page = '')
 {
-    
- $protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https';
- $host     = $_SERVER['HTTP_HOST'];
-    
  // defining url
- $url = $protocol . '://' . $host . dirname($_SERVER['PHP_SELF']);
+ $url = APP_PROTOCOL . '://' . APP_HOSTNAME . dirname($_SERVER['PHP_SELF']);
     
  // remove any trailing slashes
  $url = rtrim($url, '/\\');
@@ -18,5 +14,6 @@ function direct_page($page = '')
     
  // redirect the user
  header("Location: $url");
-    
+ exit();
+ 
 }

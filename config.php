@@ -1,1 +1,16 @@
-<?php $config = ["database"=>["host"=>"localhost","user"=>"root","pass"=>"kartatopia","name"=>"setupdb"],"application"=>["url"=>"http://localhost/scriptlog/","email"=>"alanmoehammad@gmail.com","key"=>"GP9HCB-65VG9R-7JK2SU-E1D582E3F6C5A"]];
+<?php  return [
+                    
+            'db' => [
+                  'host' => 'localhost',
+                  'user' => 'root',
+                  'pass' => 'kartatopia',
+                  'name' => 'blog'
+                  ],
+        
+            'app' => [
+                   'url' => 'http://localhost/scriptlog/',
+                   'email' => 'alanmoehammad@gmail.com',
+                   'key' => 'SYNHXA-KL5M3T-KSQ5VB-FF9F1CD227C32'
+                   ]
+
+            ];

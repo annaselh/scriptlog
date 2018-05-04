@@ -1,4 +1,4 @@
-<?php 
+<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 /**
  * PHP Pagination Class
  *

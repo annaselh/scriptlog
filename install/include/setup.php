@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * Install database table
+ * 
+ * @param string $link
+ * @param string $user_login
+ * @param string $user_pass
+ * @param string $user_email
+ * @param string $key
+ */
 function install_database_table($link, $user_login, $user_pass, $user_email, $key)
 {
 
@@ -103,7 +111,6 @@ site_name VARCHAR(100) NOT NULL,
 meta_description text DEFAULT NULL,
 meta_keywords tinytext DEFAULT NULL,
 logo VARCHAR(255) NOT NULL DEFAULT '',
-favicon VARCHAR(255) NOT NULL DEFAULT '',
 facebook_url VARCHAR(200) NOT NULL DEFAULT '#',
 twitter_url VARCHAR(200) NOT NULL DEFAULT '#',
 instagram_url VARCHAR(200) NOT NULL DEFAULT '#',
@@ -121,22 +128,23 @@ PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8";
 
 $saveAdmin = "INSERT INTO users (user_login, user_email, user_pass, user_level,
-user_registered, user_session) VALUES (?, ?, ?, ?, ?, ?)";
+user_registered, user_activation_key, user_status, user_session) 
+VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 $saveAppKey = "INSERT INTO settings (app_key) VALUES(?)";
 
 $date_registered = date("Ymd");
+$user_activation_key = md5( mt_rand( 10000, 99999 ) . time() . $value . 'c#haRl891');
 $user_session = md5($user_email);
 $shield_pass = password_hash($user_pass, PASSWORD_DEFAULT);
 $user_level = 'Administrator';
+$user_status = '1';
 
 if ($link instanceof mysqli) $newTableUser = $link -> query($tableUser);
 $createAdmin = $link ->prepare($saveAdmin);
-$createAdmin -> bind_param("ssssss",
-    $user_login, $user_email,
-    $shield_pass, $user_level,
-    $date_registered, $user_session);
-
+$createAdmin -> bind_param("ssssssss", $user_login, $user_email, 
+    $shield_pass, $user_level, $date_registered, 
+    $user_activation_key, $user_status, $user_session);
 $createAdmin -> execute();
 
 if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
@@ -163,6 +171,17 @@ if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
  
 }
 
+/**
+ * Write configuration file
+ * 
+ * @param string $host
+ * @param string $user
+ * @param string $password
+ * @param string $database
+ * @param string $email
+ * @param string $key
+ * @throws Exception
+ */
 function write_config_file($host, $user, $password, $database, $email, $key)
 {
 global $protocol, $server_host;
@@ -194,27 +213,37 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
     mysqli_query($link, $updateAppKey);
     mysqli_close($link);
     
-    $fileconfig = '<?php $config = ['
-    
-       .'"database"=>['
-          .'"host"=>"'.addslashes($host).'",'
-          .'"user"=>"'.addslashes($user).'",'
-          .'"pass"=>"'.addslashes($password).'",'
-          .'"name"=>"'.addslashes($database).'"],'        
-       .'"application"=>['
-          .'"url"=>"'.addslashes($url).'",'
-          .'"email"=>"'.addslashes($email).'",'
-          .'"key"=>"'.addslashes($app_key).'"]'
-       .'];';
-    
-     if (isset($_SESSION['token']))
-         file_put_contents(__DIR__ . '/../../config.php', $fileconfig);
+    $fileconfig = '<?php  return ['."
+                    
+            'db' => [
+                  'host' => '".addslashes($host)."',
+                  'user' => '".addslashes($user)."',
+                  'pass' => '".addslashes($password)."',
+                  'name' => '".addslashes($database)."'
+                  ],
+        
+            'app' => [
+                   'url' => '".addslashes($url)."',
+                   'email' => '".addslashes($email)."',
+                   'key' => '".addslashes($app_key)."'
+                   ]
+
+            ];";
+     
+    if (isset($_SESSION['token'])) file_put_contents(__DIR__ . '/../../config.php', $fileconfig);
       
  }
 
 }
 
-// remove bad characters
+/**
+ * Remove bad characters
+ * 
+ * @param string $str_words
+ * @param boolean $escape
+ * @param string $level
+ * @return string
+ */
 function remove_bad_characters($str_words, $escape = false, $level = 'high')
 {
     $found = false;
@@ -237,7 +266,14 @@ function remove_bad_characters($str_words, $escape = false, $level = 'high')
     return $str_words;
 }
 
-// stackoverflow.com/questions/3687878/serial-generation-with-php
+/**
+ * generate license
+ * to generate app key
+ * 
+ * @link stackoverflow.com/questions/3687878/serial-generation-with-php
+ * @param string $suffix
+ * @return string
+ */
 function generate_license($suffix = null) {
     // Default tokens contain no "ambiguous" characters: 1,i,0,o
     if(isset($suffix)){
@@ -277,6 +313,11 @@ function generate_license($suffix = null) {
     return $license_string;
 }
 
+/**
+ * Purge installation
+ * Cleaning all installation process
+ * 
+ */
 function purge_installation()
 {
    

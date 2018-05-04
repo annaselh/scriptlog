@@ -1,9 +1,14 @@
 <?php
-
-ini_set('memory_limit', '5M');
+date_default_timezone_set("Asia/Jakarta");
+ini_set("memory_limit", "2M");
+#ini_set("session.cookie_secure", "True");  //secure
+#ini_set("session.cookie_httponly", "True"); // httpOnly
+#header("Content-Security-Policy: default-src https:; font-src 'unsafe-inline' data: https:; form-action 'self' https://kartatopia.com;img-src data: https:; child-src https:; object-src 'self' www.google-analytics.com ajax.googleapis.com platform-api.sharethis.com kartatopia-studio.disqus.com; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;");
 
 $key = '5c12IpTl0g!@#';
 $checkIncKey = sha1(mt_rand(1, 1000).$key);
+$app_protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https';
+$app_hostname = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
 define('DS', DIRECTORY_SEPARATOR);
 define('APP_ADMIN', 'admin');
@@ -15,26 +20,22 @@ if (!defined('APP_ROOT')) define('APP_ROOT', dirname(dirname(__FILE__)) . DS);
 
 if (!defined('PHP_EOL')) define('PHP_EOL', strtoupper(substr(PHP_OS, 0, 3) == 'WIN') ? "\r\n" : "\n");
 
-if (!defined('SCRIPTLOG_START_TIME')) {
-    
-    define('SCRIPTLOG_START_TIME', microtime(true));
-    
-}
+if (!defined('APP_PROTOCOL')) define('APP_PROTOCOL', $app_protocol);
 
-if (!defined('SCRIPTLOG_START_MEMORY')) {
-    
-    define('SCRIPTLOG_START_MEMORY', memory_get_usage());
-    
-}
+if (!defined('APP_HOSTNAME')) define('APP_HOSTNAME', $app_hostname);
+
+if (!defined('SCRIPTLOG_START_TIME')) define('SCRIPTLOG_START_TIME', microtime(true));
+
+if (!defined('SCRIPTLOG_START_MEMORY')) define('SCRIPTLOG_START_MEMORY', memory_get_usage());
 
 if (file_exists(__DIR__ . '/../config.php')) {
     
-    include(__DIR__ . '/../config.php');
+   $config = require(__DIR__ . '/../config.php');
     
 } else {
     
     if (is_dir(APP_ROOT . 'install'))
-        header("Location: install");
+        header("Location: ".APP_PROTOCOL."://".APP_HOSTNAME.dirname($_SERVER['PHP_SELF']).'/install');
         exit();
         
 }

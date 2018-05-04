@@ -1,4 +1,4 @@
-<?php 
+<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 /**
  * sanitize.class.php
  * Sanitizing  input and output
@@ -6,7 +6,6 @@
  * @copyright  wenkhairu
  *
  */
-
 class Sanitize 
 {
 

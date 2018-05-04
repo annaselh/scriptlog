@@ -1,6 +1,6 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 
-class Page extends Model
+class Page extends Dao
 {
 
  public function __construct()

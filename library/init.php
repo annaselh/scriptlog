@@ -1,24 +1,29 @@
 <?php
-
+/**
+ * File init.php
+ * to initialize or instantiate an object
+ * 
+ * @author  Maoelana Noermoehammad
+ * @license MIT
+ * 
+ */
 require 'Scriptloader.php';
 
 $loader = new Scriptloader();
 $loader -> setLibraryPaths(array(
-  APP_ROOT . APP_LIBRARY . '/classes/',
   APP_ROOT . APP_LIBRARY . '/core/',
+  APP_ROOT . APP_LIBRARY . '/dao/',
   APP_ROOT . APP_LIBRARY . '/plugins/'
 ));
 
 $loader -> runLoader();
 
-$dbc = new PDO('mysql:host='.$config['database']['host'].';dbname='.$config['database']['name'], 
-    $config['database']['user'], $config['database']['pass']);
-$dbc -> setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-$dbc -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$dbc = DbFactory::connect(['mysql:host='.$config['db']['host'].';dbname='.$config['db']['name'], 
+       $config['db']['user'], $config['db']['pass']   
+       ]);
 
 Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
 
-$authentication = new Authentication($dbc);
 $configurations = new Configuration($dbc);
 $searchPost = new SearchSeeker($dbc);
 $frontPaginator = new Paginator(10, 'p');

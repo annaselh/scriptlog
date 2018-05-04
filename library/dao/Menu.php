@@ -1,8 +1,8 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 
-class Menu extends Model
+class Menu extends Dao
 {
- 
+    
  public function __construct()
  {
 	

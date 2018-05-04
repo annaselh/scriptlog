@@ -1,17 +1,15 @@
-<?php 
+<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 /**
- * Kelas Uploader
- * Uploading files
- * 
- * @package   PiLUS_CMS
+ * Uploader Class
+ *
+ * @package   SCRIPTLOG
  * @author    Maoelana Noermoehammad
- * @copyright 2014 kartatopia.com
- * @license   GPL version 3.0
- * @version   1.4.0
- * @since     Since Release 1.4
+ * @copyright 2018 kartatopia.com
+ * @license   MIT
+ * @version   1.0
+ * @since     Since Release 1.0
  *
  */
-
 class Uploader 
 {
 	/**

@@ -1,8 +1,8 @@
-<?php
+<?php 
 /**
-$config = [
+return [
     
-    'database' => [
+    'db' => [
         
         'host' => 'hostname or the database server IP',
         'name' => 'database_name',
@@ -10,7 +10,7 @@ $config = [
         'pass' => 'database_password'
     ],
     
-    'config' => [
+    'app' => [
         
         'url' => 'application_url',
         'email' => 'application_email',

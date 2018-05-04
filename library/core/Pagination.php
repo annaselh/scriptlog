@@ -1,6 +1,6 @@
-<?php 
+<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 /**
- * class pagination
+ * Pagination class
  * digunakan untuk paging
  * pada back end website/administrator
  * @author Lukmanul Hakim

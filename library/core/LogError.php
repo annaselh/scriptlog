@@ -1,6 +1,6 @@
-<?php 
+<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 /**
- * class LogError
+ * LogError Class
  * Error Handling and Logging
  * 
  * @package   SCRIPTLOG

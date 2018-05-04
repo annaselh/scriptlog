@@ -1,252 +1,249 @@
-<?php
-
+<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+/**
+ * Authentication Class
+ * 
+ * @author M.A Houssain Tonu
+ * @link    https://www.packtpub.com/web-development/php-application-development-netbeans-beginners-guide
+ *
+ */
 class Authentication
 {
-  
- protected $dbc;
+ /**
+  * User Email
+  * @var string
+  */
+ public $user_email;
  
- protected $error;
+ /**
+  * Username 
+  * @var string
+  */
+ public $user_login;
  
- public function __construct($dbc)
- {
- 	$this->dbc = $dbc;
- }
+ /**
+  * Log In 
+  * @var string
+  */
+ public $loggedIn;
  
- public function findIdByEmail($email)
- {
- 	$sql = "SELECT ID FROM users WHERE user_email = :email";
- 	
- 	$stmt = $this->dbc->prepare($sql);
- 	
- 	$stmt -> execute(array(":email" => $email));
- 	
- 	$row = $stmt -> fetch();
- 	
- 	return $row['ID'];
- 	
- }
+ /**
+  * Instantiate of Sanitize class
+  * @var object
+  */
+ public $sanitize;
  
- public function isEmailExists($email)
- {
- 	$sql = "SELECT `user_email` FROM `users` WHERE `user_email` = ? ";
- 	
- 	$stmt = $this->dbc->prepare($sql);
- 	$stmt -> bindValue(1, $email);
- 	
- 	try {
- 		
- 	    $stmt -> execute();
- 		$rows = $stmt -> rowCount();
- 		
- 		if ($rows > 0) {  // if rows are found for query
- 			
- 			return true;
- 		}
- 		else
- 		{
- 			return false;
- 		}
- 		
- 	} catch (PDOException $e) {
- 		
- 		$this->dbc = null;
- 		
- 		$this->error = LogError::newMessage($e);
- 		$this->error = LogError::customErrorMessage();
- 			
- 	}
- 	
- }
+ /**
+  * User id
+  * @var integer
+  */
+ private $user_id;
  
- public function validateUser($email, $password)
- {
- 	$volunteer_id = $this->findIdByEmail($email);
- 	
-    $hash_password = $this -> _verifyHashPassword($password, $volunteer_id);
- 	
- 	$sql = "SELECT ID, user_login, user_email, user_pass, 
-            user_level, user_session
-            FROM users WHERE user_email = :email 
-            AND user_pass = :password ";
- 	
- 	$stmt = $this->dbc->prepare($sql);
- 	$stmt -> bindParam(":email", $email, PDO::PARAM_STR);
- 	$stmt -> bindParam(":password", $hash_password, PDO::PARAM_STR);
- 	
- 	try {
- 		
- 	 $stmt -> execute();
- 	 
- 	 return $stmt -> fetch();
- 	 
- 	} catch (PDOException $e) {
- 		
- 	  $this->dbc = null;
- 	  
- 	  $this->error = LogError::newMessage($e);
- 	  $this->error = LogError::customErrorMessage();
- 	  
- 	}
- 	
- }
+ /**
+  * User session
+  * @var string
+  */
+ private $user_session;
  
- public function updateVolunteerSession($sessionKey, $email)
- {
+ /**
+  * User session
+  * @var string
+  */
+ private $user_level;
+ 
+ /**
+  * Instantiate of user class
+  * @var object
+  */
+ protected $user;
+ 
+ /**
+  * Instantiate of validator class
+  * @var object
+  */
+ protected $validator;
+ 
+ const COOKIE_EXPIRE =  8640000;  //60*60*24*100 seconds = 100 days by default
 
-   // update session
- 	$sql = "UPDATE users SET user_session = :session 
-           WHERE user_email = :email";
- 	
- 	$generateKey = generateSessionKey($sessionKey);
- 	
- 	$stmt = $this->dbc->prepare($sql);
- 	$stmt -> bindparam(":session", $generateKey, PDO::PARAM_STR);
- 	$stmt -> bindparam(":email", $email, PDO::PARAM_STR);
- 	$stmt -> execute();
- 	
- 	// retrieve data users
- 	$dataUser = $this->findPrivilege($email);
- 	
- 	if (isset($_SESSION['volunteerLoggedIn']) && $_SESSION['volunteerLoggedIn'] == true) {
-  	 
- 	 $_SESSION['ID'] = $dataUser['ID'];
- 	 $_SESSION['Login'] = $dataUser['user_login'];
- 	 $_SESSION['FirstName'] = $dataUser['volunteer_firstName'];
- 	 $_SESSION['LastName'] = $dataUser['volunteer_lastName'];
- 	 $_SESSION['Email'] = $dataUser['user_email'];
- 	 $_SESSION['Level'] = $dataUser['user_level'];
- 	 $_SESSION['Token'] = $dataUser['user_session'];
- 	 $_SESSION['agent'] = sha1($_SERVER['HTTP_USER_AGENT']);
- 	 	
- 	 $protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https';
- 	 $host     = $_SERVER['HTTP_HOST'];
- 	 
- 	 $logInPage = $protocol . '://' . $host . dirname($_SERVER['PHP_SELF']) . '/index.php?module=dashboard';
- 	 
- 	 header('Location:' . $logInPage);
- 	 
- 	}
- 	
- }
+ const COOKIE_PATH = "/";  //Available in whole domain
  
- public function isVolunteerLoggedIn()
+ public function __construct(User $user, Validator $validator, Sanitize $sanitize)
  {
-  
-  $_SESSION['volunteerLoggedIn'] = false;
- 	
-  if (isset($_SESSION['volunteerLoggedIn']) 
-      && $_SESSION['volunteerLoggedIn'] == true) {
- 	  
-     return  true;
-     
-  } 
- 	
+    $this->user = $user;
+    $this->validator = $validator;
+    $this->sanitize = $sanitize;
+    
+    $this->loggedIn = $this->isLoggedIn();
+    
+    if (!$this->loggedIn) {
+        
+        header("Location: ".APP_PROTOCOL."://".APP_HOSTNAME.dirname(dirname($_SERVER['PHP_SELF']))."/");
+        exit();
+        
+    }
+    
  }
  
+ /**
+  * Is logged in
+  * @return boolean
+  */
+ private function isLoggedIn()
+ {
+     if (isset($_SESSION['user_email']) && isset($_SESSION['user_session'])
+          && isset($_SESSION['user_id'])) {
+         
+         // check user session
+         if ($this->user->checkUserSession($_SESSION['user_session']) === false) {
+             
+             unset($_SESSION['user_id']);
+             unset($_SESSION['user_email']);
+             unset($_SESSION['user_level']);
+             unset($_SESSION['user_login']);
+             
+             return false;
+             
+         }
+         
+         $account_info = $this->user->getUserByEmail($_SESSION['user_email'], PDO::FETCH_ASSOC);
+         if (!$account_info) {
+             return false;
+         }
+         
+         $this->user_id = $account_info['ID'];
+         $this->user_email = $account_info['user_email'];
+         $this->user_login = $account_info['user_login'];
+         $this->user_session = $account_info['user_session'];
+         $this->user_level = $account_info['user_level'];
+         
+         return true;
+         
+     }
+     
+     if (isset($_COOKIE['cookie_email']) && isset($_COOKIE['cookie_id'])) {
+         
+         $this->user_email = $_SESSION['user_email'] = $_COOKIE['cookie_email'];
+         $this->user_session = $_SESSION['user_session'] = $_COOKIE['cookie_id']; 
+         return true;
+     }
+     
+     return false;
+     
+ }
+ 
+ /**
+  * Login
+  * @param array $values
+  * @return boolean
+  */
+ public function login($values)
+ {
+     $user_email = $values['user_email'];
+     $user_pass = $values['user_pass'];
+     $remember_me = isset($values['remember_me']) ? $values['remember_me'] : '';
+     
+     $this->validator->validate("user_email", $user_email);
+     $this->validator->validate("user_pass", $user_pass);
+     
+     if ($this->validator->numErrors > 0) {
+         return false;
+     }
+     
+     if (!$this->validator->validateUserAccount($user_email, $user_pass)) {
+         return false;
+     }
+     
+     $account_info = $this->user->getUserByEmail($user_email);
+     if (!$account_info) {
+         return false;
+     }
+     
+     $this->user_id = $_SESSION['user_id'] = $account_info['ID'];
+     $this->user_email = $_SESSION['user_email'] = $account_info['user_email'];
+     $this->user_session = $_SESSION['user_session'] = $account_info['user_session'];
+     $this->user_level = $_SESSION['user_level'] = $account_info['user_level'];
+     $this->user_login = $_SESSION['user_login'] = $account_info['user_login'];
+     
+     $this->user->updateUserSession($this->user_level, $this->sanitize, 
+                 array('user_session'=>$this->user_session), $this->user_id);
+     
+     if ($remember_me == 'true') {
+         
+         setcookie("cookie_email", $this->user_email, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
+         setcookie("cookie_id", $this->user_session, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
+         
+     }
+     
+     return true;
+     
+ }
+ 
+ /**
+  * Checking access level
+  * @return boolean
+  */
  public function accessLevel()
  {
- 	if (isset($_SESSION['Level'])) {
- 	
- 	  return $_SESSION['Level'];
- 	
- 	} else {
- 	
- 		return false;
- 	}
- 	
+    if (isset($_SESSION['user_level'])) {
+         
+      return ($this->user_level == $_SESSION['user_level']);
+        
+    }
+      
  }
  
- public function signOutVolunteer()
+ /**
+  * Logout
+  */
+ public function logout()
  {
-  if (!isset($_SESSION['ID'])) {
-  	
-  	directPage();
-  	
-  } else {
-  	
-  	$_SESSION = array();
-  	
-  	session_destroy();
-  	
-  	setcookie('PHPSESSID', '', time()-3600, '/', '', 0, 0);
-  	
-  	//Redirect to Login Page
-  	$protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https';
-  	$host     = $_SERVER['HTTP_HOST'];
-  	
-  	$logInPage = $protocol . '://' . $host . dirname($_SERVER['PHP_SELF']) . '/';
-  	
-  	header('Location:' . $logInPage);
-  	
-  }
-  
- }
- 
- public function recoverPassword($id, $password, $token)
- {
-  
- $sql = "UPDATE users SET user_pass = :password, user_reset_complete = 'Yes' 
-          WHERE user_reset_key = :token AND ID = :id";
- 
- $hash_password = shieldPass($password, $id);
- 
- try {
- 	
- $stmt = $this->dbc->prepare($sql);
- 
- $stmt -> execute(array(":token"=>$token, ":id"=>$id));
-
- if ($rows = $stmt -> rowCount() == 1) {
- 		
- 	// redirect to login page
- 	$logInPage = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/';
- 		
- 	header('Location: ' . $logInPage . 'login.php?status=changed');
- 		
- 	}
- 	
- } catch (PDOException $e) {
- 	
-   $this->dbc = null;
+     
+   if (isset($_COOKIE['cookie_email']) && isset($_COOKIE['cookie_id'])) {
    
-   $this->error = LogError::newMessage($e);
-   $this->error = LogError::customErrorMessage();
+       setcookie("cookie_email", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
+       setcookie("cookie_id", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
+     
+   }
+   
+   $_SESSION = array();
+   
+   session_destroy();
+   
+   setcookie('PHPSESSID', '', time()-3600, '/', '', 0, 0);
+   
+   $this->loggedIn = false;
+   
+   $loginPage = APP_PROTOCOL."://".APP_HOSTNAME.dirname($_SERVER['PHP_SELF']).'/';
+   
+   header("Location: ".$loginPage);
+   exit();
    
  }
-  
-}
  
- private function _verifyHashPassword($password, $id)
+ /**
+  * get User data and validate it
+  * 
+  * @param string $user_email
+  * @return boolean|boolean|array|object
+  */
+ public function authUser($user_email)
  {
- 	return shieldPass($password, $id);
- }
- 
- protected function findPrivilege($email) 
- {
-  $sql = "SELECT ID, user_login,
-         user_email, user_fullname, user_level, user_reset_key,
-         user_reset_complete, user_session, user_registered, 
-         FROM users WHERE user_email = :email";
-  
-  $stmt = $this->dbc->prepare($sql);
-  
-  try {
-  	
-  	$stmt -> execute(array(":email" => $email));
-  	
-  	$this->dbc = null;
-  	
-  	return $stmt -> fetch();
-  	
-  } catch (PDOException $e) {
-  	
-  	$this->dbc = null;
-  	
-  	$this->error = LogError::newMessage($e);
-  	$this->error = LogError::customErrorMessage();
-  	
-  }
-  
+     $this->validator->validate("user_email", $user_email);
+     
+     if ($this->validator->numErrors > 0) {
+         return false;
+     }
+     
+     if (!$this->validator->isEmailExists($user_email)) {
+         return false;
+     }
+     
+     $account_info = $this->user->getUserByEmail($user_email);
+     if ($account_info) {
+         return $account_info;
+     }
+     
+     return false;
+     
  }
  
 }

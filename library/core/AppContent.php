@@ -5,8 +5,6 @@ class AppContent
  
  protected $slides;
  
- protected $latestEvent;
- 
  protected $singlePost;
  
  protected $singlePage;
@@ -46,11 +44,11 @@ class AppContent
   
  }
  
- protected function getCategoryPost(PostCategory $postCat, $catId, $sanitize)
+ protected function getCategoryPost(PostTopic $postCat, $topicId, $sanitize)
  {
    $this->catpost = $postCat;
    
-   $results = $this->catpost->showCategoryPost($catId, $sanitize);
+   $results = $this->catpost->showPostByTopic($topicId, $sanitize);
    
    return $results;
    

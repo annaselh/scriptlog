@@ -1,6 +1,6 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 
-class Post extends Model
+class Post extends Dao
 {
  
 protected $linkPosts;
