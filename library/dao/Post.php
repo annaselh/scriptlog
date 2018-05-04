@@ -10,7 +10,7 @@ public function __construct()
   parent::__construct();	
 }
   
-public function createPost($catID, $author, $created, $title, $slug, $content, $post_status, $comment_status, $picture = '')
+public function createPost($bind)
 {
   	if (!empty($picture)) {
   		
