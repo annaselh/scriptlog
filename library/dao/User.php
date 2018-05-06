@@ -349,11 +349,15 @@ class User extends Dao
      $this->setSQL($sql);
      $stmt = $this->findColumn([$sesi]);
      
-     if ($stmt == 1) {
-         return true;
-     } else {
-         return false;
-     }
+    if ($stmt == 1) {
+         
+        return true;
+     
+    } else {
+        
+        return false;
+     
+    }
      
  }
 

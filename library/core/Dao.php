@@ -62,6 +62,7 @@ class Dao
  
  /**
   * Find All records
+  * getting array of rows
   * 
   * @param array $data
   * @param PDO::FETCH_MODE static $fetchMode
@@ -96,6 +97,7 @@ class Dao
  
  /**
   * Find Single row record
+  * getting one row
   * 
   * @param array $data
   * @param PDO::FETCH_MODE static $fetchMode
@@ -132,6 +134,7 @@ class Dao
  /**
   * Find Column
   * return a single column from the next row of results set
+  * getting single field value
   * 
   * @param array $data
   * @param PDO::FETCH_MODE static $fetchMode
@@ -142,9 +145,25 @@ class Dao
  {
      
    try {
-         
-      
-         
+    
+       if (!$this->sql) {
+           
+          throw new DbException("No SQL Query!");
+           
+       }
+       
+       if (is_null($fetchMode)) {
+           
+           $stmt = $this->dbc->dbQuery($this->sql, $data);
+           return $stmt -> fetchColumn();
+           
+       } else {
+           
+           $stmt = $this->dbc->dbQuery($this->sql, $data);
+           return $stmt -> fetchColumn($fetchMode);
+           
+       }
+          
    } catch (DbException $e) {
        
        $this->closeConnection();
@@ -187,15 +206,12 @@ class Dao
  
  protected function create($table, $params)
  {
-    $stmt = $this->dbc->dbInsert($table, $params);
-    return $this->dbc->dbLastInsertId();
+   $stmt = $this->dbc->dbInsert($table, $params);
  }
  
  protected function modify($table, $params, $where)
  {
-     
    $stmt = $this->dbc->dbUpdate($table, $params, $where);
-  
  }
  
  protected function delete($table, $where, $limit = null)
@@ -207,9 +223,23 @@ class Dao
      }
  }
  
+ /**
+  * Close database connection
+  * 
+  * @return bool
+  */
  protected function closeConnection()
  {
    return $this->dbc->closeDbConnection();
+ }
+ 
+ /**
+  * Last insert Id
+  * @return integer
+  */
+ protected function lastId()
+ {
+   $this->dbc->dbLastInsertId();
  }
  
  /**

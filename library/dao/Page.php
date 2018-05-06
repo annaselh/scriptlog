@@ -1,216 +1,216 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
-
+<?php  if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+/**
+ * Page class extends Dao
+ * insert, update, delete
+ * and select records from users table
+ *
+ * @package   SCRIPTLOG
+ * @author    Maoelana Noermoehammad
+ * @copyright 2018 kartatopia.com
+ * @license   MIT
+ * @version   1.0
+ * @since     Since Release 1.0
+ *
+ */
 class Page extends Dao
 {
 
- public function __construct()
- {
+public function __construct()
+{
   parent::__construct();
- }
+}
 
- public function createPage($author, $date_created, $title, $slug, $content,
- 		           $post_setting, $type, $comment_setting, $picture = "")
- {
- 
- if (!empty($picture)) {
- 
- 	$sql = "INSERT INTO posts(post_image, post_author, date_created,
-		 post_title, post_slug, post_content, post_status, post_type,
-		comment_status)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
- 	
- 	$data = array($picture, $author, $date_created, $title, $slug, $content, 
- 	             $post_setting, $type, $comment_setting);
- 	
- } else {
- 	
- 	$sql = "INSERT INTO posts(post_author, date_created,
-		 post_title, post_slug, post_content, post_status, post_type,
-		comment_post_setting)VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
- 	
- 	$data = array($author, $date_created, $title, $slug, $content,
- 	    $post_setting, $type, $comment_setting);
- 	
- }
- 
- 	
- $stmt = $this->statementHandle($sql, $data);
-	
- return $this->lastId();
-	
- }
- 
- public function updatePage($id, $date_modified, $title, $slug, 
-        $content, $post_setting, $comment_setting, $type, $picture = "")
- {
- 
- if (empty($picture)) {
- 
- 	$sql = "UPDATE posts SET date_modified = ?,
- 		post_title = ?, post_slug = ?,
- 		post_content = ?, post_status = ?, comment_status = ?
- 		WHERE ID = ? AND post_type = ?";
- 	
- 	$data = array($date_modified, $title, $slug, $content, 
- 	    $post_setting, $comment_setting, $id, $type);
- 	
- } else {
- 	
- 	$sql = "UPDATE posts SET post_image = ?, date_modified = ?,
- 		post_title = ?, post_slug = ?,
- 		post_content = ?, post_status = ?, comment_status = ?
- 		WHERE ID = ? AND post_type = ?";
- 	
- 	$data = array($picture, $date_modified, $title, $slug, 
- 	    $content, $post_setting, $comment_setting, $id, $type);
- 	
- 	
- }
- 
-  $stmt = $this->statementHandle($sql, $data);
- 	
- }
- 
- public function deletePage($id, $sanitizing, $type)
- {
-   
- $sql = "DELETE FROM posts WHERE ID = ? AND post_type = ?";
- 
- $sanitized_id = $this->filteringId($sanitizing, $id, 'sql');
-   
- $data = array($sanitized_id, $type);
-   
- $stmt = $this->statementHandle($sql, $data);
-   
- }
- 
- public function findPages($position, $limit, $type)
- {
- 
- try {
- 
- 	$sql = "SELECT ID, post_author, date_created, date_modified,
+/**
+ * Find pages
+ * 
+ * @param integer $position
+ * @param integer $limit
+ * @param string $type
+ * @param string $orderBy
+ * @return boolean|array|object
+ */
+public function findPages($position, $limit, $type, $orderBy = 'ID')
+{
+   $sql = "SELECT ID, post_author, date_created, date_modified,
   		  post_title, post_type
   		  FROM posts WHERE post_type = :type
-  		  ORDER BY ID
+  		  ORDER BY ".$orderBy."
   		  LIMIT :position, :limit";
- 	
- 	$stmt = $this->dbc->prepare($sql);
- 	$stmt -> bindParam(":type", $type, PDO::PARAM_STR);
- 	$stmt -> bindParam(":position", $position, PDO::PARAM_STR);
- 	$stmt -> bindParam(":limit", $limit, PDO::PARAM_STR);
- 	
- 	$stmt -> execute();
- 	
- 	$items = array();
- 	
- 	foreach ($stmt -> fetchAll() as $row) {
- 	 $items[] = $row;
- 	}
- 	
- 	$numbers = "SELECT ID FROM posts WHERE post_type = '$type'";
- 	$stmt = $this->dbc->query($numbers);
- 	$totalPages = $stmt -> rowCount();
- 	
- 	return(array("results" => $items, "totalPages" => $totalPages));
- 	
- } catch (PDOException $e) {
- 	
- 	$this->closeDbConnection();
- 	
- 	$this->error = LogError::newMessage($e);
- 	$this->error = LogError::customErrorMessage();
- 	
- }
-   
- }
- 
- public function findPageById($pageId, $post_type, $sanitizing)
- {
-   $sql = "SELECT ID, post_image, post_author, 
-  	  	   date_created, date_modified, post_title, 
-  	  	   post_slug, post_content, post_status, 
+    
+    $this->setSQL($sql);
+    
+    $pages = $this->findAll([':type' => $type, ':position' => $position, ':limit' => $limit]);
+    
+    if (empty($pages)) return false;
+    
+    return $pages;
+    
+}
+
+/**
+ * Find page by id
+ * 
+ * @param integer $pageId
+ * @param string $post_type
+ * @param object $sanitizing
+ * @return boolean|array|object
+ */
+public function findPageById($pageId, $post_type, $sanitizing)
+{
+    $sql = "SELECT ID, post_image, post_author,
+  	  	   date_created, date_modified, post_title,
+  	  	   post_slug, post_content, post_status,
   	  	   post_type, comment_status
-  	  	   FROM posts 
+  	  	   FROM posts
   	  	   WHERE ID = ? AND post_type = ? ";
-   
-   $id_sanitized = $this -> filteringId($sanitizing, $pageId, 'sql');
-   
-   $data = array($id_sanitized, $post_type);
-   
-   $stmt = $this->statementHandle($sql, $data);
-   
-   return $stmt -> fetch();
-   
- }
- 
- public function findPageBySlug($slug, $sanitizing = null)
- {
-   $sql = "SELECT 
-              posts.ID, posts.post_image, posts.post_author, 
-  	  	      posts.date_created, posts.date_modified, posts.post_title, 
-  	  	      posts.post_slug, posts.post_content, posts.post_status, 
-  	  	      posts.post_type, posts.comment_status, volunteer.volunteer_login 
-  	  	   FROM 
-               posts, volunteer
-  	  	   WHERE 
-              posts.post_slug = :slug 
-              AND posts.post_status = 'publish' 
+    
+    $id_sanitized = $this -> filteringId($sanitizing, $pageId, 'sql');
+    
+    $this->setSQL($sql);
+    
+    $pageById = $this->findRow([$id_sanitized, $post_type]);
+    
+    if (empty($pageById)) return false;
+    
+    return $pageById;
+    
+}
+
+/**
+ * Find page by slug title
+ * 
+ * @param string $slug
+ * @return boolean|array|object
+ */
+public function findPageBySlug($slug)
+{
+    $sql = "SELECT
+              posts.ID, posts.post_image, posts.post_author,
+  	  	      posts.date_created, posts.date_modified, posts.post_title,
+  	  	      posts.post_slug, posts.post_content, posts.post_status,
+  	  	      posts.post_type, posts.comment_status, users.user_login
+  	  	   FROM
+               posts, users
+  	  	   WHERE
+              posts.post_slug = :slug
+              AND posts.post_status = 'publish'
               AND posts.post_type = 'page' ";
+    
+    $this->setSQL($sql);
+    $pageBySlug = $this->findRow([':slug' => $slug]);
+    
+    if (empty($pageBySlug)) return false;
+    
+    return $pageBySlug;
+    
+}
+
+/**
+ * Insert new page
+ * 
+ * @param array $bind
+ */
+public function createPage($bind)
+{
  
-   if (!is_null($sanitizing)) {
-       
-       $page_slug = $this->filteringId($sanitizing, $slug, 'xss');
-       
-       $data = array(':slug' => $page_slug);
-       
-   } else {
-       
-       $data = array(':slug' => $slug);
-   }
-  
-   $stmt = $this->statementHandle($sql, $data);
-   
-   return $stmt -> fetch();
-   
+ if (!empty($bind['post_image'])) {
+ 
+ 	$stmt = $this->create("posts", [
+ 	    'post_image' => $bind['post_image'],
+ 	    'post_author' => $bind['post_author'],
+ 	    'post_content' => $bind['post_content'],
+ 	    'post_status' => $bind['post_status'],
+ 	    'post_type' => $bind['post_type'],
+ 	    'comment_status' => $bind['comment_status']
+ 	]);
+ 	
+ } else {
+ 	
+ 	$stmt = $this->create("posts", [
+ 	    'post_author' => $bind['post_author'],
+ 	    'post_content' => $bind['post_content'],
+ 	    'post_status' => $bind['post_status'],
+ 	    'post_type' => $bind['post_type'],
+ 	    'comment_status' => $bind['comment_status']
+ 	]);
+ 	
  }
  
- public function checkPageId($id, $sanitizing)
- {
+}
+
+/**
+ * Update page
+ * 
+ * @param array $bind
+ * @param integer $id
+ */
+public function updatePage($bind, $id)
+{
+ 
+ if (empty($bind['post_image'])) {
+ 
+ 	$stmt = $this->modify("posts", [
+ 	    'date_modified' => $bind['date_modified'],
+ 	    'post_title' => $bind['post_title'],
+ 	    'post_slug' => $bind['post_slug'],
+ 	    'post_status' => $bind['post_status'],
+ 	    'comment_status' => $bind['comment_status']
+ 	], "`ID` = {$id}"." AND `post_type` = {$bind['post_type']}");
+ 	
+ } else {
+ 	
+ 	$stmt = $this->modify("posts", [
+ 	    'post_image' => $bind['post_image'],
+ 	    'date_modified' => $bind['date_modified'],
+ 	    'post_title' => $bind['post_title'],
+ 	    'post_slug' => $bind['post_slug'],
+ 	    'post_status' => $bind['post_status'],
+ 	    'comment_status' => $bind['comment_status']
+ 	    ], "`ID` = {$id}"." AND `post_type` = {$bind['post_type']}");
+ 	
+ }
+  	
+}
+
+/**
+ * Delete page
+ * 
+ * @param integer $id
+ * @param object $sanitizing
+ * @param string $type
+ */
+public function deletePage($id, $sanitizing, $type)
+{
+   
+ $sanitized_id = $this->filteringId($sanitizing, $id, 'sql');
+ $stmt = $this->delete("posts", "`ID` = {$sanitized_id} AND post_type = {$type}");
+   
+}
+
+/**
+ * Check page id
+ * 
+ * @param integer $id
+ * @param object $sanitizing
+ * @return boolean
+ */
+public function checkPageId($id, $sanitizing)
+{
+   $cleanUpId = $this->filteringId($sanitizing, $id, 'sql');
    $sql = "SELECT ID FROM posts WHERE ID = ?";
-   
-   $cleanUpId = $this->filteringId($sanitizing, $id, 'sql'); 
-   
-   $stmt = $this->dbc->prepare($sql);
-   
-   $stmt -> bindValue(1, $cleanUpId);
-   
-   try {
-   	$stmt -> execute();
-   	$rows = $stmt -> rowCount();
-   	
-   	if ($rows > 0) {
-   		
-   		return true;
-   		
-   	} else {
-   		
-   		return false;
-   		
-   	}
-   	
-   } catch (PDOException $e) {
-   	
-   	$this->closeDbConnection();
-   	
-   	$this->error = LogError::newMessage($e);
-   	$this->error = LogError::customErrorMessage();
-   	
-   }
-   
- }
+   $this->setSQL($sql);
+   $stmt = $this->checkCountValue([$cleanUpId]);
+   return($stmt > 0);
+}
  
- public function postStatusDropDown($selected = "")
- {
+/**
+ * Set post status
+ * 
+ * @param string $selected
+ * @return string
+ */
+public function setPostStatus($selected = "")
+{
      
      $option_selected = "";
      
@@ -245,10 +245,16 @@ class Page extends Dao
      
      return implode("\n", $html);
      
- }
- 
- public function commentStatusDropDown($selected = '')
- {
+}
+
+/**
+ * Set comment status
+ * 
+ * @param string $selected
+ * @return string
+ */
+public function setCommentStatus($selected = '')
+{
      $option_selected = "";
      
      if (!$selected) {
@@ -282,6 +288,6 @@ class Page extends Dao
      
      return implode("\n", $html);
      
- }
+}
  
 }
