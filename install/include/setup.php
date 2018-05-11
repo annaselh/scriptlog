@@ -353,13 +353,7 @@ function purge_installation()
  if (is_readable(__DIR__ . '/../../config.php')) {
      
      if (is_file(__DIR__ . '/../index.php')) {
-     
-         $data_app = [
-             'app_title'    => APP_TITLE,
-             'app_codename' => APP_CODENAME,
-             'app_version'  => APP_VERSION
-         ];
-         
+       
          $disabled = $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex(openssl_random_pseudo_bytes(32)), 0, 13).'-'.date("Ymd").'.log';
          
          rename(__DIR__ . '/../index.php', $disabled);
