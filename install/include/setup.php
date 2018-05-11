@@ -85,7 +85,7 @@ PRIMARY KEY(ID)
 $tableMenuChild = "CREATE TABLE IF NOT EXISTS menu_child(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
 menu_child_label VARCHAR(200) NOT NULL,
-menu_child_link VARCHAR(255) NOT NULL,
+menu_child_link VARCHAR(255) NOT NULL DEFAULT '#',
 menu_id BIGINT(20) unsigned NOT NULL,
 menu_sub_child BIGINT(20) unsigned NOT NULL,
 menu_child_sort INT(5) DEFAULT NULL,
@@ -266,6 +266,35 @@ function remove_bad_characters($str_words, $escape = false, $level = 'high')
     return $str_words;
 }
 
+// delete directory https://secure.php.net/manual/es/function.rmdir.php
+function deleterDir($dirPath)
+{
+ 
+    if (! is_dir($dirPath)) {
+        throw new InvalidArgumentException("$dirPath must be a directory");
+    }
+    if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+        $dirPath .= '/';
+    }
+    $files = glob($dirPath . '*', GLOB_MARK);
+    foreach ($files as $file) {
+        if (is_dir($file)) {
+            self::deleteDir($file);
+        } else {
+            unlink($file);
+        }
+    }
+    
+    rmdir($dirPath);
+ 
+}
+
+// escape html 
+function escapeHTML($html)
+{
+ return htmlspecialchars($html, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
+}
+
 /**
  * generate license
  * to generate app key
@@ -322,13 +351,31 @@ function purge_installation()
 {
    
  if (is_readable(__DIR__ . '/../../config.php')) {
-        
+     
+     if (is_file(__DIR__ . '/../index.php')) {
+     
+         $data_app = [
+             'app_title'    => APP_TITLE,
+             'app_codename' => APP_CODENAME,
+             'app_version'  => APP_VERSION
+         ];
+         
+         $disabled = $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex(openssl_random_pseudo_bytes(32)), 0, 13).'-'.date("Ymd").'.log';
+         
+         rename(__DIR__ . '/../index.php', $disabled);
+         
+         $clean_installation = '<?php ';
+         
+         file_put_contents(__DIR__ . '/../index.php', $clean_installation);
+         
+     }
+     
     $_SESSION = array();
         
     session_destroy();
         
     setcookie('PHPSESSID', '', time()-3600, '/', '', 0, 0);
-       
+    
  }
     
 }

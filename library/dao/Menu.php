@@ -9,229 +9,166 @@ class Menu extends Dao
   parent::__construct();
 		
  }
- 
- public function createMenu($label, $link, $parent, $slug)
+
+ /**
+  * Find list of menus
+  * getting array of rows
+  * 
+  * @param integer $position
+  * @param integer $limit
+  * @param string $orderBy
+  * @return boolean|array|object
+  */
+ public function findMenus($position = null, $limit = null, $orderBy = 'menu_label')
  {
-   $sql = "INSERT INTO menu(title, link, parent, sort, slug)VALUES(?, ?, ?, ?, ?)";
-   
-   $menuSorted = $this -> findSortMenu();
-   
-   $data = array($label, $link, $parent, $menuSorted, $slug);
-   
-   $stmt = $this->statementHandle($sql, $data);
-   
- }
- 
- public function updateMenu($id, $label, $link, $parent, $sort, $slug)
- {
- 	
-  $sql = "UPDATE menu SET title = ?, 
-        link = ?, parent = ?, sort = ?, slug = ? WHERE ID = ?";
-  
-  $data = array($label, $link, $parent, $sort, $slug, $id);
-  
-  $stmt = $this->statementHandle($sql, $data);
-  
- }
- 
- public function deleteMenu($id, $sanitizing)
- {
-  
-  $sql = "DELETE FROM menu WHERE ID = ?";
-  
-  $cleanId = $this->filteringId($sanitizing, $id, 'sql');
-  
-  $data = array($cleanId);
-  
-  $stmt = $this->statementHandle($sql, $data);
-  
- }
- 
- public function findMenus($position = '', $limit = '') 
- {
-  
- $items = array();
- 	
-  try {
-  	
-  	if (empty($position) && empty($limit)) {
-  		
-  	 $sql = "SELECT ID, title, link, parent, sort, slug 
-             FROM menu ORDER BY title";
-  	 
-  	 $stmt = $this->dbc->query($sql);
-  	  	 
-  	 while ($row = $stmt -> fetch(PDO::FETCH_OBJ)) {
-  	     $items[] = $row;
-  	 }
-  	 
-  	 return $items;
-  	 
-  	} else {
-  		
-  		$sql = "SELECT ID, title, link, parent, sort, slug 
-               FROM menu ORDER BY sort LIMIT :position, :limit";
-  		
-  		$stmt = $this->dbc->prepare($sql);
-  		$stmt -> bindParam(':position', $position, PDO::PARAM_INT);
-  		$stmt -> bindParam(':limit', $limit, PDO::PARAM_INT);
-  		
-  		$stmt -> execute();
-  		
-  		foreach ($stmt -> fetchall() as $row) {
-  			
-  			$items[] = $row;
-  			
-  		}
-  		
-  		$numbers = "SELECT ID FROM menu";
-  		$stmt = $this->dbc->query($numbers);
-  		$totalItems = $stmt -> rowCount();
-  		
-  		return(array("results" => $items, "totalItems" => $totalItems));
-  		
-  	}
-  	
-  } catch (PDOException $e) {
-  	
-  	$this->closeDbConnection();
-  	
-  	$this->error = LogError::newMessage($e);
-  	$this->error = LogError::customErrorMessage();
-  	
-  }	
-  
+     if (is_null($position) && is_null($limit)) {
+         
+         $sql = "SELECT ID, menu_label, menu_link, menu_sort, menu_status
+                FROM menu ORDER BY ".$orderBy;
+         
+         $this->setSQL($sql);
+         
+         $menus = $this->findAll();
+         
+     } else {
+         
+         $sql = "SELECT ID, menu_label, menu_link, menu_sort, menu_status
+                FROM menu ORDER BY ".$orderBy." LIMIT :position, :limit";
+         
+         $this->setSQL($sql);
+         
+         $menus = $this->findAll([':position' => $position, ':limit' => $limit]);
+         
+     }
+     
+     if (empty($menus)) return false;
+     
+     return $menus;
+     
  }
 
- public function findMenu($menuId, $sanitizing)
+ /**
+  * Find Menu
+  * 
+  * @param integer $menuId
+  * @param object $sanitizing
+  * @param static $fetchMode
+  * @return boolean|array|object
+  */
+ public function findMenu($menuId, $sanitizing, $fetchMode = null)
  {
-  
-  $sql = "SELECT ID, title, link, parent, sort, slug FROM menu WHERE ID = ?";
-  
-  $id_sanitized = $this->filteringId($sanitizing, $menuId, 'sql');
-  
-  $data = array($id_sanitized);
-  
-  $stmt = $this->statementHandle($sql, $data);
-  
-  return $stmt -> fetch();
+     
+     $sql = "SELECT ID, menu_label, menu_link, menu_sort, menu_status
+             FROM menu WHERE ID = ?";
+     
+     $idsanitized = $this->filteringId($sanitizing, $menuId, 'sql');
+     
+     $this->setSQL($sql);
+     
+     if (is_null($fetchMode)) {
+         
+         $menuDetails = $this->findRow([$idsanitized]);
+         
+     } else {
+         
+         $menuDetails = $this->findRow([$idsanitized], $fetchMode);
+         
+     }
+     
+     if (empty($menuDetails)) return false;
+     
+     return $menuDetails;
+     
+ }
+ 
+ /**
+  * Insert new menu
+  * 
+  * @param array $bind
+  */
+ public function addMenu($bind)
+ {
+     
+   $menuSorted = self::findSortMenu();
+   
+   $stmt = $this->create("menu", [
+       'menu_label' => $bind['menu_label'],
+       'menu_link' => $bind['menu_link'],
+       'menu_sort' => $menuSorted,
+       'menu_status' => $bind['menu_status']
+   ]);
+   
+ }
+ 
+ /**
+  * Update menu
+  * 
+  * @param integer $id
+  * @param array $bind
+  */
+ public function updateMenu($id, $bind)
+ {
+     
+  $stmt = $this->modify("menu", [
+      'menu_label' => $bind['menu_label'],
+      'menu_link' => $bind['menu_link'],
+      'menu_sort' => $bind['menu_sort'],
+      'menu_status' => $bind['menu_status']
+  ], "`ID` = {$id}");
   
  }
  
+ /**
+  * Delete menu
+  * 
+  * @param integer $id
+  * @param object $sanitizing
+  */
+ public function deleteMenu($id, $sanitizing)
+ {
+  $cleanId = $this->filteringId($sanitizing, $id, 'sql');
+  $stmt = $this->delete("menu", "`ID` = {$cleanId}");
+ }
+
+ /**
+  * Check menu id
+  * 
+  * @param integer $id
+  * @param object $sanitizing
+  * @return boolean
+  */
  public function checkMenuId($id, $sanitizing)
  {
   
   $sql = "SELECT ID FROM menu WHERE ID = ?";
   
-  $cleanUpId = $this->filteringId($sanitizing, $id, 'sql');
-    
-  $stmt = $this->dbc->prepare($sql);
+  $idsanitized = $this->filteringId($sanitizing, $id, 'sql');
   
-  $stmt -> bindValue(1, $cleanUpId);
+  $this->setSQL($sql);
   
-  try {
-  	
-  	$stmt -> execute();
-  	$rows = $stmt -> rowCount();
-  	
-  	if ($rows > 0) {
-  		
-  		return true;
-  		
-  	} else {
-  		
-  		return false;
-  		
-  	}
-  	
-  } catch (PDOException $e) {
-  	
-  	$this->closeDbConnection();
-  	
-  	$this->error = LogError::newMessage($e);
-  	$this->error = LogError::customErrorMessage();
-  	
-  }
+  $stmt = $this->checkCountValue([$idsanitized]);
+  
+  return($stmt > 0);
   
  }
  
- public function setMenuParent($selected = '')
- {
- 	$option_selected = '';
- 	
- 	if ($selected) {
- 		
- 		$option_selected = 'selected="selected"';
- 	}
- 	
- 	// get Menus
- 	$getMenus = $this->findMenus();
- 	
- 	$html  = array();
- 	
- 	$html[] = '<label>Select Parent</label>';
- 	$html[] = '<select class="form-control" name="parent">';
- 	
- 	
- 	foreach ($getMenus as $m => $menu) {
- 		
- 	 if ((int)$selected == (int)$menu -> ID) {
- 	 	$option_selected='selected="selected"';
- 	 }
- 	 
- 	 $html[] = '<option value="'.$menu -> ID.'"'.$option_selected.' >'. $menu -> title . '</option>';
- 	 
- 	 // clear out the selected option flag
- 	 $option_selected = '';
- 	 
- 	}
- 	
- 
-    if (empty($selected) || empty($menu -> ID)) {
-        
-     $html[] = '<option value="0" selected> No parent </option>';
-    }
- 	
- 	$html[] = '</select>';
- 	
- 	return implode("\n", $html);
- 	
- }
- 
- public function findParentMenu($parent_menu)
- {
-   
-   $getMenus = $this->findMenus();
-   
-   foreach ($getMenus as $menu) {
-       
-     if ($parent_menu == $menu -> ID) {
-           
-       echo $menu -> title;
-       
-     } 
-       
-   }
-     
-   if (empty($parent_menu) || empty($menu -> ID) || $parent_menu == 0) {
-       
-       echo "No parent";
-   }
-  
- }
- 
- protected function findSortMenu()
+ /**
+  * Find menu sorted
+  * 
+  * @return number
+  */
+ protected static function findSortMenu()
  {
  
-  $sql = "SELECT sort FROM menu ORDER BY sort DESC";
+  $sql = "SELECT menu_sort FROM menu ORDER BY menu_sort DESC";
  
-  $stmt = $this->dbc->query($sql);
+  $this->setSQL($sql);
   
-  $row = $stmt -> fetch();
+  $field = $this->findColumn();
   
-  $sort = $row['sort'] + 1;
+  $menu_sorted = $field->menu_sort + 1;
   
-  return $sort;
+  return $menu_sorted;
   
  }
  

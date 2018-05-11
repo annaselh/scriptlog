@@ -13,76 +13,76 @@ $completed = false;
 $install = isset($_POST['setup']) ? stripcslashes($_POST['setup']) : '';
 
 if ($install != 'install') {
-
-  if (version_compare(PHP_VERSION, '5.6', '>=')) {
+    
+    if (version_compare(PHP_VERSION, '5.6', '>=')) {
         
-    clearstatcache();
+        clearstatcache();
         
-  } else {
+    } else {
         
-    clearstatcache(true);
+        clearstatcache(true);
         
-  }
-   
-  $_SESSION['install'] = false;
-  
-  header($installURL); 
-  
+    }
+    
+    $_SESSION['install'] = false;
+    
+    header($installURL);
+    
 } else {
     
-   $dbhost = isset($_POST['db_host']) ? $_POST['db_host'] : "";
-   $dbname = filter_input(INPUT_POST, 'db_name', FILTER_SANITIZE_STRING);
-   $dbuser = isset($_POST['db_user']) ? remove_bad_characters($_POST['db_user']) : "";
-   $dbpass = isset($_POST['db_pass']) ? $_POST['db_pass'] : "";
-   
-   $username = isset($_POST['user_login']) ? remove_bad_characters($_POST['user_login']) : "";
-   $password = isset($_POST['user_pass1']) ? $_POST['user_pass1'] : "";
-   $confirm = isset($_POST['user_pass2']) ? $_POST['user_pass2'] : "";
-   $email = filter_input(INPUT_POST, 'user_email', FILTER_SANITIZE_EMAIL);
-   
-   if ($dbhost == '' || $dbname == '' || $dbuser == '' || $dbpass == '') {
-       
-      $errors['errorSetup'] = "database: requires name, hostname, user and password";
-      
-   } else {
-       
-       $link = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-       
-       if ($link -> connect_errno) 
-           $errors['errorSetup'] = 'Failed to connect to MySQL: (' . $link->connect_errno . ') '.$link->connect_error;
-       
-   }
-   
-   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-       
-       $errors['errorSetup'] = 'Please enter a valid email address';
-       
-   }
-   
-   if (empty($password) && empty($confirm)) $errors['errorSetup'] = 'Admin password must not be empty';
-   
-   elseif ($password != $confirm) $errors['errorSetup'] = 'Admin password must both be equal';
-   
-   if (empty($errors['errorSetup']) == true) {
-       
-       $completed = true;
-       
-       $_SESSION['install'] = true;
+    $dbhost = isset($_POST['db_host']) ? $_POST['db_host'] : "";
+    $dbname = filter_input(INPUT_POST, 'db_name', FILTER_SANITIZE_STRING);
+    $dbuser = isset($_POST['db_user']) ? remove_bad_characters($_POST['db_user']) : "";
+    $dbpass = isset($_POST['db_pass']) ? $_POST['db_pass'] : "";
+    
+    $username = isset($_POST['user_login']) ? remove_bad_characters($_POST['user_login']) : "";
+    $password = isset($_POST['user_pass1']) ? $_POST['user_pass1'] : "";
+    $confirm = isset($_POST['user_pass2']) ? $_POST['user_pass2'] : "";
+    $email = filter_input(INPUT_POST, 'user_email', FILTER_SANITIZE_EMAIL);
+    
+    if ($dbhost == '' || $dbname == '' || $dbuser == '' || $dbpass == '') {
         
-       $key = rand(0,9);
-       
-       $token = bin2hex(openssl_random_pseudo_bytes(32).$key);
-       
-       $_SESSION['token'] = $token;
-       
-       install_database_table($link, $username, $password, $email, $token);
-          
-       write_config_file($dbhost, $dbuser, $dbpass, $dbname, $email, $token);
-       
-       header("Location:".$protocol."://".$server_host.dirname($_SERVER['PHP_SELF'])."/finish.php?status=success&token=".$token);
-       
-   }
-   
+        $errors['errorSetup'] = "database: requires name, hostname, user and password";
+        
+    } else {
+        
+        $link = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
+        
+        if ($link -> connect_errno)
+            $errors['errorSetup'] = 'Failed to connect to MySQL: (' . $link->connect_errno . ') '.$link->connect_error;
+            
+    }
+    
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        
+        $errors['errorSetup'] = 'Please enter a valid email address';
+        
+    }
+    
+    if (empty($password) && empty($confirm)) $errors['errorSetup'] = 'Admin password must not be empty';
+    
+    elseif ($password != $confirm) $errors['errorSetup'] = 'Admin password must both be equal';
+    
+    if (empty($errors['errorSetup']) == true) {
+        
+        $completed = true;
+        
+        $_SESSION['install'] = true;
+        
+        $key = rand(0,9);
+        
+        $token = bin2hex(openssl_random_pseudo_bytes(32).$key);
+        
+        $_SESSION['token'] = $token;
+        
+        install_database_table($link, $username, $password, $email, $token);
+        
+        write_config_file($dbhost, $dbuser, $dbpass, $dbname, $email, $token);
+        
+        header("Location:".$protocol."://".$server_host.dirname($_SERVER['PHP_SELF'])."/finish.php?status=success&token=".$token);
+        
+    }
+    
 }
 
 ?>
@@ -466,7 +466,7 @@ if ($install != 'install') {
         else:
         ?>
           <div class="alert alert-success" role="alert">
-              Your environment passed all requirements. Please do the installation procedure below:
+              Below you should enter all information needed. We’re going to use this information to create a config.php file 
           </div>
         <?php 
         endif;
@@ -476,21 +476,21 @@ if ($install != 'install') {
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="databaseHost">Database Host</label>
-                <input type="text" class="form-control" id="databaseHost" name="db_host" placeholder="Hostname or the database server IP" value="<?=(isset($_POST['db_host'])) ? htmlspecialchars($_POST['db_host'])  : ""; ?>"  required>
+                <input type="text" class="form-control" id="databaseHost" name="db_host" placeholder="Hostname or the database server IP" value="<?=(isset($_POST['db_host'])) ? escapeHTML($_POST['db_host'])  : ""; ?>"  required>
                 <div class="invalid-feedback">
                   Valid database host is required.
                 </div>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="lastName">Database Name</label>
-                <input type="text" class="form-control" id="databaseName" name="db_name" placeholder="Database name" value="<?=(isset($_POST['db_name'])) ? htmlspecialchars($_POST['db_name']) : "";  ?>" required>
+                <input type="text" class="form-control" id="databaseName" name="db_name" placeholder="Database name" value="<?=(isset($_POST['db_name'])) ? escapeHTML($_POST['db_name']) : "";  ?>" required>
                 <div class="invalid-feedback">
                   Valid database name is required.
                 </div>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="databaseUser">Database Username</label>
-                <input type="text" class="form-control" id="databaseUser" name="db_user" placeholder="Database username" value="<?=(isset($_POST['db_user'])) ? htmlspecialchars($_POST['db_user']) : ""; ?>" required>
+                <input type="text" class="form-control" id="databaseUser" name="db_user" placeholder="Database username" value="<?=(isset($_POST['db_user'])) ? escapeHTML($_POST['db_user']) : ""; ?>" required>
                 <div class="invalid-feedback">
                   Valid database username is required.
                 </div>
@@ -512,7 +512,7 @@ if ($install != 'install') {
 
             <div class="mb-3">
               <label for="username">Username</label>
-              <input type="text" class="form-control" name="user_login" id="username" placeholder="username for administrator" value="<?=(isset($_POST['user_login'])) ? htmlspecialchars($_POST['user_login']) : ""; ?>" required>
+              <input type="text" class="form-control" name="user_login" id="username" placeholder="username for administrator" value="<?=(isset($_POST['user_login'])) ? escapeHTML($_POST['user_login']) : ""; ?>" required>
               <div class="invalid-feedback">
                 Your username is required.
               </div>
@@ -533,7 +533,7 @@ if ($install != 'install') {
             </div>
              <div class="mb-3">
               <label for="email">Email <span class="text-muted">(Administrator's E-mail)</span></label>
-              <input type="email" class="form-control" id="email" name="user_email" placeholder="you@example.com" value="<?=(isset($_POST['user_email'])) ? htmlspecialchars($_POST['user_email']) : ""; ?>" required>
+              <input type="email" class="form-control" id="email" name="user_email" placeholder="you@example.com" value="<?=(isset($_POST['user_email'])) ? escapeHTML($_POST['user_email']) : ""; ?>" required>
               <div class="invalid-feedback">
                 Please enter a valid email address.
               </div>
