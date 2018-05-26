@@ -6,7 +6,6 @@
  *
  * @package   SCRIPTLOG
  * @author    Maoelana Noermoehammad
- * @copyright 2018 kartatopia.com
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -130,6 +129,7 @@ class User extends Dao
  {
 	
   $hash_password = password_hash($bind['user_pass'], PASSWORD_DEFAULT);
+  
   if (!empty($bind['user_activation_key'])) {
 	  
 	  $stmt = $this->create("users", [
@@ -138,9 +138,9 @@ class User extends Dao
 	          'user_email' => $bind['user_email'],
 	          'user_pass'  => $hash_password,
 	          'user_level' => $bind['user_level'],
-	          'user_registered' => $bind['user_registered'],
+	          'user_fullname' => $bind['user_fullname'],
+	          'user_url'   => $bind['user_url'],
 	          'user_activation_key' => $bind['user_activation_key'],
-	          'user_status' => $bind['user_status'],
 	          'user_session' => $bind['user_session']
 	          
 	      ]);
@@ -149,14 +149,16 @@ class User extends Dao
 	      
       $stmt = $this->create("users", array(
 	          
-	          'user_login' => $bind['user_login'],
-	          'user_email' => $bind['user_email'],
-	          'user_pass'  => $hash_password,
-	          'user_level' => $bind['user_level'],
-	          'user_registered' => $bind['user_registered'],
-	          'user_status' => $bind['user_status'],
-	          'user_session' => $bind['user_session']
-	          
+          'user_login' => $bind['user_login'],
+          'user_email' => $bind['user_email'],
+          'user_pass'  => $hash_password,
+          'user_level' => $bind['user_level'],
+          'user_fullname' => $bind['user_fullname'],
+          'user_url'   => $bind['user_url'],
+          'user_registered' => $bind['user_registered'],
+          'user_status' => $bind['user_status'],
+          'user_session' => $bind['user_session']
+          
 	      ));
 	      
    }
@@ -250,6 +252,35 @@ class User extends Dao
  }
  
  /**
+  * Activate user
+  * 
+  * @param string $key
+  * @return int
+  */
+ public function activateUser($key)
+ {
+   $cek_user_key = self::checkActivationKey($key);
+   
+   if ($cek_user_key === false) {
+       
+       direct_page();
+       
+   } else {
+       
+       $bind = ['user_activation_key' => '1', 'user_registered' => date("Ymd")];
+       $stmt = $this->modify("users", $bind, "`user_activation_key` = {$key}");
+       return $stmt -> rowCount();
+       
+   }
+   
+ }
+ 
+ public function deactivateUser($userId)
+ {
+  
+ }
+ 
+ /**
   * Delete user
   * delete an existing records in user table
   * 
@@ -271,7 +302,7 @@ class User extends Dao
   * @param string $selected
   * @return string
   */
- public function setUserLevels($selected = '')
+ public function setUserLevel($selected = '')
  {
   $option_selected = "";
   
@@ -281,8 +312,8 @@ class User extends Dao
 
   $levels = array('Manager', 'Editor', 'Author', 'Contributor');
   $html = array();
-  $html[] = '<label>Role*</label>';
-  $html[] = '<select class="form-control" name="level">';
+  $html[] = '<label>Role (required)</label>';
+  $html[] = '<select class="form-control" name="user_role">';
 	
    foreach ( $levels as $g => $level) {
 	  
@@ -336,7 +367,7 @@ class User extends Dao
    }
 	
  }
-	
+	 
  /**
   * checking user session
   * 
@@ -345,9 +376,9 @@ class User extends Dao
   */
  public function checkUserSession($sesi)
  {
-     $sql = "SELECT COUNT(ID) FROM users WHERE user_session = ?";
-     $this->setSQL($sql);
-     $stmt = $this->findColumn([$sesi]);
+    $sql = "SELECT COUNT(ID) FROM users WHERE user_session = ?";
+    $this->setSQL($sql);
+    $stmt = $this->findColumn([$sesi]);
      
     if ($stmt == 1) {
          
@@ -369,7 +400,7 @@ class User extends Dao
   */
  public function checkUserEmail($email)
  {
-     $sql = "SELECT user_email FROM users WHERE user_email = ? LIMIT 1";
+     $sql = "SELECT ID FROM users WHERE user_email = ? LIMIT 1";
      $this->setSQL($sql);
      $stmt = $this->checkCountValue([$email]);
      return($stmt > 0);
@@ -397,6 +428,33 @@ class User extends Dao
     }
     
     return false;
+    
+ }
+ 
+ protected function checkUserId($userId, $sanitize)
+ {
+     $sql = "SELECT ID FROM users WHERE ID = ?";
+     $this->setSQL($sql);
+     $idsanitized = $this->filteringId($sanitize, $userId, 'sql');
+     $stmt = $this->checkCountValue([$idsanitized]);
+     return($stmt > 0);
+ }
+ 
+ private static function checkActivationKey($key)
+ {
+    $sql = "SELECT COUNT(ID) FROM users WHERE user_activation_key = ?";
+    $this->setSQL($sql);
+    $stmt = $this->findColumn([$sesi]);
+     
+    if ($stmt == 1) {
+         
+       return true;
+         
+    } else {
+         
+       return false;
+         
+    }
     
  }
  

@@ -1,11 +1,23 @@
-<?php
-
+<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+/**
+ * SearchSeeker Class
+ * Searching keyword from 
+ * search functionality form
+ *
+ * @package   SCRIPTLOG
+ * @author    Maoelana Noermoehammad
+ * @copyright 2018 kartatopia.com
+ * @license   MIT
+ * @version   1.0
+ * @since     Since Release 1.0
+ *
+ */
 class SearchSeeker
 {
  
- private $_dbc;
+ private $dbc;
  
- private $_errors;
+ private $errors;
  
  public $sql;
  
@@ -15,7 +27,7 @@ class SearchSeeker
  
  public function __construct($dbc)
  {
-  $this->_dbc = $dbc;
+  $this->dbc = $dbc;
  }
  
  public function cleanUp($bind)
@@ -27,11 +39,11 @@ class SearchSeeker
  {
   $this->sql = $sql;
   $this->bind = $this->cleanUp($bind);
-  $this->_errors = '';
+  $this->errors = '';
   
   try {
   	
-  	$sth = $this->_dbc->prepare($this->sql);
+  	$sth = $this->dbc->prepare($this->sql);
   	
   	if ( $sth -> execute($this->bind) !== false )
   	{
@@ -51,8 +63,8 @@ class SearchSeeker
   	
   } catch (PDOException $e) {
   	
-  	$this->_errors = LogError::newMessage($e);
-  	$this->_errors = LogError::customErrorMessage();
+  	$this->errors = LogError::newMessage($e);
+  	$this->errors = LogError::customErrorMessage();
   	
   }
   
@@ -62,7 +74,7 @@ class SearchSeeker
  
  public function setQuery($sql, $bind = false)
  {
-  $this->_errors = '';
+  $this->errors = '';
   
   try {
   	
@@ -107,7 +119,7 @@ class SearchSeeker
  	
  	$results = $this->setQuery($this->sql, $bind); // hasil pencarian
  	
- 	$sth = $this->_dbc->prepare($this->sql);
+ 	$sth = $this->dbc->prepare($this->sql);
  	$keyword = '%'.$data.'%';
  	$sth -> bindValue(':keyword1', $keyword, PDO::PARAM_STR);
  	$sth -> bindValue(':keyword2', $keyword, PDO::PARAM_STR);

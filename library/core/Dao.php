@@ -204,16 +204,36 @@ class Dao
      
  }
  
+ /**
+  * Create records
+  * 
+  * @param string $table
+  * @param array $params
+  */
  protected function create($table, $params)
  {
    $stmt = $this->dbc->dbInsert($table, $params);
  }
  
+ /**
+  * Modify record
+  * 
+  * @param string $table
+  * @param array $params
+  * @param integer|string $where
+  */
  protected function modify($table, $params, $where)
  {
    $stmt = $this->dbc->dbUpdate($table, $params, $where);
  }
  
+ /**
+  * Delete record
+  * 
+  * @param string $table
+  * @param integer $where
+  * @param integer $limit
+  */
  protected function delete($table, $where, $limit = null)
  {
      if (!is_null($limit)) {

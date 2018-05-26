@@ -266,12 +266,12 @@ class Plugin extends Dao
   /**
    * Set menu plugin
    * 
-   * @param Authentication $auth
+   * @param UserService $userService
    * @return string
    */
-  protected static function setMenuPlugin(Authentication $auth)
+  protected static function setMenuPlugin(UserService $userService)
   {
-    $this->accessLevel = $auth;
+    $this->accessLevel = $userService;
     
     $plugins = self::setPrivatePlugins();
     

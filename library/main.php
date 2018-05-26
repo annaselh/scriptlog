@@ -11,6 +11,9 @@ $app_protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === fals
 $app_hostname = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
 define('DS', DIRECTORY_SEPARATOR);
+define('APP_TITLE', 'Scriptlog');
+define('APP_CODENAME', 'Maleo Senkawor');
+define('APP_VERSION', '1.0');
 define('APP_ADMIN', 'admin');
 define('APP_PUBLIC', 'public');
 define('APP_LIBRARY', 'library');
@@ -31,7 +34,7 @@ if (!defined('SCRIPTLOG_START_MEMORY')) define('SCRIPTLOG_START_MEMORY', memory_
 if (file_exists(__DIR__ . '/../config.php')) {
     
    $config = require(__DIR__ . '/../config.php');
-    
+   
 } else {
     
     if (is_dir(APP_ROOT . 'install'))

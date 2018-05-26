@@ -1,21 +1,21 @@
 <?php 
-/**
+
 return [
     
     'db' => [
         
-        'host' => 'hostname or the database server IP',
-        'name' => 'database_name',
-        'user' => 'database_user',
-        'pass' => 'database_password'
+        'host' => 'localhost',
+        'name' => 'blog',
+        'user' => 'root',
+        'pass' => 'kartatopia'
     ],
     
     'app' => [
         
-        'url' => 'application_url',
+        'url' => 'http://localhost/scriptlog/',
         'email' => 'application_email',
         'key' => 'application_key'
     ]
     
 ];
-**/
+

@@ -1,13 +1,5 @@
 <?php
-/**
- * Install database table
- * 
- * @param string $link
- * @param string $user_login
- * @param string $user_pass
- * @param string $user_email
- * @param string $key
- */
+// install database table
 function install_database_table($link, $user_login, $user_pass, $user_email, $key)
 {
 
@@ -67,7 +59,7 @@ comment_author_name VARCHAR(60) NOT NULL,
 comment_author_url VARCHAR(200) NOT NULL,
 comment_author_ip VARCHAR(100) NOT NULL,
 comment_content text NOT NULL,
-comment_status enum('0','1') NOT NULL DEFAULT '0',
+comment_status enum('0','1') NOT NULL DEFAULT '1',
 comment_date DATE NOT NULL,
 user_id BIGINT(20) unsigned NOT NULL DEFAULT 0,
 PRIMARY KEY(ID)
@@ -171,19 +163,10 @@ if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
  
 }
 
-/**
- * Write configuration file
- * 
- * @param string $host
- * @param string $user
- * @param string $password
- * @param string $database
- * @param string $email
- * @param string $key
- * @throws Exception
- */
+// write configuration file
 function write_config_file($host, $user, $password, $database, $email, $key)
 {
+
 global $protocol, $server_host;
 
 $lenght = 13;
@@ -236,117 +219,119 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
 
 }
 
-/**
- * Remove bad characters
- * 
- * @param string $str_words
- * @param boolean $escape
- * @param string $level
- * @return string
- */
+// remove bad characters
 function remove_bad_characters($str_words, $escape = false, $level = 'high')
 {
     $found = false;
     $str_words = htmlentities(strip_tags($str_words));
-    if($level == 'low'){
+    if($level == 'low') {
+        
         $bad_string = array('drop', '--', 'insert', 'xp_', '%20union%20', '/*', '*/union/*', '+union+', 'load_file', 'outfile', 'document.cookie', 'onmouse', '<script', '<iframe', '<applet', '<meta', '<style', '<form', '<body', '<link', '_GLOBALS', '_REQUEST', '_GET', '_POST', 'include_path', 'prefix', 'ftp://', 'smb://', 'onmouseover=', 'onmouseout=');
-    }else if($level == 'medium'){
+    
+    } elseif($level == 'medium') {
+        
         $bad_string = array('select', 'drop', '--', 'insert', 'xp_', '%20union%20', '/*', '*/union/*', '+union+', 'load_file', 'outfile', 'document.cookie', 'onmouse', '<script', '<iframe', '<applet', '<meta', '<style', '<form', '<body', '<link', '_GLOBALS', '_REQUEST', '_GET', '_POST', 'include_path', 'prefix', 'ftp://', 'smb://', 'onmouseover=', 'onmouseout=');
-    }else{
+    
+    } else {
+        
         $bad_string = array('select', 'drop', '--', 'insert', 'xp_', '%20union%20', '/*', '*/union/*', '+union+', 'load_file', 'outfile', 'document.cookie', 'onmouse', '<script', '<iframe', '<applet', '<meta', '<style', '<form', '<img', '<body', '<link', '_GLOBALS', '_REQUEST', '_GET', '_POST', 'include_path', 'prefix', 'http://', 'https://', 'ftp://', 'smb://', 'onmouseover=', 'onmouseout=');
-    }
-    for($i = 0; $i < count($bad_string); $i++){
-        $str_words = str_replace($bad_string[$i], '', $str_words);
+    
     }
     
-    if($escape){
-        $str_words = mysqli_real_escape_string($str_words);
+    for($i = 0; $i < count($bad_string); $i++) {
+        
+        $str_words = str_replace($bad_string[$i], '', $str_words);
+    
+    }
+    
+    if($escape) {
+        
+       $str_words = mysqli_real_escape_string($str_words);
+    
     }
     
     return $str_words;
-}
-
-// delete directory https://secure.php.net/manual/es/function.rmdir.php
-function deleterDir($dirPath)
-{
- 
-    if (! is_dir($dirPath)) {
-        throw new InvalidArgumentException("$dirPath must be a directory");
-    }
-    if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
-        $dirPath .= '/';
-    }
-    $files = glob($dirPath . '*', GLOB_MARK);
-    foreach ($files as $file) {
-        if (is_dir($file)) {
-            self::deleteDir($file);
-        } else {
-            unlink($file);
-        }
-    }
     
-    rmdir($dirPath);
- 
 }
 
 // escape html 
 function escapeHTML($html)
 {
+    
  return htmlspecialchars($html, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
+ 
 }
 
-/**
- * generate license
- * to generate app key
- * 
- * @link stackoverflow.com/questions/3687878/serial-generation-with-php
- * @param string $suffix
- * @return string
- */
-function generate_license($suffix = null) {
-    // Default tokens contain no "ambiguous" characters: 1,i,0,o
-    if(isset($suffix)){
-        // Fewer segments if appending suffix
-        $num_segments = 3;
-        $segment_chars = 6;
-    }else{
-        $num_segments = 4;
-        $segment_chars = 5;
-    }
+// stackoverflow.com/questions/3687878/serial-generation-with-php
+function generate_license($suffix = null) 
+{
+    
+  // Default tokens contain no "ambiguous" characters: 1,i,0,o
+  if(isset($suffix)){
+           
+     $num_segments = 3;
+     $segment_chars = 6;
+     
+  } else {
+      
+     $num_segments = 4;
+     $segment_chars = 5;
+    
+  }
+  
     $tokens = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     $license_string = '';
+    
     // Build Default License String
     for ($i = 0; $i < $num_segments; $i++) {
+        
         $segment = '';
+        
         for ($j = 0; $j < $segment_chars; $j++) {
+            
             $segment .= $tokens[rand(0, strlen($tokens)-1)];
+        
         }
+        
         $license_string .= $segment;
         if ($i < ($num_segments - 1)) {
+            
             $license_string .= '-';
+        
         }
+        
     }
+    
     // If provided, convert Suffix
     if(isset($suffix)){
+        
         if(is_numeric($suffix)) {   // Userid provided
+            
             $license_string .= '-'.strtoupper(base_convert($suffix,10,36));
-        }else{
+        
+        } else {
+            
             $long = sprintf("%u\n", ip2long($suffix),true);
+            
             if($suffix === long2ip($long) ) {
+                
                 $license_string .= '-'.strtoupper(base_convert($long,10,36));
-            }else{
+            
+            } else {
+                
                 $license_string .= '-'.strtoupper(str_ireplace(' ','-',$suffix));
+                
             }
+            
         } 
+        
     }
+    
     return $license_string;
+    
 }
 
-/**
- * Purge installation
- * Cleaning all installation process
- * 
- */
+// purge installation
 function purge_installation()
 {
    

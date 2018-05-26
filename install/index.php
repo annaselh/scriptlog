@@ -95,7 +95,7 @@ if ($install != 'install') {
     <meta name="description" content="Scriptlog Installation">
     <link rel="icon" href="../favicon.ico">
 
-    <title><?php echo APP_TITLE . ' Installation'; ?></title>
+    <title>Scritplog Installation</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -542,7 +542,7 @@ if ($install != 'install') {
             <hr class="mb-4">
    
      <input type="hidden" name="setup" value="install">
-     <button class="btn btn-primary btn-lg btn-block" type="submit">Install</button>
+     <button class="btn btn-success btn-lg btn-block" type="submit">Install</button>
     </form>
   </div>
 
@@ -563,7 +563,7 @@ if ($install != 'install') {
               echo " {$starYear} &#8211; {$thisYear} ";
            }
                      
-             echo APP_TITLE;
+             echo "Scriptlog";
               
              $time_end = microtime(true);
              $time = $time_end - $time_start;

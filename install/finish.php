@@ -13,7 +13,7 @@ require('include/setup.php');
     <meta name="description" content="Scriptlog Installation">
     <link rel="icon" href="../favicon.ico">
 
-    <title><?php echo APP_TITLE . ' Installation'; ?></title>
+    <title>Scriptlog Installed</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -34,7 +34,7 @@ require('include/setup.php');
             || $_GET['token'] !== $_SESSION['token']):  
         ?>
         <p class="lead">
-           Oops!, I know what you did last time ... 
+           Oops!, Already Installed ... 
         </p>
         <script type="text/javascript">function leave() {  window.location = "<?php echo $protocol."://".$server_host.dirname(dirname($_SERVER['PHP_SELF']))."/cabin/login.php";; ?>";} setTimeout("leave()", 3640);</script>
         <?php 
@@ -67,7 +67,7 @@ require('include/setup.php');
               echo " {$starYear} &#8211; {$thisYear} ";
            }
                      
-             echo APP_TITLE;
+             echo "Scriptlog";
               
              $time_end = microtime(true);
              $time = $time_end - $time_start;
@@ -90,28 +90,6 @@ require('include/setup.php');
     <script>window.jQuery || document.write('<script src="assets/vendor/bootstrap/js/jquery-slim.min.js"><\/script>')</script>
     <script src="assets/vendor/bootstrap/js/vendor/popper.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/holder.min.js"></script>
-    <script>
-      // Example starter JavaScript for disabling form submissions if there are invalid fields
-      (function() {
-        'use strict';
-
-        window.addEventListener('load', function() {
-          // Fetch all the forms we want to apply custom Bootstrap validation styles to
-          var forms = document.getElementsByClassName('needs-validation');
-
-          // Loop over them and prevent submission
-          var validation = Array.prototype.filter.call(forms, function(form) {
-            form.addEventListener('submit', function(event) {
-              if (form.checkValidity() === false) {
-                event.preventDefault();
-                event.stopPropagation();
-              }
-              form.classList.add('was-validated');
-            }, false);
-          });
-        }, false);
-      })();
-    </script>
+  
   </body>
 </html>

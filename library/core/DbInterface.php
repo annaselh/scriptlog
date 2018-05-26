@@ -15,18 +15,18 @@
 interface DbInterface
 {
     
- function setDbConnection($values = [], $options = []);
+ public function setDbConnection($values = [], $options = []);
  
- function closeDbConnection();
+ public function closeDbConnection();
  
- function dbQuery($sql, $parameters = null);
+ public function dbQuery($sql, $parameters = null);
  
- function dbInsert($tablename, $params);
+ public function dbInsert($tablename, $params);
  
- function dbUpdate($tablename, $params, $where);
+ public function dbUpdate($tablename, $params, $where);
  
- function dbDelete($tablename, $where, $limit = null);
+ public function dbDelete($tablename, $where, $limit = null);
  
- function dbLastInsertId();
+ public function dbLastInsertId();
     
 }
