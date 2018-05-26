@@ -169,7 +169,7 @@ function write_config_file($host, $user, $password, $database, $email, $key)
 
 global $protocol, $server_host;
 
-$lenght = 13;
+$length = 13;
 
 $url = $protocol.'://'.$server_host.dirname(dirname($_SERVER['PHP_SELF'])).'/';
 
@@ -182,14 +182,14 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
    $row = mysqli_fetch_assoc($retrieve_app_info);
    
    if (function_exists("random_bytes")) {
-       $bytes = random_bytes(ceil($lenght / 2));
+       $bytes = random_bytes(ceil($length / 2));
    } elseif (function_exists("openssl_random_pseudo_bytes")) {
-       $bytes = openssl_random_pseudo_bytes(ceil($lenght / 2));
+       $bytes = openssl_random_pseudo_bytes(ceil($length / 2));
    } else {
        throw new Exception("no cryptographically secure random function available");
    }
    
-   $app_key = generate_license(substr(bin2hex($bytes), 0, $lenght));
+   $app_key = generate_license(substr(bin2hex($bytes), 0, $length));
 
    $updateAppKey = "UPDATE settings SET app_key = '$app_key'
                       WHERE ID = {$row['ID']} LIMIT 1";
