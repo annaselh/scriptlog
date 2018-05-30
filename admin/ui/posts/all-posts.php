@@ -5,7 +5,10 @@
     <section class="content-header">
       <h1>
         <?=(isset($pageTitle)) ? $pageTitle : ""; ?>
-        <small>Total</small>
+        <small><a href="index.php?load=posts&action=newPost&postId=0"
+					class="btn btn-primary"> <i
+					class="fa fa-plus-circle"></i> Add New
+				</a></small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="index.php?load=dashboard"><i class="fa fa-dashboard"></i> Home</a></li>

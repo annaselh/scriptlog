@@ -3,7 +3,7 @@
 $action = isset($_GET['action']) ? htmlentities(strip_tags($_GET['action'])) : "";
 $userId = isset($_GET['userId']) ? abs((int)$_GET['userId']) : 0;
 $userDao = new User();
-$validator = new Validator();
+$validator = new ValidatorService();
 $userModule = new UserApp($userDao, $validator);
 
 switch ($action) {
@@ -28,7 +28,7 @@ switch ($action) {
                 
     default:
         
-        $userModule -> getAllUsers('Users');
+        $userModule -> listItems();
         
         break;
         

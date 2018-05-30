@@ -25,75 +25,98 @@ function generate_month($value, $locale = null)
         
         case 1 :
             
-            return (!empty($locale) && $locale == 'id') ? "Januari" : "January";
+            $month = (!is_null($locale) && $locale == 'id') ? "Januari" : "January";
             
-            //return "January";
+            return $month;
+            
             break;
             
         case 2 :
             
-            return (!empty($locale) && $locale == 'id') ? "Pebruari" : "February";
-            //return "February";
+            $month = (!is_null($locale) && $locale == 'id') ? "Februari" : "February";
+            
+            return $month;
+            
             break;
             
         case 3 :
             
-            return (!empty($locale) && $locale == 'id') ? "Maret" : "March";
-            //return "March";
+            $month = (!is_null($locale) && $locale == 'id') ? "Maret" : "March";
+            
+            return $month;
+            
             break;
             
         case 4 :
             
-            return (!empty($locale) && $locale == 'id') ? "April" : "April";
-            //return "April";
+            $month = (!is_null($locale) && $locale == 'id') ? "April" : "April";
+            
+            return $month;
+            
             break;
             
         case 5 :
             
-            return (!empty($locale) && $locale == 'id') ? "Mei" : "May";
-            //return "May";
+            $month = (!is_null($locale) && $locale == 'id') ? "Mei" : "May";
+            
+            return $month;
+            
             break;
             
         case 6 :
             
-            return (!empty($locale) && $locale == 'id') ? "Juni" : "June";
-            //return "June";
-            break;
-        case 7 :
+            $month = (!is_null($locale) && $locale == 'id') ? "Juni" : "June";
             
-            return (!empty($locale) && $locale == 'id') ? "Juli" : "July";
-            //return "July";
+            return $month;
+            
+            break;
+        
+        case 7 :
+        
+            $month = (!is_null($locale) && $locale == 'id') ? "Juli" : "July";
+            
+            return $month;
+            
             break;
             
         case 8 :
             
-            return (!empty($locale) && $locale == 'id') ? "Agustus" : "August";
+            $month = (!is_null($locale) && $locale == 'id') ? "Agustus" : "August";
             
-            //return "August";
+            return $month;
+            
             break;
             
         case 9 :
             
-            return (!empty($locale) && $locale == 'id') ? "September" : "September";
-            //return "September";
+            $month = (!is_null($locale) && $locale == 'id') ? "September" : "September";
+            
+            return $month;
+            
             break;
             
         case 10 :
             
-            return (!empty($locale) && $locale == 'id') ? "Oktober" : "October";
-            //return "October";
+            $month = (!is_null($locale) && $locale == 'id') ? "Oktober" : "October";
+            
+            return $month;
+                        
             break;
             
         case 11 :
             
-            return (!empty($locale) && $locale == 'id') ? "November" : "November";
-            //return "November";
+            $month = (!is_null($locale) && $locale == 'id') ? "November" : "November";
+            
+            return $month;
+           
             break;
             
         case 12 :
             
-            return (!empty($locale) && $locale == 'id') ? "Desember" : "December";
-            //return "December";
+            $month = (!is_null($locale) && $locale == 'id') ? "Desember" : "December";
+            
+            return $month;
+            
             break;
             
     }

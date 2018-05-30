@@ -16,7 +16,7 @@ $breadCrumbs = isset($_GET['load']) ? htmlentities(strip_tags($_GET['load'])) : 
 $stylePath = $config['app']['url'] . APP_ADMIN . DS .'assets';
 $currentURL = $app_protocol . '://'. $app_hostname . dirname($_SERVER['PHP_SELF']) . DS;
 admin_header($stylePath, $breadCrumbs);
-//include 'navigation.php';
+include 'navigation.php';
 include 'request.php';
 admin_footer($stylePath);
 

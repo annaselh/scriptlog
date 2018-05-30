@@ -9,42 +9,25 @@
  * @since     Since Release 1.0
  *
  */
-class UserApp
+class UserApp extends BaseApp
 {
 
+  protected $view;
+  
   public function __construct(User $userDao, ValidatorService $validator)
   {
       $this->userDao = $userDao;
       $this->validator = $validator;
       
-      if (isset($_POST['login'])) {
-          $this->login();
-      
-      } elseif (isset($_POST['register'])) {
-          
-          $this->register();
-          
-      } elseif (isset($_POST['update'])) {
-          
-          $this->update();
-          
-      } elseif (isset($_POST['delete'])) {
-              
-          $this->delete();
-          
-      } elseif (isset($_GET['logout'])) {
-          
-          $this->logout();
-          
-      }
-      
   }
   
-  public function getAllUsers()
+  public function listItems()
   {
-     
-    require(APP_ROOT.APP_ADMIN.DS.'ui'.DS.'users'.DS.'all-users.php');
-    
+   
+    $this->setPageTitle('Users');
+    $this->view = new View('admin','ui', 'users');
+    $this->view->render($this->getPageTitle(), 'all-users');
+   
   }
   
   public function login()
@@ -52,7 +35,7 @@ class UserApp
       
   }
   
-  public function register()
+  public function insert()
   {
       
   }
