@@ -1,6 +1,6 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 
-class ValidatorService
+class Authentication
 {
   /**
    * values

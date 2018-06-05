@@ -14,9 +14,9 @@ class UserApp extends BaseApp
 
   protected $view;
   
-  public function __construct(User $userDao, ValidatorService $validator)
+  public function __construct(UserService $userService, Authentication $validator)
   {
-      $this->userDao = $userDao;
+      $this->userService = $userService;
       $this->validator = $validator;
       
   }
@@ -25,8 +25,9 @@ class UserApp extends BaseApp
   {
    
     $this->setPageTitle('Users');
-    $this->view = new View('admin','ui', 'users');
-    $this->view->render($this->getPageTitle(), 'all-users');
+    $this->setView('all-users');
+    $this->view->set('pageTitle', $this->getPageTitle());
+    $this->view->render();
    
   }
   
@@ -55,5 +56,8 @@ class UserApp extends BaseApp
       
   }
   
-  
+  protected function setView($viewName)
+  {
+     $this->view = new View('admin', 'ui', 'users', $viewName);
+  }
 }

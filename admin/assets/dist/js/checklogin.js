@@ -1,13 +1,13 @@
 //JavaScript Document
 function validasi(form){
-if (formlogin.username.value == ""){
-alert("Anda belum mengisikan Nama pengguna");
-formlogin.username.focus();
+if (formlogin.email.value == ""){
+alert("Please enter your email address");
+formlogin.email.focus();
 return false;
 }
      
 if (formlogin.password.value == ""){
-alert("Anda belum mengisikan Kata sandi");
+alert("Please enter your password");
 formlogin.password.focus();
 return false;
 }

@@ -13,7 +13,7 @@ function upload_file($file_name)
         
     } else {
         
-        throw new Exception("Your file is too big !. Maximum file size :" . formatSizeUnits(524867));
+        throw new Exception("Your file is too big !. Maximum file size :" . format_size_unit(524867));
         
     }
     

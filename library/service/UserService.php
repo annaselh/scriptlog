@@ -1,5 +1,14 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
-
+/**
+ * UserService Class
+ *
+ * @package   SCRIPTLOG
+ * @author    Maoelana Noermoehammad
+ * @license   MIT
+ * @version   1.0
+ * @since     Since Release 1.0
+ *
+ */
 class UserService
 {
  /**
@@ -51,29 +60,29 @@ class UserService
  protected $user;
  
  /**
-  * Instantiate of validator class
+  * Instantiate of authenticator class
   * @var object
   */
- protected $validator;
+ protected $authenticator;
  
  const COOKIE_EXPIRE =  8640000;  //60*60*24*100 seconds = 100 days by default
 
  const COOKIE_PATH = "/";  //Available in whole domain
  
- public function __construct(User $user, ValidatorService $validator, Sanitize $sanitize)
+ public function __construct(User $user, Authentication $authenticator, Sanitize $sanitize)
  {
     $this->user = $user;
-    $this->validator = $validator;
+    $this->authenticator = $authenticator;
     $this->sanitize = $sanitize;
     
-    $this->loggedIn = $this->isLoggedIn();
+    /*$this->loggedIn = $this->isLoggedIn();
     
     if (!$this->loggedIn) {
         
-        header("Location: ".APP_PROTOCOL."://".APP_HOSTNAME.dirname(dirname($_SERVER['PHP_SELF']))."/");
+        header("Location: ".APP_PROTOCOL."://".APP_HOSTNAME.dirname(dirname($_SERVER['PHP_SELF']))."/".APP_ADMIN.'/login.php');
         exit();
         
-    }
+    }*/
     
  }
  
@@ -135,14 +144,14 @@ class UserService
      $user_pass = $values['user_pass'];
      $remember_me = isset($values['remember_me']) ? $values['remember_me'] : '';
      
-     $this->validator->validate("user_email", $user_email);
-     $this->validator->validate("user_pass", $user_pass);
+     $this->authenticator->validate("user_email", $user_email);
+     $this->authenticator->validate("user_pass", $user_pass);
      
-     if ($this->validator->numErrors > 0) {
+     if ($this->authenticator->numErrors > 0) {
          return false;
      }
      
-     if (!$this->validator->validateUserAccount($user_email, $user_pass)) {
+     if (!$this->authenticator->validateUserAccount($user_email, $user_pass)) {
          return false;
      }
      
@@ -221,13 +230,13 @@ class UserService
   */
  public function authUser($user_email)
  {
-     $this->validator->validate("user_email", $user_email);
+     $this->authenticator->validate("user_email", $user_email);
      
-     if ($this->validator->numErrors > 0) {
+     if ($this->authenticator->numErrors > 0) {
          return false;
      }
      
-     if (!$this->validator->isEmailExists($user_email)) {
+     if (!$this->authenticator->isEmailExists($user_email)) {
          return false;
      }
      

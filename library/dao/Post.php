@@ -370,7 +370,7 @@ public function setPostStatus($selected = "")
  	
  	$html = array();
     
- 	$html[] = '<label>Post setting :</label>';
+ 	$html[] = '<label>Post status :</label>';
  	$html[] = '<select class="form-control" name="post_status">';
  	
  	foreach ($posts_status as $s => $status) {
@@ -393,7 +393,7 @@ public function setPostStatus($selected = "")
   
 }
  
-public function setCommentStatus($selected = '')
+public function setCommentStatus($selected = "")
 {
  	$option_selected = "";
  	
@@ -407,7 +407,7 @@ public function setCommentStatus($selected = '')
  	
  	$html = array();
  	
- 	$html[] = '<label>comments setting :</label>';
+ 	$html[] = '<label>Comments status :</label>';
  	$html[] = '<select class="form-control" name="comment_status">';
  	
  	foreach ($comment_status as $c => $comment) {

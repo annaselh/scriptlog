@@ -37,9 +37,9 @@ class Topic extends Dao
       if ((!is_null($position)) && (!is_null($limit))) {
           
           $sql = "SELECT ID, topic_title, topic_slug, topic_status
-				      FROM topics
-                      ORDER BY '$orderBy'
-				      DESC LIMIT :position, :limit";
+				  FROM topics
+                  ORDER BY '$orderBy'
+				  DESC LIMIT :position, :limit";
           
           $this->setSQL($sql);
           $topics = $this->findAll([':position'=>$position, ':limit'=>$limit]);
@@ -47,7 +47,7 @@ class Topic extends Dao
       } else {
           
           $sql = "SELECT ID, topic_title, topic_slug, topic_status
-                      FROM topics ORDER BY '$orderBy'";
+                  FROM topics ORDER BY '$orderBy'";
           
           $this->setSQL($sql);
           $topics = $this->findAll();
@@ -126,9 +126,11 @@ class Topic extends Dao
   {
     $stmt = $this->create("topics", [
         'topic_title' => $bind['topic_title'], 
-        'topic_slug' => $bind['topic_slug'],
-        'topic_status' => $bind['topic_status']
+        'topic_slug' => $bind['topic_slug']
     ]);
+    
+    return $this->lastId();
+    
   }
 
   /**
@@ -188,6 +190,7 @@ class Topic extends Dao
  
  /**
   * Set topic
+  * post category
   * 
   * @param string $postId
   * @param array $checked
@@ -211,27 +214,38 @@ class Topic extends Dao
  
  if (empty($postId)) {
        
-    foreach ($items as $i => $item) {
+     if ($items) {
+         
+         foreach ($items as $i => $item) {
+             
+             if (isset($_POST['catID'])) {
+                 
+                 if (in_array($item->ID, $_POST['catID'])) {
+                     
+                     $checked="checked='checked'";
+                     
+                 } else {
+                     
+                     $checked = null;
+                     
+                 }
+                 
+             }
+             
+             $html[] = '<label class="checkbox-inline">';
+             $html[] = '<input type="checkbox" name="catID[]" value="'.$item->ID.'"'.$checked.'>'.$item->topic_title;
+             $html[] = '</label>';
+             
+         }
+         
+     } else {
+         
+         $html[] = '<label class="checkbox-inline">';
+         $html[] = '<input type="checkbox" name="catID" value="0" checked>Uncategorized';
+         $html[] = '</label>';
+         
+     }
     
-      if (isset($_POST['topicID'])) {
-          
-          if (in_array($item->ID, $_POST['topicID'])) {
-              
-              $checked="checked='checked'";
-          
-          } else {
-              
-              $checked = null;
-              
-          }
-          
-      }
-    
-      $html[] = '<label class="checkbox-inline">';
-      $html[] = '<input type="checkbox" name="topicID[]" value="'.$item->ID.'"'.$checked.'>'.$item->topic_title;
-      $html[] = '</label>';
-      
-    }
     
  } else {
      
@@ -253,14 +267,6 @@ class Topic extends Dao
          $html[] = '</label>';
          
      }
-     
- }
- 
- if (empty($item->ID)) {
-     
-     $html[] = '<label class="checkbox-inline">';
-     $html[] = '<input type="checkbox" name="catID" value="0" checked>Uncategorized';
-     $html[] = '</label>';
      
  }
  

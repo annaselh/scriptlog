@@ -11,23 +11,23 @@ function admin_header($stylePath, $breadCrumbs = null) {
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
-  <link rel="stylesheet" href="<?= $stylePath; ?>/components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="<?= $stylePath; ?>/assets/components/bootstrap/dist/css/bootstrap.min.css">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="<?= $stylePath; ?>/components/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="<?= $stylePath; ?>/assets/components/font-awesome/css/font-awesome.min.css">
   <!-- Ionicons -->
-  <link rel="stylesheet" href="<?= $stylePath; ?>/components/Ionicons/css/ionicons.min.css">
+  <link rel="stylesheet" href="<?= $stylePath; ?>/assets/components/Ionicons/css/ionicons.min.css">
   <!-- DataTables -->
-  <link rel="stylesheet" href="<?= $stylePath; ?>/components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" href="<?= $stylePath; ?>/assets/components/datatables.net-bs/css/dataTables.bootstrap.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="<?= $stylePath; ?>/dist/css/AdminLTE.min.css">
-  <link rel="stylesheet" href="<?= $stylePath; ?>/dist/css/skins/scriptlog-skin.css">
+  <link rel="stylesheet" href="<?= $stylePath; ?>/assets/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="<?= $stylePath; ?>/assets/dist/css/skins/scriptlog-skin.css">
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <link rel="stylesheet" href="<?= $stylePath; ?>/dist/css/ie10-viewport-bug-workaround.css">
+  <link rel="stylesheet" href="<?= $stylePath; ?>/assets/dist/css/ie10-viewport-bug-workaround.css">
  
 <!-- wysiwyg editor-->
-<script src="<?= $stylePath; ?>/wysiwyg/tiny_mce/jquery.tinymce.min.js" type="text/javascript"></script>
-<script src="<?= $stylePath; ?>/wysiwyg/tiny_mce/tinymce.min.js" type="text/javascript"></script>
-<script src="<?= $stylePath; ?>/wysiwyg/tiny_mce/tinysc.js" type="text/javascript"></script>
+<script src="<?= $stylePath; ?>/wysiwyg/tiny_mce/jquery.tinymce.min.js"></script>
+<script src="<?= $stylePath; ?>/wysiwyg/tiny_mce/tinymce.min.js" ></script>
+<script src="<?= $stylePath; ?>/wysiwyg/tiny_mce/tinysc.js"></script>
 
   
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -40,7 +40,7 @@ function admin_header($stylePath, $breadCrumbs = null) {
 <!-- Google Font -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 <!-- Icon -->
-<link href="<?= $stylePath; ?>/dist/img/favicon.ico" rel="Shortcut Icon" />
+<link href="<?= $stylePath; ?>/assets/dist/img/favicon.ico" rel="Shortcut Icon" />
    
 </head>
 
@@ -74,23 +74,23 @@ function admin_footer($stylePath)
 <!-- ./wrapper -->
 
 <!-- jQuery 3 -->
-<script src="<?= $stylePath; ?>/components/jquery/dist/jquery.min.js"></script>
+<script src="<?= $stylePath; ?>/assets/components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
-<script src="<?= $stylePath; ?>/components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="<?= $stylePath; ?>/assets/components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- DataTables -->
-<script src="<?= $stylePath; ?>/components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="<?= $stylePath; ?>/components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="<?= $stylePath; ?>/assets/components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="<?= $stylePath; ?>/assets/components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <!-- AdminLTE App -->
-<script src="<?= $stylePath; ?>/dist/js/adminlte.min.js"></script>
+<script src="<?= $stylePath; ?>/assets/dist/js/adminlte.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="<?= $stylePath; ?>/dist/js/ie10-viewport-bug-workaround.js"></script>
+<script src="<?= $stylePath; ?>/assets/dist/js/ie10-viewport-bug-workaround.js"></script>
 <!-- Slimscroll -->
-<script src="<?= $stylePath; ?>/components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="<?= $stylePath; ?>/assets/components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
-<script src="<?= $stylePath; ?>/components/fastclick/lib/fastclick.js"></script>
+<script src="<?= $stylePath; ?>/assets/components/fastclick/lib/fastclick.js"></script>
 <!-- Validate Image -->
-<script src="<?= $stylePath; ?>/dist/js/imagevalidation.js"></script>
-<script src="<?= $stylePath; ?>/dist/js/imagesizechecker.js"></script>
+<script src="<?= $stylePath; ?>/assets/dist/js/imagevalidation.js"></script>
+<script src="<?= $stylePath; ?>/assets/dist/js/imagesizechecker.js"></script>
 
 <!-- page script -->
 <script>

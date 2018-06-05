@@ -45,12 +45,12 @@ class View
     return $this->previlege;
   }
   
-  public function setData($key, $value)
+  public function set($key, $value)
   {
      $this->data[$key] = $value;
   }
   
-  public function getData($key)
+  public function get($key)
   {
      return $this->data[$key];
   }

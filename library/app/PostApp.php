@@ -1,68 +1,111 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
-
+/**
+ * PostApp Class extends BaseApp Class
+ *
+ * @package   SCRIPTLOG
+ * @author    Maoelana Noermoehammad
+ * @license   MIT
+ * @version   1.0
+ * @since     Since Release 1.0
+ *
+ */
 class PostApp extends BaseApp
 {
   
   protected $view;
   
-  public function __construct(Post $postDao, ValidatorService $validator)
+  public function __construct(PostService $postService, FormValidator $validator)
   {
-    $this->postDao = $postDao;
+    $this->postService = $postService;
     $this->validator = $validator;
-    
   }
-   
+  
   public function listItems()
   {
     $this->setPageTitle('Posts');
-    $posts = $this->postDao->findPosts('0', '10');
-    $this->view = new View('admin', 'ui', 'posts', 'all-posts');
-    $this->view->setData('posts', $posts);
-    $this->view->setData('pageTitle', $this->getPageTitle());
+    $this->setView('all-posts');
+    $this->view->set('pageTitle', $this->getPageTitle());
     return $this->view->render();
   }
   
   public function insert()
   {
-      if (!isset($_POST['postFormSubmit'])) {
-          
-        header("Location: ".APP_PROTOCOL."://".APP_HOSTNAME.dirname(dirname($_SERVER['PHP_SELF'])).'admin/index.php?load=posts&action='.$this->getFormAction().'&postId=0');
-          
-      }
-      
-      $file_location = isset($_FILES['image']['tmp_name']) ? $_FILES['image']['tmp_name'] : '';
-      $file_type = isset($_FILES['image']['type']) ? $_FILES['image']['type'] : '';
-      $file_name = isset($_FILES['image']['name']) ? $_FILES['image']['name'] : '';
-      $file_size = isset($_FILES['image']['size']) ? $_FILES['image']['size'] : '';
-      $file_error = isset($_FILES['image']['error']) ? $_FILES['image']['error'] : '';
-      
-      $tgl_sekarang = date("Ymd");
-      $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING);
-      $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-      $slug = make_slug($title);
-      $meta_description = filter_input(INPUT_POST, 'meta_desc', FILTER_SANITIZE_SPECIAL_CHARS);
-      $meta_keywords = filter_input(INPUT_POST, 'meta_key', FILTER_SANITIZE_SPECIAL_CHARS);
-      $post_status = isset($_POST['post_status']) ? $_POST['post_status'] : "";
-      $comment_status = isset($_POST['comment_status']) ? $_POST['comment_status'] : "";
-      
-      $errors = array();
-      $check = true;
-      
-      $this->setPageTitle('Add New Post');
-      $this->setFormAction('newPost');
+    $this->setPageTitle('Add New Post');
+    $this->setFormAction('newPost');
+    $errors = array();
+    $check = true;
+    $topics = new Topic();
+    
+    if (!isset($_POST['postFormSubmit'])) {
+       
+       $this->setView('edit-post');
+       $this->view->set('pageTitle', $this->getPageTitle());
+       $this->view->set('topics', $topics->setTopic());
+       $this->view->set('postStatus', $this->postService->setPostStatus());
+       $this->view->set('commentStatus', $this->postService->setCommentStatus());
+    }
      
+    if (empty($_POST['post_title'])) {
+        
+        $check = false;
+        array_push($errors, "Title is required");
+        
+    }
+      
+    if (empty($_POST['content'])) {
+          
+        $check = false;
+        array_push($errors, 'Content is required');
+          
+    }
+      
+    if (!$check) {
+         
+       $this->setView('edit-post');
+       $this->view->set('pageTitle', $this->getPageTitle());
+       $this->view->set('formAction', $this->getFormAction());
+       $this->view->set('topics', $topics -> setTopic());
+       $this->view->set('postStatus', $this->postService->setPostStatus());
+       $this->view->set('commentStatus', $this->postService->setCommentStatus());
+       $this->view->set('errors', $errors);
+       $this->view->set('formData', $_POST);
+       return $this->view->render();
+          
+    }
       
     try {
-          
-    } catch (ViewException $e) {
+      
+        $success = $this->postService->addPost($_POST);
+        
+        if ($success) {
+            
+            $this->setView('all-post');
+            $this->view->set('pageTitle', $this->getPageTitle());
+            $this->view->set('statusMessage', 'New post added');
+            
+        }
+        
+    } catch (AppException $e) {
+        
+        $this->setView('all-posts');
+        $this->view->set('pageTitle', $this->getPageTitle());
+        $this->view->set('formData', $_POST);
+        $this->view->set('logError', $e->getMessage());
         
     }
     
+    return $this->view->render();
     
   }
   
   public function update()
   {
+      $this->setPageTitle('Edit Post');
+      $this->setFormAction('editPost');
+      $errors = array();
+      $check = true;
+      $topics = new Topic();
+      
       
   }
   
@@ -71,4 +114,9 @@ class PostApp extends BaseApp
       
   }
     
+  protected function setView($viewName)
+  {
+     $this->view = new View('admin', 'ui', 'posts', $viewName);
+  }
+  
 }

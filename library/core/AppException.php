@@ -11,5 +11,17 @@
  */
 class AppException extends Exception
 {
-    
+  protected $error_message;
+   
+  public function __construct()
+  {
+    parent::__construct();    
+  }
+  
+  public function getMessage()
+  {
+    $this->error_message = LogError::newMessage($this->getMessage());
+    $this->error_message = LogError::customErrorMessage();
+  }
+  
 }

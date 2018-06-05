@@ -7,9 +7,9 @@
     <!-- Logo -->
     <a href="<?= $currentURL . 'index.php?load=dashboard'?>" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><img alt="logo-scriptlog-50x50" src="<?=(isset($stylePath)) ? $stylePath : ""; ?>/dist/img/logo50x50.gif"></span>
+      <span class="logo-mini"><img alt="logo-scriptlog-50x50" src="<?=(isset($stylePath)) ? $stylePath : ""; ?>/assets/dist/img/logo50x50.gif"></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><img alt="logo-scriptlog-90x50" src="<?=(isset($stylePath)) ? $stylePath : ""; ?>/dist/img/logo90x50.gif"></span>
+      <span class="logo-lg"><img alt="logo-scriptlog-90x50" src="<?=(isset($stylePath)) ? $stylePath : ""; ?>/assets/dist/img/logo90x50.gif"></span>
     </a>
 
     <!-- Header Navbar -->

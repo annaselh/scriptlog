@@ -3,8 +3,9 @@
 $action = isset($_GET['action']) ? htmlentities(strip_tags($_GET['action'])) : "";
 $postId = $userId = isset($_GET['userId']) ? abs((int)$_GET['userId']) : 0;
 $postDao = new Post();
-$validator = new ValidatorService();
-$postModule = new PostApp($postDao, $validator);
+$validator = new FormValidator();
+$postService = new PostService($postDao, $validator);
+$postModule = new PostApp($postService, $validator);
 
 switch ($action) {
     

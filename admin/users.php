@@ -2,9 +2,11 @@
 
 $action = isset($_GET['action']) ? htmlentities(strip_tags($_GET['action'])) : "";
 $userId = isset($_GET['userId']) ? abs((int)$_GET['userId']) : 0;
+$authenticator = new Authentication();
+$sanitize = new Sanitize();
 $userDao = new User();
-$validator = new ValidatorService();
-$userModule = new UserApp($userDao, $validator);
+$userService = new UserService($userDao, $authenticator, $sanitize);
+$userModule = new UserApp($userService, $authenticator);
 
 switch ($action) {
     

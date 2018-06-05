@@ -1,5 +1,5 @@
 tinymce.init({
-	selector: 'textarea#sc',
+	selector: 'textarea#sl',
 	theme: 'modern',
 	menubar: false,
 	
@@ -14,7 +14,7 @@ tinymce.init({
  image_advtab: true,
 	
 	  
-	content_css: '../layout/dist/css/adminLTE.min.css',
+	//content_css: '../admin/assets/dist/css/AdminLTE.css',
 	
 	 file_browser_callback: function(field, url, type, win) {
 	        tinyMCE.activeEditor.windowManager.open({
