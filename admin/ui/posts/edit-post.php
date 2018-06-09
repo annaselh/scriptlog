@@ -22,24 +22,28 @@
 <div class="box-header with-border"></div>
 <!-- /.box-header -->
 <?php
-if (isset($message['errorMessage'])) :
+if (isset($errors)) :
 ?>
 <div class="alert alert-danger alert-dismissible">
 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-<?= $message['errorMessage']; ?>
+<?php 
+foreach ($errors as $e) :
+ echo $e;
+endforeach;
+?>
 </div>
 <?php 
 endif;
 ?>
-<form method="post" action="index.php?load=users&action=<?= $formAction;?>&userId=<?=(isset($userId)) ? $userId : 0; ?>&sessionId=<?=(isset($sessionId)) ? $sessionId : ""; ?>" role="form">
+<form method="post" action="index.php?load=posts&action=<?= $formAction;?>&postId=<?=(isset($postId)) ? $postId : 0; ?>" role="form">
 <input type="hidden" name="post_id" value="<?=(isset($postId)) ? $postId : 0; ?>" />
 <input type="hidden" name="MAX_FILE_SIZE" value="697856" />
 
 <div class="box-body">
 <div class="form-group">
 <label>Title (required)</label>
-<input type="text" class="form-control" name="post_title" placeholder="Enter title here" value="<?=(isset($_POST['user_login'])) ? htmlspecialchars($_POST['user_login'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
+<input type="text" class="form-control" name="post_title" placeholder="Enter title here" value="<?=(isset($formData['post_title'])) ? htmlspecialchars($formData['post_title'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
 </div>
 <?=(isset($topics)) ? $topics : ""; ?>
 
@@ -57,18 +61,18 @@ endif;
 
 if (is_readable($image)) :
 ?>
-<br><a href="<?php echo $image; ?>"><img src="<?php  echo $imageThumb; ?>"></a><br> 
+<br><a href="<?php echo $image; ?>"><img src="<?php  echo $imageThumb; ?>" class="img-responsive pad"></a><br> 
 <label>change picture :</label> 
 <input type="file" name="image" id="file" accept="image/*" onchange="loadFile(event)" maxlength="512" />
-<img id="output" />
+<img id="output" class="img-responsive pad" />
 <p class="help-block">Maximum file size: <?= format_size_unit(697856); ?></p>
 <?php 
 else :
 ?>
-<br><img src="<?php echo $imageThumb; ?>"><br> 
+<br><img src="<?php echo $imageThumb; ?>" class="img-responsive pad"><br> 
 <label>change picture :</label> 
 <input type="file" name="image" id="file" accept="image/*" onchange="loadFile(event)"  maxlength="512" />
-<img id="output" />
+<img id="output" class="img-responsive pad" />
 <p class="help-block">Maximum file size: <?= format_size_unit(697856); ?></p>
 <?php 
 endif;
@@ -78,7 +82,7 @@ endif;
 <div class="form-group">
 <label>Upload Picture :</label> 
 <input type="file" name="image" id="file" accept="image/*" onchange="loadFile(event)"  maxlength="512" />
-<img id="output" />
+<img id="output" class="img-responsive pad" />
 <p class="help-block">Maximum file size: <?= format_size_unit(697856); ?></p>
 </div>
 <?php 
@@ -87,21 +91,21 @@ endif;
 
 <div class="form-group">
 <label>Meta Description</label>
-<textarea class="form-control" name="meta_description" rows="3" maxlength="500">
+<textarea class="form-control" name="meta_description" rows="3" maxlength="500" <?=(isset($formData['meta_description'])) ? htmlspecialchars($formData['meta_description'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
 
 </textarea>
 </div>
 
 <div class="form-group">
 <label>Meta Keywords</label>
-<textarea class="form-control" name="meta_keywords" rows="3" maxlength="200">
+<textarea class="form-control" name="meta_keywords" rows="3" maxlength="200" <?=(isset($formData['meta_keywords'])) ? htmlspecialchars($formData['meta_keywords'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
 
 </textarea>
 </div>
 
 <div class="form-group">
 <label>Content (required)</label>
-<textarea class="form-control" id="sl" name="post_content" rows="10" maxlength="100000">
+<textarea class="form-control" id="sl" name="post_content" rows="10" maxlength="100000" <?=(isset($formData['post_content'])) ? htmlspecialchars($formData['post_content'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
 
 </textarea>
 </div>
@@ -120,7 +124,6 @@ endif;
 <!-- /.box-body -->
 
 <div class="box-footer">
-   <input type="hidden" name="edit" value="1">
    <input type="submit" name="postFormSubmit" class="btn btn-primary" value="Add New User">
 </div>
 </form>

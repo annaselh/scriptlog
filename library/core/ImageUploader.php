@@ -184,26 +184,12 @@ class ImageUploader
      
  }
 
- public function isImageUploaded()
- {
-     $isUploaded = (empty($this->file_location) || empty($this->file_basename));
-     return $isUploaded;
- }
- 
- public function renameImage()
- {
-     $this->setFileBaseName($this->file_name);
-     $this->setFileExtension($this->file_name);
-     return rename_file(md5(rand(0,999).$this->getFileBaseName())).$this->getFileExtension();
- }
- 
- public function saveImagePost($width, $height, $mode)
+ protected function saveImagePost($file_name, $width, $height, $mode)
  {
      if ($this->readyToUpload()) {
          
          $upload_dir = $this->path_destination;
          $upload_dir_thumb = $this->path_destination . 'thumbs/';
-         $file_name = $this->renameImage();
          $file_uploaded = $upload_dir . $file_name;
          
          if (filesize($this->file_size) > 52000) {
@@ -213,7 +199,7 @@ class ImageUploader
              $resizer = new Resize($file_uploaded);
              $resizer -> resizeImage($width, $height, $mode);
              $resizer -> saveImage($file_uploaded, 100);
-          
+             
          } else {
              move_uploaded_file($this->file_location, $file_uploaded);
          }
@@ -283,4 +269,39 @@ class ImageUploader
      
  }
  
+ public function renameImage()
+ {
+     $this->setFileBaseName($this->file_name);
+     $this->setFileExtension($this->file_name);
+     return rename_file(md5(rand(0,999).$this->getFileBaseName())).$this->getFileExtension();
+ }
+ 
+ public function isImageUploaded()
+ {
+     $isUploaded = (empty($this->file_location) || empty($this->file_basename));
+     return $isUploaded;
+ }
+ 
+ public function uploadImage($uploadType, $file_name, $width, $height, $mode)
+ {
+     $allowedType = ['post', 'page', 'logo', 'media'];
+     
+     if (in_array($needle, $haystack)) {
+         
+     }
+     switch ($uploadType) {
+         
+         case 'page':
+         case 'post' :
+             
+             $this->saveImagePost($file_name, $width, $height, $mode);
+             
+             break;
+             
+         case 'logo':
+             
+             
+             break;
+     }
+ }
 }

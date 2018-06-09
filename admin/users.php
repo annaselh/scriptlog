@@ -5,8 +5,8 @@ $userId = isset($_GET['userId']) ? abs((int)$_GET['userId']) : 0;
 $authenticator = new Authentication();
 $sanitize = new Sanitize();
 $userDao = new User();
-$userService = new UserService($userDao, $authenticator, $sanitize);
-$userModule = new UserApp($userService, $authenticator);
+$userEvent = new UserEvent($userDao, $authenticator, $sanitize);
+$userApp = new UserApp($userEvent, $authenticator);
 
 switch ($action) {
     
@@ -30,7 +30,7 @@ switch ($action) {
                 
     default:
         
-        $userModule -> listItems();
+        $userApp -> listItems();
         
         break;
         

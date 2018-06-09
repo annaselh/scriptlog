@@ -9,7 +9,7 @@
  * @since     Since Release 1.0
  *
  */
-class UserService
+class UserEvent
 {
  /**
   * User Email

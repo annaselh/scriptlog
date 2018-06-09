@@ -13,7 +13,7 @@ $loader = new Scriptloader();
 $loader -> setLibraryPaths(array(
   APP_ROOT . APP_LIBRARY . '/core/',
   APP_ROOT . APP_LIBRARY . '/dao/',
-  APP_ROOT . APP_LIBRARY . '/service/',
+  APP_ROOT . APP_LIBRARY . '/event/',
   APP_ROOT . APP_LIBRARY . '/app/',
   APP_ROOT . APP_LIBRARY . '/plugins/',
 ));

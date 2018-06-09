@@ -265,12 +265,12 @@ class Plugin extends Dao
   /**
    * Set menu plugin
    * 
-   * @param UserService $userService
+   * @param UserEvent $userEvent
    * @return string
    */
-  protected static function setMenuPlugin(UserService $userService)
+  protected static function setMenuPlugin(UserEvent $userEvent)
   {
-    $this->accessLevel = $userService;
+    $this->accessLevel = $userEvent;
     
     $plugins = self::setPrivatePlugins();
     

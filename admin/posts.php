@@ -1,35 +1,49 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 
 $action = isset($_GET['action']) ? htmlentities(strip_tags($_GET['action'])) : "";
-$postId = $userId = isset($_GET['userId']) ? abs((int)$_GET['userId']) : 0;
+$postId = isset($_GET['postId']) ? abs((int)$_GET['postId']) : 0;
 $postDao = new Post();
 $validator = new FormValidator();
-$postService = new PostService($postDao, $validator);
-$postModule = new PostApp($postService, $validator);
+$sanitizer = new Sanitize();
+$postEvent = new PostEvent($postDao, $validator, $sanitizer);
+$postApp = new PostApp($postEvent, $validator);
 
 switch ($action) {
     
     case 'newPost':
         
-        $postModule -> insert();
+        if ($postId == 0) {
+            
+            $postApp -> insert();
+            
+        }
         
         break;
         
     case 'editPost':
         
-        $postModule -> update();
+        if ($postDao -> checkPostId($postId, $sanitizer)) {
+        
+            $postApp -> update();
+            
+        } else {
+            
+            header("Location: index.php?load=posts&error=postNotFound");
+            
+        }
+        
         
         break;
         
     case 'deletePost':
         
-        $postModule -> delete();
+        $postApp -> delete();
         
         break;
         
     default:
         
-        $postModule -> listItems();
+        $postApp -> listItems();
         
         break;
         

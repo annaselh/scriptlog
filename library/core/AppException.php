@@ -11,7 +11,7 @@
  */
 class AppException extends Exception
 {
-  protected $error_message;
+  private $error_message;
    
   public function __construct()
   {

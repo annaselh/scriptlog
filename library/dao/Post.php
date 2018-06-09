@@ -94,11 +94,11 @@ public function findPost($id, $sanitize, $author = null)
               post_keyword, post_status,
   	  		  post_type, comment_status
   	  		  FROM posts
-  	  		  WHERE ID = ? AND post_author = ?
+  	  		  WHERE ID = :ID AND post_author = :author
   			  AND post_type = 'blog'";
         
         $this->setSQL($sql);
-        $postDetail = $this->findRow([$sanitized_id, $author]);
+        $postDetail = $this->findRow([':ID' => $sanitized_id, ':author' => $author]);
         
    } else {
         
@@ -108,10 +108,10 @@ public function findPost($id, $sanitize, $author = null)
               post_status,
   	  		  post_type, comment_status
   	  		  FROM posts
-  	  		  WHERE ID = ? AND post_type = 'blog'";
+  	  		  WHERE ID = :ID AND post_type = 'blog'";
         
        $this->setSQL($sql);
-       $postDetail = $this->findRow([$sanitized_id]);
+       $postDetail = $this->findRow([':ID' => $sanitized_id]);
         
   }
     
@@ -301,7 +301,7 @@ public function updatePost($bind, $id, $topicId)
   	  
   if (is_array($topicId)) {
   	     
-  	 foreach ($_POST['topic_id'] as $topicId) {
+  	 foreach ($_POST['catID'] as $topicId) {
   	     
   	    $stmt3 = $this->create("post_topic", [
   	        'post_id' => $id,
@@ -355,7 +355,7 @@ public function checkPostId($id, $sanitizing)
  * @param string $selected
  * @return string
  */
-public function setPostStatus($selected = "")
+public function dropDownPostStatus($selected = "")
 {
   
  	$option_selected = "";
@@ -393,7 +393,7 @@ public function setPostStatus($selected = "")
   
 }
  
-public function setCommentStatus($selected = "")
+public function dropDownCommentStatus($selected = "")
 {
  	$option_selected = "";
  	

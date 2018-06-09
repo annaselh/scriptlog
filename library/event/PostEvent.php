@@ -9,53 +9,94 @@
  * @since     Since Release 1.0
  *
  */
-class PostService
+class PostEvent
 {
   private $postId;
   
   private $author;
   
-  protected $title;
+  private $title;
   
-  protected $slug;
+  private $slug;
   
-  protected $content;
+  private $content;
   
-  protected $image;
+  private $image;
   
-  protected $meta_desc;
+  private $meta_desc;
   
-  protected $meta_key;
+  private $meta_key;
   
-  protected $post_status;
+  private $post_status;
   
-  protected $comment_status;
+  private $comment_status;
   
-  protected $topics; 
+  private $topics; 
   
-  public function __construct(Post $postDao, FormValidator $validator)
+  public function __construct(Post $postDao, FormValidator $validator, Sanitize $sanitizer)
   {
      $this->postDao = $postDao;
      $this->validator = $validator;
+     $this->sanitizer = $sanitizer;
   }
   
-  public function grabPosts()
+  public function setPostId($postId)
   {
-    
+    $this->postId = $postId;    
   }
   
-  public function addPost($values)
+  public function setPostTitle($title)
+  {
+    $this->title = $title;
+  }
+  
+  public function setPostSlug($slug)
+  {
+    $this->slug = make_slug($slug);    
+  }
+  
+  public function setPostContent($content)
+  {
+    $this->content = prevent_injection($content);
+  }
+  
+  public function setMetaDesc($meta_desc)
+  {
+    $this->meta_desc = $meta_desc;
+  }
+  
+  public function setMetaKeys($meta_keys)
+  {
+    $this->meta_key = $meta_keys;
+  }
+  
+  public function setPublish($post_status)
+  {
+    $this->post_status = $post_status;
+  }
+  
+  public function setComment($comment_status)
+  {
+    $this->comment_status = $comment_status;    
+  }
+  
+  public function setTopics($topics)
+  {
+    $this->topics = $topics;    
+  }
+  
+  public function grabPosts($position, $limit, $orderBy = 'ID', $author = null)
+  {
+    return $this->postDao->findPosts($position, $limit, $orderBy, $author);
+  }
+  
+  public function addPost()
   {
      $upload_path = __DIR__ . '/../../public/files/pictures/';
      $image_uploader =  new ImageUploader('image', $upload_path);
-      
+     $category = new Topic();
+     
      $this->author = isset($_SESSION['ID']) ? (int)$_SESSION['ID'] : 0;
-     $this->title = $values['post_title'];
-     $this->slug = make_slug($this->title);
-     $this->content = $values['post_content'];
-     $this->meta_desc = $values['meta_description'];
-     $this->meta_key = $values['meta_keywords'];
-     $this->topics = $values['catID'];
      
      $this->validator->sanitize($this->author, 'int');
      $this->validator->sanitize($this->title, 'string');
@@ -66,17 +107,15 @@ class PostService
          
          if ($this->topics == 0) {
              
-             $category = new Topic();
              $categoryId = $category -> createTopic(['topic_title' => 'Uncategorized', 'topic_slug' => 'uncategorized']);
-             $sanitize = new Sanitize();
-             $getCategory = $category -> findTopicById($categoryId, $sanitize, PDO::FETCH_ASSOC);
+             $getCategory = $category -> findTopicById($categoryId, $this->sanitizer, PDO::FETCH_ASSOC);
              
              return $this->postDao->createPost([
                  'post_author' => $this->author,
                  'date_created' => date("Ymd"),
                  'post_title' => prevent_injection($this->title),
                  'post_slug'  => $this->slug,
-                 'post_content' => $this->content,
+                 'post_content' => prevent_injection($this->content),
                  'post_summary' => $this->meta_desc,
                  'post_keyword' => $this->meta_key,
                  'post_status' => $this->post_status,
@@ -100,15 +139,14 @@ class PostService
          }
          
      } else {
-         
-         $image_uploader -> saveImagePost(770, 400, 'crop');
-         $fileName = $image_uploader -> renameImage();
+       
+         $newFileName = $image_uploader -> renameImage();
+         $uploadImagePost = $image_uploader -> uploadImage('post', $newFileName, 770, 400, 'crop');
+                
          if ($this->topics == 0) {
              
-             $category = new Topic();
              $categoryId = $category -> createTopic(['topic_title' => 'Uncategorized', 'topic_slug' => 'uncategorized']);
-             $sanitize = new Sanitize();
-             $getCategory = $category -> findTopicById($categoryId, $sanitize, PDO::FETCH_ASSOC);
+             $getCategory = $category -> findTopicById($categoryId, $this->sanitizer, PDO::FETCH_ASSOC);
              
              return $this->postDao->createPost([
                  'post_image' => $fileName,
@@ -146,16 +184,54 @@ class PostService
   
   public function modifyPost()
   {
+     
+    $upload_path = __DIR__ . '/../../public/files/pictures/';
+    $image_uploader =  new ImageUploader('image', $upload_path);
+    $category = new Topic();
       
+    $this->author = isset($_SESSION['ID']) ? (int)$_SESSION['ID'] : 0;
+    
+    $this->validator->sanitize($this->postId, 'int');
+    $this->validator->sanitize($this->author, 'int');
+    $this->validator->sanitize($this->title, 'string');
+    $this->validator->sanitize($this->meta_desc, 'string');
+    $this->validator->sanitize($this->meta_key, 'string');
+      
+    if ($image_uploader -> isImageUploaded()) {
+          
+        return $this->postDao->updatePost([
+            'post_author' => $this->author,
+            'date_modified' => date("Ymd"),
+            'post_title' => $this->title,
+            'post_slug' => $this->slug,
+            'post_content' => $this->content,
+            'post_summary' => $this->meta_desc,
+            'post_keyword' => $this->meta_key,
+            'post_status' => $this->post_status,
+            'comment_status' => $this->comment_status
+        ], $this->postId, $this->topics);
+         
+     }
   }
   
-  public function setPostStatus($selected = "")
+  public function removePost()
   {
-      return $this->postDao->setPostStatus($selected);
+    $this->validator->sanitize($this->postId, 'int');
+    
+    if (false === $this->postDao->findPost($this->postId, $this->sanitizer)) {
+        direct_page('/admin/index.php?load=posts');
+    }
+    
+    
   }
   
-  public function setCommentStatus($selected = "")
+  public function postStatusDropDown($selected = "")
   {
-      return $this->postDao->setCommentStatus($selected);
+     return $this->postDao->dropDownPostStatus($selected);
+  }
+  
+  public function commentStatusDropDown($selected = "")
+  {
+     return $this->postDao->dropDownCommentStatus($selected);
   }
 }

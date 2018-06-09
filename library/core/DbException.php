@@ -9,7 +9,7 @@
  * @since     Since Release 1.0
  *
  */
-class DbException extends Exception 
+class DbException extends Exception
 {
-    
+  
 }

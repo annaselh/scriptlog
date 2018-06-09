@@ -14,9 +14,9 @@ class UserApp extends BaseApp
 
   protected $view;
   
-  public function __construct(UserService $userService, Authentication $validator)
+  public function __construct(UserEvent $userEvent, Authentication $validator)
   {
-      $this->userService = $userService;
+      $this->userEvent = $userEvent;
       $this->validator = $validator;
       
   }
