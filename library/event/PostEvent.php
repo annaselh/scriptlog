@@ -1,6 +1,6 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 /**
- * PostService Class
+ * PostEvent Class
  *
  * @package   SCRIPTLOG
  * @author    Maoelana Noermoehammad
@@ -216,12 +216,31 @@ class PostEvent
   
   public function removePost()
   {
+    
     $this->validator->sanitize($this->postId, 'int');
     
-    if (false === $this->postDao->findPost($this->postId, $this->sanitizer)) {
-        direct_page('/admin/index.php?load=posts');
+    $getPost = $this->postDao->findPost($this->postId, $this->sanitizer);
+    if (false === $getPost) {
+        direct_page('index.php?module=posts&error=postNotFound');
     }
     
+    $this->image = $getPost['post_image'];
+    if ($this->image != '') {
+        
+       $deletePost = $this->postDao->deletePost($this->postId, $this->sanitizer);
+       
+       if (is_readable(__DIR__ . '/../public/files/pictures/'.$this->post_image)) {
+           
+           unlink(__DIR__ . '/../public/files/pictures'.$this->image);
+           unlink(__DIR__ . '/../public/files/pictures/thumbs/thumbs_'.$this->image);
+           
+       }
+       
+    } else {
+        
+        $deletePost = $this->postDao->deletePost($this->postId, $this->sanitizer);
+        
+    }
     
   }
   
