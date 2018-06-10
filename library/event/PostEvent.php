@@ -211,7 +211,24 @@ class PostEvent
             'comment_status' => $this->comment_status
         ], $this->postId, $this->topics);
          
-     }
+    } else {
+        
+        $newFileName = $image_uploader -> renameImage();
+        $uploadImagePost = $image_uploader -> uploadImage('post', $newFileName, 770, 400, 'crop');
+        
+        return $this->postDao->updatePost([
+            'post_image' => $newFileName,
+            'post_author' => $this->author,
+            'date_modified' => date("Ymd"),
+            'post_title' => $this->title,
+            'post_slug' => $this->slug,
+            'post_content' => $this->content,
+            'post_summary' => $this->meta_desc,
+            'post_keyword' => $this->meta_key,
+            'post_status' => $this->post_status,
+            'comment_status' => $this->comment_status
+        ], $this->postId, $this->topics);
+    }
   }
   
   public function removePost()
@@ -238,7 +255,7 @@ class PostEvent
        
     } else {
         
-        $deletePost = $this->postDao->deletePost($this->postId, $this->sanitizer);
+       $deletePost = $this->postDao->deletePost($this->postId, $this->sanitizer);
         
     }
     
