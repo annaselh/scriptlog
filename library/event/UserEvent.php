@@ -1,6 +1,6 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 /**
- * UserService Class
+ * UserEvent Class
  *
  * @package   SCRIPTLOG
  * @author    Maoelana Noermoehammad

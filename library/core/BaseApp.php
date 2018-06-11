@@ -40,8 +40,8 @@ abstract class BaseApp implements AppInterface
   
   abstract protected function insert();
   
-  abstract protected function update();
+  abstract protected function update($id, $sanitize);
   
-  abstract protected function delete();
+  abstract protected function delete($id);
   
 }

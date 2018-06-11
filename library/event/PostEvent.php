@@ -90,6 +90,11 @@ class PostEvent
     return $this->postDao->findPosts($position, $limit, $orderBy, $author);
   }
   
+  public function grabPost($id)
+  {
+    return $this->postDao->findPost($id, $this->sanitize);     
+  }
+  
   public function addPost()
   {
      $upload_path = __DIR__ . '/../../public/files/pictures/';
@@ -228,7 +233,9 @@ class PostEvent
             'post_status' => $this->post_status,
             'comment_status' => $this->comment_status
         ], $this->postId, $this->topics);
+        
     }
+    
   }
   
   public function removePost()
@@ -236,16 +243,14 @@ class PostEvent
     
     $this->validator->sanitize($this->postId, 'int');
     
-    $getPost = $this->postDao->findPost($this->postId, $this->sanitizer);
-    if (false === $getPost) {
+    $data_post = $this->postDao->findPost($this->postId, $this->sanitizer);
+    if (false === $data_post) {
         direct_page('index.php?module=posts&error=postNotFound');
     }
     
-    $this->image = $getPost['post_image'];
+    $this->image = $data_post['post_image'];
     if ($this->image != '') {
         
-       $deletePost = $this->postDao->deletePost($this->postId, $this->sanitizer);
-       
        if (is_readable(__DIR__ . '/../public/files/pictures/'.$this->post_image)) {
            
            unlink(__DIR__ . '/../public/files/pictures'.$this->image);
@@ -253,9 +258,11 @@ class PostEvent
            
        }
        
+       return  $this->postDao->deletePost($this->postId, $this->sanitizer);
+       
     } else {
         
-       $deletePost = $this->postDao->deletePost($this->postId, $this->sanitizer);
+       return $this->postDao->deletePost($this->postId, $this->sanitizer);
         
     }
     
@@ -270,4 +277,5 @@ class PostEvent
   {
      return $this->postDao->dropDownCommentStatus($selected);
   }
+  
 }

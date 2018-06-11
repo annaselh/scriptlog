@@ -127,17 +127,18 @@ class PostApp extends BaseApp
         $this->view->set('formAction', $this->getFormAction());
         $this->view->set('postStatus', $this->postEvent->postStatusDropDown());
         $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown());
+        
     }
    
     return $this->view->render();
    
   }
   
-  public function update()
+  public function update($id)
   {
   
     $topics = new Topic();
-    
+   
     if (isset($_POST['postFormSubmit'])) {
         
         $title = isset($_POST['post_title']) ? trim($_POST['post_title']) : "";
@@ -152,27 +153,79 @@ class PostApp extends BaseApp
         
         try {
             
+            if (empty($_POST['post_title'])) {
+                
+               throw new AppException("Please enter title");
+                
+            }
+            
+            if (empty($_POST['post_content'])) {
+                
+              throw new AppException("Please enter content");
+                
+            }
+            
+            $this->postEvent->setPostId($post_id);
+            $this->postEvent->setPostTitle($title);
+            $this->postEvent->setPostSlug($slug);
+            $this->postEvent->setPostContent($content);
+            $this->postEvent->setMetaDesc($meta_desc);
+            $this->postEvent->setMetaKeys($meta_keys);
+            $this->postEvent->setPublish($post_status);
+            $this->postEvent->setComment($comment_status);
+            
         } catch (AppException $e) {
+            
+            $this->setView('edit-post');
+            $this->setPageTitle('Add New Post');
+            $this->setFormAction('newPost');
+            $this->view->set('pageTitle', $this->getPageTitle());
+            $this->view->set('formAction', $this->getFormAction());
+            $this->view->set('errors', $e->getMessage());
+            $this->view->set('formData', $_POST);
+            $this->view->set('topics', $topics->setTopic());
+            $this->view->set('formAction', $this->getFormAction());
+            $this->view->set('postStatus', $this->postEvent->postStatusDropDown());
+            $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown());
+            
         }
         
     } else {
+   
+        $getPost = $this->postEvent->grabPost($id);
+        
+        if (false === $getPost) {
+            
+            direct_page('index.php?load=posts&error=postNotFound');
+            
+        }
+        
+        $data_post = array(
+            'title' => $getPost->post_title,
+            'content' => $getPost->content,
+        );
         
         $this->setView('edit-post');
         $this->setPageTitle('Edit Post');
         $this->setFormAction('editPost');
         $this->view->set('pageTitle', $this->getPageTitle());
         $this->view->set('formAction', $this->getFormAction());
-        $this->view->set('topics', $topics->setTopic());
-        $this->view->set('formAction', $this->getFormAction());
+        $this->view->set('postData', $data_post);
+        $this->view->set('topics', $topics->setTopic($getPost->ID));
+        $this->view->set('postStatus', $this->postEvent->postStatusDropDown($getPost->post_status));
+        $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown($getPost->comment_status));
+    
     }
       
     return $this->view->render();
     
   }
   
-  public function delete()
+  public function delete($id)
   {
-      
+    $this->postEvent->setPostId($id);
+    $this->postEvent->removePost();  
+    direct_page('index.php?load=post&status=postDeleted');
   }
     
   protected function setView($viewName)

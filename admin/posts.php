@@ -24,7 +24,7 @@ switch ($action) {
         
         if ($postDao -> checkPostId($postId, $sanitizer)) {
         
-            $postApp -> update();
+            $postApp -> update($postId);
             
         } else {
             
@@ -37,7 +37,7 @@ switch ($action) {
         
     case 'deletePost':
         
-        $postApp -> delete();
+        $postApp -> delete($postId);
         
         break;
         
