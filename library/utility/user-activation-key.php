@@ -1,5 +1,9 @@
 <?php
-// create user_activation_key
+/**
+ * User Activation Key
+ * @param string $value
+ * @return string
+ */
 function user_activation_key($value)
 {
     $salt = 'c#haRl891';

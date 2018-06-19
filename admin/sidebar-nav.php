@@ -20,7 +20,7 @@ function sidebarNavigation($module, $url, $level = null)
           <span>Dashboard</span></a>
           </li>
         
-        <li <?php if ($module == 'posts') echo 'class="treeview active"'; ?>>
+        <li <?php if ($module == 'posts' || $module == 'topics') echo 'class="treeview active"'; ?>>
           <a href="<?= $url.'index.php?load=posts'; ?>"><i class="fa fa-pencil"></i> 
           <span>Posts</span>
             <span class="pull-right-container">
@@ -30,7 +30,7 @@ function sidebarNavigation($module, $url, $level = null)
           <ul class="treeview-menu">
             <li><a href="<?= $url.'index.php?load=posts'; ?>">All Posts</a></li>
             <li><a href="<?= $url.'index.php?load=posts&action=newPost&postId=0'; ?>">Add New</a></li>
-            <li <?php if ($module == 'topics') echo 'class="active"'; ?>><a href="<?= $url.'index.php?load=topics'; ?>">Topics</a></li>
+            <li><a href="<?= $url.'index.php?load=topics'; ?>">Topics</a></li>
           </ul>
         </li>
         
@@ -73,9 +73,9 @@ function sidebarNavigation($module, $url, $level = null)
               </span>
           </a>
           <ul class="treeview-menu">
-            <li <?php if ($module == 'themes') echo 'class="active"' ; ?>><a href="<?= $url.'index.php?load=themes'; ?>">Themes</a></li>
-            <li <?php if ($module == 'menu') echo 'class="active"' ; ?>><a href="<?= $url.'index.php?load=menu'; ?>">Menu</a></li>
-            <li <?php if ($module == 'menu-child') echo 'class="active"' ; ?>><a href="<?= $url.'index.php?load=sub-menu'; ?>">Sub Menu</a></li>
+            <li><a href="<?= $url.'index.php?load=themes'; ?>">Themes</a></li>
+            <li><a href="<?= $url.'index.php?load=menu'; ?>">Menu</a></li>
+            <li><a href="<?= $url.'index.php?load=sub-menu'; ?>">Sub Menu</a></li>
           </ul>
         </li>
         

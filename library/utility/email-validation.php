@@ -1,5 +1,4 @@
 <?php
-
 #
 # RFC 822/2822/5322 Email Parser
 #

@@ -1,6 +1,10 @@
 <?php
-
-// format size unit
+/**
+ * Format size unit function
+ * 
+ * @param number $bytes
+ * @return string
+ */
 function format_size_unit($bytes)
 {
     if ($bytes >= 1073741824) {

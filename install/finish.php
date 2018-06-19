@@ -36,13 +36,13 @@ require('include/setup.php');
         <p class="lead">
            Oops!, Already Installed ... 
         </p>
-        <script type="text/javascript">function leave() {  window.location = "<?php echo $protocol."://".$server_host.dirname(dirname($_SERVER['PHP_SELF']))."/cabin/login.php";; ?>";} setTimeout("leave()", 3640);</script>
+        <script type="text/javascript">function leave() {  window.location = "<?php echo $protocol."://".$server_host.dirname(dirname($_SERVER['PHP_SELF']))."/admin/login.php";; ?>";} setTimeout("leave()", 3640);</script>
         <?php 
          else:
         ?>
         <p class="lead">
         Installation is complete. Your blog is ready for population.
-            Please <a href="<?= $protocol."://".$server_host.dirname(dirname($_SERVER['PHP_SELF']))."/cabin/login.php"; ?>">log in</a>
+            Please <a href="<?= $protocol."://".$server_host.dirname(dirname($_SERVER['PHP_SELF']))."/admin/login.php"; ?>">log in</a>
         </p>
         <?php
         endif;

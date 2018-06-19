@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Delete Directory Function
+ * 
+ * @param string $dirname
+ * @return boolean
+ */
 function delete_directory($dirname)
 {
     if (is_dir( $dirname ))

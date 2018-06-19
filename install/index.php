@@ -1,6 +1,4 @@
 <?php
-$time_start = microtime(true);
-
 require('include/settings.php');
 require('include/check-engine.php');
 require('include/setup.php');
@@ -10,6 +8,9 @@ if (file_exists(__DIR__ . '/../config.php')) exit();
 use Sinergi\BrowserDetector\Browser;
 
 $completed = false;
+$key = rand(0,9);
+$token = bin2hex(openssl_random_pseudo_bytes(32).$key);
+
 $install = isset($_POST['setup']) ? stripcslashes($_POST['setup']) : '';
 
 if ($install != 'install') {
@@ -40,6 +41,16 @@ if ($install != 'install') {
     $confirm = isset($_POST['user_pass2']) ? $_POST['user_pass2'] : "";
     $email = filter_input(INPUT_POST, 'user_email', FILTER_SANITIZE_EMAIL);
     
+    $badCSRF = true; // check CSRF
+    
+    if (!isset($_POST['csrf']) || !isset($_SESSION['CSRF']) || empty($_POST['csrf'])
+        || $_POST['csrf'] !== $_SESSION['CSRF']) {
+            
+         $errors['errorSetup'] = "Sorry, There is a security issue";
+         $badCSRF = true;
+         
+     }
+     
     if ($dbhost == '' || $dbname == '' || $dbuser == '' || $dbpass == '') {
         
         $errors['errorSetup'] = "database: requires name, hostname, user and password";
@@ -63,15 +74,14 @@ if ($install != 'install') {
     
     elseif ($password != $confirm) $errors['errorSetup'] = 'Admin password must both be equal';
     
-    if (empty($errors['errorSetup']) == true) {
+    if (empty($errors['errorSetup'])) {
+        
+        $badCSRF = false;
+        unset($_SESSION['CSRF']);
         
         $completed = true;
         
         $_SESSION['install'] = true;
-        
-        $key = rand(0,9);
-        
-        $token = bin2hex(openssl_random_pseudo_bytes(32).$key);
         
         $_SESSION['token'] = $token;
         
@@ -87,7 +97,7 @@ if ($install != 'install') {
 
 ?>
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -468,9 +478,7 @@ if ($install != 'install') {
           <div class="alert alert-success" role="alert">
               Below you should enter all information needed. We’re going to use this information to create a config.php file 
           </div>
-        <?php 
-        endif;
-        ?>
+       
           <h4 class="mb-3">Database Settings</h4>
           <form method="post" action="<?php echo $installURL; ?>" class="needs-validation" novalidate>
             <div class="row">
@@ -488,7 +496,10 @@ if ($install != 'install') {
                   Valid database name is required.
                 </div>
               </div>
-              <div class="col-md-6 mb-3">
+            </div>
+
+            <div class="row">
+                 <div class="col-md-6 mb-3">
                 <label for="databaseUser">Database Username</label>
                 <input type="text" class="form-control" id="databaseUser" name="db_user" placeholder="Database username" value="<?=(isset($_POST['db_user'])) ? escapeHTML($_POST['db_user']) : ""; ?>" required>
                 <div class="invalid-feedback">
@@ -503,8 +514,6 @@ if ($install != 'install') {
                 </div>
               </div>
             </div>
-
-            <div class="row"></div>
             
             <hr class="mb-4">
                        
@@ -540,10 +549,37 @@ if ($install != 'install') {
             </div>
              <div class="row"></div>
             <hr class="mb-4">
-   
+     <?php
+     $bytes = null;
+     $length = 64;
+     if (function_exists("random_bytes")) {
+         
+         $bytes = random_bytes(ceil($length / 2));
+         
+     } elseif (function_exists("openssl_random_pseudo_bytes")) {
+         
+         $bytes = openssl_random_pseudo_bytes(ceil($length / 2));
+         
+     } else {
+         
+         throw new Exception("no cryptographically secure random function available");
+         
+     }
+     
+     $CSRF = substr(bin2hex($bytes.$key), 0, $length);
+     $_SESSION['CSRF'] = $CSRF;
+     
+     ?>
+     
+     <input type="hidden" name="csrf" value="<?= $CSRF; ?>"/>
      <input type="hidden" name="setup" value="install">
      <button class="btn btn-success btn-lg btn-block" type="submit">Install</button>
     </form>
+    
+     <?php 
+        endif;
+      ?>
+      
   </div>
 
   </div>
@@ -565,8 +601,7 @@ if ($install != 'install') {
                      
              echo "Scriptlog";
               
-             $time_end = microtime(true);
-             $time = $time_end - $time_start;
+             $execution_time = (microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]);
               
         ?>
          
@@ -574,8 +609,8 @@ if ($install != 'install') {
         
         <ul class="list-inline">
           <li class="list-inline-item"><a href="<?php echo $installURL . '../LICENSE'; ?>">License</a></li>
-          <li class="list-inline-item"><a href="#"><?php echo 'Memory Consumption is '. round(memory_get_usage()/1048576,2).''.' MB'; ?></a></li>
-          <li class="list-inline-item"><a href="#"><?php echo $time . ' seconds'; ?></a></li>
+          <li class="list-inline-item"><a href="#"><?php echo 'Memory used '. round(memory_get_usage()/1048576,2).''.' MB'; ?></a></li>
+          <li class="list-inline-item"><a href="#"><?php echo 'Execution time '. $execution_time; ?></a></li>
         </ul>
       </footer>
     </div>

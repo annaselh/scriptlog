@@ -29,15 +29,30 @@ if (isset($errors)) :
 <h4><i class="icon fa fa-ban"></i> Alert!</h4>
 <?php 
 foreach ($errors as $e) :
- echo $e;
+echo '<li>' . $e . '</li>';
 endforeach;
 ?>
 </div>
 <?php 
 endif;
 ?>
-<form method="post" action="index.php?load=posts&action=<?= $formAction;?>&postId=<?=(isset($postId)) ? $postId : 0; ?>" role="form">
-<input type="hidden" name="post_id" value="<?=(isset($postId)) ? $postId : 0; ?>" />
+
+<?php
+if (isset($saveError)) :
+?>
+<div class="alert alert-danger alert-dismissible">
+<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+<h4><i class="icon fa fa-ban"></i> Alert!</h4>
+<?php 
+echo "Error saving data. Please try again." . $saveError;
+?>
+</div>
+<?php 
+endif;
+?>
+
+<form method="post" action="index.php?load=posts&action=<?=(isset($formAction)) ? $formAction : null; ?>&postId=<?=(isset($formData['ID'])) ? $formData['ID'] : 0; ?>" role="form">
+<input type="hidden" name="post_id" value="<?=(isset($formData['ID'])) ? $formData['ID'] : 0; ?>" />
 <input type="hidden" name="MAX_FILE_SIZE" value="697856" />
 
 <div class="box-body">
@@ -91,14 +106,14 @@ endif;
 
 <div class="form-group">
 <label>Meta Description</label>
-<textarea class="form-control" name="meta_description" rows="3" maxlength="500" <?=(isset($formData['meta_description'])) ? htmlspecialchars($formData['meta_description'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
+<textarea class="form-control" name="post_summary" rows="3" maxlength="500" <?=(isset($formData['post_summary'])) ? htmlspecialchars($formData['post_summary'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
 
 </textarea>
 </div>
 
 <div class="form-group">
 <label>Meta Keywords</label>
-<textarea class="form-control" name="meta_keywords" rows="3" maxlength="200" <?=(isset($formData['meta_keywords'])) ? htmlspecialchars($formData['meta_keywords'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
+<textarea class="form-control" name="post_keyword" rows="3" maxlength="200" <?=(isset($formData['post_keyword'])) ? htmlspecialchars($formData['post_keyword'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
 
 </textarea>
 </div>
@@ -124,7 +139,8 @@ endif;
 <!-- /.box-body -->
 
 <div class="box-footer">
-   <input type="submit" name="postFormSubmit" class="btn btn-primary" value="Add New User">
+<input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">  
+<input type="submit" name="postFormSubmit" class="btn btn-primary" value="Add New Post">
 </div>
 </form>
             

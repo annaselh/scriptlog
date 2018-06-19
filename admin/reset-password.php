@@ -17,7 +17,7 @@ if (file_exists(__DIR__ . '/../config.php')) {
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Log In | Scriptlog</title>
+  <title>Lost Password | Scriptlog</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -50,33 +50,26 @@ if (file_exists(__DIR__ . '/../config.php')) {
   <!-- /.login-logo -->
   <div class="login-box-body">
   
+  <p class="login-box-msg">Please enter your email address. You will receive a link to create a new password via email.</p>
+  
     <form action="../../index2.html" method="post">
       <div class="form-group has-feedback">
         <input type="email" class="form-control" placeholder="Email">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
-      <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      </div>
+      
       <div class="row">
         <div class="col-xs-8">
-          <div class="checkbox icheck">
-            <label>
-              <input type="checkbox"> Remember Me
-            </label>
-          </div>
-        </div>
-        <!-- /.col -->
-        <div class="col-xs-4">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">Log In</button>
+          <button type="submit" class="btn btn-primary btn-flat">Get New Password</button>
         </div>
         <!-- /.col -->
       </div>
     </form>
 
-    <a href="reset-password.php" class="text-center">Lost your password?</a>
-
+    <div class="social-auth-links text-center"></div>
+    
+    <a href="login.php" class="text-center">Log In</a>
+    
   </div>
   <!-- /.login-box-body -->
 </div>

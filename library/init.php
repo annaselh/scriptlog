@@ -30,7 +30,7 @@ $configurations = new Configuration($dbc);
 $searchPost = new SearchSeeker($dbc);
 $frontPaginator = new Paginator(10, 'p');
 $postFeeds = new RssFeed($dbc);
-$dispatching = new Dispatcher();
+$sanitizer = new Sanitize();
 
 //set_exception_handler('LogError::exceptionHandler');
 //set_error_handler('LogError::errorHandler');

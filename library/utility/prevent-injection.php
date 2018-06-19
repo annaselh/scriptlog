@@ -1,6 +1,10 @@
 <?php
-
-// prevent from injection
+/**
+ * Prevent Injection Function
+ * 
+ * @param string $data
+ * @return string
+ */
 function prevent_injection($data)
 {
     

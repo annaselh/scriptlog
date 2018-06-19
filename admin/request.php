@@ -1,22 +1,29 @@
-<?php
+<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 
 $load = null;
-$pathToError = "404.php";
-$pathToView = null;
+$pathToError = __DIR__ . DIRECTORY_SEPARATOR . "404.php";
+$pathToLoad = null;
+$allowedToLoad = [
+    'dashboard', 
+    'posts', 'pages', 
+    'topics', 'comments',
+    'themes', 'menu',
+    'menu-child', 'users',
+    'settings', 'plugins'
+];
 
-if (isset($_GET['load']) && $_GET['load'] != '') {
+if (isset($_GET['load']) && $_GET['load'] !== '') {
     $load = htmlentities(strip_tags(strtolower($_GET['load'])));
-    $load = filter_var($load, FILTER_SANITIZE_STRING);
-    $pathToView = dirname(dirname(__FILE__)) . DS . APP_ADMIN . DS ."{$load}.php";
+    $load = filter_var($load, FILTER_SANITIZE_URL);
+    $pathToLoad = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . APP_ADMIN . DIRECTORY_SEPARATOR ."{$load}.php";
 }
 
-// cek direktori admin - views
-if (!is_readable($pathToView) || empty($load)) {
+if (!in_array($load, $allowedToLoad) || !is_readable($pathToLoad)) {
     
     include($pathToError);
     
 } else {
     
-    include($pathToView);
+    include($pathToLoad);
     
 }

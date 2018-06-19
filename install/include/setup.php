@@ -18,7 +18,7 @@ user_reset_complete VARCHAR(3) DEFAULT 'No',
 user_status enum('0','1') NOT NULL DEFAULT '0',
 user_session VARCHAR(255) NOT NULL,
 PRIMARY KEY(ID)
-)Engine=InnoDB DEFAULT CHARSET=utf8";
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
         
 $tablePost = "CREATE TABLE IF NOT EXISTS posts (
 ID bigint(20) unsigned NOT NULL auto_increment,
@@ -35,7 +35,7 @@ post_status varchar(20) NOT NULL DEFAULT 'publish',
 post_type varchar(120) NOT NULL DEFAULT 'blog',
 comment_status varchar(20) NOT NULL DEFAULT 'open',
 PRIMARY KEY (ID)
-)Engine=InnoDB DEFAULT CHARSET=utf8";
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tableTopic = "CREATE TABLE IF NOT EXISTS topics(
 ID bigint(20) unsigned NOT NULL auto_increment,
@@ -43,27 +43,27 @@ topic_title varchar(255) NOT NULL,
 topic_slug varchar(255) NOT NULL,
 topic_status enum('Y','N') NOT NULL DEFAULT 'Y',
 PRIMARY KEY (ID)
-)Engine=InnoDB DEFAULT CHARSET=utf8";
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tablePostTopic = "CREATE TABLE IF NOT EXISTS post_topic(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
 post_id bigint(20) unsigned DEFAULT NULL,
 topic_id bigint(20) unsigned DEFAULT NULL,
 PRIMARY KEY(ID)
-)Engine=InnoDB DEFAULT CHARSET=utf8";
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tableComment = "CREATE TABLE IF NOT EXISTS comments(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
 comment_post_id BIGINT(20) unsigned NOT NULL,
 comment_author_name VARCHAR(60) NOT NULL,
-comment_author_url VARCHAR(200) NOT NULL,
+comment_author_url VARCHAR(200) NOT NULL DEFAULT '#',
 comment_author_ip VARCHAR(100) NOT NULL,
 comment_content text NOT NULL,
 comment_status enum('0','1') NOT NULL DEFAULT '1',
 comment_date DATE NOT NULL,
 user_id BIGINT(20) unsigned NOT NULL DEFAULT 0,
 PRIMARY KEY(ID)
-)Engine=InnoDB DEFAULT CHARSET=utf8";
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tableMenu = "CREATE TABLE IF NOT EXISTS menu(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
@@ -72,7 +72,7 @@ menu_link VARCHAR(255) NOT NULL DEFAULT '#',
 menu_sort INT(5) DEFAULT NULL,
 menu_status enum('Y','N') NOT NULL DEFAULT 'Y',
 PRIMARY KEY(ID)
-)Engine=InnoDB DEFAULT CHARSET=utf8";
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tableMenuChild = "CREATE TABLE IF NOT EXISTS menu_child(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
@@ -83,7 +83,7 @@ menu_sub_child BIGINT(20) unsigned NOT NULL,
 menu_child_sort INT(5) DEFAULT NULL,
 menu_child_status enum('Y','N') NOT NULL DEFAULT 'Y',
 PRIMARY KEY(ID)
-)Engine=InnoDB DEFAULT CHARSET=utf8";
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tablePlugin = "CREATE TABLE IF NOT EXISTS plugin(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
@@ -94,7 +94,7 @@ plugin_status enum('Y','N') NOT NULL DEFAULT 'N',
 plugin_level VARCHAR(20) NOT NULL,
 plugin_sort INT(5) DEFAULT NULL,
 PRIMARY KEY(ID)
-)Engine=InnoDB DEFAULT CHARSET=utf8";
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tableSetting = "CREATE TABLE IF NOT EXISTS settings(
 ID SMALLINT(5) unsigned NOT NULL,
@@ -107,7 +107,7 @@ facebook_url VARCHAR(200) NOT NULL DEFAULT '#',
 twitter_url VARCHAR(200) NOT NULL DEFAULT '#',
 instagram_url VARCHAR(200) NOT NULL DEFAULT '#',
 PRIMARY KEY(ID)
-)Engine=InnoDB DEFAULT CHARSET=utf8";
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tableTheme = "CREATE TABLE IF NOT EXISTS themes(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
@@ -117,7 +117,7 @@ theme_designer VARCHAR(90) NOT NULL,
 theme_directory VARCHAR(100) NOT NULL,
 theme_status enum('Y','N') NOT NULL DEFAULT 'N',
 PRIMARY KEY(ID)
-)Engine=InnoDB DEFAULT CHARSET=utf8";
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
 
 $saveAdmin = "INSERT INTO users (user_login, user_email, user_pass, user_level,
 user_registered, user_activation_key, user_status, user_session) 

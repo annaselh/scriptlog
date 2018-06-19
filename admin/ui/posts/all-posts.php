@@ -1,4 +1,4 @@
-<?php ?>
+<?php if (!defined('SCRIPTLOG')) exit(); ?>
  <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 <!-- Content Header (Page header) -->
@@ -12,7 +12,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="index.php?load=dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="index.php?load=posts">All posts</a></li>
+        <li><a href="index.php?load=posts">All Posts</a></li>
         <li class="active">Data Posts</li>
       </ol>
     </section>

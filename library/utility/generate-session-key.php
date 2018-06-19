@@ -1,5 +1,10 @@
 <?php
-// generate session key
+/**
+ * Generate Session Key Function
+ * 
+ * @param string $value
+ * @return string
+ */
 function generate_session_key($value)
 {
     // create value

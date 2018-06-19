@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * check magic_quote function
+ */
 function check_magic_quote()
 {
     if (get_magic_quotes_gpc()) {

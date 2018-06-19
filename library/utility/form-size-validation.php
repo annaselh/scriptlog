@@ -1,4 +1,9 @@
 <?php
+/**
+ * Form size value validation function
+ * 
+ * @param string $form_fields
+ */
 function form_size_validation($form_fields)
 {
     

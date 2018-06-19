@@ -1,6 +1,10 @@
 <?php
-
-// generate Hash
+/**
+ * Generate Hash Function
+ * 
+ * @param string $quantityChar
+ * @return NULL|string
+ */
 function generate_hash($quantityChar)
 {
     $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

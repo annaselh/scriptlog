@@ -93,6 +93,14 @@ class Topic extends Dao
     
   }
   
+  /**
+   * Find Topic by Slug
+   * 
+   * @param string $slug
+   * @param object $sanitize
+   * @param static $fetchMode
+   * @return boolean|array|object
+   */
   public function findTopicBySlug($slug, $sanitize, $fetchMode = null)
   {
       $sql = "SELECT ID, topic_title
@@ -196,7 +204,7 @@ class Topic extends Dao
   * @param array $checked
   * @return string
   */
- public function setTopic($postId = '', $checked = NULL)
+ public function setCheckBoxTopic($postId = '', $checked = NULL)
  {
    	  	
  $checked = "";
@@ -232,9 +240,9 @@ class Topic extends Dao
                  
              }
              
-             $html[] = '<label class="checkbox-inline">';
-             $html[] = '<input type="checkbox" name="catID[]" value="'.$item->ID.'"'.$checked.'>'.$item->topic_title;
-             $html[] = '</label>';
+            $html[] = '<label class="checkbox-inline">';
+            $html[] = '<input type="checkbox" name="catID[]" value="'.$item->ID.'"'.$checked.'>'.$item->topic_title;
+            $html[] = '</label>';
              
          }
          
@@ -277,7 +285,7 @@ class Topic extends Dao
  }
  
  /**
-  * Check topic id
+  * Check ID's Topic
   * 
   * @param integer $topicId
   * @param integer $sanitizing

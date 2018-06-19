@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Random Generator Function
+ * to create random string
+ * 
+ * @param number $digits
+ * @return string|number
+ */
 function random_generator($digits)
 {
     srand((double) microtime() * 10000000);

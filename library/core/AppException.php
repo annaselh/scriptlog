@@ -20,7 +20,7 @@ class AppException extends Exception
   
   public function getMessage()
   {
-    $this->error_message = LogError::newMessage($this->getMessage());
+    $this->error_message = LogError::newMessage($this->error_message);
     $this->error_message = LogError::customErrorMessage();
   }
   

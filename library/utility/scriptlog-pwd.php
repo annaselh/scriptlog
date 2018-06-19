@@ -1,7 +1,13 @@
 <?php
-
-// scriptlog password is used when user forget reset their password
-// this will be temporary password that need change after that
+/**
+ * Scriptlog Password
+ * scriptlog password is used when user forget their password 
+ * this will be temporary password that need change after that
+ * 
+ * @param string $password
+ * @param integer $id
+ * @return string
+ */
 function scriptlog_pwd($password, $id)
 {
     

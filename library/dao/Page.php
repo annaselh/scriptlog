@@ -195,10 +195,10 @@ public function deletePage($id, $sanitizing, $type)
  */
 public function checkPageId($id, $sanitizing)
 {
-   $cleanUpId = $this->filteringId($sanitizing, $id, 'sql');
+   $cleanId = $this->filteringId($sanitizing, $id, 'sql');
    $sql = "SELECT ID FROM posts WHERE ID = ?";
    $this->setSQL($sql);
-   $stmt = $this->checkCountValue([$cleanUpId]);
+   $stmt = $this->checkCountValue([$cleanId]);
    return($stmt > 0);
 }
  
@@ -208,7 +208,7 @@ public function checkPageId($id, $sanitizing)
  * @param string $selected
  * @return string
  */
-public function setPostStatus($selected = "")
+public function dropDownPostStatus($selected = "")
 {
      
      $option_selected = "";
@@ -252,7 +252,7 @@ public function setPostStatus($selected = "")
  * @param string $selected
  * @return string
  */
-public function setCommentStatus($selected = '')
+public function dropDownCommentStatus($selected = '')
 {
      $option_selected = "";
      

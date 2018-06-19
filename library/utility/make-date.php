@@ -1,5 +1,11 @@
 <?php
-// make Date
+/**
+ * Make Date Function
+ * 
+ * @param string $value
+ * @param null $locale
+ * @return string
+ */
 function make_date($value, $locale = null)
 {
     $day = substr($value, 8, 2 );
@@ -18,6 +24,13 @@ function make_date($value, $locale = null)
     
 }
 
+/**
+ * Generate Mounth Function
+ * 
+ * @param string $value
+ * @param null $locale
+ * @return string
+ */
 function generate_month($value, $locale = null)
 {
     

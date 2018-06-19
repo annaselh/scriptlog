@@ -1,5 +1,11 @@
 <?php
-// make slug url friendly
+/**
+ * Make Slug Function 
+ * to create URL SEO Friendly
+ * 
+ * @param string $slug
+ * @return string|mixed
+ */
 function make_slug($slug)
 {
     

@@ -1,7 +1,8 @@
 <?php
 /**
- * @filesource https://stackoverflow.com/questions/1634782/what-is-the-most-accurate-way-to-retrieve-a-users-correct-ip-address-in-php#2031935
+ * Get IP Address Function
  * 
+ * @link https://stackoverflow.com/questions/1634782/what-is-the-most-accurate-way-to-retrieve-a-users-correct-ip-address-in-php
  * @return string
  */
 

@@ -1,4 +1,4 @@
- <?php 
+ <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
  require 'sidebar-nav.php';
  ?>
   <!-- Main Header -->

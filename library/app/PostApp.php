@@ -20,6 +20,12 @@ class PostApp extends BaseApp
     $this->validator = $validator;
   }
   
+  /**
+   * Retrieve all posts
+   *  
+   * {@inheritDoc}
+   * @see BaseApp::listItems()
+   */
   public function listItems()
   {
     $this->setPageTitle('Posts');
@@ -44,25 +50,29 @@ class PostApp extends BaseApp
     $this->view->set('pageTitle', $this->getPageTitle());
     
     if (!$checkError) {
-        
         $this->view->set('errors', $errors);
-        
     } 
     
     if ($checkStatus) {
-        
         $this->view->set('status', $status);
-        
     }
     
     return $this->view->render();
     
   }
   
+  /**
+   * Insert new post
+   * 
+   * {@inheritDoc}
+   * @see BaseApp::insert()
+   */
   public function insert()
   {
     
     $topics = new Topic();
+    $errors = array();
+    $checkError = true;
     
     if (isset($_POST['postFormSubmit'])) {
         
@@ -77,43 +87,63 @@ class PostApp extends BaseApp
        
       try {
         
-         if (empty($_POST['post_title'])) {
+         if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
+         
+             $checkError = false;
+             array_push($errors, "Sorry, unpleasant attempt detected!");
+             
+         }
+         
+         if (empty($title)) {
            
-            throw new AppException("Please enter title");
+            $checkError = false;
+            array_push($errors, "Please enter title");
             
          }
          
-         if (empty($_POST['post_content'])) {
+         if (empty($content)) {
              
-            throw new AppException("Please enter content");
+            $checkError = false;
+            array_push($errors, "Please enter content");
              
          }
-         
-        $this->postEvent->setPostTitle($title);
-        $this->postEvent->setPostSlug($slug);
-        $this->postEvent->setPostContent($content);
-        $this->postEvent->setMetaDesc($meta_desc);
-        $this->postEvent->setMetaKeys($meta_keys);
-        $this->postEvent->setPublish($post_status);
-        $this->postEvent->setComment($comment_status);
-        $this->postEvent->addPost();
-        
-        direct_page('index.php?load=posts&status=postAdded');
-        
+          
+         if (!$checkError) {
+            
+            $this->setView("edit-post");
+            $this->setPageTitle('Invalid form data!');
+            $this->setFormAction('newPost');
+            $this->view->set('pageTitle', $this->getPageTitle());
+            $this->view->set('formAction', $this->getFormAction());
+            $this->view->set('errors', $errors);
+            $this->view->set('formData', $_POST);
+            $this->view->set('topics', $topics->setCheckBoxTopic());
+            $this->view->set('postStatus', $this->postEvent->postStatusDropDown());
+            $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown());
+            $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
+            
+         } else {
+             
+             $this->postEvent->setPostTitle($title);
+             $this->postEvent->setPostSlug($slug);
+             $this->postEvent->setPostContent($content);
+             $this->postEvent->setMetaDesc($meta_desc);
+             $this->postEvent->setMetaKeys($meta_keys);
+             $this->postEvent->setPublish($post_status);
+             $this->postEvent->setComment($comment_status);
+             $this->postEvent->addPost();
+             direct_page('index.php?load=posts&status=postAdded', 200);
+             
+         }
+            
       } catch (AppException $e) {
           
-         $this->setView('edit-post');
-         $this->setPageTitle('Add New Post');
-         $this->setFormAction('newPost');
+         $this->setView('all-posts');
+         $this->setPageTitle('Error 400');
          $this->view->set('pageTitle', $this->getPageTitle());
-         $this->view->set('formAction', $this->getFormAction());
-         $this->view->set('errors', $e->getMessage());
+         $this->view->set('saveError', $e->getMessage());
          $this->view->set('formData', $_POST);
-         $this->view->set('topics', $topics->setTopic());
-         $this->view->set('formAction', $this->getFormAction());
-         $this->view->set('postStatus', $this->postEvent->postStatusDropDown());
-         $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown());
-          
+         
       }
     
     } else {
@@ -123,10 +153,10 @@ class PostApp extends BaseApp
         $this->setFormAction('newPost');
         $this->view->set('pageTitle', $this->getPageTitle());
         $this->view->set('formAction', $this->getFormAction());
-        $this->view->set('topics', $topics->setTopic());
-        $this->view->set('formAction', $this->getFormAction());
+        $this->view->set('topics', $topics->setCheckBoxTopic());
         $this->view->set('postStatus', $this->postEvent->postStatusDropDown());
         $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown());
+        $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
         
     }
    
@@ -134,11 +164,34 @@ class PostApp extends BaseApp
    
   }
   
+  /**
+   * Update post
+   * 
+   * {@inheritDoc}
+   * @see BaseApp::update()
+   */
   public function update($id)
   {
   
+    $getPost = $this->postEvent->grabPost($id);
     $topics = new Topic();
-   
+    $errors = array();
+    $checkError = true;
+    
+    if (false === $getPost) {
+        
+        direct_page('index.php?load=posts&error=postNotFound', 404);
+        
+    }
+    
+    $data_post = array(
+        'ID' => $getPost->ID,
+        'post_title' => $getPost->post_title,
+        'post_content' => $getPost->post_content,
+        'post_summary' => $getPost->post_summary,
+        'post_keyword' => $getPost->post_keyword
+    );
+    
     if (isset($_POST['postFormSubmit'])) {
         
         $title = isset($_POST['post_title']) ? trim($_POST['post_title']) : "";
@@ -153,84 +206,101 @@ class PostApp extends BaseApp
         
         try {
             
-            if (empty($_POST['post_title'])) {
+            if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
                 
-               throw new AppException("Please enter title");
-                
-            }
-            
-            if (empty($_POST['post_content'])) {
-                
-              throw new AppException("Please enter content");
+                $checkError = false;
+                array_push($errors, "Sorry, unpleasant attempt detected");
                 
             }
             
-            $this->postEvent->setPostId($post_id);
-            $this->postEvent->setPostTitle($title);
-            $this->postEvent->setPostSlug($slug);
-            $this->postEvent->setPostContent($content);
-            $this->postEvent->setMetaDesc($meta_desc);
-            $this->postEvent->setMetaKeys($meta_keys);
-            $this->postEvent->setPublish($post_status);
-            $this->postEvent->setComment($comment_status);
+            if (empty($title)) {
+                
+               $checkError = false;
+               array_push($errors, "Please enter title");
+                
+            }
+            
+            if (empty($content)) {
+                
+              $checkError = false;
+              array_push($errors, "Please enter post_content");
+              
+            }
+            
+            if (!$checkError) {
+                
+                $this->setView("edit-post");
+                $this->setPageTitle('Invalid form data!');
+                $this->setFormAction('editPost');
+                $this->view->set('pageTitle', $this->getPageTitle());
+                $this->view->set('formAction', $this->getFormAction());
+                $this->view->set('errors', $errors);
+                $this->view->set('formData', $data_post);
+                $this->view->set('topics', $topics->setCheckBoxTopic($getPost->ID));
+                $this->view->set('postStatus', $this->postEvent->postStatusDropDown($getPost->post_status));
+                $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown($getPost->comment_status));
+                $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
+                
+            } else {
+              
+                $this->postEvent->setPostId($post_id);
+                $this->postEvent->setPostTitle($title);
+                $this->postEvent->setPostSlug($slug);
+                $this->postEvent->setPostContent($content);
+                $this->postEvent->setMetaDesc($meta_desc);
+                $this->postEvent->setMetaKeys($meta_keys);
+                $this->postEvent->setPublish($post_status);
+                $this->postEvent->setComment($comment_status);
+                $this->postEvent->modifyPost();
+                direct_page('index.php?load=posts&status=postUpdated', 200);
+                
+            }
             
         } catch (AppException $e) {
             
             $this->setView('edit-post');
-            $this->setPageTitle('Add New Post');
-            $this->setFormAction('newPost');
+            $this->setPageTitle('Error 400');
             $this->view->set('pageTitle', $this->getPageTitle());
-            $this->view->set('formAction', $this->getFormAction());
-            $this->view->set('errors', $e->getMessage());
-            $this->view->set('formData', $_POST);
-            $this->view->set('topics', $topics->setTopic());
-            $this->view->set('formAction', $this->getFormAction());
-            $this->view->set('postStatus', $this->postEvent->postStatusDropDown());
-            $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown());
+            $this->view->set('saveError', $e->getMessage());
+            $this->view->set('formData', $data_post);
             
         }
         
     } else {
    
-        $getPost = $this->postEvent->grabPost($id);
-        
-        if (false === $getPost) {
-            
-            direct_page('index.php?load=posts&error=postNotFound');
-            
-        }
-        
-        $data_post = array(
-            'title' => $getPost->post_title,
-            'content' => $getPost->content,
-        );
-        
         $this->setView('edit-post');
         $this->setPageTitle('Edit Post');
         $this->setFormAction('editPost');
         $this->view->set('pageTitle', $this->getPageTitle());
         $this->view->set('formAction', $this->getFormAction());
-        $this->view->set('postData', $data_post);
-        $this->view->set('topics', $topics->setTopic($getPost->ID));
+        $this->view->set('formData', $data_post);
+        $this->view->set('topics', $topics->setCheckBoxTopic($getPost->ID));
         $this->view->set('postStatus', $this->postEvent->postStatusDropDown($getPost->post_status));
         $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown($getPost->comment_status));
-    
+        $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
+        
     }
       
     return $this->view->render();
     
   }
   
+  /**
+   * Delete post
+   * 
+   * {@inheritDoc}
+   * @see BaseApp::delete()
+   */
   public function delete($id)
   {
     $this->postEvent->setPostId($id);
     $this->postEvent->removePost();  
-    direct_page('index.php?load=post&status=postDeleted');
+    direct_page('index.php?load=post&status=postDeleted', 200);
   }
     
   protected function setView($viewName)
   {
-     $this->view = new View('admin', 'ui', 'posts', $viewName);
+    $this->view = new View('admin', 'ui', 'posts', $viewName);
   }
   
 }

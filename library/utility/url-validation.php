@@ -1,5 +1,11 @@
 <?php
-// URL Validation with regular expression
+/**
+ * URL Validation Function
+ * URL Validation with regular expression
+ * 
+ * @param string $url
+ * @return boolean
+ */
 function url_validation($url)
 {
     $regex = "((https?|ftp)\:\/\/)?"; // SCHEME

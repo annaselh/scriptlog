@@ -1,6 +1,12 @@
 <?php
-
-// unique ID
+/**
+ * Uniqid Real Function
+ * to cretate randomm unique ID or Key
+ * 
+ * @param number $length
+ * @throws Exception
+ * @return string
+ */
 function uniqid_real($length = 13)
 {
     // uniqid gives 13 chars, but you could adjust it to your needs.
