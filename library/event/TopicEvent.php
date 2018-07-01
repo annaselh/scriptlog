@@ -82,7 +82,7 @@ class TopicEvent
     
     $data_topic = $this->topicDao->findTopicById($this->topic_id, $this->sanitizer);
     if (false === $data_topic) {
-        direct_page('index.php?load=topics&error=topicNotFound');
+        direct_page('index.php?load=topics&error=topicNotFound', 404);
     }
     
     return $this->topicDao->deleteTopic($this->topic_id, $this->sanitizer);

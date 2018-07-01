@@ -46,6 +46,7 @@ if ($install != 'install') {
     if (!isset($_POST['csrf']) || !isset($_SESSION['CSRF']) || empty($_POST['csrf'])
         || $_POST['csrf'] !== $_SESSION['CSRF']) {
             
+         header($_SERVER['SERVER_PROTOCOL']." 400 Bad Request");   
          $errors['errorSetup'] = "Sorry, There is a security issue";
          $badCSRF = true;
          
@@ -544,7 +545,7 @@ if ($install != 'install') {
               <label for="email">Email <span class="text-muted">(Administrator's E-mail)</span></label>
               <input type="email" class="form-control" id="email" name="user_email" placeholder="you@example.com" value="<?=(isset($_POST['user_email'])) ? escapeHTML($_POST['user_email']) : ""; ?>" required>
               <div class="invalid-feedback">
-                Please enter a valid email address.
+                You must provide an email address.
               </div>
             </div>
              <div class="row"></div>

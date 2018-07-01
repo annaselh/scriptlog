@@ -26,10 +26,10 @@ if (isset($errors)) :
 ?>
 <div class="alert alert-danger alert-dismissible">
 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-<h4><i class="icon fa fa-ban"></i> Alert!</h4>
+<h4><i class="icon fa fa-warning"></i> Invalid Form Data!</h4>
 <?php 
 foreach ($errors as $e) :
-echo '<li>' . $e . '</li>';
+echo '<p>' . $e . '</p>';
 endforeach;
 ?>
 </div>
@@ -63,12 +63,12 @@ endif;
 <?=(isset($topics)) ? $topics : ""; ?>
 
 <?php 
-if (isset($postImage)) :
+if (isset($formData['post_image'])) :
 ?>
 <div class="form-group">
 <?php 
-$image = __DIR__ . '/../public/files/pictures/'.$postImage;
-$imageThumb = __DIR__ . '/../public/files/pictures/thumbs/thumb_'.$postImage;
+$image = __DIR__ . '/../public/files/pictures/'.$formData['post_image'];
+$imageThumb = __DIR__ . '/../public/files/pictures/thumbs/thumb_'.$formData['post_image'];
 
 if (!is_readable($imageThumb)) :
     $imageThumb = __DIR__ . '/../public/files/pictures/thumbs/nophoto.jpg';

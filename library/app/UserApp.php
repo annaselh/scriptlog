@@ -41,12 +41,12 @@ class UserApp extends BaseApp
       
   }
   
-  public function update()
+  public function update($id)
   {
       
   }
   
-  public function delete()
+  public function delete($id)
   {
       
   }

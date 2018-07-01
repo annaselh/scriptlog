@@ -27,10 +27,9 @@ switch ($action) {
             
         } else {
             
-            header("Location: index.php?load=posts&error=postNotFound");
+           direct_page('index.php?load=posts&error=postNotFound', 404);
             
         }
-        
         
         break;
         

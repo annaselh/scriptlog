@@ -19,6 +19,8 @@ class PageEvent
   private $meta_key;
     
   private $page_status;
+  
+  private $post_type;
     
   private $comment_status;
   
@@ -64,6 +66,11 @@ class PageEvent
     $this->page_status = $page_status;
   }
   
+  public function setPostType($post_type)
+  {
+    $this->post_type = $post_type;    
+  }
+  
   public function setComment($comment_status)
   {
    $this->comment_status = $comment_status;
@@ -81,6 +88,139 @@ class PageEvent
   
   public function addPage()
   {
+    $upload_path = __DIR__ . '/../../public/files/pictures/';
+    $image_uploader =  new ImageUploader('image', $upload_path);
+    
+    $this->author = isset($_SESSION['ID']) ? (int)$_SESSION['ID'] : 0;
+    
+    $this->validator->sanitize($this->author, 'int');
+    $this->validator->sanitize($this->title, 'string');
+    $this->validator->sanitize($this->meta_desc, 'string');
+    $this->validator->sanitize($this->meta_key, 'string');
+    
+    if ($image_uploader -> isImageUploaded()) {
+       
+        return $this->pageDao->createPage([
+            'post_author' => $this->author,
+            'date_created' => date("Ymd"),
+            'post_title' => $this->title,
+            'post_slug' => $this->slug,
+            'post_content' => $this->content,
+            'post_summary' => $this->meta_desc,
+            'post_keyword' => $this->meta_key,
+            'post_status' => $this->page_status,
+            'post_type' => $this->post_type,
+            'comment_status' => $this->comment_status
+        ]);
+        
+    } else {
+     
+       $newFileName = $image_uploader -> renameImage();
+       $uploadImagePost = $image_uploader -> uploadImage('post', $newFileName, 770, 400, 'crop');
+       
+       return $this->pageDao->createPage([
+           'post_image' => $newFileName,
+           'post_author' => $this->author,
+           'date_created' => date("Ymd"),
+           'post_title' => $this->title,
+           'post_slug' => $this->slug,
+           'post_content' => $this->content,
+           'post_summary' => $this->meta_desc,
+           'post_keyword' => $this->meta_key,
+           'post_status' => $this->page_status,
+           'post_type' => $this->post_type,
+           'comment_status' => $this->comment_status
+       ]);
+        
+    }
     
   }
+  
+  public function modifyPage()
+  {
+    $upload_path = __DIR__ . '/../../public/files/pictures/';
+    $image_uploader =  new ImageUploader('image', $upload_path);
+    
+    $this->author = isset($_SESSION['ID']) ? (int)$_SESSION['ID'] : 0;
+    
+    $this->validator->sanitize($this->pageId, 'int');
+    $this->validator->sanitize($this->author, 'int');
+    $this->validator->sanitize($this->title, 'string');
+    $this->validator->sanitize($this->meta_desc, 'string');
+    $this->validator->sanitize($this->meta_key, 'string');
+    
+    if ($image_uploader -> isImageUploaded()) {
+        
+      return $this->pageDao->updatePage([
+          'post_author' => $this->author,
+          'date_modified' => date("Ymd"),
+          'post_title' => $this->title,
+          'post_slug' => $this->slug,
+          'post_content' => $this->content,
+          'post_summary' => $this->meta_desc,
+          'post_keyword' => $this->meta_key,
+          'post_status' => $this->page_status,
+          'post_type' => $this->post_type,
+          'comment_status' => $this->comment_status
+      ], $this->pageId);
+      
+    } else {
+        
+       $newFileName = $image_uploader -> renameImage();
+       $uploadImagePost = $image_uploader -> uploadImage('post', $newFileName, 770, 400, 'crop');
+       
+       return $this->pageDao->updatePage([
+           'post_image' => $newFileName,
+           'date_modified' => date("Ymd"),
+           'post_title' => $this->title,
+           'post_slug' => $this->slug,
+           'post_content' => $this->content,
+           'post_summary' => $this->meta_desc,
+           'post_keyword' => $this->meta_key,
+           'post_status' => $this->page_status,
+           'post_type' => $this->post_type,
+           'comment_status' => $this->comment_status
+       ], $this->pageId);
+       
+    }
+      
+  }
+  
+  public function removePage()
+  {
+    $this->validator->sanitize($this->pageId, 'int');
+    
+    $data_page = $this->pageDao->findPageById($this->pageId, $this->post_type, $this->sanitizer);
+    if (false === $data_page) {
+        direct_page('index.php?load=pages&error=pageNotFound', 404);
+    }
+    
+    $this->image = $data_page['post_image'];
+    if ($this->image !== '') {
+        
+        if (is_readable(__DIR__ . '/../public/files/pictures/'.$this->post_image)) {
+            unlink(__DIR__ . '/../public/files/pictures'.$this->image);
+            unlink(__DIR__ . '/../public/files/pictures/thumbs/thumbs_'.$this->image);
+        }
+        
+        return $this->pageDao->deletePage($this->pageId, $this->sanitizer, $this->post_type);
+        
+    } else {
+        
+        return $this->pageDao->deletePage($this->pageId, $this->sanitizer, $this->post_type);
+        
+    }
+    
+  }
+  
+  public function postStatusDropDown($selected = "") 
+  {
+    return $this->pageDao->dropDownPostStatus($selected);
+  }
+  
+  public function commentStatusDropDown($selected = "")
+  {
+    return $this->pageDao->dropDownCommentStatus($selected);
+  }
+  
 }

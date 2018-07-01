@@ -111,7 +111,7 @@ class PostApp extends BaseApp
          if (!$checkError) {
             
             $this->setView("edit-post");
-            $this->setPageTitle('Invalid form data!');
+            $this->setPageTitle('Add New Post');
             $this->setFormAction('newPost');
             $this->view->set('pageTitle', $this->getPageTitle());
             $this->view->set('formAction', $this->getFormAction());
@@ -186,6 +186,7 @@ class PostApp extends BaseApp
     
     $data_post = array(
         'ID' => $getPost->ID,
+        'post_image' => $getPost -> post_image,
         'post_title' => $getPost->post_title,
         'post_content' => $getPost->post_content,
         'post_summary' => $getPost->post_summary,
@@ -257,9 +258,10 @@ class PostApp extends BaseApp
             }
             
         } catch (AppException $e) {
-            
+   
+            http_response_code(400);
             $this->setView('edit-post');
-            $this->setPageTitle('Error 400');
+            $this->setPageTitle('Error 400 Bad Request');
             $this->view->set('pageTitle', $this->getPageTitle());
             $this->view->set('saveError', $e->getMessage());
             $this->view->set('formData', $data_post);

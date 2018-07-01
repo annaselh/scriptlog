@@ -157,6 +157,12 @@ class Authentication
     
   }
   
+  /**
+   * Is Email Exists
+   * 
+   * @param string  $email
+   * @return boolean
+   */
   public function isEmailExists($email)
   {
       if ($this->user->checkUserEmail($email)) {
@@ -168,6 +174,13 @@ class Authentication
       
   }
   
+  /**
+   * Check password
+   * 
+   * @param string $email
+   * @param string $password
+   * @return boolean
+   */
   public function checkPassword($email, $password)
   {
     $result = $this->user->checkUserPassword($email, $password);
@@ -183,6 +196,13 @@ class Authentication
     return true;
   }
   
+  /**
+   * Validate User Account
+   * 
+   * @param string $email
+   * @param string $password
+   * @return boolean
+   */
   public function validateUserAccount($email, $password)
   {
     $result = $this->user->checkUserPassword($email, $password);
@@ -197,12 +217,25 @@ class Authentication
     
   }
   
+  /**
+   * Set Error
+   * 
+   * @param string $field
+   * @param string $errorMessage
+   */
   private function setError($field, $errorMessage)
   {
      $this->errors[$field] = $errorMessage;
      $this->numErrors = count($this->errors);
   }
   
+  /**
+   * Is Form Field Empty 
+   * 
+   * @param string $field
+   * @param string $value
+   * @return boolean
+   */
   private function isEmpty($field, $value)
   {
      $value = trim($value);
@@ -215,6 +248,13 @@ class Authentication
      
   }
   
+  /**
+   * Check Format
+   * 
+   * @param string $field
+   * @param string $value
+   * @return boolean
+   */
   private function checFormat($field, $value)
   {
       switch ($field) {
@@ -256,6 +296,15 @@ class Authentication
       
   }
   
+  /**
+   * Check Size
+   * 
+   * @param string $field
+   * @param string $value
+   * @param integer $minLength
+   * @param integer $maxLength
+   * @return boolean
+   */
   private function checkSize($field, $value, $minLength, $maxLength = null)
   {
      $value = trim($value);

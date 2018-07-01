@@ -207,7 +207,7 @@ class PostEvent
    */
   public function grabPost($id)
   {
-    return $this->postDao->findPost($id, $this->sanitize);     
+    return $this->postDao->findPost($id, $this->sanitizer);     
   }
   
   /**
@@ -365,11 +365,11 @@ class PostEvent
     
     $data_post = $this->postDao->findPost($this->postId, $this->sanitizer);
     if (false === $data_post) {
-       direct_page('index.php?module=posts&error=postNotFound'); 
+       direct_page('index.php?module=posts&error=postNotFound', 404); 
     }
     
     $this->image = $data_post['post_image'];
-    if ($this->image != '') {
+    if ($this->image !== '') {
         
        if (is_readable(__DIR__ . '/../public/files/pictures/'.$this->post_image)) {
            

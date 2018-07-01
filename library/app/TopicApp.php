@@ -77,7 +77,7 @@ class TopicApp extends BaseApp
           if (!$checkError) {
               
              $this->setView('edit-topic');
-             $this->setPageTitle('Invalid form data!');
+             $this->setPageTitle('Add New Topic');
              $this->setFormAction('newTopic');
              $this->view->set('pageTitle', $this->getPageTitle());
              $this->view->set('formAction', $this->getFormAction());
@@ -165,7 +165,7 @@ class TopicApp extends BaseApp
             if (!$checkError) {
                 
                 $this->setView('edit-topic');
-                $this->setPageTitle('Invalid form data!');
+                $this->setPageTitle('Edit Topic');
                 $this->setFormAction('updateTopic');
                 $this->view->set('pageTitle', $this->getPageTitle());
                 $this->view->set('formAction', $this->getFormAction());

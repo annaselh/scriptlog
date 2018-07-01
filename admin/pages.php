@@ -6,7 +6,7 @@ $pageDao = new Page();
 $validator = new FormValidator();
 $sanitizer = new Sanitize();
 $pageEvent = new PageEvent($pageDao, $validator, $sanitizer);
-
+$pageApp = new PageApp($pageEvent, $validator);
 
 switch ($action) {
     
@@ -14,19 +14,33 @@ switch ($action) {
     
         if ($pageId == 0) {
             
+            $pageApp -> insert();
+            
         }
         
         break;
     
     case 'editPage':
         
+        if ($pageDao -> checkPageId($pageId, $sanitizer)) {
+            
+            $pageApp -> update($pageId);
+            
+        } else {
+            
+            
+        }
         break;
         
     case 'deletePage':
         
+        $pageApp -> delete($pageId);
+        
         break;
     
     default:
+        
+        $pageApp -> listItems();
         
     break;
     

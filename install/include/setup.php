@@ -1,5 +1,20 @@
 <?php
-// install database table
+#######################################################################
+#   Setup.php File
+#   This is file to setup installation and write config.php file
+#   @license MIT
+#   @author  Contributors
+#                                                                     
+#######################################################################
+/**
+ * Install Database Table Function
+ * 
+ * @param string $link
+ * @param string $user_login
+ * @param string $user_pass
+ * @param string $user_email
+ * @param string $key
+ */
 function install_database_table($link, $user_login, $user_pass, $user_email, $key)
 {
 
@@ -56,12 +71,20 @@ $tableComment = "CREATE TABLE IF NOT EXISTS comments(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
 comment_post_id BIGINT(20) unsigned NOT NULL,
 comment_author_name VARCHAR(60) NOT NULL,
-comment_author_url VARCHAR(200) NOT NULL DEFAULT '#',
 comment_author_ip VARCHAR(100) NOT NULL,
 comment_content text NOT NULL,
-comment_status enum('0','1') NOT NULL DEFAULT '1',
-comment_date DATE NOT NULL,
-user_id BIGINT(20) unsigned NOT NULL DEFAULT 0,
+comment_status VARCHAR(20) NOT NULL DEFAULT 'approved',
+date_publish DATE NOT NULL
+PRIMARY KEY(ID)
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
+
+$tableReply = "CREATE TABLE IF NOT EXISTS comment_reply(
+ID BIGINT(20) unsigned NOT NULL auto_increment,
+comment_id BIGINT(20)unsigned NOT NULL,
+user_id BIGINT(20) unsigned NOT NULL,
+reply_content text NOT NULL,
+reply_status enum('0','1') NOT NULL DEFAULT '1',
+date_publish DATE NOT NULL,
 PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
@@ -146,6 +169,7 @@ if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
     $newTableTopic = $link -> query($tableTopic);
     $newTablePostTopic = $link -> query($tablePostTopic);
     $newTableComment = $link -> query($tableComment);
+    $newTableReply = $link -> query($tableReply);
     $newTableMenu = $link -> query($tableMenu);
     $newTableMenuChild = $link -> query($tableMenuChild);
     $newTablePlugin = $link -> query($tablePlugin);
@@ -163,7 +187,17 @@ if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
  
 }
 
-// write configuration file
+/**
+ * Write Config File Function
+ * 
+ * @param string $host
+ * @param string $user
+ * @param string $password
+ * @param string $database
+ * @param string $email
+ * @param string $key
+ * @throws Exception
+ */
 function write_config_file($host, $user, $password, $database, $email, $key)
 {
 
@@ -219,7 +253,14 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
 
 }
 
-// remove bad characters
+/**
+ * Remove Bad Characters
+ * 
+ * @param string $str_words
+ * @param boolean $escape
+ * @param string $level
+ * @return string
+ */
 function remove_bad_characters($str_words, $escape = false, $level = 'high')
 {
     $found = false;
@@ -254,15 +295,25 @@ function remove_bad_characters($str_words, $escape = false, $level = 'high')
     
 }
 
-// escape html 
+/** 
+ * Escape HTML Function
+ * 
+ * @param string $html
+ * @return string
+ */
 function escapeHTML($html)
 {
-    
- return htmlspecialchars($html, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
- 
+  return htmlspecialchars($html, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
 }
 
-// stackoverflow.com/questions/3687878/serial-generation-with-php
+/**
+ * Generate License Function
+ * to create serial generation of license key with php
+ * 
+ * @link stackoverflow.com/questions/3687878/serial-generation-with-php
+ * @param string $suffix
+ * @return string
+ */
 function generate_license($suffix = null) 
 {
     
@@ -331,7 +382,11 @@ function generate_license($suffix = null)
     
 }
 
-// purge installation
+/**
+ * Purge Intallation Function
+ * Clean up installation procedure
+ * 
+ */
 function purge_installation()
 {
    
@@ -339,13 +394,13 @@ function purge_installation()
      
      if (is_file(__DIR__ . '/../index.php')) {
        
-         $disabled = $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex(openssl_random_pseudo_bytes(32)), 0, 13).'-'.date("Ymd").'.log';
+        $disabled = $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex(openssl_random_pseudo_bytes(32)), 0, 13).'-'.date("Ymd").'.log';
          
-         rename(__DIR__ . '/../index.php', $disabled);
+        rename(__DIR__ . '/../index.php', $disabled);
          
-         $clean_installation = '<?php ';
+        $clean_installation = '<?php ';
          
-         file_put_contents(__DIR__ . '/../index.php', $clean_installation);
+        file_put_contents(__DIR__ . '/../index.php', $clean_installation);
          
      }
      

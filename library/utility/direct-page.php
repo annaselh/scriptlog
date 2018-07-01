@@ -1,10 +1,11 @@
 <?php
 /**
- * Redirect page function
+ * Direct Page Function
  * 
  * @param string $page
+ * @param number $http_status_code default null
  */
-function direct_page($page = null, $http_status_code = null)
+function direct_page($page = '', $http_status_code = null)
 {
     static $http = array (
         100 => "HTTP/1.1 100 Continue",

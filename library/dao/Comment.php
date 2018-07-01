@@ -22,9 +22,9 @@ class Comment extends Dao
  
  public function findComments($position, $limit, $orderBy = 'ID')
  {
-   $sql = "SELECT ID, comment_post_id, comment_author_name, comment_author_url, 
+   $sql = "SELECT ID, comment_post_id, comment_author_name,  
            comment_author_ip, comment_content, comment_status, 
-           comment_date, user_id FROM comments ORDER BY $orderBy
+           date_publish FROM comments ORDER BY $orderBy
            DESC LIMIT :position, :limit";
    
    $this->setSQL($sql);
@@ -39,9 +39,9 @@ class Comment extends Dao
  public function findComment($id, $sanitize)
  {
    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
-   $sql = "SELECT ID, comment_post_id, comment_author_name, comment_author_url, 
+   $sql = "SELECT ID, comment_post_id, comment_author_name, 
            comment_author_ip, comment_content, comment_status, 
-           comment_date, user_id FROM comments WHERE ID = ?";
+           date_publish FROM comments WHERE ID = ?";
    $this->setSQL($sql);
    $commentDetails = $this->findRow([$idsanitized], PDO::FETCH_ASSOC);
    if (empty($commentDetails)) return false;
@@ -56,10 +56,9 @@ class Comment extends Dao
    $stmt = $this->create("comments", [
         'comment_post_id' => $bind['comment_post_id'],
         'comment_author_name' => $bind['comment_author_name'],
-        'comment_author_url' => $bind['comment_author_url'],
         'comment_author_ip' => $bind['comment_author_ip'],
         'comment_content' => $bind['comment_content'],
-        'comment_date' => $bind['comment_date']
+        'date_publish' => $bind['date_publish']
    ]); 
     
  }
@@ -69,7 +68,6 @@ class Comment extends Dao
    
    $stmt = $this->modify("comments", [
        'comment_author_name' => $bind['comment_author_name'],
-       'comment_author_url' => $bind['comment_author_url'],
        'comment_content' => $bind['comment_content'],
        'comment_status' => $bind['comment_status']
    ], "`ID` = {$id}");
@@ -89,6 +87,44 @@ class Comment extends Dao
    $this->setSQL($sql);
    $stmt = $this->checkCountValue([$idsanitized]);
    return($stmt > 0);
+ }
+ 
+ public function dropDownCommentStatus($selected = "")
+ {
+     $option_selected = "";
+     
+     if (!$selected) {
+         
+       $option_selected = 'selected="selected"';
+         
+     }
+     
+     // list position in array
+     $comment_status = array('approved', 'pending', 'spam');
+     
+     $html = array();
+     
+     $html[] = '<label>Status :</label>';
+     $html[] = '<select class="form-control" name="comment_status">';
+     
+     foreach ($comment_status as $c => $comment) {
+         
+         if ($selected == $comment) {
+             $option_selected = 'selected="selected"';
+         }
+         
+         // set up the option line
+         $html[]  =  '<option value="' . $comment. '"' . $option_selected . '>' . $comment . '</option>';
+         
+         // clear out the selected option flag
+         $option_selected = '';
+         
+     }
+     
+     $html[] = '</select>';
+     
+     return implode("\n", $html);
+     
  }
  
 }

@@ -399,7 +399,8 @@ public function dropDownCommentStatus($selected = "")
  	
  	if (!$selected) {
  		
- 		$option_selected = 'selected="selected"';
+ 	  $option_selected = 'selected="selected"';
+ 		
  	}
  	
  	// list position in array

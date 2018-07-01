@@ -1,5 +1,5 @@
 <?php
-date_default_timezone_set("Asia/Jakarta");
+//date_default_timezone_set("Asia/Jakarta");
 ini_set("memory_limit", "2M");
 #ini_set("session.cookie_secure", "True");  //secure
 #ini_set("session.cookie_httponly", "True"); // httpOnly

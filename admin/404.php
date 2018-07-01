@@ -33,4 +33,3 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-<script type="text/javascript">function leave() {  window.location = "index.php?load=dashboard";} setTimeout("leave()", 5000);</script>

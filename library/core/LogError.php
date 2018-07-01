@@ -18,44 +18,42 @@ class LogError
 	 */
 	private static $_printError = false;
 	
-	protected static $logFilePath = APP_ROOT . APP_PUBLIC . '/log/';
+	private static $logFilePath = APP_ROOT . APP_PUBLIC . '/log/';
 	
 	public static function logPath()
 	{
-	   return self::$logFilePath;
+	   return static::$logFilePath;
 	}
 	/**
 	 * @method customErrorMessage
 	 */
 	public static function customErrorMessage()
 	{
-		 
-	echo '<section class="row page-header">
-          <div class="container">
-           <h4>ERROR</h4>
-          </div>
-          </section>';
-	    
-	  echo '<section class="row blog-content page-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                            
-   <div class="alert alert-danger alert-dismissable">
-			
-          <h3>ERROR!</h3>	
-          <p> 
-           Please check your error log and send it to - email: scriptlog@yandex.com </p>
-				
-    </div>      
-                     
-                </div>
-             </div>
-        </div>
-    </section>';
-	  
-	  exit();
-			
+	
+	 echo '<div class="content-wrapper">
+            <section class="content-header">
+            <h1>400 Bad Request</h1>
+           <ol class="breadcrumb">
+             <li><a href="index.php?load=dashboard"><i class="fa fa-dashboard"></i> Home</a></li>
+             <li><a href="#">Error</a></li>
+             <li class="active">400</li>
+           </ol>
+           </section>';
+	 
+	 echo '<section class="content">
+            <div class="error-page">
+            <h2 class="headline text-yellow"> 400</h2>
+              <div class="error-content">
+              <h3><i class="fa fa-warning text-yellow"></i> Oops! Bad Request.</h3>
+             <p>
+             Please check your error log and send it to - email: scriptlog@yandex.com   
+             <a href="index.php?load=dashboard">return to dashboard</a>.
+             </p>
+              </div>
+            </div>
+      </section>';
+      echo '</div>';
+	 		
 	}
 	
 	/**
