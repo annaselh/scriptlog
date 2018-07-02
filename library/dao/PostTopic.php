@@ -1,4 +1,4 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * PostTopic class extends Model
  * Interacting with database to insert, update,

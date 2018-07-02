@@ -1,4 +1,4 @@
- <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+ <?php 
 // *****************************************************************************
 // Copyright 2003-2011 by A J Marston <http://www.tonymarston.net>
 // Amended 2011 by A J Marston to replace ereg* functions with preg* functions

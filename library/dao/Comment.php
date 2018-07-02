@@ -1,4 +1,4 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * Comment class extends Dao
  * insert, update, delete
@@ -24,11 +24,11 @@ class Comment extends Dao
  {
    $sql = "SELECT ID, comment_post_id, comment_author_name,  
            comment_author_ip, comment_content, comment_status, 
-           date_publish FROM comments ORDER BY $orderBy
+           date_publish FROM comments ORDER BY :orderBy
            DESC LIMIT :position, :limit";
    
    $this->setSQL($sql);
-   $comments = $this->findAll([':position' => $position, ':limit' => $limit]);
+   $comments = $this->findAll([':orderBy' => $orderBy,':position' => $position, ':limit' => $limit]);
    
    if (empty($comments)) return false;
    

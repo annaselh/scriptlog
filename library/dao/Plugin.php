@@ -1,4 +1,4 @@
-<?php  if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php  
 /**
  * Plugin class extends Dao
  * insert, update, delete
@@ -32,11 +32,11 @@ class Plugin extends Dao
   {
      
     $sql = "SELECT ID, plugin_name, plugin_desc, plugin_status, plugin_level,
-            plugin_sort FROM plugin ORDER BY ".$orderBy." LIMIT :position, :limit";
+            plugin_sort FROM plugin ORDER BY :orderBy LIMIT :position, :limit";
    
     $this->setSQL($sql);
     
-    $plugins = $this->findAll([':position' => $position, ':limit' => $limit], PDO::FETCH_ASSOC);
+    $plugins = $this->findAll([':orderBy' => $orderBy,':position' => $position, ':limit' => $limit], PDO::FETCH_ASSOC);
   
     if (empty($plugins)) return false;
     

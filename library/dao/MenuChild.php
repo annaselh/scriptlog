@@ -1,4 +1,4 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * Menu Child class extends Dao
  * insert, update, delete
@@ -29,11 +29,11 @@ class MenuChild extends Dao
            mc.menu_child_status, mp.menu_label
            FROM menu_child AS mc
            INNER JOIN  menu AS mp ON mc.menu_id = mp.ID
-           ORDER BY $orderBy";
+           ORDER BY :orderBy";
              
          $this->setSQL($sql);
          
-         $menuChilds = $this->findAll();
+         $menuChilds = $this->findAll([':orderBy' => $orderBy]);
          
      } else {
          
@@ -43,10 +43,10 @@ class MenuChild extends Dao
            mc.menu_child_status, mp.menu_label
            FROM menu_child AS mc
            INNER JOIN  menu AS mp ON mc.menu_id = mp.ID
-           ORDER BY " . $orderBy . " LIMIT :position, :limit";
+           ORDER BY :orderBy LIMIT :position, :limit";
    
        $this->setSQL($sql);
-       $menuChilds = $this -> findAll([':position' => $position, ':limit' => $limit], PDO::FETCH_ASSOC);
+       $menuChilds = $this -> findAll([':orderBy' => $orderBy,':position' => $position, ':limit' => $limit], PDO::FETCH_ASSOC);
    
     }
     

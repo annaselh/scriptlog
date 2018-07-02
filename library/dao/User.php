@@ -1,4 +1,4 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * User class extends Dao
  * insert, update, delete 
@@ -273,11 +273,6 @@ class User extends Dao
        
    }
    
- }
- 
- public function deactivateUser($userId)
- {
-  
  }
  
  /**

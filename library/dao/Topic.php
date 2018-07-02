@@ -1,4 +1,4 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * Topic class extends Dao
  * insert, update, delete and 
@@ -38,19 +38,19 @@ class Topic extends Dao
           
           $sql = "SELECT ID, topic_title, topic_slug, topic_status
 				  FROM topics
-                  ORDER BY '$orderBy'
+                  ORDER BY :orderBy
 				  DESC LIMIT :position, :limit";
           
           $this->setSQL($sql);
-          $topics = $this->findAll([':position'=>$position, ':limit'=>$limit]);
+          $topics = $this->findAll([':orderBy' => $orderBy,':position'=>$position, ':limit'=>$limit]);
           
       } else {
           
           $sql = "SELECT ID, topic_title, topic_slug, topic_status
-                  FROM topics ORDER BY '$orderBy'";
+                  FROM topics ORDER BY :orderBy ";
           
           $this->setSQL($sql);
-          $topics = $this->findAll();
+          $topics = $this->findAll([':orderBy' => $orderBy]);
           
       }
       

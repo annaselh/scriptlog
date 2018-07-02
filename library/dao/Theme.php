@@ -1,4 +1,4 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * Theme class extends Dao
  * insert, update, delete
@@ -23,18 +23,18 @@ class Theme extends Dao
   public function findThemes($position, $limit, $fetchMode = null, $orderBy = "ID")
   {
     $sql = "SELECT ID, theme_title, theme_desc, theme_designer, theme_directory, 
-                theme_status FROM themes ORDER BY '$orderBy'
+                theme_status FROM themes ORDER BY :orderBy
            LIMIT :position, :limit";
     
     $this->setSQL($sql);
     
     if (is_null($fetchMode)) {
         
-        $themes = $this->findAll([':position' => $position, ':limit' => $limit]);
+        $themes = $this->findAll([':orderBy' => $orderBy, ':position' => $position, ':limit' => $limit]);
         
     } else {
         
-        $themes = $this->findAll([':position' => $position, ':limit' => $limit], $fetchMode);
+        $themes = $this->findAll([':orderBy' => $orderBy,':position' => $position, ':limit' => $limit], $fetchMode);
         
     }
     

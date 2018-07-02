@@ -1,4 +1,4 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * Menu class extends Dao
  * insert, update, delete
@@ -35,20 +35,20 @@ class Menu extends Dao
      if (is_null($position) && is_null($limit)) {
          
          $sql = "SELECT ID, menu_label, menu_link, menu_sort, menu_status
-                FROM menu ORDER BY ".$orderBy;
+                FROM menu ORDER BY  :orderBy";
          
          $this->setSQL($sql);
          
-         $menus = $this->findAll();
+         $menus = $this->findAll([':orderBy' => $orderBy]);
          
      } else {
          
          $sql = "SELECT ID, menu_label, menu_link, menu_sort, menu_status
-                FROM menu ORDER BY ".$orderBy." LIMIT :position, :limit";
+                FROM menu ORDER BY :orderBy LIMIT :position, :limit";
          
          $this->setSQL($sql);
          
-         $menus = $this->findAll([':position' => $position, ':limit' => $limit]);
+         $menus = $this->findAll([':orderBy' => $orderBy,':position' => $position, ':limit' => $limit]);
          
      }
      

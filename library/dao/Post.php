@@ -1,4 +1,4 @@
-<?php  if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php  
 /**
  * Post class extends Dao
  * insert, update, delete

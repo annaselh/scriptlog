@@ -1,4 +1,4 @@
-<?php if (! defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * NoCSRF, an anti CSRF token generation/checking class.
  *

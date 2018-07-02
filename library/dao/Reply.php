@@ -1,4 +1,4 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * Reply class extends Dao
  * insert, update, delete
@@ -22,10 +22,10 @@ class Reply extends Dao
   public function findReplies($position, $limit, $orderBy = 'ID')
   {
     $sql = "SELECT ID, comment_id, user_id, reply_content, reply_status, date_publish 
-            FROM comment_reply ORDER BY $orderBy DESC LIMIT :position, :limit";
+            FROM comment_reply ORDER BY :orderBy DESC LIMIT :position, :limit";
     
     $this->setSQL($sql);
-    $replies = $this->findAll([':position' => $position, ':limit' => $limit]);
+    $replies = $this->findAll([':orderBy',':position' => $position, ':limit' => $limit]);
     
     if (empty($replies)) return false;
     

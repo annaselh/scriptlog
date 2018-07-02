@@ -1,4 +1,4 @@
-<?php  if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php  
 /**
  * Page class extends Dao
  * insert, update, delete
@@ -33,12 +33,12 @@ public function findPages($position, $limit, $type, $orderBy = 'ID')
    $sql = "SELECT ID, post_author, date_created, date_modified,
   		  post_title, post_type
   		  FROM posts WHERE post_type = :type
-  		  ORDER BY ".$orderBy."
+  		  ORDER BY :orderBy
   		  LIMIT :position, :limit";
     
     $this->setSQL($sql);
     
-    $pages = $this->findAll([':type' => $type, ':position' => $position, ':limit' => $limit]);
+    $pages = $this->findAll([':type' => $type, ':orderBy' => $orderBy, ':position' => $position, ':limit' => $limit]);
     
     if (empty($pages)) return false;
     
