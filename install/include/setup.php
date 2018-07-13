@@ -122,13 +122,15 @@ PRIMARY KEY(ID)
 $tableSetting = "CREATE TABLE IF NOT EXISTS settings(
 ID SMALLINT(5) unsigned NOT NULL,
 app_key VARCHAR(255) DEFAULT NULL,
+app_url VARCHAR(255) NOT NULL DEFAULT '#',
 site_name VARCHAR(100) NOT NULL,
 meta_description text DEFAULT NULL,
 meta_keywords tinytext DEFAULT NULL,
 logo VARCHAR(255) NOT NULL DEFAULT '',
-facebook_url VARCHAR(200) NOT NULL DEFAULT '#',
-twitter_url VARCHAR(200) NOT NULL DEFAULT '#',
-instagram_url VARCHAR(200) NOT NULL DEFAULT '#',
+email_address VARCHAR(150) DEFAULT NULL,
+facebook VARCHAR(200) NOT NULL DEFAULT '#',
+twitter VARCHAR(200) NOT NULL DEFAULT '#',
+instagram VARCHAR(200) NOT NULL DEFAULT '#',
 PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     

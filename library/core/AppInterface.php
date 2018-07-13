@@ -1,6 +1,6 @@
 <?php
 /**
- * AppInterface Object Interface
+ * AppInterface Interface
  *
  * @package   SCRIPTLOG
  * @author    Maoelana Noermoehammad

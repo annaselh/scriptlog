@@ -65,11 +65,53 @@ foreach ($files_dir_iterator as $file) {
         
 }
     
-if (is_dir(APP_ROOT . APP_LIBRARY) && is_file(APP_ROOT . APP_LIBRARY . '/init.php')
-      && is_file(APP_ROOT . APP_LIBRARY . '/rules.php')) {
-                    
-   require 'rules.php';
-            
-   require 'init.php';
-            
+if (is_dir(APP_ROOT . APP_LIBRARY) && is_file(APP_ROOT . APP_LIBRARY . '/Scriptloader.php')) {
+    
+    require 'Scriptloader.php';
+    
 }
+
+$loader = new Scriptloader();
+$loader -> setLibraryPaths(array(
+    APP_ROOT . APP_LIBRARY . '/core/',
+    APP_ROOT . APP_LIBRARY . '/dao/',
+    APP_ROOT . APP_LIBRARY . '/event/',
+    APP_ROOT . APP_LIBRARY . '/app/',
+    APP_ROOT . APP_LIBRARY . '/plugins/',
+));
+
+$loader -> runLoader();
+
+$rules = array(
+    
+    '/'        => "/",
+    'category' => "/category/(?'category'[\w\-]+)",
+    'page'     => "(?'page'[^/]+)",
+    'post'     => "/post/(?'id'\d+)/(?'post'[\w\-]+)",
+    'posts'    => "/posts/([^/]*)",
+    'search'   => "(?'search'[\w\-]+)"
+    
+);
+
+$dbc = DbFactory::connect(['mysql:host='.$config['db']['host'].';dbname='.$config['db']['name'],
+    $config['db']['user'], $config['db']['pass']
+]);
+
+Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
+
+$configurations = new Configuration($dbc);
+$searchPost = new SearchSeeker($dbc);
+$frontPaginator = new Paginator(10, 'p');
+$postFeeds = new RssFeed($dbc);
+$sanitizer = new Sanitize();
+
+//set_exception_handler('LogError::exceptionHandler');
+//set_error_handler('LogError::errorHandler');
+
+if (!isset($_SESSION)) {
+    
+    session_start();
+    
+}
+
+ob_start();

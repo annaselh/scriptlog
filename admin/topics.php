@@ -5,7 +5,7 @@ $topicId = isset($_GET['topicId']) ? abs((int)$_GET['topicId']) : 0;
 $topicDao = new Topic();
 $validator = new FormValidator();
 $topicEvent = new TopicEvent($topicDao, $validator, $sanitizer);
-$topicApp = new TopicApp($topicEvent, $validator);
+$topicApp = new TopicApp($topicEvent);
 
 switch ($action) {
     

@@ -102,9 +102,9 @@ function check_main_dir()
     
 }
 
-function check_init_dir()
+function check_loader()
 {
-    if (is_dir(APP_PATH) && is_file(APP_PATH . '../library/init.php')) {
+    if (is_dir(APP_PATH) && is_file(APP_PATH . '../library/Scriptloader.php')) {
         
      return true;
      
@@ -237,7 +237,7 @@ function check_pdo_mysql()
     if(extension_loaded('pdo_mysql') && class_exists('PDO')){
         
         return true;
-        exit;
+        exit();
         
     } else {
         

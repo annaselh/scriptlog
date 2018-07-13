@@ -1,52 +1,50 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed");
 
-$load = null;
-$pathToError = __DIR__ . DIRECTORY_SEPARATOR . "404.php";
+$load = '';
 $pathToLoad = null;
 $allowedToLoad = ['dashboard', 'posts', 'pages', 'topics', 'comments', 'themes', 'menu', 'menu-child', 'users', 'settings', 'plugins'];
 
 try {
 
-    if (isset($_GET['load'])) {
-    
+    if (isset($_GET['load']) && $_GET['load'] != '') {
+     
+        $load = htmlentities(strip_tags(strtolower($_GET['load'])));
+        $load = filter_var($load, FILTER_SANITIZE_URL);
+           
         // checking if the string contains parent directory
         if (strstr($_GET['load'], '../') !== false) {
             
-            http_response_code(400);
+            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
             throw new Exception("Directory traversal attempt!");
             
         }
         
         // checking remote file inclusions
         if (strstr($_GET['load'], 'file://') !== false ) {
-           
-           http_response_code(400);
-           throw new Exception("Remote file inclusion attempt!");    
-           
-        }
-        
-        if ($_GET['load'] !== '') {
-            $load = htmlentities(strip_tags(strtolower($_GET['load'])));
-            $load = filter_var($load, FILTER_SANITIZE_URL);
-            $pathToLoad = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . APP_ADMIN . DIRECTORY_SEPARATOR ."{$load}.php";
-        }
-        
-        if (!in_array($load, $allowedToLoad) || !is_readable($pathToLoad)) {
             
-            http_response_code(404);
-            include($pathToError);
-            
-        } else {
-            
-            include($pathToLoad);
+            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+            throw new Exception("Remote file inclusion attempt!");
             
         }
         
     }
     
+    if (!is_readable(dirname(dirname(__FILE__)) .'/'. APP_ADMIN .'/'."{$load}.php") 
+    || empty($load) || !in_array($load, $allowedToLoad)) {
+        
+        header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+        throw new Exception("404 - Page requested not found");
+        
+    } else {
+        
+        include __DIR__ . '/'.$load.'.php';
+        
+    }
+    
 } catch (Exception $e) {
 
+    LogError::setStatusCode(http_response_code());
     LogError::newMessage($e);
-    LogError::customErrorMessage();
+    LogError::customErrorMessage('admin');
     
 }

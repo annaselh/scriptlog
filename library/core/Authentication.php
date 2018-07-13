@@ -27,7 +27,7 @@ class Authentication
    * User
    * @var string
    */
-  private $user;
+  private $userDao;
   
   /**
    * status message
@@ -71,11 +71,11 @@ class Authentication
    * Dependency Injection
    * 
    * @method setUser
-   * @param User $user
+   * @param User $userDao
    */
-  public function setUser(User $user)
+  public function setUser(User $userDao)
   {
-     $this->user = $user;
+     $this->userDao = $userDao;
   }
   
   /**
@@ -174,13 +174,23 @@ class Authentication
    */
   public function isEmailExists($email)
   {
-      if ($this->user->checkUserEmail($email)) {
-          $this->setError('user_email', 'E-mail already in use');
+      if ($this->userDao->checkUserEmail($email)) {
+         
           return true;
+          
       }
       
       return false;
       
+  }
+  
+  public function isUserLoginExists($user_login)
+  {
+      if ($this->userDao->isUserLoginExists($user_login)) {
+          return true;
+      }
+      
+      return false;
   }
   
   /**
@@ -192,7 +202,7 @@ class Authentication
    */
   public function checkPassword($email, $password)
   {
-    $result = $this->user->checkUserPassword($email, $password);
+    $result = $this->userDao->checkUserPassword($email, $password);
     
     if ($result === false) {
         
@@ -214,7 +224,7 @@ class Authentication
    */
   public function validateUserAccount($email, $password)
   {
-    $result = $this->user->checkUserPassword($email, $password);
+    $result = $this->userDao->checkUserPassword($email, $password);
     if ($result === false) {
         
         $this->setError("user_pass", "Email address or password is incorrect");

@@ -6,7 +6,7 @@ $pageDao = new Page();
 $validator = new FormValidator();
 $sanitizer = new Sanitize();
 $pageEvent = new PageEvent($pageDao, $validator, $sanitizer);
-$pageApp = new PageApp($pageEvent, $validator);
+$pageApp = new PageApp($pageEvent);
 
 switch ($action) {
     

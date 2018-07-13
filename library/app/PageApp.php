@@ -1,4 +1,4 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * PageApp Class extends BaseApp Class
  *
@@ -14,10 +14,9 @@ class PageApp extends BaseApp
     
  protected $view;
  
- public function __construct(PageEvent $pageEvent, FormValidator $validator)
+ public function __construct(PageEvent $pageEvent)
  {
    $this->pageEvent = $pageEvent;
-   $this->validator = $validator;
  }
  
  public function listItems()

@@ -412,9 +412,9 @@ if ($install != 'install') {
             
             <li class="list-group-item d-flex justify-content-between lh-condensed" >
               <div>
-                 <h6 class="my-0">Initialize Engine</h6>
+                 <h6 class="my-0">Load Engine</h6>
                  <?php 
-                  if (check_init_dir()) :
+                  if (check_loader()) :
                    
                    $init_passed = 'text-success';
                    $init_checked = 'fa fa-check fa-lg';

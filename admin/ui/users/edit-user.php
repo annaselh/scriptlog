@@ -1,4 +1,4 @@
-<?php ?>
+<?php if (!defined('SCRIPTLOG')) exit(); ?>
 
 <div class="content-wrapper">
 <!-- Content Header (Page header) -->
@@ -17,25 +17,43 @@
  <!-- Main content -->
 <section class="content">
 <div class="row">
-<div class="col-md-12">
+<div class="col-md-6">
 <div class="box box-primary">
 <div class="box-header with-border">
  <h3 class="box-title">Create a brand new user and add them to this site.</h3>
 </div>
 <!-- /.box-header -->
 <?php
-if (isset($message['errorMessage'])) :
+if (isset($errors)) :
 ?>
 <div class="alert alert-danger alert-dismissible">
 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-<h4><i class="icon fa fa-ban"></i> Alert!</h4>
-<?= $message['errorMessage']; ?>
+<h4><i class="icon fa fa-warning"></i> Invalid Form Data!</h4>
+<?php 
+foreach ($errors as $e) :
+echo '<p>' . $e . '</p>';
+endforeach;
+?>
 </div>
 <?php 
 endif;
 ?>
-<form method="post" action="index.php?load=users&action=<?= $formAction;?>&userId=<?=(isset($userId)) ? $userId : 0; ?>&sessionId=<?=(isset($sessionId)) ? $sessionId : ""; ?>" role="form">
-<input type="hidden" name="session_id" value="<?=(isset($sessionId)) ? $sessionId : ""; ?>" />
+
+<?php
+if (isset($saveError)) :
+?>
+<div class="alert alert-danger alert-dismissible">
+<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+<h4><i class="icon fa fa-ban"></i> Alert!</h4>
+<?php 
+echo "Error saving data. Please try again." . $saveError;
+?>
+</div>
+<?php 
+endif;
+?>
+<form method="post" action="index.php?load=users&action=<?= $formAction;?>&userId=<?=(isset($userId)) ? $userId : 0; ?>&sessionId=<?=(isset($sessionId)) ? $sessionId : md5(get_ip_address()); ?>" role="form">
+<input type="hidden" name="session_id" value="<?=(isset($sessionId)) ? $sessionId : md5(get_ip_address()); ?>" />
 <input type="hidden" name="user_id" value="<?=(isset($userId)) ? $userId : 0; ?>" />
 
 <div class="box-body">
@@ -56,11 +74,11 @@ endif;
 <input type="password" class="form-control" name="user_pass" placeholder="Enter password" autocomplete="off">
 </div>
 <div class="form-group">
-<label>URL</label>
+<label>Website</label>
 <input type="text" class="form-control" name="user_url" placeholder="Enter url" value="<?=(isset($_POST['user_url'])) ? htmlspecialchars($_POST['user_url'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>">
 </div>
 <div class="form-group">
-<?=(isset($role)) ? $role : ""; ?>
+<?=(isset($userRole)) ? $userRole : ""; ?>
 </div>
 <div class="checkbox">
 <label>
@@ -71,7 +89,8 @@ endif;
 <!-- /.box-body -->
 
 <div class="box-footer">
-   <input type="submit" class="btn btn-primary" name="submit" value="Add New User">
+<input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">   
+<input type="submit" class="btn btn-primary" name="userFormSubmit" value="Add New User">
 </div>
 </form>
             

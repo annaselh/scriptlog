@@ -174,7 +174,16 @@ class Mailer
 		$this->_HTMLBody = $value;
 	}
 
-	//Send email
+	/**
+	 * Send 
+	 * sending email
+	 * 
+	 * @param string $to
+	 * @param string $subject
+	 * @param string $message
+	 * @param string $headers
+	 * @return boolean
+	 */
 	public function send($to = null, $subject = null, $message = null, $headers = null)
 	{
 		$success = false;
@@ -213,12 +222,12 @@ class Mailer
 			elseif (!$this->_sendText && $this->_sendHTML)
 			{
 				$headers[] = 'MIME-Version: 1.0';
-				$headers[] = 'Content-type: text/html; charset="iso-8859-1"';
+				$headers[] = 'Content-Type: text/html; charset="utf-8"';
 				$headers[] = 'From: <'.APP_EMAIL.'>';
 				$headers[] = 'Reply-To: '.APP_EMAIL;
 
-
 				$message = $this->_HTMLBody;
+				
 			}
 			//Multipart Message in MIME format
 			elseif ($this->_sendText && $this->_sendHTML)
@@ -228,16 +237,13 @@ class Mailer
 				$headers[] = "From: <".APP_EMAIL.">";
 				$headers[] = "Reply-To:".APP_EMAIL;
 
-
-				$message .= 'Content-type: text/plain; charset="iso-8859-1"';
+				$message .= 'Content-Type: text/plain; charset="utf-8"';
 				$message .= 'Content-Transfer-Encoding: 7bit';
 				$message .= $this->_textBody . "\n";
 
-
-				$message .= 'Content-type: text/html; charset="iso-8859-1"' . "\n";
+				$message .= 'Content-Type: text/html; charset="utf-8"' . "\n";
 				$message .= 'Content-Transfer-Encoding: 7bit' . "\n";
 				$message .= $this->_HTMLBody . "\n";
-
 
 			}
 
@@ -246,6 +252,7 @@ class Mailer
 			return $success;
 
 		}
+		
 	}
 
 }

@@ -30,7 +30,7 @@ class User extends Dao
   * @param string $orderBy
   * @return boolean|array|object
   */
- public function getUsers($position, $limit, $fetchMode = null, $orderBy="ID")
+ public function getUsers($position, $limit, $orderBy="ID", $fetchMode = null)
  {
     $sql = "SELECT ID, user_login,
 				user_email, user_fullname, user_pass,
@@ -177,7 +177,7 @@ class User extends Dao
  {
   $cleanId = $this->filteringId($sanitize, $userId, 'sql');
   
-     if ($accessLevel != 'Administrator') {
+     if ($accessLevel !== 'Administrator') {
          
          if (empty($bind['user_pass'])) {
              
@@ -199,8 +199,6 @@ class User extends Dao
              );
              
          }
-         
-         $stmt = $this->modify("users", $bind, "`ID` = {$cleanId}");
          
      } else {
          
@@ -228,10 +226,10 @@ class User extends Dao
              );
              
          }
-         
-         $stmt = $this->modify("users", $bind, "`ID` = {$cleanId}");
-         
+          
      }
+     
+     $stmt = $this->modify("users", $bind, "`ID` = {$cleanId}");
      
  }
 
@@ -395,9 +393,9 @@ class User extends Dao
   */
  public function checkUserEmail($email)
  {
-     $sql = "SELECT ID FROM users WHERE user_email = ? LIMIT 1";
+     $sql = "SELECT ID FROM users WHERE user_email = :email LIMIT 1";
      $this->setSQL($sql);
-     $stmt = $this->checkCountValue([$email]);
+     $stmt = $this->checkCountValue([':email' => $email]);
      return($stmt > 0);
  }
 
@@ -426,7 +424,14 @@ class User extends Dao
     
  }
  
- protected function checkUserId($userId, $sanitize)
+ /**
+  * Check User Id
+  * 
+  * @param integer $userId
+  * @param object $sanitize
+  * @return boolean
+  */
+ public function checkUserId($userId, $sanitize)
  {
      $sql = "SELECT ID FROM users WHERE ID = ?";
      $this->setSQL($sql);
@@ -435,6 +440,12 @@ class User extends Dao
      return($stmt > 0);
  }
  
+ /**
+  * Check Activation Key
+  * 
+  * @param string $key
+  * @return boolean
+  */
  private static function checkActivationKey($key)
  {
     $sql = "SELECT COUNT(ID) FROM users WHERE user_activation_key = ?";

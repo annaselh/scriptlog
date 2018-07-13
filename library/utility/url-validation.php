@@ -21,4 +21,6 @@ function url_validation($url)
         return true;
     }
     
+    return false;
+    
 }

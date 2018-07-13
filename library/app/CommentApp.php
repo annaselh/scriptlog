@@ -1,38 +1,12 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
-
-class CommentApp
+<?php 
+class CommentApp extends BaseApp
 {
 
   protected $view;
   
-  protected $pageTitle;
-  
-  protected $formAction;
-  
-  public function __construct(CommentEvent $commentEvent, FormValidator $validator)
+  public function __construct(CommentEvent $commentEvent)
   {
     $this->commentEvent = $commentEvent;
-    $this->validator = $validator;
-  }
-  
-  public function setPageTitle($pageTitle)
-  {
-    $this->pageTitle = $pageTitle;
-  }
-  
-  public function getPageTitle()
-  {
-    return $this->pageTitle;
-  }
-  
-  public function setFormAction($formAction)
-  {
-    $this->formAction = $formAction;
-  }
-  
-  public function getFormAction()
-  {
-    return $this->formAction;
   }
   
   public function listItems()

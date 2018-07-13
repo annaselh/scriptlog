@@ -1,4 +1,4 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * TopicApp Class extends BaseApp Class
  *
@@ -13,10 +13,9 @@ class TopicApp extends BaseApp
 {
   protected $view;
   
-  public function __construct(TopicEvent $topicEvent, FormValidator $validator)
+  public function __construct(TopicEvent $topicEvent)
   {
     $this->topicEvent = $topicEvent;
-    $this->validator = $validator;
   }
   
   public function listItems()

@@ -1,4 +1,4 @@
-<?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+<?php 
 /**
  * PostApp Class extends BaseApp Class
  *
@@ -14,10 +14,10 @@ class PostApp extends BaseApp
   
   protected $view;
     
-  public function __construct(PostEvent $postEvent, FormValidator $validator)
+  public function __construct(PostEvent $postEvent)
   {
     $this->postEvent = $postEvent;
-    $this->validator = $validator;
+   
   }
   
   /**

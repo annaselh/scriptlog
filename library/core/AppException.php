@@ -13,12 +13,12 @@ class AppException extends Exception
 {
   private $error_message;
    
-  public function __construct()
+  public function __construct($message, $code = 0, Exception $previous = null)
   {
-    parent::__construct();    
+      parent::__construct($message, $code, $previous);    
   }
   
-  public function getMessage()
+  public function setCustomException()
   {
     $this->error_message = LogError::newMessage($this->error_message);
     $this->error_message = LogError::customErrorMessage();

@@ -1,13 +1,13 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
 
 $action = isset($_GET['action']) ? htmlentities(strip_tags($_GET['action'])) : "";
-$dashboard = new DashboardApp();
+$dashboardApp =  new DashboardApp();
 
 switch ($action) {
     
     default:
         
-        $dashboard -> welcomeAdmin('Dashboard');
+        $dashboardApp -> welcomeAdmin('Dashboard');
         
         break;
        

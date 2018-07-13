@@ -6,25 +6,37 @@ $authenticator = new Authentication();
 $sanitizer = new Sanitize();
 $userDao = new User();
 $userEvent = new UserEvent($userDao, $authenticator, $sanitizer);
-$userApp = new UserApp($userEvent, $authenticator);
+$userApp = new UserApp($userEvent);
 
 switch ($action) {
     
     case 'newUser':
         
         if ($userId == 0) {
+           
             $userApp -> insert();
+            
         }
         
         break;
         
     case 'editUser':
         
+        if ($userDao -> checkUserId($userId, $sanitizer)) {
+            
+            $userApp -> update($userId);
+            
+        } else {
+            
+            direct_page('index.php?load=users&error=userNotFound', 404);
+            
+        }
+        
         break;
         
     case 'deleteUser':
         
-       
+        $userApp -> delete($userId);
         
         break;
                 

@@ -1,13 +1,39 @@
 <?php 
 
-function admin_header($stylePath, $breadCrumbs = null) {
+function admin_header($stylePath, $breadCrumbs) {
+$allowedQuery = array(
+    'dashboard', 'posts', 'pages', 'topics', 'comments', 'themes', 
+    'menu', 'menu-child', 'users', 'settings', 'plugins'
+);    
 ?>
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title><?php if (!is_null($breadCrumbs)) echo $breadCrumbs; ?></title>
+  <title>
+  <?php 
+    
+  if (strstr($breadCrumbs, '../') !== false) {
+    
+        echo 'Error: 400 Bad Request';
+    
+  } elseif(strstr($breadCrumbs, 'file://') !== false ) {
+   
+        echo 'Error: 400 Bad Request';
+        
+  } elseif (empty($breadCrumbs) || !in_array($breadCrumbs, $allowedQuery)) {
+  
+        echo 'Error: 404 Not Found';
+       
+  } else {
+      
+      echo $breadCrumbs;
+      
+  }
+       
+  ?>
+  </title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->

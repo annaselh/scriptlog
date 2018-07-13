@@ -5,7 +5,7 @@ $postId = isset($_GET['postId']) ? abs((int)$_GET['postId']) : 0;
 $postDao = new Post();
 $validator = new FormValidator();
 $postEvent = new PostEvent($postDao, $validator, $sanitizer);
-$postApp = new PostApp($postEvent, $validator);
+$postApp = new PostApp($postEvent);
 
 switch ($action) {
     

@@ -20,25 +20,28 @@ class Configuration
  }
  
  public function updateConfig($id, $siteName, $metaDescription, $metaKeywords, 
-              $instagram, $twitter, $facebook, $logo = null)
+              $instagram, $twitter, $facebook, $email_address, $logo = null)
  {
  
   if (empty($logo)) {
   	
   $sql = "UPDATE settings SET site_name = ?, meta_description = ?,
-  		    meta_keywords = ?, facebook_url = ?, twitter_url, instagram_url = ? 
-  		WHERE ID = ?";
+  		   meta_keywords = ?, email_address = ?, facebook = ?, 
+           twitter, instagram = ? 
+  		  WHERE ID = ?";
   	 
-  $data = array($siteName, $metaDescription, $metaKeywords, $facebook, 
-              $twitter, $instagram, $id);
+  $data = array($siteName, $metaDescription, $metaKeywords, 
+              $email_address, $facebook, $twitter, $instagram, $id);
   	 
   } else {
   	
    $sql = "UPDATE settings SET site_name = ?, meta_description = ?,
-  		    meta_keywords = ?, logo = ?, facebook_url = ?, twitter_url, instagram_url = ?
-  		WHERE ID = ?";
+  		    meta_keywords = ?, logo = ?, email_address = ?, facebook = ?, 
+            twitter, instagram = ?
+  		  WHERE ID = ?";
       
-   $data = array($siteName, $metaDescription, $metaKeywords, $logo, $facebook, $twitter, $instagram, $id);
+   $data = array($siteName, $metaDescription, $metaKeywords, 
+        $logo, $email_address, $facebook, $twitter, $instagram, $id);
 
   }
   
@@ -83,9 +86,9 @@ class Configuration
  
  public function findConfigs()
  {
- 	$sql = "SELECT ID, app_key, site_name, meta_description, 
-               meta_keywords, logo, favicon, facebook_url,
-               twitter_url, instagram_url
+ 	$sql = "SELECT ID, app_key, app_url, site_name, meta_description, 
+               meta_keywords, logo, email_address, facebook,
+               twitter, instagram
   		 FROM settings LIMIT 1";
  	
  	$setup = array();
@@ -99,16 +102,16 @@ class Configuration
  	
  	$this->dbc = null;
  	
- 	return(array('results' => $setup));
+ 	return $setup;
  	
  }
  
  public function findConfig($id, $sanitizing)
  {
  
-  $sql = "SELECT ID, app_key, site_name, meta_description, 
-               meta_keywords, logo, favicon, facebook_url,
-               twitter_url, instagram_url
+  $sql = "SELECT ID, app_key, app_url, site_name, meta_description, 
+               meta_keywords, logo, email_address, facebook,
+               twitter, instagram
   		 FROM settings  WHERE ID = ? LIMIT 1";
  	
  $id_sanitized = $this->filteringId($sanitizing, $id, 'sql');
