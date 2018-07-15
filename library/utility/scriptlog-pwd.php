@@ -2,7 +2,7 @@
 /**
  * Scriptlog Password
  * scriptlog password is used when user forget their password 
- * this will be temporary password that need change after that
+ * this will be a temporary password that need change after that
  * 
  * @param string $password
  * @param integer $id
