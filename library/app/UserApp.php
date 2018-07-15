@@ -196,6 +196,7 @@ class UserApp extends BaseApp
                     $this->userEvent->setUserStatus('1');
                     $this->userEvent->addUser();
                     direct_page('index.php?load=users&status=userAdded', 200);
+                    
                 }
                 
                 
@@ -203,6 +204,7 @@ class UserApp extends BaseApp
             
         } catch (AppException $e) {
             
+           http_response_code(400);
            $this->setView('all-users');
            $this->setPageTitle('Error 400');
            $this->view->set('pageTitle', $this->getPageTitle());
@@ -243,13 +245,84 @@ class UserApp extends BaseApp
     $data_user = array(
         
         'ID' => $getUser -> ID,
+        'user_login' => $getUser -> user_login,
+        'user_email' => $getUser -> user_email,
+        'user_pass' => $getUser -> user_pass,
+        'user_level' => $getUser -> user_level,
+        'user_fullname' => $getUser -> user_fullname,
+        'user_url' => $getUser -> user_url,
+        'user_status' => $getUser -> user_status,
+        'user_session' => $getUser -> user_session
         
     );
+    
+    if (isset($_POST['userFormSubmit'])) {
+        
+        $user_login = filter_input(INPUT_POST, 'user_login', FILTER_SANITIZE_STRING);
+        $user_fullname = filter_input(INPUT_POST, 'user_fullname', FILTER_SANITIZE_STRING);
+        $user_email = isset($_POST['user_email']) ? filter_var($_POST['user_email'], FILTER_SANITIZE_EMAIL) : "";
+        $user_pass = isset($_POST['user_pass']) ? trim($_POST['user_pass']) : "";
+        $user_url = filter_input(INPUT_POST, 'user_url', FILTER_SANITIZE_URL);
+        $user_session = trim($_POST['session_id']);
+        $user_role = isset($_POST['user_role']) ? trim($_POST['user_role']) : 0;
+        $user_id = isset($_POST['user_id']) ? abs((int)$_POST['user_id']) : 0;
+        
+      try {
+      
+          
+          if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
+              
+              $checkError = false;
+              array_push($errors, "Sorry, unpleasant attempt detected");
+              
+          }
+          
+          if (!$checkError) {
+            
+              $this->setView('edit-user');
+              $this->setPageTitle('Edit User');
+              $this->setFormAction('editUser');
+              $this->view->set('pageTitle', $this->getPageTitle());
+              $this->view->set('formAction', $this->getFormAction());
+              $this->view->set('errors', $errors);
+              $this->view->set('formData', $data_user);
+              $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
+              
+          }
+          
+      } catch (AppException $e) {
+          
+         http_response_code(400);
+         $this->setView('edit-user');
+         $this->setPageTitle('Error 400 Bad Request');
+         $this->view->set('pageTitle', $this->getPageTitle());
+         $this->view->set('saveError', $e -> getMessage());
+         $this->view->set('formData', $data_user);
+      
+      }
+      
+    } else {
+    
+        $this->setView('edit-user');
+        $this->setPageTitle('Edit User');
+        $this->setFormAction('editUser');
+        $this->view->set('pageTitle', $this->getPageTitle());
+        $this->view->set('formAction', $this->getFormAction());
+        $this->view->set('formData', $data_user);
+        $this->view->set('userRole', $this->userEvent->userLevelDropDown($getUser -> user_level));
+        $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
+        
+    }
+    
+    return $this->view->render();
+    
   }
   
   public function delete($id)
   {
-      
+    $this->userEvent->setUserId($id);
+    $this->userEvent->removeUser();
+    direct_page('index.php?load=users&status=userDeleted', 200);
   }
   
   public function logout()
