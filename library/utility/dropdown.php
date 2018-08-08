@@ -16,11 +16,12 @@ function dropdown($name, array $options, $selected=null)
     /*** loop over the options ***/
     foreach( $options as $key=>$option )
     {
+      
         /*** assign a selected value ***/
         $select = $selected==$key ? ' selected' : null;
         
         /*** add each option to the dropdown ***/
-        $dropdown .= '<option value="'.$option.'"'.$select.'>'.$option.'</option>'."\n";
+        $dropdown .= '<option value="'.$key.'"'.$select.'>'.$option.'</option>'."\n";
         
     }
     

@@ -4,8 +4,35 @@ $action = isset($_GET['action']) ? htmlentities(strip_tags($_GET['action'])) : "
 $commentId = isset($_GET['commentId']) ? abs((int)$_GET['commentId']) : 0;
 $commentDao = new Comment();
 $validator = new FormValidator();
-$sanitizer = new Sanitize();
 $commentEvent = new CommentEvent($commentDao, $validator, $sanitizer);
 $commentApp = new CommentApp($commentEvent);
 
-
+switch ($action) {
+    
+    case 'editComment':
+    
+        if ($commentDao -> checkCommentId($commentId, $sanitizer)) {
+            
+            $commentApp -> update($commentId);
+            
+        } else {
+            
+            direct_page('index.php?load=comments&error=commentNotFound', 404);
+            
+        }
+        
+        break;
+ 
+    case 'deleteComment':
+        
+        $commentApp -> delete($commentId);
+        
+        break;
+        
+    default:
+        
+        $commentApp -> listItems();
+        
+    break;
+    
+}

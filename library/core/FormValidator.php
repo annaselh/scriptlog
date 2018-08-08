@@ -30,6 +30,7 @@
  * @copyright SchizoDuckie 2008
  * @version 1.0
  * @access public
+ * 
  */
  
 class FormValidator

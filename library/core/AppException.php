@@ -18,7 +18,7 @@ class AppException extends Exception
       parent::__construct($message, $code, $previous);    
   }
   
-  public function setCustomException()
+  public function setAppExceptionLog()
   {
     $this->error_message = LogError::newMessage($this->error_message);
     $this->error_message = LogError::customErrorMessage();

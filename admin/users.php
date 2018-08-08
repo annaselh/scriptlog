@@ -2,8 +2,8 @@
 
 $action = isset($_GET['action']) ? htmlentities(strip_tags($_GET['action'])) : "";
 $userId = isset($_GET['userId']) ? abs((int)$_GET['userId']) : 0;
+$sessionId = isset($_GET['sessionId']) ? $_GET['sessionId'] : "";
 $authenticator = new Authentication();
-$sanitizer = new Sanitize();
 $userDao = new User();
 $userEvent = new UserEvent($userDao, $authenticator, $sanitizer);
 $userApp = new UserApp($userEvent);
@@ -28,7 +28,7 @@ switch ($action) {
             
         } else {
             
-            direct_page('index.php?load=users&error=userNotFound', 404);
+           direct_page('index.php?load=users&error=userNotFound', 404);
             
         }
         

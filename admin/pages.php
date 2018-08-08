@@ -4,7 +4,6 @@ $action = isset($_GET['action']) ? htmlentities(strip_tags($_GET['action'])) : "
 $pageId = isset($_GET['pageId']) ? abs((int)$_GET['pageId']) : 0;
 $pageDao = new Page();
 $validator = new FormValidator();
-$sanitizer = new Sanitize();
 $pageEvent = new PageEvent($pageDao, $validator, $sanitizer);
 $pageApp = new PageApp($pageEvent);
 

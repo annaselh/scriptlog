@@ -1,9 +1,8 @@
 <?php
-//date_default_timezone_set("Asia/Jakarta");
-ini_set("memory_limit", "2M");
+#date_default_timezone_set("Asia/Jakarta");
 #ini_set("session.cookie_secure", "True");  //secure
 #ini_set("session.cookie_httponly", "True"); // httpOnly
-#header("Content-Security-Policy: default-src https:; font-src 'unsafe-inline' data: https:; form-action 'self' https://kartatopia.com;img-src data: https:; child-src https:; object-src 'self' www.google-analytics.com ajax.googleapis.com platform-api.sharethis.com kartatopia-studio.disqus.com; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;");
+#header("Content-Security-Policy: default-src https:; font-src 'unsafe-inline' data: https:; form-action 'self' https://yourdomain.com;img-src data: https:; child-src https:; object-src 'self' www.google-analytics.com ajax.googleapis.com platform-api.sharethis.com yourusername.disqus.com; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;");
 
 $key = '5c12IpTl0g!@#';
 $checkIncKey = sha1(mt_rand(1, 1000).$key);
@@ -33,7 +32,7 @@ if (!defined('SCRIPTLOG_START_MEMORY')) define('SCRIPTLOG_START_MEMORY', memory_
 
 if (file_exists(__DIR__ . '/../config.php')) {
     
-   $config = require(__DIR__ . '/../config.php');
+   $config = require __DIR__ . '/../config.php';
    
 } else {
     
@@ -70,7 +69,7 @@ $files_dir_iterator = new RecursiveIteratorIterator($filter_iterator);
 
 foreach ($files_dir_iterator as $file) {
     
-    include($file -> getPathname());
+    include $file -> getPathname();
     
 }
 
@@ -109,7 +108,8 @@ $rules = array(
  * 
  * @var object $dbc
  */
-$dbc = DbFactory::connect(['mysql:host='.$config['db']['host'].';dbname='.$config['db']['name'],
+$dbc = DbFactory::connect([
+    'mysql:host='.$config['db']['host'].';dbname='.$config['db']['name'],
     $config['db']['user'], $config['db']['pass']
 ]);
 
@@ -121,8 +121,8 @@ $frontPaginator = new Paginator(10, 'p');
 $postFeeds = new RssFeed($dbc);
 $sanitizer = new Sanitize();
 
-//set_exception_handler('LogError::exceptionHandler');
-//set_error_handler('LogError::errorHandler');
+set_exception_handler('LogError::exceptionHandler');
+set_error_handler('LogError::errorHandler');
 
 if (!isset($_SESSION)) {
     

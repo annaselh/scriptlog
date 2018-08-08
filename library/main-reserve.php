@@ -32,7 +32,9 @@ if (!defined('SCRIPTLOG_START_TIME')) define('SCRIPTLOG_START_TIME', microtime(t
 if (!defined('SCRIPTLOG_START_MEMORY')) define('SCRIPTLOG_START_MEMORY', memory_get_usage());
 
 if (file_exists(__DIR__ . '/../config.sample.php')) {
-    $config = require(APP_ROOT . 'config.sample.php');
+
+    $config = require APP_ROOT . 'config.sample.php';
+    
 }
 // call functions in folder utility
 $function_directory = new RecursiveDirectoryIterator(__DIR__ . '/utility/', FilesystemIterator::FOLLOW_SYMLINKS);
@@ -105,8 +107,8 @@ $frontPaginator = new Paginator(10, 'p');
 $postFeeds = new RssFeed($dbc);
 $sanitizer = new Sanitize();
 
-//set_exception_handler('LogError::exceptionHandler');
-//set_error_handler('LogError::errorHandler');
+set_exception_handler('LogError::exceptionHandler');
+set_error_handler('LogError::errorHandler');
 
 if (!isset($_SESSION)) {
     

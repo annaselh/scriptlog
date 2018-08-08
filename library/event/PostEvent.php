@@ -80,8 +80,8 @@ class PostEvent
   private $comment_status;
   
   /**
-   * 
    * post's topic
+   * 
    * @var integer
    */
   private $topics; 
@@ -194,9 +194,9 @@ class PostEvent
    * @param null $author
    * @return boolean|array|object
    */
-  public function grabPosts($position, $limit, $orderBy = 'ID', $author = null)
+  public function grabPosts($orderBy = 'ID', $author = null)
   {
-    return $this->postDao->findPosts($position, $limit, $orderBy, $author);
+    return $this->postDao->findPosts($orderBy, $author);
   }
   
   /**
@@ -221,8 +221,6 @@ class PostEvent
      $image_uploader =  new ImageUploader('image', $upload_path);
      $category = new Topic();
      
-     $this->author = isset($_SESSION['ID']) ? (int)$_SESSION['ID'] : 0;
-     
      $this->validator->sanitize($this->author, 'int');
      $this->validator->sanitize($this->title, 'string');
      $this->validator->sanitize($this->meta_desc, 'string');
@@ -237,7 +235,7 @@ class PostEvent
              
              return $this->postDao->createPost([
                  'post_author' => $this->author,
-                 'date_created' => date("Ymd"),
+                 'post_date' => date("Y-m-d H:i:s"),
                  'post_title' => $this->title,
                  'post_slug'  => $this->slug,
                  'post_content' => $this->content,
@@ -251,7 +249,7 @@ class PostEvent
              
              return $this->postDao->createPost([
                  'post_author' => $this->author,
-                 'date_created' => date("Ymd"),
+                 'post_date' => date("Y-m-d H:i:s"),
                  'post_title' => $this->title,
                  'post_slug'  => $this->slug,
                  'post_content' => $this->content,
@@ -276,7 +274,7 @@ class PostEvent
              return $this->postDao->createPost([
                  'post_image' => $newFileName,
                  'post_author' => $this->author,
-                 'date_created' => date("Ymd"),
+                 'post_date' => date("Y-m-d H:i:s"),
                  'post_title' => $this->title,
                  'post_slug'  => $this->slug,
                  'post_content' => $this->content,
@@ -291,7 +289,7 @@ class PostEvent
              return $this->postDao->createPost([
                  'post_image' => $newFileName,
                  'post_author' => $this->author,
-                 'date_created' => date("Ymd"),
+                 'post_date' => date("Y-m-d H:i:s"),
                  'post_title' => $this->title,
                  'post_slug'  => $this->slug,
                  'post_content' => $this->content,
@@ -326,7 +324,7 @@ class PostEvent
           
         return $this->postDao->updatePost([
             'post_author' => $this->author,
-            'date_modified' => date("Ymd"),
+            'date_modified' => date("Y-m-d H:i:s"),
             'post_title' => $this->title,
             'post_slug' => $this->slug,
             'post_content' => $this->content,
@@ -344,7 +342,7 @@ class PostEvent
         return $this->postDao->updatePost([
             'post_image' => $newFileName,
             'post_author' => $this->author,
-            'date_modified' => date("Ymd"),
+            'date_modified' => date("Y-m-d H:i:s"),
             'post_title' => $this->title,
             'post_slug' => $this->slug,
             'post_content' => $this->content,
@@ -363,8 +361,7 @@ class PostEvent
     
     $this->validator->sanitize($this->postId, 'int');
     
-    $data_post = $this->postDao->findPost($this->postId, $this->sanitizer);
-    if (false === $data_post) {
+    if (!$data_post = $this->postDao->findPost($this->postId, $this->sanitizer)) {
        direct_page('index.php?module=posts&error=postNotFound', 404); 
     }
     
@@ -388,14 +385,37 @@ class PostEvent
     
   }
   
+  /**
+   * Drop down post status
+   * 
+   * @param string $selected
+   * @return string
+   */
   public function postStatusDropDown($selected = "")
   {
      return $this->postDao->dropDownPostStatus($selected);
   }
   
+  /**
+   * Drop down comment status
+   * 
+   * @param string $selected
+   * @return string
+   */
   public function commentStatusDropDown($selected = "")
   {
      return $this->postDao->dropDownCommentStatus($selected);
+  }
+  
+  /**
+   * Total posts records
+   * 
+   * @param array $data
+   * @return integer
+   */
+  public function totalPosts($data = null)
+  {
+     return $this->postDao->totalPostRecords($data);
   }
   
 }

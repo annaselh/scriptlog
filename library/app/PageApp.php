@@ -21,7 +21,7 @@ class PageApp extends BaseApp
  
  public function listItems()
  {
-   $this->setPageTitle('Pages');
+   
    $errors = array();
    $status = array();
    $checkError = true;
@@ -42,6 +42,7 @@ class PageApp extends BaseApp
    }
    
    $this->setView('all-pages');
+   $this->setPageTitle('Pages');
    $this->view->set('pageTitle', $this->getPageTitle());
    
    if (!$checkError) {
@@ -52,6 +53,8 @@ class PageApp extends BaseApp
        $this->view->set('status', $status);
    }
    
+   $this->view->set('pagesTotal', $this->pageEvent->totalPages());
+   $this->view->set('pages', $this->pageEvent->grabPages('page'));
    return $this->view->render();
    
  }
@@ -76,8 +79,8 @@ class PageApp extends BaseApp
           
           if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
               
-              $checkError = false;
-              array_push($errors, "Sorry, unpleasant attempt detected!");
+              header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+              throw new AppException("Sorry, unpleasant attempt detected!");
               
           }
           
@@ -123,11 +126,9 @@ class PageApp extends BaseApp
           
       } catch (AppException $e) {
           
-          $this->setView('all-posts');
-          $this->setPageTitle('Error 400');
-          $this->view->set('pageTitle', $this->getPageTitle());
-          $this->view->set('saveError', $e->getMessage());
-          $this->view->set('formData', $_POST);
+          LogError::setStatusCode(http_response_code());
+          LogError::newMessage($e);
+          LogError::customErrorMessage('admin');
           
       }
       
@@ -150,21 +151,21 @@ class PageApp extends BaseApp
  
  public function update($id)
  {
-   $getPage = $this->pageEvent->grabPage($id, 'page');
+   
    $errors = array();
    $checkError = true;
    
-   if (false == $getPage) {
+   if (!$getPage = $this->pageEvent->grabPage($id, 'page')) {
        direct_page('index.php?load=pages&error=pageNotFound', 404);
    }
    
    $data_page = array(
-       'ID' => $getPage->ID,
-       'post_image' => $getPage -> post_image,
-       'post_title' => $getPage->post_title,
-       'post_content' => $getPost->post_content,
-       'post_summary' => $getPost->post_summary,
-       'post_keyword' => $getPost->post_keyword
+       'ID' => $getPage['ID'],
+       'post_image' => $getPage['post_image'],
+       'post_title' => $getPage['post_title'],
+       'post_content' => $getPost['post_content'],
+       'post_summary' => $getPost['post_summary'],
+       'post_keyword' => $getPost['post_keyword']
    );
    
    if (isset($_POST['pageFormSubmit'])) {
@@ -183,8 +184,8 @@ class PageApp extends BaseApp
            
            if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
                
-               $checkError = false;
-               array_push($errors, "Sorry, unpleasant attempt detected");
+               header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+               throw new AppException("Sorry, unpleasant attempt detected!");
                
            }
            
@@ -210,9 +211,9 @@ class PageApp extends BaseApp
                $this->view->set('pageTitle', $this->getPageTitle());
                $this->view->set('formAction', $this->getFormAction());
                $this->view->set('errors', $errors);
-               $this->view->set('formData', $data_page);
-               $this->view->set('postStatus', $this->pageEvent->postStatusDropDown($getPage->post_status));
-               $this->view->set('commentStatus', $this->pageEvent->commentStatusDropDown($getPage->comment_status));
+               $this->view->set('pageData', $data_page);
+               $this->view->set('postStatus', $this->pageEvent->postStatusDropDown($getPage['post_status']));
+               $this->view->set('commentStatus', $this->pageEvent->commentStatusDropDown($getPage['comment_status']));
                $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
                
            } else {
@@ -232,12 +233,9 @@ class PageApp extends BaseApp
            
        } catch (AppException $e) {
            
-           http_response_code(400);
-           $this->setView('edit-page');
-           $this->setPageTitle('Error 400 Bad Request');
-           $this->view->set('pageTitle', $this->getPageTitle());
-           $this->view->set('saveError', $e->getMessage());
-           $this->view->set('formData', $data_page);
+           LogError::setStatusCode(http_response_code());
+           LogError::newMessage($e);
+           LogError::customErrorMessage('admin');
            
        }
        
@@ -248,9 +246,9 @@ class PageApp extends BaseApp
       $this->setFormAction('editPage');
       $this->view->set('pageTitle', $this->getPageTitle());
       $this->view->set('formAction', $this->getFormAction());
-      $this->view->set('formData', $data_page);
-      $this->view->set('postStatus', $this->pageEvent->postStatusDropDown($getPage->post_status));
-      $this->view->set('commentStatus', $this->pageEvent->commentStatusDropDown($getPage->comment_status));
+      $this->view->set('pageData', $data_page);
+      $this->view->set('postStatus', $this->pageEvent->postStatusDropDown($getPage['post_status']));
+      $this->view->set('commentStatus', $this->pageEvent->commentStatusDropDown($getPage['comment_status']));
       $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
        
    }

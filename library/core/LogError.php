@@ -132,7 +132,7 @@ class LogError
      */
     public static function errorHandler($errorNumber, $errorString, $file, $line)
     {
-        if (! (error_reporting() & $errorNumber)) {
+        if (!(error_reporting() & $errorNumber)) {
             
             return false;
         }
@@ -183,6 +183,7 @@ class LogError
                 self::customErrorMessage();
                 
                 break;
+                
         }
         
         /* Don't execute PHP internal error handler */
@@ -230,9 +231,11 @@ class LogError
         file_put_contents(self::logPath() . $error_file, $log_message . $content);
         
         if ($_printError == true) {
+            
             echo $log_message;
             
             exit();
+            
         }
         
     }
@@ -250,7 +253,7 @@ class LogError
         $log_message = "<p>Error on $date - $error</p>";
         
         if (is_file(self::logPath() . $error_file) === false) {
-            file_put_conmmmmtents(self::logPath() . $error_file, '');
+            file_put_contents(self::logPath() . $error_file, '');
         }
         
         $content = file_get_contents(self::logPath() . $error_file);
@@ -271,7 +274,7 @@ class LogError
     
     private static function getStatusCode()
     {
-       return static::$httpResponseCode;
+      return static::$httpResponseCode;
     }
     
 }

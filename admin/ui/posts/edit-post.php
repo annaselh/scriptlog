@@ -51,24 +51,26 @@ echo "Error saving data. Please try again." . $saveError;
 endif;
 ?>
 
-<form method="post" action="index.php?load=posts&action=<?=(isset($formAction)) ? $formAction : null; ?>&postId=<?=(isset($formData['ID'])) ? $formData['ID'] : 0; ?>" role="form">
-<input type="hidden" name="post_id" value="<?=(isset($formData['ID'])) ? $formData['ID'] : 0; ?>" />
+<form method="post" action="index.php?load=posts&action=<?=(isset($formAction)) ? $formAction : null; ?>&postId=<?=(isset($postData['ID'])) ? $postData['ID'] : 0; ?>" role="form">
+<input type="hidden" name="post_id" value="<?=(isset($postData['ID'])) ? $postData['ID'] : 0; ?>" />
 <input type="hidden" name="MAX_FILE_SIZE" value="697856" />
 
 <div class="box-body">
 <div class="form-group">
 <label>Title (required)</label>
-<input type="text" class="form-control" name="post_title" placeholder="Enter title here" value="<?=(isset($formData['post_title'])) ? htmlspecialchars($formData['post_title'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
+<input type="text" class="form-control" name="post_title" placeholder="Enter title here" value="
+<?=(isset($postData['post_title'])) ? htmlspecialchars($postData['post_title']) : ""; ?>
+<?=(isset($formData['post_title'])) ? htmlspecialchars($formData['post_title'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
 </div>
 <?=(isset($topics)) ? $topics : ""; ?>
 
 <?php 
-if (isset($formData['post_image'])) :
+if (isset($postData['post_image'])) :
 ?>
 <div class="form-group">
 <?php 
-$image = __DIR__ . '/../public/files/pictures/'.$formData['post_image'];
-$imageThumb = __DIR__ . '/../public/files/pictures/thumbs/thumb_'.$formData['post_image'];
+$image = __DIR__ . '/../public/files/pictures/'.$postData['post_image'];
+$imageThumb = __DIR__ . '/../public/files/pictures/thumbs/thumb_'.$postData['post_image'];
 
 if (!is_readable($imageThumb)) :
     $imageThumb = __DIR__ . '/../public/files/pictures/thumbs/nophoto.jpg';
@@ -106,31 +108,36 @@ endif;
 
 <div class="form-group">
 <label>Meta Description</label>
-<textarea class="form-control" name="post_summary" rows="3" maxlength="500" <?=(isset($formData['post_summary'])) ? htmlspecialchars($formData['post_summary'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
-
+<textarea class="form-control" name="post_summary" rows="3" maxlength="500" >
+<?=(isset($postData['post_summary'])) ? $postData['post_summary'] : ""; ?>
+<?=(isset($formData['post_summary'])) ? htmlspecialchars($formData['post_summary'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>
 </div>
 
 <div class="form-group">
 <label>Meta Keywords</label>
-<textarea class="form-control" name="post_keyword" rows="3" maxlength="200" <?=(isset($formData['post_keyword'])) ? htmlspecialchars($formData['post_keyword'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
-
+<textarea class="form-control" name="post_keyword" rows="3" maxlength="200" >
+<?=(isset($postData['post_keyword'])) ? $postData['post_keyword'] : ""; ?>
+<?=(isset($formData['post_keyword'])) ? htmlspecialchars($formData['post_keyword'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>
 </div>
 
 <div class="form-group">
 <label>Content (required)</label>
-<textarea class="form-control" id="sl" name="post_content" rows="10" maxlength="100000" <?=(isset($formData['post_content'])) ? htmlspecialchars($formData['post_content'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
-
+<textarea class="form-control" id="sl" name="post_content" rows="10" maxlength="100000" >
+<?=(isset($postData['post_content'])) ? $postData['post_content'] : ""; ?>
+<?=(isset($formData['post_content'])) ? htmlspecialchars($formData['post_content'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>
 </div>
 
 <div class="form-group">
+<label>Post status</label>
 <?=(isset($postStatus)) ? $postStatus : ""; ?>
 </div>
 <!-- /.post status -->
 
 <div class="form-group">
+<label>Comment status</label>
 <?=(isset($commentStatus)) ? $commentStatus : ""; ?>
 </div>
 <!-- /.comment status -->
@@ -140,7 +147,7 @@ endif;
 
 <div class="box-footer">
 <input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">  
-<input type="submit" name="postFormSubmit" class="btn btn-primary" value="Add New Post">
+<input type="submit" name="postFormSubmit" class="btn btn-primary" value="<?=(isset($postData['ID']) && $postData['ID'] != '') ? "Update" : "Publish"; ?>">
 </div>
 </form>
             
@@ -156,7 +163,7 @@ endif;
 <!-- /.content-wrapper -->
 <script type="text/javascript">
   var loadFile = function(event) {
-	    var output = document.getElementById('output');
-	    output.src = URL.createObjectURL(event.target.files[0]);
+	  var output = document.getElementById('output');
+	      output.src = URL.createObjectURL(event.target.files[0]);
 	  };
 </script>

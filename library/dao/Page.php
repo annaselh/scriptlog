@@ -28,17 +28,16 @@ public function __construct()
  * @param string $orderBy
  * @return boolean|array|object
  */
-public function findPages($position, $limit, $type, $orderBy = 'ID')
+public function findPages($type, $orderBy = 'ID')
 {
-   $sql = "SELECT ID, post_author, date_created, date_modified,
+   $sql = "SELECT ID, post_author, post_date, post_modified,
   		  post_title, post_type
   		  FROM posts WHERE post_type = :type
-  		  ORDER BY :orderBy
-  		  LIMIT :position, :limit";
+  		  ORDER BY :orderBy DESC";
     
     $this->setSQL($sql);
     
-    $pages = $this->findAll([':type' => $type, ':orderBy' => $orderBy, ':position' => $position, ':limit' => $limit]);
+    $pages = $this->findAll([':type' => $type, ':orderBy' => $orderBy]);
     
     if (empty($pages)) return false;
     
@@ -54,16 +53,16 @@ public function findPages($position, $limit, $type, $orderBy = 'ID')
  * @param object $sanitizing
  * @return boolean|array|object
  */
-public function findPageById($pageId, $post_type, $sanitizing)
+public function findPageById($pageId, $post_type, $sanitize)
 {
     $sql = "SELECT ID, post_image, post_author,
-  	  	   date_created, date_modified, post_title,
-  	  	   post_slug, post_content, post_status,
-  	  	   post_type, comment_status
+  	  	      post_date, post_modified, post_title,
+  	  	      post_slug, post_content, post_status,
+  	  	      post_type, comment_status
   	  	   FROM posts
   	  	   WHERE ID = ? AND post_type = ? ";
     
-    $id_sanitized = $this -> filteringId($sanitizing, $pageId, 'sql');
+    $id_sanitized = $this -> filteringId($sanitize, $pageId, 'sql');
     
     $this->setSQL($sql);
     
@@ -85,8 +84,8 @@ public function findPageBySlug($slug)
 {
     $sql = "SELECT
               posts.ID, posts.post_image, posts.post_author,
-  	  	      posts.date_created, posts.date_modified, posts.post_title,
-  	  	      posts.post_slug, posts.post_content, posts.post_status,
+  	  	      posts.post_date, posts.post_modified, posts.post_title,
+  	  	      posts.post_slug, posts.post_content,  posts.post_status,
   	  	      posts.post_type, posts.comment_status, users.user_login
   	  	   FROM
                posts, users
@@ -117,6 +116,7 @@ public function createPage($bind)
  	$stmt = $this->create("posts", [
  	    'post_image' => $bind['post_image'],
  	    'post_author' => $bind['post_author'],
+ 	    'post_date' => $bind['post_date'],
  	    'post_content' => $bind['post_content'],
  	    'post_status' => $bind['post_status'],
  	    'post_type' => $bind['post_type'],
@@ -127,6 +127,7 @@ public function createPage($bind)
  	
  	$stmt = $this->create("posts", [
  	    'post_author' => $bind['post_author'],
+ 	    'post_date' => $bind['post_date'],
  	    'post_content' => $bind['post_content'],
  	    'post_status' => $bind['post_status'],
  	    'post_type' => $bind['post_type'],
@@ -149,7 +150,7 @@ public function updatePage($bind, $id)
  if (empty($bind['post_image'])) {
  
  	$stmt = $this->modify("posts", [
- 	    'date_modified' => $bind['date_modified'],
+ 	    'post_modified' => $bind['post_modified'],
  	    'post_title' => $bind['post_title'],
  	    'post_slug' => $bind['post_slug'],
  	    'post_status' => $bind['post_status'],
@@ -160,7 +161,7 @@ public function updatePage($bind, $id)
  	
  	$stmt = $this->modify("posts", [
  	    'post_image' => $bind['post_image'],
- 	    'date_modified' => $bind['date_modified'],
+ 	    'post_modified' => $bind['post_modified'],
  	    'post_title' => $bind['post_title'],
  	    'post_slug' => $bind['post_slug'],
  	    'post_status' => $bind['post_status'],
@@ -180,9 +181,9 @@ public function updatePage($bind, $id)
  */
 public function deletePage($id, $sanitizing, $type)
 {
-   
- $sanitized_id = $this->filteringId($sanitizing, $id, 'sql');
- $stmt = $this->delete("posts", "`ID` = {$sanitized_id} AND post_type = {$type}");
+
+ $id_sanitized = $this->filteringId($sanitizing, $id, 'sql');
+ $stmt = $this->delete("posts", "`ID` = {$id_sanitized} AND post_type = {$type}");
    
 }
 
@@ -211,39 +212,16 @@ public function checkPageId($id, $sanitizing)
 public function dropDownPostStatus($selected = "")
 {
      
-     $option_selected = "";
-     
-     if (!$selected) {
-         
-         $option_selected = 'selected="selected"';
-     }
-     
-     // list position in array
-     $posts_status = array('publish', 'draft');
-     
-     $html = array();
-     
-     $html[] = '<label>Post status</label>';
-     $html[] = '<select class="form-control" name="post_status">';
-     
-     foreach ($posts_status as $s => $status) {
-         
-         if ($selected == $status) {
-             $option_selected = 'selected="selected"';
-         }
-         
-         // set up the option line
-         $html[]  =  '<option value="' . $status. '"' . $option_selected . '>' . $status . '</option>';
-         
-         // clear out the selected option flag
-         $option_selected = '';
-         
-     }
-     
-     $html[] = '</select>';
-     
-     return implode("\n", $html);
-     
+    $name = 'post_status';
+    // list position in array
+    $posts_status = array('publish' => 'Publish', 'draft' => 'Draft');
+    
+    if ($selected != '') {
+        $selected = $selected;
+    }
+    
+    return dropdown($name, $posts_status, $selected);
+    
 }
 
 /**
@@ -254,39 +232,30 @@ public function dropDownPostStatus($selected = "")
  */
 public function dropDownCommentStatus($selected = '')
 {
-     $option_selected = "";
-     
-     if (!$selected) {
-         
-         $option_selected = 'selected="selected"';
-     }
-     
-     // list position in array
-     $comment_status = array('open', 'close');
-     
-     $html = array();
-     
-     $html[] = '<label>Comments status</label>';
-     $html[] = '<select class="form-control" name="comment_status">';
-     
-     foreach ($comment_status as $c => $comment) {
-         
-         if ($selected == $comment) {
-             $option_selected = 'selected="selected"';
-         }
-         
-         // set up the option line
-         $html[]  =  '<option value="' . $comment. '"' . $option_selected . '>' . $comment . '</option>';
-         
-         // clear out the selected option flag
-         $option_selected = '';
-         
-     }
-     
-     $html[] = '</select>';
-     
-     return implode("\n", $html);
-     
+    
+    $name = 'comment_status';
+    // list position in array
+    $comment_status = array('open' => 'Open', 'close' => 'Close');
+    
+    if ($selected != '') {
+        $selected = $selected;
+    }
+    
+    return dropdown($name, $comment_status, $selected);
+    
 }
- 
+
+/**
+ * Total page records
+ * 
+ * @param array $data
+ * @return boolean
+ */
+public function totalPageRecords($data = null)
+{
+   $sql = "SELECT ID FROM posts WHERE post_type = 'page'";
+   $this->setSQL($sql);
+   return $this->checkCountValue();
+}
+
 }

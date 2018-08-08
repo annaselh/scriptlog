@@ -9,18 +9,7 @@
  * @since     Since Release 1.0
  *
  */
-class ViewException extends Exception
+class ViewException extends AppException
 {
-  private $error_message;
   
-  public function __construct()
-  {
-    parent::__construct();
-  }
-  
-  public function getMessage()
-  {
-    $this->error_message = LogError::newMessage($this->getMessage());
-    $this->error_message = LogError::customErrorMessage();
-  }
 }

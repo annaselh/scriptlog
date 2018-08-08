@@ -20,15 +20,23 @@ class Comment extends Dao
    
  }
  
- public function findComments($position, $limit, $orderBy = 'ID')
+ /**
+  * Retreive all comments records
+  * from comments table
+  * 
+  * @param string $orderBy
+  * @return boolean|array|object
+  */
+ public function findComments($orderBy = 'ID')
  {
-   $sql = "SELECT ID, comment_post_id, comment_author_name,  
-           comment_author_ip, comment_content, comment_status, 
-           date_publish FROM comments ORDER BY :orderBy
-           DESC LIMIT :position, :limit";
+   $sql = "SELECT c.ID, c.comment_post_id, c.comment_author_name,  
+             c.comment_author_ip, c.comment_content, c.comment_status, 
+             c.comment_date, p.post_title 
+           FROM comments AS c INNER JOIN posts AS p 
+           ON c.comment_post_id = p.ID ORDER BY :orderBy DESC ";
    
    $this->setSQL($sql);
-   $comments = $this->findAll([':orderBy' => $orderBy,':position' => $position, ':limit' => $limit]);
+   $comments = $this->findAll([':orderBy' => $orderBy]);
    
    if (empty($comments)) return false;
    
@@ -38,12 +46,16 @@ class Comment extends Dao
  
  public function findComment($id, $sanitize)
  {
-   $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+   $id_sanitized = $this->filteringId($sanitize, $id, 'sql');
+   
    $sql = "SELECT ID, comment_post_id, comment_author_name, 
            comment_author_ip, comment_content, comment_status, 
-           date_publish FROM comments WHERE ID = ?";
+           comment_date FROM comments WHERE ID = ?";
+   
    $this->setSQL($sql);
-   $commentDetails = $this->findRow([$idsanitized], PDO::FETCH_ASSOC);
+   
+   $commentDetails = $this->findRow([$id_sanitized]);
+   
    if (empty($commentDetails)) return false;
    
    return $commentDetails;
@@ -58,7 +70,7 @@ class Comment extends Dao
         'comment_author_name' => $bind['comment_author_name'],
         'comment_author_ip' => $bind['comment_author_ip'],
         'comment_content' => $bind['comment_content'],
-        'date_publish' => $bind['date_publish']
+        'comment_date' => $bind['comment_date']
    ]); 
     
  }
@@ -83,47 +95,24 @@ class Comment extends Dao
  public function checkCommentId($id, $sanitize)
  {
    $sql = "SELECT ID FROM comments WHERE ID = ?";
-   $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+   $id_sanitized = $this->filteringId($sanitize, $id, 'sql');
    $this->setSQL($sql);
-   $stmt = $this->checkCountValue([$idsanitized]);
-   return($stmt > 0);
+   $stmt = $this->checkCountValue([$id_sanitized]);
+   return $stmt > 0;
  }
  
- public function dropDownCommentStatus($selected = "")
+ public function dropDownCommentStatement($selected = '')
  {
-     $option_selected = "";
-     
-     if (!$selected) {
-         
-       $option_selected = 'selected="selected"';
-         
-     }
+     $name = 'comment_status';
      
      // list position in array
-     $comment_status = array('approved', 'pending', 'spam');
+     $comment_status = array('approved' => 'Approved', 'pending' => 'Pending', 'spam' => 'Spam');
      
-     $html = array();
-     
-     $html[] = '<label>Status :</label>';
-     $html[] = '<select class="form-control" name="comment_status">';
-     
-     foreach ($comment_status as $c => $comment) {
-         
-         if ($selected == $comment) {
-             $option_selected = 'selected="selected"';
-         }
-         
-         // set up the option line
-         $html[]  =  '<option value="' . $comment. '"' . $option_selected . '>' . $comment . '</option>';
-         
-         // clear out the selected option flag
-         $option_selected = '';
-         
+     if ($selected != '') {
+         $selected = $selected;
      }
      
-     $html[] = '</select>';
-     
-     return implode("\n", $html);
+     return dropdown($name, $comment_status, $selected);
      
  }
  

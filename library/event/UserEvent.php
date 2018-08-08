@@ -61,12 +61,6 @@ class UserEvent
  private $user_activation_key;
  
  /**
-  * user status
-  * @var string
-  */
- private $user_status;
- 
- /**
   * user session
   * @var string
   */
@@ -128,14 +122,9 @@ class UserEvent
    $this->user_url = $user_url;
  }
  
- public function setActivationKey($activation_key)
+ public function setUserActivationKey($activation_key)
  {
    $this->user_activation_key = $activation_key;
- }
- 
- public function setUserStatus($status)
- {
-   $this->user_status = $status;
  }
  
  public function setUserSession($user_session)
@@ -143,9 +132,9 @@ class UserEvent
    $this->user_session = $user_session;
  }
  
- public function grabUsers($position, $limit, $orderBy = 'ID')
+ public function grabUsers($orderBy = 'ID', $fetchMode = null)
  {
-   return $this->userDao->getUsers($position, $limit, $orderBy);    
+   return $this->userDao->getUsers($orderBy, $fetchMode);    
  }
  
  public function grabUser($userId)
@@ -155,44 +144,51 @@ class UserEvent
  
  public function addUser()
  {
-   
-   $this->authenticator->validate("user_login", $this->user_login);  
-   $this->authenticator->validate("user_email", $this->user_email);
-   
-   if ($this->authenticator->numErrors > 0) {
-       return false;
-   }
-   
-   if ($this->authenticator->isEmailExists($this->user_email)) {
-       return false;
-   }
-   
-   if ($this->authenticator->isUserLoginExists($this->user_login)) {
+     
+   try {
        
-       return false;
+       if (empty($this->user_activation_key)) {
+           
+           return $this->userDao->createUser([
+               'user_login' => $this->user_login,
+               'user_email' => $this->user_email,
+               'user_pass'  => $this->user_pass,
+               'user_level' => $this->user_level,
+               'user_fullname' => $this->user_fullname,
+               'user_url' => $this->user_url,
+               'user_registered' => date("Y-m-d H:i:s"),
+               'user_session' => $this->user_session
+           ]);
+           
+       } else {
+           
+           return $this->userDao->createUser([
+               'user_login' => $this->user_login,
+               'user_email' => $this->user_email,
+               'user_pass'  => $this->user_pass,
+               'user_level' => $this->user_level,
+               'user_fullname' => $this->user_fullname,
+               'user_url' => $this->user_url,
+               'user_activation_key' => $this->user_activation_key,
+               'user_session' => $this->user_session
+           ]);
+           
+       }
        
-   }
+   } catch (Exception $e) {
+       
+       LogError::setStatusCode(http_response_code());
+       LogError::newMessage($e);
+       LogError::customErrorMessage('admin');
+       
+   }      
    
-   return $this->userDao->createUser([
-       'user_login' => $this->user_login,
-       'user_email' => $this->user_email,
-       'user_pass'  => $this->user_pass,
-       'user_level' => $this->user_level,
-       'user_fullname' => $this->user_fullname,
-       'user_url' => $this->user_url,
-       'user_registered' => date("Ymd"),
-       'user_session' => $this->user_pass
-   ]); 
-        
  }
  
  public function modifyUser()
  {
   
-   $this->user_level = isset($_SESSION['user_level']) ? $_SESSION['user_level'] : "";
-   $this->user_id = isset($_SESSION['ID']) ? (int)$_SESSION['ID'] : "";
-   
-   if ($this->user_level !== 'Administrator') {
+   if ($this->accessLevel() != 'administrator') {
    
        if (!empty($this->user_pass)) {
            
@@ -200,7 +196,7 @@ class UserEvent
                'user_email' => $this->user_email,
                'user_pass' => $this->user_pass,
                'user_fullname' => $this->user_fullname,
-               'user_url' => $this->user_fullname,
+               'user_url' => $this->user_url
               ];
            
        } else {
@@ -208,7 +204,7 @@ class UserEvent
            $bind = [
                'user_email' => $this->user_email,
                'user_fullname' => $this->user_fullname,
-               'user_url' => $this->user_fullname,
+               'user_url' => $this->user_url
            ];
            
        }
@@ -222,37 +218,36 @@ class UserEvent
                'user_pass' => $this->user_pass,
                'user_level' => $this->user_level,
                'user_fullname' => $this->user_fullname,
-               'user_url' => $this->user_fullname,
-               'user_status' => $this->user_status
+               'user_url' => $this->user_url
            ];
            
        } else {
            
            $bind = [
-               'user_login' => $this->user_login,
                'user_email' => $this->user_email,
                'user_level' => $this->user_level,
                'user_fullname' => $this->user_fullname,
-               'user_url' => $this->user_fullname,
-               'user_status' => $this->user_status
+               'user_url' => $this->user_url
            ];
            
        }
        
    }
       
-   return $this->userDao->updateUser($this->user_level, $this->sanitize, $bind, $this->user_id);
+   return $this->userDao->updateUser($this->accessLevel(), $this->sanitize, $bind, $this->user_id);
    
  }
  
  public function removeUser()
  {
-   $data_user = $this->userDao->getUserById($this->user_id, $this->sanitize);
-   if (false === $data_user) {
-       direct_page('index.php?load=users&error=userNotFound', 404);
-   }
    
-   return $this->userDao->deleteUser($this->user_id, $this->sanitize);
+     if (!$data_user = $this->userDao->getUserById($this->user_id, $this->sanitize)) {
+       
+         direct_page('index.php?load=users&error=userNotFound', 404);
+   
+     }
+   
+     return $this->userDao->deleteUser($this->user_id, $this->sanitize);
    
  }
  
@@ -381,7 +376,36 @@ class UserEvent
   */
  public function userLevelDropDown($selected = "") 
  {
-    return $this->userDao->setUserLevel($selected);
+    return $this->userDao->dropDownUserLevel($selected);
+ }
+ 
+ /**
+  * 
+  * @param string $user_login
+  * @return boolean
+  */
+ public function checkUserLogin($user_login)
+ {
+   return $this->userDao->isUserLoginExists($user_login);
+ }
+ 
+ /**
+  * 
+  * @param string $user_email
+  * @return boolean
+  */
+ public function isEmailExists($user_email)
+ {
+   return $this->userDao->checkUserEmail($user_email);    
+ }
+ 
+ /**
+  * Total Users records
+  * @return boolean
+  */
+ public function totalUsers($data = null)
+ {
+   return $this->userDao->totalUserRecords($data);
  }
  
  /**

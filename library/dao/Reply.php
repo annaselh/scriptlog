@@ -19,13 +19,13 @@ class Reply extends Dao
     parent::__construct();
   }
   
-  public function findReplies($position, $limit, $orderBy = 'ID')
+  public function findReplies($orderBy = 'ID')
   {
     $sql = "SELECT ID, comment_id, user_id, reply_content, reply_status, date_publish 
-            FROM comment_reply ORDER BY :orderBy DESC LIMIT :position, :limit";
+            FROM comment_reply ORDER BY :orderBy DESC ";
     
     $this->setSQL($sql);
-    $replies = $this->findAll([':orderBy',':position' => $position, ':limit' => $limit]);
+    $replies = $this->findAll([':orderBy' => $orderBy]);
     
     if (empty($replies)) return false;
     
@@ -74,6 +74,29 @@ class Reply extends Dao
     $idsanitized = $this->filteringId($sanitize, $id, 'sql');
     $stmt = $this->delete("comment_reply", "`ID` = {$idsanitized}");
     
+  }
+  
+  public function checkReplyId($id, $sanitize)
+  {
+    $sql = "SELECT ID FROM comment_reply WHERE ID = ?";
+    $id_sanitized = $this->filteringId($sanitize, $id, 'sql');
+    $this->setSQL($sql);
+    $stmt = $this -> checkCountValue([$id_sanitized]);
+    return $stmt > 0;
+  }
+
+  public function dropDownReplyStatus($selected = '')
+  {
+    $name = 'reply_status';
+
+    $reply_status = array('active', 'disable');
+
+    if($selected != '') {
+      $selected = $selected;
+    }
+
+    return dropdown($name, $reply_status, $selected);
+
   }
   
 }

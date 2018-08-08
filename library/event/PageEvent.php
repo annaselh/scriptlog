@@ -86,9 +86,9 @@ class PageEvent
    $this->comment_status = $comment_status;
   }
  
-  public function grabPages($position, $limit, $type)
+  public function grabPages($type)
   {
-    return $this->pageDao->findPages($position, $limit, $type);
+    return $this->pageDao->findPages($type);
   }
   
   public function grabPage($id, $type)
@@ -100,9 +100,7 @@ class PageEvent
   {
     $upload_path = __DIR__ . '/../../public/files/pictures/';
     $image_uploader =  new ImageUploader('image', $upload_path);
-    
-    $this->author = isset($_SESSION['ID']) ? (int)$_SESSION['ID'] : 0;
-    
+     
     $this->validator->sanitize($this->author, 'int');
     $this->validator->sanitize($this->title, 'string');
     $this->validator->sanitize($this->meta_desc, 'string');
@@ -112,7 +110,7 @@ class PageEvent
        
         return $this->pageDao->createPage([
             'post_author' => $this->author,
-            'date_created' => date("Ymd"),
+            'post_date' => date("Y-m-d H:i:s"),
             'post_title' => $this->title,
             'post_slug' => $this->slug,
             'post_content' => $this->content,
@@ -131,7 +129,7 @@ class PageEvent
        return $this->pageDao->createPage([
            'post_image' => $newFileName,
            'post_author' => $this->author,
-           'date_created' => date("Ymd"),
+           'post_date' => date("Y-m-d H:i:s"),
            'post_title' => $this->title,
            'post_slug' => $this->slug,
            'post_content' => $this->content,
@@ -151,8 +149,6 @@ class PageEvent
     $upload_path = __DIR__ . '/../../public/files/pictures/';
     $image_uploader =  new ImageUploader('image', $upload_path);
     
-    $this->author = isset($_SESSION['ID']) ? (int)$_SESSION['ID'] : 0;
-    
     $this->validator->sanitize($this->pageId, 'int');
     $this->validator->sanitize($this->author, 'int');
     $this->validator->sanitize($this->title, 'string');
@@ -163,7 +159,7 @@ class PageEvent
         
       return $this->pageDao->updatePage([
           'post_author' => $this->author,
-          'date_modified' => date("Ymd"),
+          'date_modified' => date("Y-m-d H:i:s"),
           'post_title' => $this->title,
           'post_slug' => $this->slug,
           'post_content' => $this->content,
@@ -181,7 +177,7 @@ class PageEvent
        
        return $this->pageDao->updatePage([
            'post_image' => $newFileName,
-           'date_modified' => date("Ymd"),
+           'date_modified' => date("Y-m-d H:i:s"),
            'post_title' => $this->title,
            'post_slug' => $this->slug,
            'post_content' => $this->content,
@@ -199,9 +195,8 @@ class PageEvent
   public function removePage()
   {
     $this->validator->sanitize($this->pageId, 'int');
-    
-    $data_page = $this->pageDao->findPageById($this->pageId, $this->post_type, $this->sanitizer);
-    if (false === $data_page) {
+     
+    if (!$data_page = $this->pageDao->findPageById($this->pageId, $this->post_type, $this->sanitizer)) {
         direct_page('index.php?load=pages&error=pageNotFound', 404);
     }
     
@@ -231,6 +226,11 @@ class PageEvent
   public function commentStatusDropDown($selected = "")
   {
     return $this->pageDao->dropDownCommentStatus($selected);
+  }
+  
+  public function totalPages($data = null)
+  {
+    return $this->pageDao->totalPageRecords($data);
   }
   
 }

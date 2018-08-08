@@ -11,7 +11,7 @@
  */
 class DbFactory
 {
-  private $error;
+  private static $error;
   
   public static function connect($connection, $options = [])
   {
@@ -20,15 +20,19 @@ class DbFactory
          $database = "Db";
          
          if (class_exists($database)) {
-            return new $database($connection, $options);    
+             
+            return new $database($connection, $options);  
+            
          } else {
+             
              throw new DbException("Database Object is not exists");
+             
          }
          
      } catch (DbException $e) {
          
-         $this->error = LogError::newMessage($e);
-         $this->error = LogError::customErrorMessage();
+         self::$error = LogError::newMessage($e);
+         $self::$error = LogError::customErrorMessage();
          
      }
      

@@ -32,31 +32,17 @@ class Topic extends Dao
    * @param string $orderBy
    * @return boolean|array|object
    */
-  public function findTopics($position = null, $limit = null, $orderBy = 'ID')
+  public function findTopics($orderBy = 'ID')
   {
-      if ((!is_null($position)) && (!is_null($limit))) {
-          
-          $sql = "SELECT ID, topic_title, topic_slug, topic_status
-				  FROM topics
-                  ORDER BY :orderBy
-				  DESC LIMIT :position, :limit";
-          
-          $this->setSQL($sql);
-          $topics = $this->findAll([':orderBy' => $orderBy,':position'=>$position, ':limit'=>$limit]);
-          
-      } else {
-          
-          $sql = "SELECT ID, topic_title, topic_slug, topic_status
-                  FROM topics ORDER BY :orderBy ";
-          
-          $this->setSQL($sql);
-          $topics = $this->findAll([':orderBy' => $orderBy]);
-          
-      }
+    $sql = "SELECT ID, topic_title, topic_slug, topic_status
+    FROM topics ORDER BY :orderBy DESC";
+
+    $this->setSQL($sql);
+    $topics = $this->findAll([':orderBy' => $orderBy]);
+  
+    if (empty($topics)) return false;
       
-      if (empty($topics)) return false;
-      
-      return $topics;
+    return $topics;
       
   }
   
@@ -299,5 +285,12 @@ class Topic extends Dao
    $stmt = $this->checkCountValue([$cleanUpId]);
    return($stmt > 0);
  }
-	
+
+ public function totalTopicRecords($data = null)
+ {
+    $sql = "SELECT ID FROM topics";
+    $this->setSQL($sql);
+    return $this->checkCountValue($data);
+ }
+
 }

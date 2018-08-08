@@ -1,10 +1,8 @@
 <?php 
 
-function admin_header($stylePath, $breadCrumbs) {
-$allowedQuery = array(
-    'dashboard', 'posts', 'pages', 'topics', 'comments', 'themes', 
-    'menu', 'menu-child', 'users', 'settings', 'plugins'
-);    
+function admin_header($stylePath, $breadCrumbs, $allowedQuery) 
+{
+ 
 ?>
 <!DOCTYPE html>
 <html>
@@ -44,6 +42,8 @@ $allowedQuery = array(
   <link rel="stylesheet" href="<?= $stylePath; ?>/assets/components/Ionicons/css/ionicons.min.css">
   <!-- DataTables -->
   <link rel="stylesheet" href="<?= $stylePath; ?>/assets/components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" href="<?= $stylePath; ?>/assets/components/datatables.net/css/responsive.bootstrap.min.css">
+  <link rel="stylesheet" href="<?= $stylePath; ?>/assets/components/datatables.net/css/responsive.dataTables.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="<?= $stylePath; ?>/assets/dist/css/AdminLTE.min.css">
   <link rel="stylesheet" href="<?= $stylePath; ?>/assets/dist/css/skins/scriptlog-skin.css">
@@ -78,6 +78,7 @@ $allowedQuery = array(
 
 function admin_footer($stylePath)
 {
+    
 ?>
  <!-- Main Footer -->
   <footer class="main-footer">
@@ -106,6 +107,8 @@ function admin_footer($stylePath)
 <!-- DataTables -->
 <script src="<?= $stylePath; ?>/assets/components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?= $stylePath; ?>/assets/components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="<?= $stylePath; ?>/assets/components/datatables.net/js/responsive.bootstrap.min.js"></script>
+<script src="<?= $stylePath; ?>/assets/components/datatables.net/js/responsive.dataTables.js"></script>
 <!-- AdminLTE App -->
 <script src="<?= $stylePath; ?>/assets/dist/js/adminlte.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
@@ -117,20 +120,20 @@ function admin_footer($stylePath)
 <!-- Validate Image -->
 <script src="<?= $stylePath; ?>/assets/dist/js/imagevalidation.js"></script>
 <script src="<?= $stylePath; ?>/assets/dist/js/imagesizechecker.js"></script>
-
 <!-- page script -->
 <script>
-  $(function () {
-    $('#example1').DataTable()
-    $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': false,
-      'searching'   : false,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : false
-    })
-  })
+$(document).ready(function(){
+	$('#scriptlog-table').DataTable({
+		"order": [],
+		"columnDefs":[
+			{
+				"targets":[0, 4, 5],
+				"orderable":false,
+			},
+		],
+
+   });
+});
 </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<?php  
+<?php
 /**
  * Post class extends Dao
  * insert, update, delete
@@ -30,28 +30,27 @@ public function __construct()
  * @param string $author
  * @return boolean|array|object
  */
-public function findPosts($position, $limit, $orderBy = 'ID', $author = null)
+public function findPosts($orderBy = 'ID', $author = null)
 {
     if (!is_null($author)) {
         
         $sql = "SELECT p.ID, p.post_image, p.post_author,
-                p.date_created, p.date_modified, p.post_title, p.post_slug,
+                p.post_date, p.post_modified, p.post_title, p.post_slug,
                 p.post_content, p.post_status, p.post_type, u.user_login
   				FROM posts AS p
   				INNER JOIN users AS u ON p.post_author = u.ID
   				WHERE p.post_author = :author
   				AND p.post_type = 'blog'
-  				ORDER BY p.{$orderBy} DESC
-  		        LIMIT :position, :limit";
-    
+  				ORDER BY p.{$orderBy} DESC";
+  		       
         $this->setSQL($sql);
         
-        $posts = $this->findAll([':author' => $author, ':position' => $position, ':limit' => $limit], PDO::FETCH_ASSOC);
+        $posts = $this->findAll([':author' => $author]);
         
     } else {
         
         $sql = "SELECT p.ID, p.post_image, p.post_author,
-                p.date_created, p.date_modified, p.post_title,
+                p.post_date, p.post_modified, p.post_title,
                 p.post_slug, p.post_content, p.post_status, p.post_type, 
                 u.user_login
   		    FROM
@@ -60,11 +59,12 @@ public function findPosts($position, $limit, $orderBy = 'ID', $author = null)
                  users AS u ON p.post_author = u.ID
   		    WHERE
                  p.post_type = 'blog'
-  			ORDER BY p.{$orderBy} DESC LIMIT :position, :limit";
+  			ORDER BY p.{$orderBy} DESC";
           
         $this->setSQL($sql);
         
-        $posts = $this->findAll([':position' => $position, ':limit' => $limit], PDO::FETCH_ASSOC);
+        $posts = $this->findAll();
+        
     }
     
     if (empty($posts)) return false;
@@ -89,7 +89,7 @@ public function findPost($id, $sanitize, $author = null)
    if (!empty($author)) {
         
         $sql = "SELECT ID, post_image, post_author,
-  	  		  date_created, date_modified, post_title,
+  	  		  post_date, post_modified, post_title,
   	  		  post_slug, post_content, post_summary, 
               post_keyword, post_status,
   	  		  post_type, comment_status
@@ -103,7 +103,7 @@ public function findPost($id, $sanitize, $author = null)
    } else {
         
        $sql = "SELECT ID, post_image, post_author,
-  	  		  date_created, date_modified, post_title,
+  	  		  post_date, post_modified, post_title,
   	  		  post_slug, post_content, post_summary, post_keyword, 
               post_status,
   	  		  post_type, comment_status
@@ -131,7 +131,7 @@ public function findPost($id, $sanitize, $author = null)
 public function showPostById($id, $sanitize)
 {
     $sql = "SELECT p.ID, p.post_image, p.post_author,
-                p.date_created, p.date_modified, p.post_title,
+                p.post_date, p.post_modified, p.post_title,
                 p.post_slug, p.post_content, p.post_summary, p.post_keyword, 
                 p.post_status, p.post_type, p.comment_status, u.user_login
   		   FROM posts AS p
@@ -169,7 +169,7 @@ public function showPostsPublished(Paginator $perPage, $sanitize)
     $this->setSQL($getPostId);
     $this->linkPosts->set_total($this->checkCountValue());
     $sql = "SELECT p.ID, p.post_image, p.post_author,
-                     p.date_created, p.date_modified, p.post_title,
+                     p.post_date, p.post_modified, p.post_title,
                      p.post_slug, p.post_content, p.post_summary, p.post_keyword,
                      p.post_type, p.post_status, u.user_login
   			FROM posts AS p
@@ -201,7 +201,7 @@ public function createPost($bind, $topicId)
    $stmt = $this->create("posts", [
        'post_image' => $bind['post_image'],
        'post_author' => $bind['post_author'],
-       'date_created' => $bind['date_created'],
+       'post_date' => $bind['post_date'],
        'post_title' => $bind['post_title'],
        'post_slug' => $bind['post_slug'],
        'post_content' => $bind['post_content'],
@@ -215,7 +215,7 @@ public function createPost($bind, $topicId)
   			
   $stmt = $this->create("posts", [
       'post_author' => $bind['post_author'],
-      'date_created' => $bind['date_created'],
+      'post_date' => $bind['post_date'],
       'post_title' => $bind['post_title'],
       'post_slug' => $bind['post_slug'],
       'post_content' => $bind['post_content'],
@@ -266,7 +266,7 @@ public function updatePost($bind, $id, $topicId)
   	$stmt = $this->modify("posts", [
   	    'post_image' => $bind['post_image'],
   	    'post_author' => $bind['post_author'],
-  	    'date_modified' => $bind['date_modified'],
+  	    'post_modified' => $bind['post_modified'],
   	    'post_title' => $bind['post_title'],
   	    'post_slug' => $bind['post_slug'],
   	    'post_content' => $bind['post_content'],
@@ -280,7 +280,7 @@ public function updatePost($bind, $id, $topicId)
   	 
       $stmt = $this->modify("posts", [
           'post_author' => $bind['post_author'],
-          'date_modified' => $bind['date_modified'],
+          'post_modified' => $bind['post_modified'],
           'post_title' => $bind['post_title'],
           'post_slug' => $bind['post_slug'],
           'post_content' => $bind['post_content'],
@@ -358,77 +358,47 @@ public function checkPostId($id, $sanitizing)
 public function dropDownPostStatus($selected = "")
 {
   
- 	$option_selected = "";
- 	
- 	if (!$selected) {
- 		
- 		$option_selected = 'selected="selected"';
- 	}
- 	
+    $name = 'post_status';
  	// list position in array
- 	$posts_status = array('publish', 'draft');
+ 	$posts_status = array('publish' => 'Publish', 'draft' => 'Draft');
  	
- 	$html = array();
-    
- 	$html[] = '<label>Post status :</label>';
- 	$html[] = '<select class="form-control" name="post_status">';
- 	
- 	foreach ($posts_status as $s => $status) {
- 	 
- 	 if ($selected == $status) {
- 	 	$option_selected = 'selected="selected"';
- 	 }
- 	 
- 	 // set up the option line
- 	 $html[]  =  '<option value="' . $status. '"' . $option_selected . '>' . $status . '</option>';
- 	 
- 	 // clear out the selected option flag
- 	 $option_selected = '';
- 	 
+ 	if ($selected != '') {
+ 	    $selected = $selected;
  	}
  	
- 	$html[] = '</select>';
+ 	return dropdown($name, $posts_status, $selected);
  	
- 	return implode("\n", $html);
-  
 }
  
 public function dropDownCommentStatus($selected = "")
 {
- 	$option_selected = "";
  	
- 	if (!$selected) {
- 		
- 	  $option_selected = 'selected="selected"';
- 		
- 	}
- 	
+    $name = 'comment_status';
  	// list position in array
- 	$comment_status = array('open', 'close');
+ 	$comment_status = array('open' => 'Open', 'close' => 'Close');
  	
- 	$html = array();
- 	
- 	$html[] = '<label>Comments status :</label>';
- 	$html[] = '<select class="form-control" name="comment_status">';
- 	
- 	foreach ($comment_status as $c => $comment) {
- 		
- 		if ($selected == $comment) {
- 			$option_selected = 'selected="selected"';
- 		}
- 		
- 		// set up the option line
- 		$html[]  =  '<option value="' . $comment. '"' . $option_selected . '>' . $comment . '</option>';
- 		
- 		// clear out the selected option flag
- 		$option_selected = '';
- 		
+ 	if ($selected != '') {
+ 	    $selected = $selected;
  	}
- 	 	
- 	$html[] = '</select>';
  	
- 	return implode("\n", $html);
+ 	return dropdown($name, $comment_status, $selected);
  	
+}
+
+/**
+ * Total posts records
+ * 
+ * @param array $data
+ * @return boolean
+ */
+public function totalPostRecords($data = null)
+{
+    $sql = "SELECT ID FROM posts";
+    
+    $this->setSQL($sql);
+    
+    return $this->checkCountValue($data);
+    
 }
   
 }

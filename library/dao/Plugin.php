@@ -28,15 +28,16 @@ class Plugin extends Dao
    * @param string $orderBy
    * @return boolean|array|object
    */
-  public function getPlugins($position, $limit, $orderBy = 'ID')
+  public function getPlugins($orderBy = 'ID')
   {
      
-    $sql = "SELECT ID, plugin_name, plugin_desc, plugin_status, plugin_level,
-            plugin_sort FROM plugin ORDER BY :orderBy LIMIT :position, :limit";
+    $sql = "SELECT ID, plugin_name, plugin_desc, 
+            plugin_status, plugin_level,
+            plugin_sort FROM plugin ORDER BY :orderBy DESC";
    
     $this->setSQL($sql);
     
-    $plugins = $this->findAll([':orderBy' => $orderBy,':position' => $position, ':limit' => $limit], PDO::FETCH_ASSOC);
+    $plugins = $this->findAll([':orderBy' => $orderBy]);
   
     if (empty($plugins)) return false;
     
@@ -76,21 +77,14 @@ class Plugin extends Dao
    */
   public function addPlugin($bind)
   {
-     $getSort = "SELECT plugin_sort FROM plugin ORDER BY plugin_sort DESC";
-     
-     $this->setSQL($getSort);
-     
-     $rows = $this->findColumn();
-     
-     $plugin_sorted = $rows -> plugin_sort + 1;
-     
+    
      // input data plugin
      $stmt = $this->create("plugin", [
          'plugin_name' => $bind['plugin_name'],
          'plugin_link' => $bind['plugin_link'],
          'plugin_desc' => $bind['plugin_desc'],
-         'plugin_status' => $bind['plugin_status'],
-         'plugin_sort' => $plugin_sorted
+         'plugin_level' => $bind['plugin_level'],
+         'plugin_sort' => $bind['plugin_sort']
      ]);
      
      $plugin_id = $this->lastId();
@@ -115,8 +109,9 @@ class Plugin extends Dao
    * @param integer $id
    * @param array $bind
    */
-  public function updatePlugin($id, $bind)
+  public function updatePlugin($bind, $id)
   {
+
     $stmt = $this->modify("plugin", [
         'plugin_name' => $bind['plugin_name'],
         'plugin_link' => $bind['plugin_link'],
@@ -207,37 +202,18 @@ class Plugin extends Dao
    * @param string $selected
    * @return string
    */
-  public function setPluginLevel($selected = "")
+  public function setPluginLevel($selected = '')
   {
-      $option_selected = "";
-      
-      if (!$selected) {
-          $option_selected = 'selected="selected"';
-      }
-      
-      $plugin_levels = ['public', 'private'];
-      
-      $html = array();
-      
-      $html[] = '<label for="plugin_level">Level</label>';
-      $html[] = '<select class="form-control" name="plugin_level">';
-      
-      foreach ($plugin_levels as $p => $level) {
-          if ($selected == $level) {
-              $option_selected = 'selected="selected"';
-          }
-          
-          // set up the option line
-          $html[]  =  '<option value="' . $level. '"' . $option_selected . '>' . $level . '</option>';
-          
-          // clear out the selected option flag
-          $option_selected = '';
-      }
-      
-      $html[] = '</select>';
-      
-      return implode("\n", $html);
-      
+     $name = 'plugin_level';
+
+     $plugin_level = array('public' => 'Public', 'private' => 'Private');
+
+     if ($selected != '') {
+         $selected = $selected;
+     }
+
+     return dropdown($name, $plugin_level, $selected);
+ 
   }
   
   /**
@@ -245,7 +221,7 @@ class Plugin extends Dao
    * 
    * @return boolean|array|object
    */
-  protected static function setPrivatePlugins()
+  protected function setPrivatePlugins()
   {
     $sql = "SELECT ID, plugin_name, plugin_link, plugin_desc, 
             plugin_status, plugin_level, plugin_sort
@@ -268,7 +244,7 @@ class Plugin extends Dao
    * @param UserEvent $userEvent
    * @return string
    */
-  protected static function setMenuPlugin(UserEvent $userEvent)
+  protected function setMenuPlugin(UserEvent $userEvent)
   {
     $this->accessLevel = $userEvent;
     
@@ -280,7 +256,7 @@ class Plugin extends Dao
         
       $pluginPath = APP_ROOT . APP_LIBRARY . '/plugin/'.strtolower($plugin->plugin_name).'/'.strtolower($plugin->plugin_name).'.php';
       
-      if ($this->accessLevel == 'Administrator') {
+      if ($this->accessLevel == 'administrator') {
             
           if (is_dir(APP_ROOT.APP_LIBRARY.'/plugin/'.strtolower($plugin->plugin_name)) && is_readable($pluginPath)) {
               
@@ -302,7 +278,7 @@ class Plugin extends Dao
    * @param string $plugin_name
    * @return boolean
    */
-  protected static function pluginExists($plugin_name)
+  protected function pluginExists($plugin_name)
   {
     $sql = "SELECT COUNT(ID) FROM plugin WHERE plugin_name = ?";
     $this->setSQL($sql);

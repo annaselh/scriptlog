@@ -49,6 +49,8 @@ class TopicApp extends BaseApp
         $this->view->set('status', $status);
     }
     
+    $this->view->set('topicsTotal', $this->topicEvent->totalTopics());
+    $this->view->set('topics', $this->topicEvent->grabTopics());
     return $this->view->render();
     
   }
@@ -65,6 +67,13 @@ class TopicApp extends BaseApp
       $slug = make_slug($title);
       
       try {
+          
+          if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
+              
+              header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+              throw new AppException("Sorry, unpleasant attempt detected!");
+              
+          }
           
           if (empty($title)) {
               
@@ -95,12 +104,9 @@ class TopicApp extends BaseApp
           
       } catch (AppException $e) {
          
-          $this->setView('all-topics');
-          $this->setPageTitle('Error 400');
-          $this->view->set('pageTitle', $this->getPageTitle());
-          $this->view->set('saveError', $e->getMessage());
-          $this->view->set('formData', $_POST);
-          
+          LogError::setStatusCode(http_response_code());
+          LogError::newMessage($e);
+          LogError::customErrorMessage('admin');
       }
       
     } else {
@@ -121,21 +127,20 @@ class TopicApp extends BaseApp
   public function update($id)
   {
       
-    $getCategory = $this->topicEvent->grabTopic($id);
     $errors = array();
     $checkError = true;
     
-    if (false === $getCategory) {
+    if (!$getCategory = $this->topicEvent->grabTopic($id)) {
         
         direct_page('index.php?load=topics&error=topicNotFound', 404);
         
     }
     
     $data_topic = array(
-        'ID' => $getCategory->ID,
-        'topic_title' => $getCategory->topic_title,
-        'topic_slug' => $getCategory->topic_slug,
-        'topic_status' => $getCategory->topic_status
+        'ID' => $getCategory['ID'],
+        'topic_title' => $getCategory['topic_title'],
+        'topic_slug' => $getCategory['topic_slug'],
+        'topic_status' => $getCategory['topic_status']
     );
     
     if (isset($_POST['topicFormSubmit'])) {
@@ -149,8 +154,8 @@ class TopicApp extends BaseApp
             
             if (!csrf_check_token($key, $origin)) {
                 
-                $checkError = false;
-                array_push($errors, "Sorry, unpleasant attempt detected");
+                header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+                throw new AppException("Sorry, unpleasant attempt detected!");
                 
             }
             
@@ -169,7 +174,7 @@ class TopicApp extends BaseApp
                 $this->view->set('pageTitle', $this->getPageTitle());
                 $this->view->set('formAction', $this->getFormAction());
                 $this->view->set('errors', $errors);
-                $this->view->set('formData', $data_topic);
+                $this->view->set('topicData', $data_topic);
                 $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
                 
             } else {
@@ -185,11 +190,9 @@ class TopicApp extends BaseApp
             
         } catch (AppException $e) {
             
-            $this->setView('edit-topic');
-            $this->setPageTitle('Error 400');
-            $this->view->set('pageTitle', $this->getPageTitle());
-            $this->view->set('saveError', $e->getMessage());
-            $this->view->set('formData', $data_topic);
+            LogError::setStatusCode(http_response_code());
+            LogError::newMessage($e);
+            LogError::customErrorMessage('admin');
             
         }
         
@@ -200,7 +203,7 @@ class TopicApp extends BaseApp
       $this->setFormAction('updateTopic');
       $this->view->set('pageTitle', $this->getPageTitle());
       $this->view->set('formAction', $this->getFormAction());
-      $this->view->set('formData', $data_topic);
+      $this->view->set('topicData', $data_topic);
       $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
       
     }
@@ -218,7 +221,7 @@ class TopicApp extends BaseApp
   
   protected function setView($viewName)
   {
-    $this->view = new View('admin', 'ui', 'topics', $viewName);
+    $this->view = new View('admin', 'ui', 'posts', $viewName);
   }
   
 }

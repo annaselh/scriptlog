@@ -30,22 +30,24 @@ class User extends Dao
   * @param string $orderBy
   * @return boolean|array|object
   */
- public function getUsers($position, $limit, $orderBy="ID", $fetchMode = null)
+ public function getUsers($orderBy = 'ID', $fetchMode = null)
  {
+    
     $sql = "SELECT ID, user_login,
-				user_email, user_fullname, user_pass,
-				user_level, user_reset_key,
-				user_reset_complete, user_session,
-				user_registered
-		   FROM users ORDER BY '$orderBy'
-		   LIMIT :position, :limit";
+				user_email, user_fullname,
+				user_level, user_session
+		   FROM users ORDER BY '$orderBy' DESC";
      
      $this->setSQL($sql);
      
-     if (is_null($fetchMode)) {
-         $users = $this->findAll([':position' => $position, ':limit' => $limit]);
+     if (!is_null($fetchMode)) {
+         
+         $users = $this->findAll($fetchMode);
+         
      } else {
-         $users = $this->findAll([':position' => $position, ':limit' => $limit], $fetchMode);
+         
+         $users = $this->findAll();
+         
      }
      
      if (empty($users)) return false;
@@ -53,9 +55,9 @@ class User extends Dao
      return $users;
      
  }
- 
+
  /**
-  * getUser
+  * getUserByID
   * fetch single value by ID
   * 
   * @param integer $userId
@@ -67,18 +69,18 @@ class User extends Dao
  {
    $cleanId = $this->filteringId($sanitize, $userId, 'sql');
    
-   $sql = "SELECT ID, user_login, user_email, user_fullname, user_level,
-		  user_session FROM users WHERE ID = :ID";
+   $sql = "SELECT ID, user_login, user_email, user_level, user_fullname, user_url, 
+           user_session FROM users WHERE ID = :ID";
    
    $this->setSQL($sql);
    
-   if (is_null($fetchMode)) {
+   if (!is_null($fetchMode)) {
        
-       $userDetails = $this->findRow([':ID' => $cleanId]);
+       $userDetails = $this->findRow([':ID' => $cleanId], $fetchMode);
        
    } else {
        
-       $userDetails = $this->findRow([':ID' => $cleanId], $fetchMode);
+       $userDetails = $this->findRow([':ID' => $cleanId]);
        
    }
    
@@ -98,8 +100,9 @@ class User extends Dao
  public function getUserByEmail($user_email, $fetchMode = null)
  {
      
-   $sql = "SELECT ID, user_login, user_email, user_fullname, user_level,
-		  user_session FROM users WHERE user_email = :user_email LIMIT 1";
+   $sql = "SELECT ID, user_login, user_email, user_level, 
+           user_fullname, user_url, user_session 
+          FROM users WHERE user_email = :user_email LIMIT 1";
    
    $this->setSQL($sql);
    
@@ -128,7 +131,7 @@ class User extends Dao
  public function createUser($bind) 
  {
 	
-  $hash_password = password_hash($bind['user_pass'], PASSWORD_DEFAULT);
+  $hash_password = scriptlog_password($bind['user_pass']);
   
   if (!empty($bind['user_activation_key'])) {
 	  
@@ -147,7 +150,7 @@ class User extends Dao
 	      
    } else {
 	      
-      $stmt = $this->create("users", array(
+      $stmt = $this->create("users", [
 	          
           'user_login' => $bind['user_login'],
           'user_email' => $bind['user_email'],
@@ -156,10 +159,9 @@ class User extends Dao
           'user_fullname' => $bind['user_fullname'],
           'user_url'   => $bind['user_url'],
           'user_registered' => $bind['user_registered'],
-          'user_status' => $bind['user_status'],
           'user_session' => $bind['user_session']
           
-	      ));
+      ]);
 	      
    }
 	   
@@ -176,8 +178,9 @@ class User extends Dao
  public function updateUser($accessLevel, $sanitize, $bind, $userId)
  {
   $cleanId = $this->filteringId($sanitize, $userId, 'sql');
+  $hash_password = scriptlog_password($bind['user_pass']);
   
-     if ($accessLevel !== 'Administrator') {
+     if ($accessLevel != 'Administrator') {
          
          if (empty($bind['user_pass'])) {
              
@@ -188,8 +191,6 @@ class User extends Dao
              );
              
          } else {
-             
-             $hash_password = password_hash($bind['user_pass'], PASSWORD_DEFAULT);
              
              $bind = array(
                  'user_email' => $bind['user_email'],
@@ -208,21 +209,17 @@ class User extends Dao
                  'user_email' => $bind['user_email'],
                  'user_level' => $bind['user_level'],
                  'user_fullname' => $bind['user_fullname'],
-                 'user_url'=> $bind['user_url'],
-                 'user_status' => $bind['user_status']
+                 'user_url'=> $bind['user_url']
              );
              
          } else {
-             
-             $hash_password = password_hash($bind['user_pass'], PASSWORD_DEFAULT);
-             
+              
              $bind = array(
                  'user_email' => $bind['user_email'],
                  'user_pass' => $hash_password,
                  'user_level' => $bind['user_level'],
                  'user_fullname' => $bind['user_fullname'],
-                 'user_url' => $bind['user_url'],
-                 'user_status' => $bind['user_status']
+                 'user_url' => $bind['user_url']
              );
              
          }
@@ -243,10 +240,26 @@ class User extends Dao
   */
  public function updateUserSession($accessLevel, $sanitize, $bind, $userId)
  {
-   $cleanId = $this->filteringId($sanitize, $userId, 'sql');
-   $user_session = bin2hex(openssl_random_pseudo_bytes(32).microtime()*10000000);
-   $bind = ['user_session' => $user_session];
-   $stmt = $this->modify("users", $bind, "`ID` = {$cleanId}");
+   try {
+       $cleanId = $this->filteringId($sanitize, $userId, 'sql');
+       
+       if (function_exists("random_bytes")) {
+           $user_session = bin2hex(random_bytes(32).microtime()*10000000);
+       } elseif (function_exists("openssl_random_pseudo_bytes")) {
+           $user_session = bin2hex(openssl_random_pseudo_bytes(32).microtime()*10000000);
+       } else {
+          throw new DbException("No cryptographycal support for your php version!");    
+       }
+       
+       $bind = ['user_session' => $user_session];
+       $stmt = $this->modify("users", $bind, "`ID` = {$cleanId}");
+       
+   } catch (DbException $e) {
+       
+       $this->error = LogError::newMessage($e);
+       $this->error = LogError::customErrorMessage();
+       
+   }
  }
  
  /**
@@ -257,7 +270,7 @@ class User extends Dao
   */
  public function activateUser($key)
  {
-   $cek_user_key = self::checkActivationKey($key);
+   $cek_user_key = $this->checkActivationKey($key);
    
    if ($cek_user_key === false) {
        
@@ -295,44 +308,19 @@ class User extends Dao
   * @param string $selected
   * @return string
   */
- public function setUserLevel($selected = '')
+ public function dropDownUserLevel($selected = '')
  {
-  $option_selected = "";
   
-  if (!$selected) {
-	$option_selected = 'selected="selected"';
-  }
-
-  $levels = array('Manager', 'Editor', 'Author', 'Contributor');
-  $html = array();
-  $html[] = '<label>Role (required)</label>';
-  $html[] = '<select class="form-control" name="user_role">';
-	
-   foreach ( $levels as $g => $level) {
-	  
-       if ($selected == $level) {
-				
-		  $option_selected = 'selected="selected"';
-			
-       }
-			
-	  $html[]  =  '<option value="' . $level. '"' . $option_selected . '>' . $level . '</option>';
-			
-	// clear out the selected option flag
-	$option_selected = '';
-			
-	}
-	
-	if ( empty($selected) || empty($level)) {
-	    
-		$html[] = '<option value="0" selected> -- Select Role -- </option>';
-		
-	}
-	
-	$html[] = '</select>';
-		
-	return implode("\n", $html);
-	
+  $name = 'user_level';
+  $levels = array('manager'=>'Manager', 'editor' => 'Editor', 
+           'author'=>'Author', 'contributor'=>'Contributor');
+  
+  if ($selected != '') {
+      $selected = $selected;
+  } 
+  
+  return dropdown($name, $levels, $selected);
+  
  }
 
  /**
@@ -441,18 +429,33 @@ class User extends Dao
  }
  
  /**
+  * Total User Record
+  * @param array $data
+  * @return integer
+  */
+ public function totalUserRecords($data = null)
+ {
+     $sql = "SELECT ID FROM users";
+     
+     $this->setSQL($sql);
+     
+     return $this->checkCountValue($data);
+     
+ }
+ 
+ /**
   * Check Activation Key
   * 
   * @param string $key
   * @return boolean
   */
- private static function checkActivationKey($key)
+ private function checkActivationKey($key)
  {
-    $sql = "SELECT COUNT(ID) FROM users WHERE user_activation_key = ?";
+    $sql = "SELECT COUNT(ID) FROM users WHERE user_activation_key = :user_activation_key";
     $this->setSQL($sql);
-    $stmt = $this->findColumn([$sesi]);
+    $row = $this->findColumn([':user_activation_key' => $key]);
      
-    if ($stmt == 1) {
+    if ($row == 1) {
          
        return true;
          

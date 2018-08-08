@@ -28,7 +28,6 @@ class PostApp extends BaseApp
    */
   public function listItems()
   {
-    $this->setPageTitle('Posts');
     $errors = array();
     $status = array();
     $checkError = true;
@@ -45,8 +44,9 @@ class PostApp extends BaseApp
         if ($_GET['status'] == 'postUpdated') array_push($status, "Post has been updated");
         if ($_GET['status'] == 'postDeleted') array_push($status, "Post deleted");
     }
-    
+   
     $this->setView('all-posts');
+    $this->setPageTitle('Posts');
     $this->view->set('pageTitle', $this->getPageTitle());
     
     if (!$checkError) {
@@ -57,6 +57,8 @@ class PostApp extends BaseApp
         $this->view->set('status', $status);
     }
     
+    $this->view->set('postsTotal', $this->postEvent->totalPosts());
+    $this->view->set('posts', $this->postEvent->grabPosts());
     return $this->view->render();
     
   }
@@ -89,8 +91,8 @@ class PostApp extends BaseApp
         
          if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
          
-             $checkError = false;
-             array_push($errors, "Sorry, unpleasant attempt detected!");
+             header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+             throw new AppException("Sorry, unpleasant attempt detected!");
              
          }
          
@@ -138,11 +140,9 @@ class PostApp extends BaseApp
             
       } catch (AppException $e) {
           
-         $this->setView('all-posts');
-         $this->setPageTitle('Error 400');
-         $this->view->set('pageTitle', $this->getPageTitle());
-         $this->view->set('saveError', $e->getMessage());
-         $this->view->set('formData', $_POST);
+         LogError::setStatusCode(http_response_code());
+         LogError::newMessage($e);
+         LogError::customErrorMessage('admin');
          
       }
     
@@ -173,24 +173,23 @@ class PostApp extends BaseApp
   public function update($id)
   {
   
-    $getPost = $this->postEvent->grabPost($id);
     $topics = new Topic();
     $errors = array();
     $checkError = true;
     
-    if (false === $getPost) {
+    if (!$getPost = $this->postEvent->grabPost($id)) {
         
         direct_page('index.php?load=posts&error=postNotFound', 404);
         
     }
     
     $data_post = array(
-        'ID' => $getPost->ID,
-        'post_image' => $getPost -> post_image,
-        'post_title' => $getPost->post_title,
-        'post_content' => $getPost->post_content,
-        'post_summary' => $getPost->post_summary,
-        'post_keyword' => $getPost->post_keyword
+        'ID' => $getPost['ID'],
+        'post_image' => $getPost['post_image'],
+        'post_title' => $getPost['post_title'],
+        'post_content' => $getPost['post_content'],
+        'post_summary' => $getPost['post_summary'],
+        'post_keyword' => $getPost['post_keyword']
     );
     
     if (isset($_POST['postFormSubmit'])) {
@@ -203,14 +202,14 @@ class PostApp extends BaseApp
         $meta_keys = isset($_POST['meta_keywords']) ? trim($_POST['meta_keywords']) : null;
         $post_status = $_POST['post_status'];
         $comment_status = $_POST['comment_status'];
-        $post_id = isset($_POST['post_id']) ? (int)$_POST['post_id'] : 0;
+        $post_id = isset($_POST['post_id']) ? abs((int)$_POST['post_id']) : 0;
         
         try {
             
             if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
                 
-                $checkError = false;
-                array_push($errors, "Sorry, unpleasant attempt detected");
+                header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+                throw new AppException("Sorry, unpleasant attempt detected!");
                 
             }
             
@@ -224,22 +223,22 @@ class PostApp extends BaseApp
             if (empty($content)) {
                 
               $checkError = false;
-              array_push($errors, "Please enter post_content");
+              array_push($errors, "Please enter post content");
               
             }
             
             if (!$checkError) {
                 
                 $this->setView("edit-post");
-                $this->setPageTitle('Invalid form data!');
+                $this->setPageTitle('Edit Post');
                 $this->setFormAction('editPost');
                 $this->view->set('pageTitle', $this->getPageTitle());
                 $this->view->set('formAction', $this->getFormAction());
                 $this->view->set('errors', $errors);
-                $this->view->set('formData', $data_post);
-                $this->view->set('topics', $topics->setCheckBoxTopic($getPost->ID));
-                $this->view->set('postStatus', $this->postEvent->postStatusDropDown($getPost->post_status));
-                $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown($getPost->comment_status));
+                $this->view->set('postData', $data_post);
+                $this->view->set('topics', $topics->setCheckBoxTopic($getPost['ID']));
+                $this->view->set('postStatus', $this->postEvent->postStatusDropDown($getPost['post_status']));
+                $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown($getPost['comment_status']));
                 $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
                 
             } else {
@@ -259,12 +258,9 @@ class PostApp extends BaseApp
             
         } catch (AppException $e) {
    
-            http_response_code(400);
-            $this->setView('edit-post');
-            $this->setPageTitle('Error 400 Bad Request');
-            $this->view->set('pageTitle', $this->getPageTitle());
-            $this->view->set('saveError', $e->getMessage());
-            $this->view->set('formData', $data_post);
+            LogError::setStatusCode(http_response_code());
+            LogError::newMessage($e);
+            LogError::customErrorMessage('admin');
             
         }
         
@@ -275,10 +271,10 @@ class PostApp extends BaseApp
         $this->setFormAction('editPost');
         $this->view->set('pageTitle', $this->getPageTitle());
         $this->view->set('formAction', $this->getFormAction());
-        $this->view->set('formData', $data_post);
-        $this->view->set('topics', $topics->setCheckBoxTopic($getPost->ID));
-        $this->view->set('postStatus', $this->postEvent->postStatusDropDown($getPost->post_status));
-        $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown($getPost->comment_status));
+        $this->view->set('postData', $data_post);
+        $this->view->set('topics', $topics->setCheckBoxTopic($getPost['comment_status']));
+        $this->view->set('postStatus', $this->postEvent->postStatusDropDown($getPost['post_status']));
+        $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown($getPost['comment_status']));
         $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
         
     }
@@ -297,7 +293,7 @@ class PostApp extends BaseApp
   {
     $this->postEvent->setPostId($id);
     $this->postEvent->removePost();  
-    direct_page('index.php?load=post&status=postDeleted', 200);
+    direct_page('index.php?load=posts&status=postDeleted', 200);
   }
     
   protected function setView($viewName)

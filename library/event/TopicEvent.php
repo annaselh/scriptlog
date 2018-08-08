@@ -11,12 +11,32 @@
  */
 class TopicEvent
 {
+  /**
+   * Topic's ID
+   * 
+   * @var integer
+   */
   private $topic_id;
   
+  /**
+   * Topic's title
+   * 
+   * @var string
+   */
   private $topic_title;
   
+  /**
+   * Topic's URL-Friendly
+   * 
+   * @var string
+   */
   private $topic_slug;
   
+  /**
+   * Topic's status
+   * 
+   * @var string
+   */
   private $topic_status;
   
   public function __construct(Topic $topicDao, FormValidator $validator, Sanitize $sanitizer)
@@ -46,9 +66,9 @@ class TopicEvent
     $this->topic_status = $topic_status;
   }
   
-  public function grabTopics($position = null, $limit = null, $orderBy = 'ID')
+  public function grabTopics($orderBy = 'ID')
   {
-    return $this->topicDao->findTopics($position, $limit, $orderBy);
+    return $this->topicDao->findTopics($orderBy);
   }
   
   public function grabTopic($id)
@@ -69,8 +89,8 @@ class TopicEvent
     $this->validator->sanitize($this->topic_id, 'int');
     $this->validator->sanitize($this->topic_title, 'string');
     
-    return $this->topicDao->updateTopic($this->sanitizer, 
-        ['topic_title' => $this->topic_title, 
+    return $this->topicDao->updateTopic($this->sanitizer, [
+         'topic_title' => $this->topic_title, 
          'topic_slug' => $this->topic_slug,
         ], $this->topic_id);
   }
@@ -80,8 +100,7 @@ class TopicEvent
     
     $this->validator->sanitize($this->topic_id, 'int');
     
-    $data_topic = $this->topicDao->findTopicById($this->topic_id, $this->sanitizer);
-    if (false === $data_topic) {
+    if (!$data_topic = $this->topicDao->findTopicById($this->topic_id, $this->sanitizer)) {
         direct_page('index.php?load=topics&error=topicNotFound', 404);
     }
     
@@ -94,4 +113,9 @@ class TopicEvent
     return $this->topicDao->setCheckBoxTopic($post_id, $checked);
   }
   
+  public function totalTopics($data = null)
+  {
+    return $this->topicDao->totalTopicRecords($data);
+
+  }
 }

@@ -18,18 +18,17 @@ class UserApp extends BaseApp
   {
     
     $this->userEvent = $userEvent;
-     
+   
   }
   
   public function listItems()
   {
    
-    $this->setPageTitle('Users');
     $errors = array();
     $status = array();
     $checkError = true;
     $checkStatus = false;
-    
+     
     if (isset($_GET['error'])) {
         $checkError = false;
         if ($_GET['error'] == 'userNotFound') array_push($errors, "Error: User Not Found!");
@@ -43,27 +42,35 @@ class UserApp extends BaseApp
     }
     
     $this->setView('all-users');
+    $this->setPageTitle('Users');
     $this->view->set('pageTitle', $this->getPageTitle());
     
     if (!$checkError) {
-       $this->view->set('errors', $errors);
+       
+        $this->view->set('errors', $errors);
+    
     }
     
     if ($checkStatus) {
-       $this->view->set('status', $status);
-    }
+       
+        $this->view->set('status', $status);
+        
+    } 
     
-    $this->view->render();
+    $this->view->set('usersTotal', $this->userEvent->totalUsers());
+    $this->view->set('users', $this->userEvent->grabUsers());
+    return $this->view->render();
    
   }
   
-  public function login()
-  {
-      
-  }
-  
+  /**
+   * 
+   * {@inheritDoc}
+   * @see BaseApp::insert()
+   */
   public function insert()
   {
+   
     $errors = array();
     $checkError = true;
     
@@ -72,73 +79,74 @@ class UserApp extends BaseApp
         $user_login = filter_input(INPUT_POST, 'user_login', FILTER_SANITIZE_STRING);
         $user_fullname = filter_input(INPUT_POST, 'user_fullname', FILTER_SANITIZE_STRING);
         $user_email = isset($_POST['user_email']) ? filter_var($_POST['user_email'], FILTER_SANITIZE_EMAIL) : "";
-        $user_pass = isset($_POST['user_pass']) ? trim($_POST['user_pass']) : "";
-        $user_url = filter_input(INPUT_POST, 'user_url', FILTER_SANITIZE_URL);
-        $user_session = trim($_POST['session_id']);
-        $user_role = isset($_POST['user_role']) ? trim($_POST['user_role']) : 0;
+        $user_pass = prevent_injection($_POST['user_pass']);
+        $user_url = isset($_POST['user_url']) ? filter_var($_POST['user_url'], FILTER_SANITIZE_URL) : "#";
+        $user_level = isset($_POST['user_level']) ? trim($_POST['user_level']) : 0;
+        $user_session = filter_input(INPUT_POST, 'session_id', FILTER_SANITIZE_STRING);
         $send_notification = isset($_POST['send_user_notification']) ? $_POST['send_user_notification'] : 0;
         
         try {
-           
+        
             if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
                 
-                $checkError = false;
-                array_push($errors, "Sorry, unpleasant attempt detected!");
+                header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+                throw new AppException("Sorry, unpleasant attempt detected!");
                 
             }
             
             if (empty($user_login) || empty($user_email) || empty($user_pass)) {
+                
+               $checkError = false;
+               array_push($errors, "All column required must be filled");
+               
+            }
             
+            if (!preg_match('/^[A-Za-z][A-Za-z0-9]{5,31}$/', $user_login)) {
+                
                 $checkError = false;
-                array_push($errors, "All Column required must be filled");
+                array_push($errors, "Please enter username, use letters and numbers only at least 6-32 characters");
                 
-            } else {
+            }elseif ($this->userEvent->checkUserLogin($user_login)) {
+                
+                $checkError = false;
+                array_push($errors, "Username already in use");
+                
+            }
             
-                if ($user_role == 0) {
+            if (email_validation($user_email) == 0) {
+                
+                $checkError = false;
+                array_push($errors, "Please enter a valid email address");
+                
+            } elseif ($this->userEvent->isEmailExists($user_email)) {
+                
+                $checkError = false;
+                array_push($errors, "Email already in use");
+                
+            }
+            
+            if (!empty($user_url)) {
+                
+                if (!url_validation($user_url)) {
                     
                     $checkError = false;
-                    array_push($errors, "Please select user role");
-                    
-                }
-                
-                if (!preg_match('/^[A-Za-z][A-Za-z0-9]{5,31}$/', $user_login)) {
-                    
-                    $checkError = false;
-                    array_push($errors, "Please enter username, use letters and numbers only at least 6-32 characters");
-                    
-                }
-                
-                if (email_validation($user_email) == 0) {
-                    
-                    $checkError = false;
-                    array_push($errors, "Please enter a valid email address");
-                    
-                }
-                
-                if (!empty($user_url)) {
-                    
-                    if (!url_validation($user_url)) {
-                        
-                        $checkError = false;
-                        array_push($errors, "Please enter a valid URL");
-                        
-                    }
-                    
-                }
-                
-                if (!empty($user_fullname)) {
-                    
-                    if (!preg_match('/^[A-Z \'.-]{2,90}$/i', $user_fullname)) {
-                        
-                        $checkError = false;
-                        array_push($errors, "Please enter a valid fullname");
-                        
-                    }
+                    array_push($errors, "Please enter a valid URL");
                     
                 }
                 
             }
-             
+            
+            if (!empty($user_fullname)) {
+                
+                if (!preg_match('/^[A-Z \'.-]{2,90}$/i', $user_fullname)) {
+                    
+                    $checkError = false;
+                    array_push($errors, "Please enter a valid fullname");
+                    
+                }
+                
+            }
+            
             if (!$checkError) {
                 
                 $this->setView('edit-user');
@@ -150,109 +158,90 @@ class UserApp extends BaseApp
                 $this->view->set('formData', $_POST);
                 $this->view->set('userRole', $this->userEvent->userLevelDropDown());
                 $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
-                
+               
             } else {
+            
+                $this->userEvent->setUserLogin($user_login);
+                $this->userEvent->setUserEmail($user_email);
+                $this->userEvent->setUserPass($user_pass);
+                $this->userEvent->setUserLevel($user_level);
+                $this->userEvent->setUserFullname($user_fullname);
+                $this->userEvent->setUserUrl($user_url);
+                $this->userEvent->setUserSession($user_session);
                 
                 if ($send_notification == 1) {
-                
-                    $this->userEvent->setUserLogin($user_login);
-                    $this->userEvent->setUserEmail($user_email);
-                    $this->userEvent->setUserPass($user_pass);
-                    $this->userEvent->setUserUrl($user_url);
-                    $this->userEvent->setUserSession($user_session);
-                    $this->userEvent->setUserLevel($user_level);
+                    
+                    $this->userEvent->setUserActivationKey(user_activation_key($user_email.get_ip_address()));
+                      
                     $this->userEvent->addUser();
                     
-                    $site_info = app_info();
-                    $app_url = $site_info['app_url'];
-                    $site_name = $site_info['site_name'];
-                    $activation_key = user_activation_key($user_email);
-                    $sender = $site_info['email_address'];
+                    notify_new_user($user_email, $user_login, $user_pass);
                     
-                    $subject = "Join for The Best Team in Town!";
-                    $content = "If you never ask to be a user at {$site_name}. 
-                                please feel free to ignore this email. 
-                                But if you are asking for this information, 
-                                here is your profile data:<br />
-                                <b>Username:</b>{$user_login}<br />
-                                <b>Password:</b>{$user_pass}<br />
-                                Activate your account by clicking the link below:<br />
-                                <a href={$app_url}".APP_ADMIN."/activate-user.php?key={$activation_key}>Activate My Account</a><br /><br />
-                                Thank you, <br />
-					            <b>{$site_name}</b>";
-                    
-                    $notify_newuser = mail_sender($sender, $user_email, $subject, $content);
-                    
-                    if ($notify_newuser) direct_page('index.php?load=users&status=userAdded', 200);
-                    
+                   
                 } else {
-                    
-                    $this->userEvent->setUserLogin($user_login);
-                    $this->userEvent->setUserEmail($user_email);
-                    $this->userEvent->setUserPass($user_pass);
-                    $this->userEvent->setUserUrl($user_url);
-                    $this->userEvent->setUserSession($user_session);
-                    $this->userEvent->setUserLevel($user_level);
-                    $this->userEvent->setUserStatus('1');
+                
                     $this->userEvent->addUser();
-                    direct_page('index.php?load=users&status=userAdded', 200);
                     
                 }
                 
+                direct_page('index.php?load=users&status=userAdded', 200);
                 
             }
             
+            
+            
         } catch (AppException $e) {
             
-           http_response_code(400);
-           $this->setView('all-users');
-           $this->setPageTitle('Error 400');
-           $this->view->set('pageTitle', $this->getPageTitle());
-           $this->view->set('saveError', $e->getMessage());
-           $this->view->set('formData', $_POST);
-           
+            LogError::setStatusCode(http_response_code());
+            LogError::newMessage($e);
+            LogError::customErrorMessage('admin');
+            
         }
         
+       
     } else {
         
-      $this->setView('edit-user');
-      $this->setPageTitle('Add New User');
-      $this->setFormAction('newUser');
-      $this->view->set('pageTitle', $this->getPageTitle());
-      $this->view->set('formAction', $this->getFormAction());
-      $this->view->set('userRole', $this->userEvent->userLevelDropDown());
-      $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
-      
+        $this->setView('edit-user');
+        $this->setPageTitle('Add New User');
+        $this->setFormAction('newUser');
+        $this->view->set('pageTitle', $this->getPageTitle());
+        $this->view->set('formAction', $this->getFormAction());
+        $this->view->set('userRole', $this->userEvent->userLevelDropDown());
+        $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
+        
     }
     
     return $this->view->render();
-    
+          
   }
   
+  /**
+   * 
+   * {@inheritDoc}
+   * @see BaseApp::update()
+   */
   public function update($id)
   {
     
-    $getUser = $this->userEvent->grabUser($id);
     $errors = array();
     $checkError = true;
     
-    if (false === $getUser) {
+    if (!$getUser = $this->userEvent->grabUser($id)) {
         
-        direct_page('index.php?load=users&error=userNotFound', 404);
+       direct_page('index.php?load=users&error=userNotFound', 404);
         
     }
     
     $data_user = array(
         
-        'ID' => $getUser -> ID,
-        'user_login' => $getUser -> user_login,
-        'user_email' => $getUser -> user_email,
-        'user_pass' => $getUser -> user_pass,
-        'user_level' => $getUser -> user_level,
-        'user_fullname' => $getUser -> user_fullname,
-        'user_url' => $getUser -> user_url,
-        'user_status' => $getUser -> user_status,
-        'user_session' => $getUser -> user_session
+        'ID' => $getUser['ID'],
+        'user_login' => $getUser['user_login'],
+        'user_email' => $getUser['user_email'],
+        'user_pass' => $getUser['user_pass'],
+        'user_level' => $getUser['user_level'],
+        'user_fullname' => $getUser['user_fullname'],
+        'user_url' => $getUser['user_url'],
+        'user_session' => $getUser['user_session']
         
     );
     
@@ -264,16 +253,15 @@ class UserApp extends BaseApp
         $user_pass = isset($_POST['user_pass']) ? trim($_POST['user_pass']) : "";
         $user_url = filter_input(INPUT_POST, 'user_url', FILTER_SANITIZE_URL);
         $user_session = trim($_POST['session_id']);
-        $user_role = isset($_POST['user_role']) ? trim($_POST['user_role']) : 0;
+        $user_level = isset($_POST['user_level']) ? trim($_POST['user_level']) : 0;
         $user_id = isset($_POST['user_id']) ? abs((int)$_POST['user_id']) : 0;
         
       try {
       
-          
           if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
               
-              $checkError = false;
-              array_push($errors, "Sorry, unpleasant attempt detected");
+              header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+              throw new AppException("Sorry, unpleasant attempt detected!");
               
           }
           
@@ -285,20 +273,50 @@ class UserApp extends BaseApp
               $this->view->set('pageTitle', $this->getPageTitle());
               $this->view->set('formAction', $this->getFormAction());
               $this->view->set('errors', $errors);
-              $this->view->set('formData', $data_user);
+              $this->view->set('userData', $data_user);
+              $this->view->set('userRole', $this->userEvent->userLevelDropDown($getUser['user_level']));
               $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
               
+          } else {
+              
+              $this->userEvent->setUserEmail($user_email);
+              $this->userEvent->setUserFullname($user_fullname);
+              $this->userEvent->setUserUrl($user_url);
+              $this->userEvent->setUserId($user_id);
+              
+              if ($this->userEvent->accessLevel() != 'administrator') {
+              
+                  if (!empty($user_pass)) {
+                      
+                      $this->userEvent->setUserPass($user_pass);
+                  }
+                  
+                  $this->userEvent->modifyUser();
+                  
+              } else {
+              
+                  $this->userEvent->setUserLevel($user_level);
+                  
+                  if (!empty($user_pass)) {
+                      
+                    $this->userEvent->setUserPass($user_pass);
+                      
+                  }
+                  
+                  $this->userEvent->modifyUser();
+                  
+              }
+              
+              direct_page('index.php?load=users&status=userAdded', 200);
+                      
           }
           
       } catch (AppException $e) {
           
-         http_response_code(400);
-         $this->setView('edit-user');
-         $this->setPageTitle('Error 400 Bad Request');
-         $this->view->set('pageTitle', $this->getPageTitle());
-         $this->view->set('saveError', $e -> getMessage());
-         $this->view->set('formData', $data_user);
-      
+          LogError::setStatusCode(http_response_code());
+          LogError::newMessage($e);
+          LogError::customErrorMessage('admin');
+          
       }
       
     } else {
@@ -308,26 +326,26 @@ class UserApp extends BaseApp
         $this->setFormAction('editUser');
         $this->view->set('pageTitle', $this->getPageTitle());
         $this->view->set('formAction', $this->getFormAction());
-        $this->view->set('formData', $data_user);
-        $this->view->set('userRole', $this->userEvent->userLevelDropDown($getUser -> user_level));
+        $this->view->set('userData', $data_user);
+        $this->view->set('userRole', $this->userEvent->userLevelDropDown($getUser['user_level']));
         $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
         
     }
     
-    return $this->view->render();
+   return $this->view->render();
     
   }
   
+  /**
+   * 
+   * {@inheritDoc}
+   * @see BaseApp::delete()
+   */
   public function delete($id)
   {
     $this->userEvent->setUserId($id);
     $this->userEvent->removeUser();
     direct_page('index.php?load=users&status=userDeleted', 200);
-  }
-  
-  public function logout()
-  {
-      
   }
   
   protected function setView($viewName)

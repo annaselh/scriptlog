@@ -12,39 +12,48 @@
 class View
 {
   
-  protected $previlege;
+  /**
+   * Directory
+   * @var string
+   */
+  private $dir;
   
-  protected $dir;
+  /**
+   * Action
+   * @var string
+   */
+  private $file;
   
-  protected $module;
+  /**
+   * Data
+   * @var array
+   */
+  private $data = array();
   
-  protected $action;
+  /**
+   * Error
+   * 
+   * @var string
+   */
+  private $errors;
   
-  protected $data = array();
-  
-  public function __construct($access, $dir, $module, $action = null)
+  /**
+   * Constructor
+   * 
+   * @param string $accessPath
+   * @param string $dir
+   * @param string $modulePath
+   * @param string $file
+   */
+  public function __construct($eventPath, $uiPath, $modulePath, $file = null)
   {
     
-    $this->module = $module;
+    if ($eventPath == 'admin') $this->dir = APP_ROOT . APP_ADMIN . DS . $uiPath . DS .$modulePath . DS;
    
-    $this->setPrevilege($access);
+    if (!is_null($file)) $this->file = $file;
     
-    if ($this->getPrevilege() == 'admin') $this->dir = APP_ROOT . APP_ADMIN . DS . $dir . DS .$this->module . DS;
+  }
    
-    if (!is_null($action)) $this->action = $action;
-    
-  }
-  
-  public function setPrevilege($previlege)
-  {
-    $this->previlege = $previlege;
-  }
-  
-  public function getPrevilege()
-  {
-    return $this->previlege;
-  }
-  
   public function set($key, $value)
   {
      $this->data[$key] = $value;
@@ -57,17 +66,29 @@ class View
   
   public function render()
   {
-      if (!is_dir($this->dir) && !file_exists($this->dir. $this->action . '.php')) {
-          throw new Exception("View ".$this->action.'.php'. ' does not exists');
-      }
-      
-      extract($this->data);
-      ob_start();
-      require($this->dir.$this->action.'.php');
-      $render = ob_get_contents();
-      ob_end_clean();
-      echo $render;
+     
+    try {
+        
+        if (!is_dir($this->dir) && !file_exists($this->dir. $this->file . '.php')) {
+            header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+            throw new ViewException("View ".$this->file.'.php'. ' does not exists');
+        }
+        
+        extract($this->data);
+        ob_start();
+        require($this->dir.$this->file.'.php');
+        $render = ob_get_contents();
+        ob_end_clean();
+        echo $render;
+        
+    } catch (ViewException $e) {
+        
+        $this->errors = LogError::setStatusCode(http_response_code());
+        $this->errors = LogError::newMessage($e);
+        $this->errors = LogError::customErrorMessage();
+
+    } 
     
   }
-  
+   
 }

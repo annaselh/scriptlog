@@ -2,10 +2,13 @@
 #######################################################################
 #   Setup.php File
 #   This is file to setup installation and write config.php file
-#   @license MIT
-#   @author  Contributors
-#                                                                     
+#   @Package    SCRIPTLOG
+#   @author     M.Noermoehammad
+#   @license    MIT
+#   @version    1.0
+#   @since      Since Release 1.0
 #######################################################################
+
 /**
  * Install Database Table Function
  * 
@@ -24,13 +27,12 @@ user_login VARCHAR(60) NOT NULL,
 user_email VARCHAR(100) NOT NULL,
 user_pass VARCHAR(255) NOT NULL,
 user_level VARCHAR(20) NOT NULL,
-user_fullname VARCHAR(120) NOT NULL DEFAULT '',
-user_url VARCHAR(100) NOT NULL DEFAULT '#',
-user_registered DATE NOT NULL,
+user_fullname VARCHAR(120) DEFAULT NULL,
+user_url VARCHAR(100) DEFAULT '#',
+user_registered datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 user_activation_key varchar(255) NOT NULL DEFAULT '',
-user_reset_key varchar(255) DEFAULT '',
+user_reset_key varchar(255) DEFAULT NULL,
 user_reset_complete VARCHAR(3) DEFAULT 'No',
-user_status enum('0','1') NOT NULL DEFAULT '0',
 user_session VARCHAR(255) NOT NULL,
 PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
@@ -39,8 +41,8 @@ $tablePost = "CREATE TABLE IF NOT EXISTS posts (
 ID bigint(20) unsigned NOT NULL auto_increment,
 post_image varchar(512) DEFAULT NULL,
 post_author bigint(20) unsigned NOT NULL DEFAULT 0,
-date_created date NOT NULL,
-date_modified date NOT NULL,
+post_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+post_modified datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 post_title varchar(255) NOT NULL,
 post_slug varchar(255) NOT NULL,
 post_content longtext NOT NULL,
@@ -74,7 +76,7 @@ comment_author_name VARCHAR(60) NOT NULL,
 comment_author_ip VARCHAR(100) NOT NULL,
 comment_content text NOT NULL,
 comment_status VARCHAR(20) NOT NULL DEFAULT 'approved',
-date_publish DATE NOT NULL
+comment_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
 
@@ -84,7 +86,7 @@ comment_id BIGINT(20)unsigned NOT NULL,
 user_id BIGINT(20) unsigned NOT NULL,
 reply_content text NOT NULL,
 reply_status enum('0','1') NOT NULL DEFAULT '1',
-date_publish DATE NOT NULL,
+reply_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
@@ -145,23 +147,20 @@ PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
 
 $saveAdmin = "INSERT INTO users (user_login, user_email, user_pass, user_level,
-user_registered, user_activation_key, user_status, user_session) 
-VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+user_registered, user_session) 
+VALUES (?, ?, ?, ?, ?, ?)";
 
 $saveAppKey = "INSERT INTO settings (app_key) VALUES(?)";
 
 $date_registered = date("Ymd");
-$user_activation_key = md5( mt_rand( 10000, 99999 ) . time() . $value . 'c#haRl891');
 $user_session = md5($user_email);
-$shield_pass = password_hash($user_pass, PASSWORD_DEFAULT);
-$user_level = 'Administrator';
-$user_status = '1';
+$shield_pass = password_hash(base64_encode(hash('sha384', $password, true)), PASSWORD_DEFAULT);;
+$user_level = 'administrator';
 
 if ($link instanceof mysqli) $newTableUser = $link -> query($tableUser);
 $createAdmin = $link ->prepare($saveAdmin);
-$createAdmin -> bind_param("ssssssss", $user_login, $user_email, 
-    $shield_pass, $user_level, $date_registered, 
-    $user_activation_key, $user_status, $user_session);
+$createAdmin -> bind_param("ssssss", $user_login, $user_email, 
+    $shield_pass, $user_level, $date_registered, $user_session);
 $createAdmin -> execute();
 
 if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
@@ -218,17 +217,23 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
    $row = mysqli_fetch_assoc($retrieve_app_info);
    
    if (function_exists("random_bytes")) {
+       
        $bytes = random_bytes(ceil($length / 2));
+       
    } elseif (function_exists("openssl_random_pseudo_bytes")) {
+       
        $bytes = openssl_random_pseudo_bytes(ceil($length / 2));
+       
    } else {
-       throw new Exception("no cryptographically secure random function available");
+       
+      trigger_error("no cryptographically secure random function available", E_USER_NOTICE);
+       
    }
    
    $app_key = generate_license(substr(bin2hex($bytes), 0, $length));
 
    $updateAppKey = "UPDATE settings SET app_key = '$app_key'
-                      WHERE ID = {$row['ID']} LIMIT 1";
+                    WHERE ID = {$row['ID']} LIMIT 1";
     mysqli_query($link, $updateAppKey);
     mysqli_close($link);
     
@@ -242,9 +247,9 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
                   ],
         
             'app' => [
-                   'url' => '".addslashes($url)."',
+                   'url'   => '".addslashes($url)."',
                    'email' => '".addslashes($email)."',
-                   'key' => '".addslashes($app_key)."'
+                   'key'   => '".addslashes($app_key)."'
                    ]
 
             ];";
@@ -258,6 +263,8 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
 /**
  * Remove Bad Characters
  * 
+ * @link https://stackoverflow.com/questions/14114411/remove-all-special-characters-from-a-string#14114419
+ * @link https://stackoverflow.com/questions/19167432/strip-bad-characters-from-an-html-php-contact-form
  * @param string $str_words
  * @param boolean $escape
  * @param string $level
@@ -392,11 +399,28 @@ function generate_license($suffix = null)
 function purge_installation()
 {
    
+ $length = 32;
+ 
  if (is_readable(__DIR__ . '/../../config.php')) {
      
      if (is_file(__DIR__ . '/../index.php')) {
-       
-        $disabled = $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex(openssl_random_pseudo_bytes(32)), 0, 13).'-'.date("Ymd").'.log';
+    
+         
+         if (function_exists("random_bytes")) {
+             
+             $bytes = random_bytes(ceil($length / 2));
+             
+         } elseif (function_exists("openssl_random_pseudo_bytes")) {
+             
+             $bytes = openssl_random_pseudo_bytes(ceil($length / 2));
+             
+         } else {
+             
+             trigger_error("no cryptographically secure random function available", E_USER_NOTICE);
+             
+         }
+         
+        $disabled = $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex($bytes), 0, $length).'-'.date("Ymd").'.log';
          
         rename(__DIR__ . '/../index.php', $disabled);
          

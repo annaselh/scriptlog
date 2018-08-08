@@ -62,9 +62,9 @@ class CommentEvent
    $this->status = $status;
   }
   
-  public function grabComments($position, $limit, $orderBy = 'ID')
+  public function grabComments($orderBy = 'ID')
   {
-    return $this->commentDao->findComments($position, $limit, $orderBy);
+    return $this->commentDao->findComments($orderBy);
   }
   
   public function grabComment($id)
@@ -82,7 +82,7 @@ class CommentEvent
        'comment_author_name' => $this->author_name,
        'comment_author_ip' => $this->author_ip,
        'comment_content' => $this->content,
-       'date_publish' => date("Ymd")
+       'comment_date' => date("Y-m-d H:i:s")
    ]);
    
   }
@@ -92,6 +92,8 @@ class CommentEvent
     $this->validator->sanitize($this->comment_id, 'int');
     $this->validator->sanitize($this->author_name, 'string');
     
+    $id_sanitized = $this->sanitizer->sanitasi($this->comment_id, 'sql');
+    
     return $this->commentDao->updateComment($this->comment_id, [
         'comment_author_name' => $this->author_name,
         'comment_content' => $this->content,
@@ -100,18 +102,32 @@ class CommentEvent
     
   }
   
+  /**
+   * Remove Comment
+   * @return integer
+   */
   public function removeComment()
   {
      
     $this->validator->sanitize($this->comment_id, 'int');
     
-    $data_comment = $this->commentDao->findComment($this->comment_id, $this->sanitizer);
-    if (false === $data_comment) {
+    if (!$data_comment = $this->commentDao->findComment($this->comment_id, $this->sanitizer)) {
         direct_page('index.php?load=comments&error=commentNotFound', 404);
     }
     
     return $this->commentDao->deleteComment($this->comment_id, $this->sanitizer);
     
+  }
+  
+  /**
+   * Comment Statement DropDown
+   * 
+   * @param string $selected
+   * @return string
+   */
+  public function commentStatementDropDown($selected = "")
+  {
+     return $this->commentDao->dropDownCommentStatement($selected);
   }
   
 }

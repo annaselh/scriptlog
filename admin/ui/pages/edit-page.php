@@ -52,22 +52,24 @@ endif;
 ?>
 
 <form method="post" action="index.php?load=pages&action=<?=(isset($formAction)) ? $formAction : null; ?>&pageId=<?=(isset($formData['ID'])) ? $formData['ID'] : 0; ?>" role="form">
-<input type="hidden" name="page_id" value="<?=(isset($formData['ID'])) ? $formData['ID'] : 0; ?>" />
+<input type="hidden" name="page_id" value="<?=(isset($pageData['ID'])) ? $pageData['ID'] : 0; ?>" />
 <input type="hidden" name="MAX_FILE_SIZE" value="697856" />
 
 <div class="box-body">
 <div class="form-group">
 <label>Title (required)</label>
-<input type="text" class="form-control" name="post_title" placeholder="Enter title here" value="<?=(isset($formData['post_title'])) ? htmlspecialchars($formData['post_title'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
+<input type="text" class="form-control" name="post_title" placeholder="Enter title here" value="
+<?=(isset($pageData)) ? htmlspecialchars($pageData['post_title']) : ""; ?>
+<?=(isset($formData['post_title'])) ? htmlspecialchars($formData['post_title'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
 </div>
 
 <?php 
-if (isset($formData['post_image'])) :
+if (isset($pageData['post_image'])) :
 ?>
 <div class="form-group">
 <?php 
-$image = __DIR__ . '/../public/files/pictures/'.$formData['post_image'];
-$imageThumb = __DIR__ . '/../public/files/pictures/thumbs/thumb_'.$formData['post_image'];
+$image = __DIR__ . '/../public/files/pictures/'.$pageData['post_image'];
+$imageThumb = __DIR__ . '/../public/files/pictures/thumbs/thumb_'.$pageData['post_image'];
 
 if (!is_readable($imageThumb)) :
     $imageThumb = __DIR__ . '/../public/files/pictures/thumbs/nophoto.jpg';
@@ -105,22 +107,25 @@ endif;
 
 <div class="form-group">
 <label>Meta Description</label>
-<textarea class="form-control" name="post_summary" rows="3" maxlength="500" <?=(isset($formData['post_summary'])) ? htmlspecialchars($formData['post_summary'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
-
+<textarea class="form-control" name="post_summary" rows="3" maxlength="500" >
+<?=(isset($pageData['post_summary'])) ? $pageData['post_summary'] : ""; ?>
+<?=(isset($formData['post_summary'])) ? htmlspecialchars($formData['post_summary'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>
 </div>
 
 <div class="form-group">
 <label>Meta Keywords</label>
-<textarea class="form-control" name="post_keyword" rows="3" maxlength="200" <?=(isset($formData['post_keyword'])) ? htmlspecialchars($formData['post_keyword'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
-
+<textarea class="form-control" name="post_keyword" rows="3" maxlength="200" >
+<?=(isset($pageData['post_keyword'])) ? $pageData['post_keyword'] : ""; ?>
+<?=(isset($formData['post_keyword'])) ? htmlspecialchars($formData['post_keyword'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>
 </div>
 
 <div class="form-group">
 <label>Content (required)</label>
-<textarea class="form-control" id="sl" name="post_content" rows="10" maxlength="100000" <?=(isset($formData['post_content'])) ? htmlspecialchars($formData['post_content'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>>
-
+<textarea class="form-control" id="sl" name="post_content" rows="10" maxlength="100000" >
+<?=(isset($pageData['post_content'])) ? $pageData['post_content'] : ""; ?>
+<?=(isset($formData['post_content'])) ? htmlspecialchars($formData['post_content'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>
 </div>
 
@@ -139,7 +144,7 @@ endif;
 
 <div class="box-footer">
 <input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">  
-<input type="submit" name="pageFormSubmit" class="btn btn-primary" value="Add New Post">
+<input type="submit" name="pageFormSubmit" class="btn btn-primary" value="<?=(isset($pageData['ID']) && $pageData['ID'] != '') ? "Update" : "Add New Post"; ?>" >
 </div>
 </form>
             

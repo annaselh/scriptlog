@@ -2,7 +2,6 @@
 
 $load = '';
 $pathToLoad = null;
-$allowedToLoad = ['dashboard', 'posts', 'pages', 'topics', 'comments', 'themes', 'menu', 'menu-child', 'users', 'settings', 'plugins'];
 
 try {
 
@@ -15,7 +14,7 @@ try {
         if (strstr($_GET['load'], '../') !== false) {
             
             header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
-            throw new Exception("Directory traversal attempt!");
+            throw new AppException("Directory traversal attempt!");
             
         }
         
@@ -23,17 +22,17 @@ try {
         if (strstr($_GET['load'], 'file://') !== false ) {
             
             header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
-            throw new Exception("Remote file inclusion attempt!");
+            throw new AppException("Remote file inclusion attempt!");
             
         }
         
     }
     
     if (!is_readable(dirname(dirname(__FILE__)) .'/'. APP_ADMIN .'/'."{$load}.php") 
-    || empty($load) || !in_array($load, $allowedToLoad)) {
+    || empty($load) || !in_array($load, $allowedQuery, true)) {
         
         header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
-        throw new Exception("404 - Page requested not found");
+        throw new AppException("404 - Page requested not found");
         
     } else {
         
@@ -41,10 +40,10 @@ try {
         
     }
     
-} catch (Exception $e) {
+} catch (AppException $e) {
 
     LogError::setStatusCode(http_response_code());
     LogError::newMessage($e);
     LogError::customErrorMessage('admin');
     
-}
+} 

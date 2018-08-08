@@ -609,7 +609,7 @@ if ($install != 'install') {
         </p>
         
         <ul class="list-inline">
-          <li class="list-inline-item"><a href="<?php echo $installURL . '../LICENSE'; ?>">License</a></li>
+          <li class="list-inline-item"><a href="<?php echo $installURL . '../LICENSE'; ?>" target="_blank">License</a></li>
           <li class="list-inline-item"><a href="#"><?php echo 'Memory used '. round(memory_get_usage()/1048576,2).''.' MB'; ?></a></li>
           <li class="list-inline-item"><a href="#"><?php echo 'Execution time '. $execution_time; ?></a></li>
         </ul>

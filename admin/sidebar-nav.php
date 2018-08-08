@@ -21,7 +21,7 @@ function sidebarNavigation($module, $url, $level = null)
           </li>
         
         <li <?php if ($module == 'posts' || $module == 'topics') echo 'class="treeview active"'; ?>>
-          <a href="<?= $url.'index.php?load=posts'; ?>"><i class="fa fa-pencil"></i> 
+          <a href="<?= $url.'index.php?load=posts'; ?>"><i class="fa fa-thumb-tack"></i> 
           <span>Posts</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -40,7 +40,7 @@ function sidebarNavigation($module, $url, $level = null)
         </li>
         
          <li <?php if ($module == 'pages') echo 'class="treeview active"'; ?>>
-          <a href="<?= $url.'index.php?load=pages'; ?>"><i class="fa fa-file"></i> 
+          <a href="<?= $url.'index.php?load=pages'; ?>"><i class="fa fa-clone"></i> 
           <span>Pages</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -53,7 +53,7 @@ function sidebarNavigation($module, $url, $level = null)
         </li>
         
        <li <?php if ($module == 'users') echo 'class="treeview active"'; ?>>
-          <a href="<?= $url.'index.php?load=users'; ?>"><i class="fa fa-users"></i> 
+          <a href="<?= $url.'index.php?load=users'; ?>"><i class="fa fa-user"></i> 
           <span>Users</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -66,7 +66,7 @@ function sidebarNavigation($module, $url, $level = null)
         </li>
         
         <li class="treeview">
-          <a href="#"><i class="fa fa-laptop"></i> 
+          <a href="#"><i class="fa fa-paint-brush"></i> 
           <span>Appearance</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -78,8 +78,21 @@ function sidebarNavigation($module, $url, $level = null)
           </ul>
         </li>
         
+        <li <?php if ($module == 'plugins') echo 'class="treeview active"'; ?>>
+          <a href="<?= $url.'index.php?load=plugins'; ?>"><i class="fa fa-plug"></i> 
+          <span>Plugins</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="<?= $url.'index.php?load=plugins'; ?>">Installed Plugins</a></li>
+            <li><a href="<?= $url.'index.php?load=plugins&action=newPlugin&pluginId=0'; ?>">Add New</a></li>
+          </ul>
+        </li>
+
         <li <?php if ($module == 'settings') echo 'class="active"'; ?>>
-        <a href="<?= $url.'index.php?load=settings'; ?>"><i class="fa fa-wrench"></i> 
+        <a href="<?= $url.'index.php?load=settings'; ?>"><i class="fa fa-sliders"></i> 
         <span>Settings</span></a>
         </li>
         
