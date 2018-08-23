@@ -5,25 +5,58 @@
  * @package   SCRIPTLOG
  * @author    Maoelana Noermoehammad
  * @license   MIT
- * @version   1.0
+ * @version   1.0.0
  * @since     Since Release 1.0
  *
  */
 class CommentEvent
 {
-  
+
+ /**
+  * Comment ID
+  * @var integer
+  */
   private $comment_id;
   
+  /**
+   * Post ID
+   * @var integer
+   */
   private $post_id;
-  
+
+  /**
+   * Author's name
+   * @var string
+   */
   private $author_name;
-  
+
+  /**
+   * Author's IP address
+   * @var string
+   */
   private $author_ip;
   
+  /**
+   * Comment content
+   * @var string
+   */
   private $content;
   
+  /**
+   * Comment status
+   * @var boolean
+   */
   private $status;
-  
+
+  /**
+   * Comment Dao
+   * @var object
+   */
+  private $commentDao;
+
+  private $validator;
+
+  private $sanitizer;
   
   public function __construct(Comment $commentDao, FormValidator $validator, Sanitize $sanitizer)
   {

@@ -12,7 +12,9 @@
 class CommentApp extends BaseApp
 {
 
-  protected $view;
+  private $view;
+  
+  private $commentEvent;
   
   public function __construct(CommentEvent $commentEvent)
   {

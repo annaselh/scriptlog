@@ -9,191 +9,129 @@
  * @since     Since Release 1.0
  *
  */
-class Configuration
+class Configuration extends Dao
 {
   
- protected $dbc;
-  
- public function __construct($dbc)
- {
-		$this->dbc = $dbc;
- }
- 
- public function updateConfig($id, $siteName, $metaDescription, $metaKeywords, 
-              $instagram, $twitter, $facebook, $email_address, $logo = null)
- {
- 
-  if (empty($logo)) {
-  	
-  $sql = "UPDATE settings SET site_name = ?, meta_description = ?,
-  		   meta_keywords = ?, email_address = ?, facebook = ?, 
-           twitter, instagram = ? 
-  		  WHERE ID = ?";
-  	 
-  $data = array($siteName, $metaDescription, $metaKeywords, 
-              $email_address, $facebook, $twitter, $instagram, $id);
-  	 
+public function __construct()
+{
+  parent::__construct();
+}
+
+public function createConfig($bind)
+{
+  if(empty($bind['logo'])) {
+		// insert into settings
+		$stmt = $this->create('settings', [
+			'app_url' => $bind['app_url'],
+			'site_name' => $bind['site_name'],
+			'meta_description' => $bind['meta_description'],
+			'meta_keywords' => $bind['meta_keywords'],
+			'email_address' => $bind['email_address'],
+			'facebook' => $bind['facebook'],
+			'twitter' => $bind['twitter'],
+			'instagram' => $bind['instagram']
+		]);
+
+	} else {
+
+		$stmt = $this->create('settings', [
+			'app_url' => $bind['app_url'],
+			'site_name' => $bind['site_name'],
+			'meta_description' => $bind['meta_description'],
+			'meta_keywords' => $bind['meta_keywords'],
+			'logo' => $bind['logo'],
+			'email_address' => $bind['email_address'],
+			'facebook' => $bind['facebook'],
+			'twitter' => $bind['twitter'],
+			'instagram' => $bind['instagram']
+		]);
+
+	}
+	
+}
+
+public function updateConfig($bind, $id)
+{
+  if(empty($bind['logo'])) {
+
+	$stmt = $this->modify("settings", [
+		'site_name' => $bind['site_name'],
+		'meta_description' => $bind['meta_description'],
+		'meta_keywords' => $bind['meta_keywords'], 
+		'email_address' => $bind['email_address'],
+		'facebook' => $bind['facebook'],
+		'twitter' => $bind['twitter'],
+		'instagram' => $bind['instagram']
+	], "`ID` = {$id}");
+
   } else {
-  	
-   $sql = "UPDATE settings SET site_name = ?, meta_description = ?,
-  		    meta_keywords = ?, logo = ?, email_address = ?, facebook = ?, 
-            twitter, instagram = ?
-  		  WHERE ID = ?";
-      
-   $data = array($siteName, $metaDescription, $metaKeywords, 
-        $logo, $email_address, $facebook, $twitter, $instagram, $id);
+	
+	$stmt = $this->modify("settings", [
+		'site_name' => $bind['site_name'],
+		'meta_description' => $bind['meta_description'],
+		'meta_keywords' => $bind['meta_keywords'],
+		'logo' => $bind['logo'], 
+		'email_address' => $bind['email_address'],
+		'facebook' => $bind['facebook'],
+		'twitter' => $bind['twitter'],
+		'instagram' => $bind['instagram']
+	], "`ID` = {$id}");
 
   }
-  
-  $stmt = $this->statementHandle($sql, $data);
-  
- }
-  
- public function checkConfigId($id, $sanitizing) 
- {
- 
- $sql = "SELECT ID FROM settings WHERE ID = ? LIMIT 1";
- 
- $cleanUpId = $this->filteringId($sanitizing, $id, 'sql');
- 
- $stmt = $this->dbc->prepare($sql);
-  
-  $stmt -> bindValue(1, $cleanUpId);
-  
-  try {
-  	$stmt -> execute();
-  	$rows = $stmt -> rowCount();
-  	
-  	if ($rows > 0) {
-  		
-  		return true;
-  		
-  	} else {
-  		
-  		return false;
-  		
-  	}
-  	
-  } catch (PDOException $e) {
-  	
-  	$this->dbc = null;
-  	
-  	throw new PDOException($e);
-  	
-  }
-  
- }
- 
- public function findConfigs()
- {
- 	$sql = "SELECT ID, app_key, app_url, site_name, meta_description, 
-               meta_keywords, logo, email_address, facebook,
-               twitter, instagram
-  		 FROM settings LIMIT 1";
- 	
- 	$setup = array();
- 	
- 	$stmt = $this->dbc->query($sql);
- 	
- 	while ($row = $stmt -> fetch()) {
- 		
- 		$setup[] = $row;
- 	}
- 	
- 	$this->dbc = null;
- 	
- 	return $setup;
- 	
- }
- 
- public function findConfig($id, $sanitizing)
- {
- 
-  $sql = "SELECT ID, app_key, app_url, site_name, meta_description, 
-               meta_keywords, logo, email_address, facebook,
-               twitter, instagram
-  		 FROM settings  WHERE ID = ? LIMIT 1";
- 	
- $id_sanitized = $this->filteringId($sanitizing, $id, 'sql');
- 	
- $data = array($id_sanitized);
- 	
- $stmt = $this->statementHandle($sql, $data);
- 	
- return $stmt -> fetch();
- 	
- }
- 
- public function checkToSetup()
- {
-   $sql = "SELECT ID FROM settings LIMIT 1";
-   
-   try {
-   	
-   	$stmt = $this->dbc->query($sql);
-   	
-   	$founded = $stmt -> rowCount();
-   	
-   	if ($founded < 1) {
-   		
-   		return true;
-   		
-   	} else {
-   		
-   		return false;
-   	}
-   	
-   } catch (PDOException $e) {
-   
-   	 $this->dbc = null;
 
-   	 throw new PDOException($e);
-   	 
-   }
+}
+
+public function checkConfigId($id, $sanitize)
+{
+  $cleanId = $this->filteringId($sanitize, $id, 'sql');
+  $sql = "SELECT ID FROM settings WHERE ID = ?";
+  $this->setSQL($sql);
+  $stmt = $this->checkCountValue([$cleanId]);
+  return $stmt > 0;
+}
+
+public function checkToSetup()
+{
+	$sql = "SELECT ID FROM settings";
+	$this->setSQL($sql);
+	$stmt = $this->checkCountValue();
+	return $stmt < 1;
+}
+
+public function findConfigs()
+{
+  $sql = "SELECT ID, app_key, app_url, site_name, 
+	meta_description, meta_keywords, logo, 
+	email_address, facebook, twitter, instagram
+	FROM settings LIMIT 1";
+
+	$this->setSQL($sql);
+
+	$configs = $this->findAll();
+
+	if (empty($configs)) return false;
+
+	return $configs;
+	
+}
+
+public function findConfig($id, $sanitize)
+{
+  
+  $sql = "SELECT ID, app_key, app_url, site_name, meta_description, meta_keywords, 
+		  logo, email_address, facebook, twitter, instagram
+		  FROM settings WHERE ID = :ID ";
    
- }
- 
- protected function statementHandle($sql, $data = NULL)
- {
- 	
- 	$statement = $this->dbc->prepare($sql);
- 	
- 	try {
- 		
- 		$statement->execute($data);
- 		
- 	} catch (PDOException $e) {
- 		
- 		$this->dbc = null;
- 		
- 		$this->error = LogError::newMessage($e);
- 		$this->error = LogError::customErrorMessage();
- 		
- 	}
- 	
- 	return $statement;
- 	
- }
- 
- protected function filteringId(Sanitize $sanitize, $str, $type)
- {
- 	$this->sanitizing = $sanitize;
- 	
- 	$sanitized_var = filter_var($str, FILTER_SANITIZE_NUMBER_INT);
- 	
- 	if (filter_var($sanitized_var, FILTER_VALIDATE_INT)) {
- 		
- 		return $this->sanitizing->sanitasi($sanitized_var, $type);
- 		
- 	} else {
- 		
- 		$exception = "This Id is considered invalid";
- 		
- 		LogError::newMessage($exception);
- 		LogError::customErrorMessage();
- 		
- 	}
- 	
- }
- 
+  $id_sanitized = $this->filteringId($sanitize, $id, 'sql');
+
+  $this->setSQL($sql);
+
+  $detailSetting = $this->findRow([':ID' => $id_sanitized]);
+
+  if (empty($detailSetting)) return false;
+
+  return $detailSetting;
+  
+}
+
 }

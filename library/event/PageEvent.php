@@ -21,9 +21,7 @@ class PageEvent
   private $slug;
     
   private $content;
-    
-  private $image;
-    
+      
   private $meta_desc;
     
   private $meta_key;
@@ -33,6 +31,12 @@ class PageEvent
   private $post_type;
     
   private $comment_status;
+
+  private $pageDao;
+
+  private $validator;
+
+  private $sanitizer;
   
   public function __construct(Page $pageDao, FormValidator $validator, Sanitize $sanitizer)
   {
@@ -200,12 +204,12 @@ class PageEvent
         direct_page('index.php?load=pages&error=pageNotFound', 404);
     }
     
-    $this->image = $data_page['post_image'];
-    if ($this->image !== '') {
+    $page_image = $data_page['post_image'];
+    if ($page_image !== '') {
         
-        if (is_readable(__DIR__ . '/../public/files/pictures/'.$this->post_image)) {
-            unlink(__DIR__ . '/../public/files/pictures'.$this->image);
-            unlink(__DIR__ . '/../public/files/pictures/thumbs/thumbs_'.$this->image);
+        if (is_readable(__DIR__ . '/../public/files/pictures/'.$page_image)) {
+            unlink(__DIR__ . '/../public/files/pictures'.$page_image);
+            unlink(__DIR__ . '/../public/files/pictures/thumbs/thumbs_'.$page_image);
         }
         
         return $this->pageDao->deletePage($this->pageId, $this->sanitizer, $this->post_type);

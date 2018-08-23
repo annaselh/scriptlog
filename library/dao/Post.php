@@ -346,7 +346,7 @@ public function checkPostId($id, $sanitizing)
   $sql = "SELECT ID FROM posts WHERE ID = ? AND post_type = 'blog'";
   $this->setSQL($sql);
   $stmt = $this->checkCountValue([$cleanId]);
-  return($stmt > 0); 		
+  return $stmt > 0; 		
 }
 
 /**
@@ -358,18 +358,26 @@ public function checkPostId($id, $sanitizing)
 public function dropDownPostStatus($selected = "")
 {
   
-    $name = 'post_status';
- 	// list position in array
- 	$posts_status = array('publish' => 'Publish', 'draft' => 'Draft');
+  $name = 'post_status';
+  // list position in array
+  $posts_status = array('publish' => 'Publish', 'draft' => 'Draft');
  	
- 	if ($selected != '') {
- 	    $selected = $selected;
- 	}
+  if ($selected != '') {
+     
+    $selected = $selected;
+
+  }
  	
- 	return dropdown($name, $posts_status, $selected);
+  return dropdown($name, $posts_status, $selected);
  	
 }
- 
+
+/**
+ * Drop down Comment Status
+ * 
+ * @param string $name
+ * return string
+ */
 public function dropDownCommentStatus($selected = "")
 {
  	

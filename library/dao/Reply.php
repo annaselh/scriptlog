@@ -21,7 +21,8 @@ class Reply extends Dao
   
   public function findReplies($orderBy = 'ID')
   {
-    $sql = "SELECT ID, comment_id, user_id, reply_content, reply_status, date_publish 
+    $sql = "SELECT ID, comment_id, user_id, 
+            reply_content, reply_status, date_publish 
             FROM comment_reply ORDER BY :orderBy DESC ";
     
     $this->setSQL($sql);

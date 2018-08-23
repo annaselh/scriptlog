@@ -12,7 +12,9 @@
 class UserApp extends BaseApp
 {
 
-  protected $view;
+  private $view;
+
+  private $userEvent;
   
   public function __construct(UserEvent $userEvent)
   {

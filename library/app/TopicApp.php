@@ -11,7 +11,9 @@
  */
 class TopicApp extends BaseApp
 {
-  protected $view;
+  private $view;
+
+  private $topicEvent;
   
   public function __construct(TopicEvent $topicEvent)
   {

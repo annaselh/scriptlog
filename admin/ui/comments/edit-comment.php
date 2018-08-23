@@ -101,7 +101,7 @@ endif;
                 <p class="text-aqua"><?=(isset($commentData['comment_date'])) ? human_readable_datetime(read_datetime($commentData['comment_date']), 'g:ia \o\n l jS F Y') : ""; ?></p>
               </div>
               <div class="form-group">
-                <a href="index.php?load=reply"></a>
+                <a href="index.php?load=reply" class="btn btn-primary"></a>
               </div>
             </div>
             <!-- /.box-body -->

@@ -39,6 +39,17 @@ class TopicEvent
    */
   private $topic_status;
   
+  /**
+   * Topic Dao
+   * 
+   * @var object
+   */
+  private $topicDao;
+
+  private $validator;
+
+  private $sanitizer;
+
   public function __construct(Topic $topicDao, FormValidator $validator, Sanitize $sanitizer)
   {
     $this->topicDao = $topicDao;

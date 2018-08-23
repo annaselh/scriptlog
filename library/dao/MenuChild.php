@@ -78,7 +78,7 @@ class MenuChild extends Dao
  public function addMenuChild($bind)
  {
      
-  $menuChildSorted = self::findSortMenuChild();
+  $menuChildSorted = $this->findSortMenuChild();
   $stmt = $this->create("menu_child", [
       'menu_child_label' => $bind['menu_child_label'],
       'menu_child_link'  => $bind['menu_child_link'],
@@ -170,7 +170,7 @@ class MenuChild extends Dao
      
  }
  
- protected static function findSortMenuChild()
+ private function findSortMenuChild()
  {
    $sql = "SELECT menu_child_sort FROM menu_child ORDER BY menu_child_sort DESC";
    

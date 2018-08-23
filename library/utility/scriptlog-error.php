@@ -10,6 +10,6 @@ function scriptlog_error($message, $level = E_USER_NOTICE)
 {
    $caller = next(debug_backtrace());
    
-   trigger_error($message.' in <strong>'.$caller['function'].'</strong> called from <strong>'.$caller['file'].'</strong> on line <strong>'.$caller['line'].'</strong>'."\n<br />error handler", $level);
+   trigger_error($message.' in '.$caller['function'].' function called from '.$caller['file'].' on line '.$caller['line'].' '."\n error handler", $level);
    
 }

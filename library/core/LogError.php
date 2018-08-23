@@ -1,5 +1,4 @@
 <?php
-
 /**
  * LogError Class
  * Error Handling and Logging
@@ -20,14 +19,15 @@ class LogError
 
    private static $httpResponseCode;
    
-    public static function logPath()
-    {
-        return static::$logFilePath;
-    }
+   public static function logPath()
+   {
+      return static::$logFilePath;
+   }
 
     /**
-     *
      * @method customErrorMessage
+     * @param string 
+     * 
      */
     public static function customErrorMessage($privilege = null)
     {
@@ -99,10 +99,12 @@ class LogError
             
         } else {
             
+            echo '<div class="content-wrapper">';
             echo '<div class="alert alert-danger" role="alert">';
             echo 'Please check your error log and send it to - email: 
                   scriptlog@yandex.com';   
-            echo '</div>';
+            echo '</div></div>';
+
         }
         
     }
@@ -231,11 +233,8 @@ class LogError
         file_put_contents(self::logPath() . $error_file, $log_message . $content);
         
         if ($_printError == true) {
-            
             echo $log_message;
-            
             exit();
-            
         }
         
     }
@@ -261,10 +260,9 @@ class LogError
         
         if ($_printError == true) {
             echo $log_message;
-            
             exit();
         }
-        
+         
     }
 
     public static function setStatusCode($statusCode)

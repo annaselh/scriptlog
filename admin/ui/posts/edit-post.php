@@ -141,10 +141,8 @@ endif;
 <?=(isset($commentStatus)) ? $commentStatus : ""; ?>
 </div>
 <!-- /.comment status -->
-
 </div>
 <!-- /.box-body -->
-
 <div class="box-footer">
 <input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">  
 <input type="submit" name="postFormSubmit" class="btn btn-primary" value="<?=(isset($postData['ID']) && $postData['ID'] != '') ? "Update" : "Publish"; ?>">

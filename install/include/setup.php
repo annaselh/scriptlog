@@ -157,7 +157,9 @@ $user_session = md5($user_email);
 $shield_pass = password_hash(base64_encode(hash('sha384', $password, true)), PASSWORD_DEFAULT);;
 $user_level = 'administrator';
 
+#create users table
 if ($link instanceof mysqli) $newTableUser = $link -> query($tableUser);
+#save administrator
 $createAdmin = $link ->prepare($saveAdmin);
 $createAdmin -> bind_param("ssssss", $user_login, $user_email, 
     $shield_pass, $user_level, $date_registered, $user_session);
@@ -319,7 +321,7 @@ function escapeHTML($html)
  * Generate License Function
  * to create serial generation of license key with php
  * 
- * @link stackoverflow.com/questions/3687878/serial-generation-with-php
+ * @link https://stackoverflow.com/questions/3687878/serial-generation-with-php
  * @param string $suffix
  * @return string
  */
@@ -339,30 +341,25 @@ function generate_license($suffix = null)
     
   }
   
-    $tokens = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    $license_string = '';
+  $tokens = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  $license_string = '';
     
-    // Build Default License String
-    for ($i = 0; $i < $num_segments; $i++) {
+  // Build Default License String
+  for ($i = 0; $i < $num_segments; $i++) {
         
-        $segment = '';
-        
-        for ($j = 0; $j < $segment_chars; $j++) {
-            
-            $segment .= $tokens[rand(0, strlen($tokens)-1)];
-        
-        }
-        
-        $license_string .= $segment;
-        if ($i < ($num_segments - 1)) {
-            
-            $license_string .= '-';
-        
-        }
-        
+    $segment = '';
+    for ($j = 0; $j < $segment_chars; $j++) {
+        $segment .= $tokens[rand(0, strlen($tokens)-1)];
     }
+        
+    $license_string .= $segment;
+    if ($i < ($num_segments - 1)) {
+        $license_string .= '-';
+    }
+        
+  }
     
-    // If provided, convert Suffix
+   // If provided, convert Suffix
     if(isset($suffix)){
         
         if(is_numeric($suffix)) {   // Userid provided

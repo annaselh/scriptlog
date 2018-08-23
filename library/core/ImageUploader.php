@@ -11,33 +11,84 @@
  */
 class ImageUploader
 {
- 
+ /**
+  * File name
+  * 
+  * @var string
+  */
  protected $file_name;
  
+ /**
+  * File location
+  * @var string
+  */
  protected $file_location;
  
+ /**
+  * File Type 
+  * @var string
+  */
  protected $file_type;
  
+ /**
+  * Fole size
+  *
+  * @var string
+  */
  protected $file_size;
  
+ /**
+  * File error
+  *
+  * @var string
+  */
  protected $file_error;
  
+ /**
+  * Path destination
+  * 
+  * @var string
+  */
  protected $path_destination;
  
+ /**
+  * File basename
+  * @var string
+  */
  private $file_basename;
  
+ /**
+  * File extension
+  * @var string
+  */
  private $file_extension;
  
+ /**
+  * Image source origin
+  * @var string
+  */
  private $image_source = null;
  
+ /**
+  * Maximum size uploaded
+  * @var number | integer
+  */
  private $max_size = 586000;
  
+ /**
+  * Image file type allowed 
+  * @var array
+  */
  private $image_permitted = array(
      'jpg' => 'image/jpeg', 
      'png' => 'image/png', 
      'gif' => 'image/gif'
  );
  
+ /**
+  * compress setinng
+  * @var array
+  */
  private $compress_setting = array(
      'directory' => APP_ROOT . APP_PUBLIC . DS . 'picture'. DS,
      'file_type' => array( // file format allowed
@@ -47,6 +98,10 @@ class ImageUploader
      )
  );
  
+ /**
+  * Error message
+  * @var string
+  */
  private $error_message;
  
  public function __construct($key, $path)
@@ -125,12 +180,12 @@ class ImageUploader
       
       if (false === $ext) {
            
-          throw new Exception('Invalid file format');
+          throw new ImageUploaderException('Invalid file format');
       }
       
       return true;
       
-  } catch (Exception $e) {
+  } catch (ImageUploaderException $e) {
       
       $this->error_message = LogError::newMessage($e);
       $this->error_message = LogError::customErrorMessage();
@@ -141,61 +196,156 @@ class ImageUploader
 
  private function readyToUpload()
  {
-     if (!isset($this->file_error) || is_array($this->file_error)) {
-         
-         throw new RuntimeException('Invalid parameters');
-         
-     }
-   
-     $writableFolder = is_writable($this->path_destination);
-     
-     $tempName = is_uploaded_file($this->file_location);
-     $maxSize = ini_get('upload_max_filesize');
-     
-     if ($this->checkImageSize($this->file_location) === false) {
-         
-         $this->error_message = "Error: File is too big";
-         $canUpload = false;
-         
-     }
-     
-     if ($this->checkImageMimeType($this->file_location) === false) {
+    
+   $canUpload = true;
 
-         $this->error_message = "Exceeded filesize limit";
-         $canUpload = false;
-         
-     }
-     
-     if ($writableFolder === false ) {
-         
-         $this->error_message = "Error: destination folder is ";
-         $this->error_message .= "not writable";
-         $canUpload = false;
-         
-     } elseif ($this->file_error === 1) {
+   try {
+
+    if (!isset($this->file_error) || is_array($this->file_error)) {
         
-         $this->error_message = "Error: File is too big ";
-         $this->error_message = "Max file size is".format_size_unit($maxSize);
-         $canUpload = false;
-         
-     } elseif ($this->file_error > 1) {
-         
-         $this->error_message = "Something went wrong";
-         $this->error_message .= "Error Code: $this->error_message";
-         
-     } else {
-         
-         $canUpload = true;
-         
-     }
-     
-     return $canUpload;
-     
+        $canUpload = false;
+        throw new ImageUploaderException('Invalid parameters');
+        
+    }
+  
+    $writableFolder = is_writable($this->path_destination);
+    
+    $tempName = is_uploaded_file($this->file_location);
+    
+    $maxSize = ini_get('upload_max_filesize');
+    
+    if ($this->checkImageSize($this->file_location) === false) {
+        $canUpload = false;
+        throw new ImageUploaderException("File is too big");
+    }
+    
+    if ($this->checkImageMimeType($this->file_location) === false) {
+
+        $canUpload = false;
+        throw new ImageUploaderException("File type is not supported");
+
+    }
+    
+    if ($writableFolder === false ) {
+        
+        $canUpload = false;
+        throw new ImageUploaderException("destination folder is not writable");
+
+    } elseif ($this->file_error === 1) {
+       
+        $canUpload = false;
+        throw new ImageUploaderException("Error! Exceeded file limit. Max file size is ".format_size_unit($maxSize));
+        
+    } elseif ($this->file_error > 1) {
+        
+        $canUpload = false;
+        throw new ImageUploaderException("Something Went Wrong");
+
+    } else {
+        
+        $canUpload = true;
+        
+    }
+    
+    return $canUpload;
+    
+   } catch(ImageUploaderException $e) {
+
+      $this->error_message = LogError::newMessage($e);
+      $this->error_message = LogError::customErrorMessage();
+   
+   }
+
  }
 
- protected function saveImagePost($file_name, $width, $height, $mode)
+ protected function saveImageLogo($file_name, $width, $height, $mode)
  {
-     if ($this->readyToUpload()) {
+   if($this -> readyToUpload() === true) {
+
+    $upload_dir = $this -> path_destination;
+    $upload_dir_thumb = $this->path_destination . 'thumbs/';
+    $file_uploaded = $upload_dir . $file_name;
+
+    if (filesize($this->file_size) > 52000) {
+
+        move_uploaded_file($this->file_location, $file_uploaded);
+
+        $resizer = new Resize($file_uploaded);
+        $resizer -> resizeImage($width, $height, $mode);
+        $resizer -> saveImage($file_uploaded, 100);
+
+    } else {
+        move_uploaded_file($this->file_location, $file_uploaded);
+    }
+
+     // checking file type
+    $img_source = null;
+         
+    if ($file_type == "image/jpeg") {
+        
+        $img_source = imagecreatefromjpeg($file_uploaded);
+        
+    } elseif ($file_type == "image/png") {
+        
+        $img_source = imagecreatefrompng($file_uploaded);
+        
+    } elseif ($file_type == "image/jpg") {
+        
+        $img_source = imagecreatefromjpeg($file_uploaded);
+        
+    } elseif ($file_type == "image/gif") {
+        
+        $img_source = imagecreatefromgif($file_uploaded);
+        
+    }
+    
+    $source_width = imagesx($img_source);
+    $source_height = imagesy($img_source);
+    
+    // set picture's size
+    $set_width = 135;
+    $set_height = ($set_width/$source_width) * $source_height;
+    
+    // process
+    $img_processed = imagecreatetruecolor($set_width, $set_height);
+    imagecopyresampled($img_processed, $img_source, 0, 0, 0, 0, $set_width, $set_height, $source_width, $source_height);
+    
+    // save picture's thumbnail
+    if ($this->file_type == "image/jpeg") {
+        
+        imagejpeg($img_processed, $upload_path_thumb . "thumb_" . $file_name);
+        
+    } elseif ($this->file_type == "image/png") {
+        
+        imagepng($img_processed, $upload_path_thumb . "thumb_" . $file_name);
+        
+    } elseif ($$this->file_type == "image/gif") {
+        
+        imagegif($img_processed, $upload_path_thumb . "thumb_" . $file_name);
+        
+    } elseif ($this->file_type == "image/jpg") {
+        
+        imagejpeg($img_processed, $upload_path_thumb . "thumb_" . $file_name);
+        
+    }
+    
+    // Delete Picture in computer's memory
+    imagedestroy($img_source);
+    imagedestroy($img_processed);
+    
+} else {
+    
+    $exception = new Exception($this->error_message);
+    $this->error_message = LogError::newMessage($exception);
+    $this->error_message = LogError::customErrorMessage();
+    
+}
+
+}
+
+protected function saveImagePost($file_name, $width, $height, $mode)
+{
+     if ($this->readyToUpload() === true) {
          
          $upload_dir = $this->path_destination;
          $upload_dir_thumb = $this->path_destination . 'thumbs/';
@@ -295,22 +445,27 @@ class ImageUploader
  {
      $allowedType = ['post', 'page', 'logo', 'media'];
      
-     if (in_array($needle, $haystack)) {
+     if (in_array($uploadType, $allowedType, true)) {
+     
+        switch ($uploadType) {
          
+            case 'page':
+            case 'post' :
+                
+               $this->saveImagePost($file_name, $width, $height, $mode);
+                
+               break;
+                
+            case 'logo':
+               
+               $this->saveImageLogo($file_name, $width, $height, $mode);
+               
+               break;
+   
+        }
+
      }
-     switch ($uploadType) {
-         
-         case 'page':
-         case 'post' :
-             
-             $this->saveImagePost($file_name, $width, $height, $mode);
-             
-             break;
-             
-         case 'logo':
-             
-             
-             break;
-     }
+     
  }
+
 }

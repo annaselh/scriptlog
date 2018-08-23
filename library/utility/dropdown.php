@@ -18,7 +18,7 @@ function dropdown($name, array $options, $selected=null)
     {
       
         /*** assign a selected value ***/
-        $select = $selected==$key ? ' selected' : null;
+        $select = $selected === $key ? ' selected' : null;
         
         /*** add each option to the dropdown ***/
         $dropdown .= '<option value="'.$key.'"'.$select.'>'.$option.'</option>'."\n";

@@ -100,7 +100,7 @@ class Menu extends Dao
  public function addMenu($bind)
  {
      
-   $menuSorted = self::findSortMenu();
+   $menuSorted = $this->findSortMenu();
    
    $stmt = $this->create("menu", [
        'menu_label' => $bind['menu_label'],
@@ -168,7 +168,7 @@ class Menu extends Dao
   * 
   * @return number
   */
- protected static function findSortMenu()
+ private function findSortMenu()
  {
  
   $sql = "SELECT menu_sort FROM menu ORDER BY menu_sort DESC";

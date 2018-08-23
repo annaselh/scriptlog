@@ -42,12 +42,6 @@ class PostEvent
   private $content;
   
   /**
-   * post's image
-   * @var string
-   */
-  private $image;
-  
-  /**
    * post's summary 
    * it will be used for meta_description tag
    * 
@@ -85,6 +79,12 @@ class PostEvent
    * @var integer
    */
   private $topics; 
+  
+  private $postDao;
+
+  private $validator;
+
+  private $sanitizer;
   
   public function __construct(Post $postDao, FormValidator $validator, Sanitize $sanitizer)
   {
@@ -254,7 +254,7 @@ class PostEvent
                  'post_slug'  => $this->slug,
                  'post_content' => $this->content,
                  'post_summary' => $this->meta_desc,
-                 'post_keyword' => $this->meta_key,
+                    'post_keyword' => $this->meta_key,
                  'post_status' => $this->post_status,
                  'comment_status' => $this->comment_status
              ], $this->topics);
@@ -365,19 +365,19 @@ class PostEvent
        direct_page('index.php?module=posts&error=postNotFound', 404); 
     }
     
-    $this->image = $data_post['post_image'];
-    if ($this->image !== '') {
+    $post_image = $data_post['post_image'];
+    if ($post_image !== '') {
         
-       if (is_readable(__DIR__ . '/../public/files/pictures/'.$this->post_image)) {
+       if (is_readable(__DIR__ . '/../public/files/pictures/'.$post_image)) {
            
-           unlink(__DIR__ . '/../public/files/pictures'.$this->image);
-           unlink(__DIR__ . '/../public/files/pictures/thumbs/thumbs_'.$this->image);
+           unlink(__DIR__ . '/../public/files/pictures'.$post_image);
+           unlink(__DIR__ . '/../public/files/pictures/thumbs/thumbs_'.$post_image);
            
        }
        
        return  $this->postDao->deletePost($this->postId, $this->sanitizer);
        
-    } else {
+    }    else {
         
        return $this->postDao->deletePost($this->postId, $this->sanitizer);
         

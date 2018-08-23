@@ -144,7 +144,7 @@ endif;
 
 <div class="box-footer">
 <input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">  
-<input type="submit" name="pageFormSubmit" class="btn btn-primary" value="<?=(isset($pageData['ID']) && $pageData['ID'] != '') ? "Update" : "Add New Post"; ?>" >
+<input type="submit" name="pageFormSubmit" class="btn btn-primary" value="<?=(isset($pageData['ID']) && $pageData['ID'] != '') ? "Update" : "Publish"; ?>" >
 </div>
 </form>
             

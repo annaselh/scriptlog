@@ -66,6 +66,12 @@ class UserEvent
   */
  private $user_session;
  
+ private $userDao;
+
+ private $authenticator;
+
+ private $sanitize;
+ 
  const COOKIE_EXPIRE =  8640000;  //60*60*24*100 seconds = 100 days by default
 
  const COOKIE_PATH = "/";  //Available in whole domain

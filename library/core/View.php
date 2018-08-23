@@ -71,7 +71,7 @@ class View
         
         if (!is_dir($this->dir) && !file_exists($this->dir. $this->file . '.php')) {
             header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
-            throw new ViewException("View ".$this->file.'.php'. ' does not exists');
+            throw new ViewException('View '.$this->file.'.php'. ' does not exists');
         }
         
         extract($this->data);
@@ -86,7 +86,7 @@ class View
         $this->errors = LogError::setStatusCode(http_response_code());
         $this->errors = LogError::newMessage($e);
         $this->errors = LogError::customErrorMessage();
-
+        
     } 
     
   }

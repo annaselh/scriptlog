@@ -12,8 +12,10 @@
 class PageApp extends BaseApp
 {
     
- protected $view;
- 
+ private $view;
+
+ private $pageEvent;
+
  public function __construct(PageEvent $pageEvent)
  {
    $this->pageEvent = $pageEvent;

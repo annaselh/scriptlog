@@ -12,10 +12,13 @@
 class PostApp extends BaseApp
 {
   
-  protected $view;
+  private $view;
+
+  private $postEvent;
     
   public function __construct(PostEvent $postEvent)
   {
+    
     $this->postEvent = $postEvent;
    
   }
@@ -112,7 +115,7 @@ class PostApp extends BaseApp
           
          if (!$checkError) {
             
-            $this->setView("edit-post");
+            $this->setView('edit-post');
             $this->setPageTitle('Add New Post');
             $this->setFormAction('newPost');
             $this->view->set('pageTitle', $this->getPageTitle());
@@ -229,7 +232,7 @@ class PostApp extends BaseApp
             
             if (!$checkError) {
                 
-                $this->setView("edit-post");
+                $this->setView('edit-post');
                 $this->setPageTitle('Edit Post');
                 $this->setFormAction('editPost');
                 $this->view->set('pageTitle', $this->getPageTitle());
