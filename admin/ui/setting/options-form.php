@@ -23,20 +23,37 @@
           <div class="box box-primary">
             <div class="box-body box-profile">
               <?php 
-              if ($configData['logo'] != '') : 
+              if (!empty($configData['logo'])) : 
 
-                $logo = __DIR__ . '/../public/files/pictures/'.$configData['logo'];
-                $logo_thumbs = __DIR__ . '/../public/files/pictures/thumbs/thumb_'.$configData['logo'];
+                $logo = '../public/files/pictures/'.$configData['logo'];
+                $logo_thumbs = '../public/files/pictures/thumbs/thumb_'.$configData['logo'];
                 
                 if (!is_file($logo_thumbs)) {
-                   $logo = __DIR__ . '/../public/files/pictures/thumbs/nophoto.jpg';
+                   $logo_thumbs = '../public/files/pictures/thumbs/nophoto.jpg';
                 }
 
+                if (is_readable($logo)) :
                 
               ?>
-
+              
+              <a href="<?= $logo; ?>">
               <img class="profile-user-img img-responsive img-circle" src="<?= $logo_thumbs; ?>" alt="<?= 'logo of '.$configData['site_name'] ?>">
+               </a>  
+             <?php 
+                else : 
+             ?>
+               <img class="profile-user-img img-responsive img-circle" src="<?= $logo_thumbs; ?>" alt="<?= 'logo of '.$configData['site_name'] ?>">
+             
+             <?php 
+               endif;
+             ?>
 
+             <?php 
+                else : 
+              ?>
+              
+             <img class="profile-user-img img-responsive img-circle" src="<?= '../public/files/pictures/thumbs/nophoto.jpg'; ?>" alt="site logo">
+               
              <?php endif; ?>
 
               <h3 class="profile-username text-center"><?=(isset($configData['site_name'])) ? htmlspecialchars($configData['site_name']) : ""; ?></h3>
@@ -70,6 +87,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
+              
               <strong><i class="fa fa-book margin-r-5"></i> Meta Description</strong>
 
               <p class="text-muted">
@@ -83,6 +101,10 @@
               <p class="text-muted"><?=(isset($configData['meta_keywords'])) ? $configData['meta_keywords'] : ""; ?></p>
 
               <hr>
+
+              <strong><i class="fa fa-envelope margin-r-5"></i> Email Address</strong>
+
+              <p class="text-muted"><?=(isset($configData['meta_keywords'])) ? $configData['meta_keywords'] : ""; ?></p>
 
             </div>
             <!-- /.box-body -->
@@ -124,7 +146,8 @@ echo "Error saving data. Please try again." . $saveError;
 endif;
 ?>
 
-<form method="post" action="index.php?load=settings&action=<?=(isset($formAction)) ? $formAction : null; ?>&settingId=<?=(isset($configData['ID'])) ? $configData['ID'] : 0; ?>" role="form">
+<form name="scriptlogForm" method="post" action="index.php?load=settings&action=<?=(isset($formAction)) ? $formAction : null; ?>&settingId=<?=(isset($configData['ID'])) ? $configData['ID'] : 0; ?>" onSubmit="return checkFormSetting(this)" 
+role="form" enctype="multipart/form-data" autocomplete="off">
 <input type="hidden" name="config_id" value="<?=(isset($configData['ID'])) ? $configData['ID'] : 0; ?>" />
 <input type="hidden" name="MAX_FILE_SIZE" value="697856" />
 
@@ -141,16 +164,25 @@ if (isset($configData['app_key']) && $configData['app_key'] != '') :
 <?php endif;  ?>
 
 <div class="form-group">
-<label>Site Title</label>
+<label>Site Title (required)</label>
 <input type="text" class="form-control" name="site_title" placeholder="Enter Site title here" value="
 <?=(isset($configData['site_name'])) ? htmlspecialchars($configData['site_name']) : ""; ?>
-<?=(isset($formData['site_title'])) ? htmlspecialchars($formData['site_title'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>">
+<?=(isset($formData['site_title'])) ? htmlspecialchars($formData['site_title'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
 </div>
 
 <div class="form-group">
-  <label>Site Address (URL)</label>
-  <input type="text" class="form-control" name="app_url" placeholder="Enter the site address here"  value="
-  <?=(isset($configData['app_url'])) ? htmlspecialchars($configData['app_url']) : ""; ?>" >
+<label>Site Address (required)</label>
+<input type="url" class="form-control" name="app_url" placeholder="https://example.com" value="
+<?=(isset($configData['app_url'])) ? htmlspecialchars($configData['app_url']) : ""; ?>
+<?=(isset($formData['app_url'])) ? htmlspecialchars($formData['app_url'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
+</div>
+
+<div class="form-group">
+<label>Email Address (required)</label>
+<input type="email" class="form-control" name="email" placeholder="scriptlog@kartatopia.com" value="
+<?=(isset($configData['email_address'])) ? htmlspecialchars($configData['email_address']) : ""; ?>
+<?=(isset($formData['email'])) ? htmlspecialchars($formData['email'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
+<p class="help-block">This email address is used for admin purposes.</p>
 </div>
 
 <?php 
@@ -211,21 +243,24 @@ endif;
 </div>
 
 <div class="form-group">
-  <label>Facebook</label>
-  <input type="text" class="form-control" name="facebook" placeholder="facebook.com/mnoermoehammad"  value="
-  <?=(isset($configData['facebook'])) ? htmlspecialchars($configData['facebook']) : ""; ?>" >
+<label>Facebook</label>
+<input type="text" class="form-control" name="facebook" placeholder="facebook.com/scriptlog" value="
+<?=(isset($configData['facebook'])) ? htmlspecialchars($configData['facebook']) : ""; ?>
+<?=(isset($formData['facebook'])) ? htmlspecialchars($formData['facebook'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
 </div>
 
 <div class="form-group">
-  <label>Twitter</label>
-  <input type="text" class="form-control" name="twitter" placeholder="@MaleoSenkawor"  value="
-  <?=(isset($configData['twitter'])) ? htmlspecialchars($configData['twitter']) : ""; ?>" >
+<label>Twitter</label>
+<input type="text" class="form-control" name="twitter" placeholder="@scriptlog" value="
+<?=(isset($configData['twitter'])) ? htmlspecialchars($configData['twitter']) : ""; ?>
+<?=(isset($formData['twitter'])) ? htmlspecialchars($formData['twitter'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
 </div>
 
 <div class="form-group">
-  <label>Instagram</label>
-  <input type="text" class="form-control" name="instagram" placeholder="MaleoSenkawor"  value="
-  <?=(isset($configData['instagram'])) ? htmlspecialchars($configData['instagram']) : ""; ?>" >
+<label>Instagram</label>
+<input type="text" class="form-control" name="instagram" placeholder="Scriptlog" value="
+<?=(isset($configData['instagram'])) ? htmlspecialchars($configData['instagram']) : ""; ?>
+<?=(isset($formData['instagram'])) ? htmlspecialchars($formData['instagram'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
 </div>
 
 </div>
@@ -233,7 +268,7 @@ endif;
 
 <div class="box-footer">
 <input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">  
-<input type="submit" name="configFormSubmit" class="btn btn-primary" value="<?=(isset($configData['ID']) && $configData['ID'] != '') ? "Update" : "Publish"; ?>">
+<input type="submit" name="configFormSubmit" class="btn btn-primary" value="<?=(isset($configData['ID']) && $configData['ID'] != '') ? "Update" : "Save Changes"; ?>">
 </div>
 </form>
             

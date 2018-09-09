@@ -1,13 +1,15 @@
 <?php
 
 require_once(__DIR__ . '/../library/main-reserve.php');
-
+/*
 $classes_dir = dirname(__FILE__). '/classes/';
 
 echo $classes_dir;
 
 $users = new User();
 $data = $users -> getUsers();
+*/
+
 ?>
 
 <html>
@@ -18,17 +20,25 @@ $data = $users -> getUsers();
 <table>
 <thead>
 <tr>
-   <th>Username</th>
+   <th>URL :</th>
 </tr>
 </thead>
 <tbody>
 <?php 
-foreach ($data as $key => $value) :
+//foreach ($data as $key => $value) :
 ?>
 <tr>
-  <td><?= $value->user_login; ?></td>
+  <td>
+  <?php 
+    $field = array('load' => 'banners');
+    
+    $url = APP_PROTOCOL . '://' . APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . '/index.php?'.http_build_query($field);
+
+    echo $url;
+  ?>
+  </td>
 </tr>
-<?php endforeach; ?>
+<?php //endforeach; ?>
 </tbody>
 </table>
 </body>

@@ -113,7 +113,7 @@ PRIMARY KEY(ID)
 $tablePlugin = "CREATE TABLE IF NOT EXISTS plugin(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
 plugin_name VARCHAR(100) NOT NULL,
-plugin_link VARCHAR(100) NOT NULL,
+plugin_link VARCHAR(100) NOT NULL DEFAULT '#',
 plugin_desc tinytext,
 plugin_status enum('Y','N') NOT NULL DEFAULT 'N',
 plugin_level VARCHAR(20) NOT NULL,

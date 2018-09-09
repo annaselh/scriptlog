@@ -190,13 +190,11 @@ class Topic extends Dao
   * @param array $checked
   * @return string
   */
- public function setCheckBoxTopic($postId = '', $checked = NULL)
+ public function setCheckBoxTopic($postId = '', $checked = null)
  {
-   	  	
- $checked = "";
-     
+   	  	     
  if (is_null($checked)) {
-     $checked="checked='checked'";
+     $checked = "checked='checked'";
  }
       
  $html = array();
@@ -214,9 +212,9 @@ class Topic extends Dao
              
              if (isset($_POST['catID'])) {
                  
-                 if (in_array($item->ID, $_POST['catID'])) {
+                 if (in_array($item['ID'], $_POST['catID'], true)) {
                      
-                     $checked="checked='checked'";
+                     $checked = "checked='checked'";
                      
                  } else {
                      
@@ -227,7 +225,7 @@ class Topic extends Dao
              }
              
             $html[] = '<label class="checkbox-inline">';
-            $html[] = '<input type="checkbox" name="catID[]" value="'.$item->ID.'"'.$checked.'>'.$item->topic_title;
+            $html[] = '<input type="checkbox" name="catID[]" value="'.$item['ID'].'"'.$checked.'>'.$item['topic_title'];
             $html[] = '</label>';
              
          }
@@ -245,9 +243,9 @@ class Topic extends Dao
      
      foreach ($items as $i => $item) {
          
-      $post_topic = $this->getPostTopic($item->ID, $postId);
+      $post_topic = $this->getPostTopic($item['ID'], $postId);
          
-      if ($post_topic->ID == $item->ID) {
+      if ($post_topic['ID'] == $item['ID']) {
         
         $checked="checked='checked'";
       
@@ -257,7 +255,7 @@ class Topic extends Dao
       }
          
          $html[] = '<label class="checkbox-inline">';
-         $html[] = '<input type="checkbox" name="catID[]" value="'.$item->ID.'"'.$checked.'>'.$item->topic_title;
+         $html[] = '<input type="checkbox" name="catID[]" value="'.$item['ID'].'"'.$checked.'>'.$item['topic_title'];
          $html[] = '</label>';
          
      }

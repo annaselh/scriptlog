@@ -7,8 +7,8 @@ ini_set("memory_limit", "2M");
 
 $key = '5c12IpTl0g!@#';
 $checkIncKey = sha1(mt_rand(1, 1000).$key);
+$app_hostname = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
 $app_protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https';
-$app_hostname = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
 define('DS', DIRECTORY_SEPARATOR);
 define('APP_TITLE', 'Scriptlog');
@@ -36,6 +36,7 @@ if (file_exists(__DIR__ . '/../config.sample.php')) {
     $config = require APP_ROOT . 'config.sample.php';
     
 }
+
 // call functions in folder utility
 $function_directory = new RecursiveDirectoryIterator(__DIR__ . '/utility/', FilesystemIterator::FOLLOW_SYMLINKS);
 $filter_iterator = new RecursiveCallbackFilterIterator($function_directory, function ($current, $key, $iterator){

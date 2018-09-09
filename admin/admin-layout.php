@@ -117,6 +117,8 @@ function admin_footer($stylePath)
 <script src="<?= $stylePath; ?>/assets/components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
 <script src="<?= $stylePath; ?>/assets/components/fastclick/lib/fastclick.js"></script>
+<!-- Checking Form Field -->
+<script src="<?= $stylePath; ?>/assets/dist/js/checkformSetting.js"></script>
 <!-- Validate Image -->
 <script src="<?= $stylePath; ?>/assets/dist/js/imagevalidation.js"></script>
 <script src="<?= $stylePath; ?>/assets/dist/js/imagesizechecker.js"></script>

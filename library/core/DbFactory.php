@@ -11,12 +11,26 @@
  */
 class DbFactory
 {
+  /**
+   * Error
+   * @var string
+   */
   private static $error;
   
+  /**
+   * Connect
+   * 
+   * @param string $connection
+   * @param array $options
+   * @throws DbException
+   * @return array|object
+   * 
+   */
   public static function connect($connection, $options = [])
   {
      try {
          
+         # hard code database factory's name
          $database = "Db";
          
          if (class_exists($database)) {

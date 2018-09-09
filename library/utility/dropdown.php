@@ -2,11 +2,12 @@
 /**
  * Dropdown Function
  * 
- * @link  https://www.phpro.org/tutorials/Dropdown-Select-With-PHP-and-MySQL.html
- * @param string $name
- * @param array $options
- * @param string $selected
+ * @link   https://www.phpro.org/tutorials/Dropdown-Select-With-PHP-and-MySQL.html
+ * @param  string $name
+ * @param  array  $options
+ * @param  string $selected
  * @return string
+ * 
  */
 function dropdown($name, array $options, $selected=null)
 {

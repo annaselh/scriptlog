@@ -5,14 +5,14 @@
  *
  *  $validations = array('name' => 'anything','email' => 'email','alias' => 'anything','pwd'=>'anything','gsm' => 'phone','birthdate' => 'date');
  *  $required = array('name', 'email', 'alias', 'pwd');
- *  $sanatize = array('alias');
+ *  $sanitize = array('alias');
  *
- *  $validator = new FormValidator($validations, $required, $sanatize);
+ *  $validator = new FormValidator($validations, $required, $sanitize);
  *
  *  if($validator->validate($_POST))
  *  {
- *      $_POST = $validator->sanatize($_POST);
- *      // now do your saving, $_POST has been sanatized.
+ *      $_POST = $validator->sanitize($_POST);
+ *      // now do your saving, $_POST has been sanitized.
  *      die($validator->getScript()."<script type='text/javascript'>alert('saved changes');</script>");
  *  }
  *  else
@@ -23,8 +23,8 @@
  * To validate just one element:
  * $validated = new FormValidator()->validate('blah@bla.', 'email');
  *
- * To sanatize just one element:
- * $sanatized = new FormValidator()->sanatize('<b>blah</b>', 'string');
+ * To sanitize just one element:
+ * $sanitized = new FormValidator()->sanitize('<b>blah</b>', 'string');
  *
  * @author SchizoDuckie
  * @copyright SchizoDuckie 2008
@@ -131,7 +131,7 @@ class FormValidator
  
  /**
   *
-  * Sanatizes an array of items according to the $this->sanitations
+  * sanitizes an array of items according to the $this->sanitations
   * sanitations will be standard of type string, but can also be specified.
   * For ease of use, this syntax is accepted:
   * $sanitations = array('fieldname', 'otherfieldname'=>'float');
@@ -160,7 +160,7 @@ class FormValidator
  
  /**
   *
-  * Sanatize a single var according to $type.
+  * sanitize a single var according to $type.
   * Allows for static calling to allow simple sanatization
   */
  public static function sanitizeItem($var, $type)

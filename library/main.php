@@ -1,4 +1,18 @@
 <?php
+/**
+ * Main.php file
+ * Initialize main engine 
+ * Define constants, object instantiated
+ * include functions needed by application
+ * 
+ * @package SCRIPTLOG
+ * @author  Maoelana Noermoehammad
+ * @license MIT
+ * @version 1.0.0
+ * @since   Since Release 1.0.0
+ * 
+ */
+
 #date_default_timezone_set("Asia/Jakarta");
 #ini_set("session.cookie_secure", "True");  //secure
 #ini_set("session.cookie_httponly", "True"); // httpOnly
@@ -6,8 +20,6 @@
 
 $key = '5c12IpTl0g!@#';
 $checkIncKey = sha1(mt_rand(1, 1000).$key);
-$app_protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https';
-$app_hostname = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
 define('DS', DIRECTORY_SEPARATOR);
 define('APP_TITLE', 'Scriptlog');
@@ -22,9 +34,9 @@ if (!defined('APP_ROOT')) define('APP_ROOT', dirname(dirname(__FILE__)) . DS);
 
 if (!defined('PHP_EOL')) define('PHP_EOL', strtoupper(substr(PHP_OS, 0, 3) == 'WIN') ? "\r\n" : "\n");
 
-if (!defined('APP_PROTOCOL')) define('APP_PROTOCOL', $app_protocol);
+if (!defined('APP_PROTOCOL')) define('APP_PROTOCOL', strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https');
 
-if (!defined('APP_HOSTNAME')) define('APP_HOSTNAME', $app_hostname);
+if (!defined('APP_HOSTNAME')) define('APP_HOSTNAME', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null);
 
 if (!defined('SCRIPTLOG_START_TIME')) define('SCRIPTLOG_START_TIME', microtime(true));
 
@@ -42,23 +54,23 @@ if (file_exists(__DIR__ . '/../config.php')) {
         
 }
 
-// call functions in folder utility
+# call functions in directory library/utility
 $function_directory = new RecursiveDirectoryIterator(__DIR__ . '/utility/', FilesystemIterator::FOLLOW_SYMLINKS);
 $filter_iterator = new RecursiveCallbackFilterIterator($function_directory, function ($current, $key, $iterator){
     
-    // skip hidden files and directories
+    # skip hidden files and directories
     if ($current->getFilename()[0] === '.') {
         return false;
     }
     
     if ($current->isDir()) {
         
-        // only recurse into intended subdirectories
+        # only recurse into intended subdirectories
         return $current->getFilename() === __DIR__ . '/utility/';
         
     } else {
         
-        // only consume files of interest
+        # only consume files of interest
         return strpos($current -> getFilename(), '.php');
         
     }

@@ -3,6 +3,9 @@
 use Sinergi\BrowserDetector\Os;
 use Sinergi\BrowserDetector\Browser;
 
+/**
+ * Checking PHP Version Function
+ */
 function check_php_version()
 {
    
@@ -18,6 +21,9 @@ function check_php_version()
     
 }
 
+/**
+ * Checking Operating System
+ */
 function check_os()
 {
    $os = new Os();
@@ -32,7 +38,10 @@ function check_os()
    }
    
 }
- 
+
+/**
+ * Checking Browser
+ */
 function check_browser()
 {
  $browser = new Browser();
@@ -41,6 +50,9 @@ function check_browser()
  
 }
 
+/**
+ * Checking Browser Version
+ */
 function check_browser_version()
 {
  $browser = new Browser();
@@ -78,6 +90,9 @@ function check_browser_version()
 
 }
 
+/**
+ * Checking Web Server
+ */
 function check_web_server()
 {
   $get_web_server = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : "";
@@ -88,6 +103,9 @@ function check_web_server()
   
 }
 
+/**
+ * Checking Main Engine
+ */
 function check_main_dir()
 {
     if (is_dir(APP_PATH) && is_file(APP_PATH . '../library/main.php')) {
@@ -102,6 +120,9 @@ function check_main_dir()
     
 }
 
+/**
+ * Checking Load Engine
+ */
 function check_loader()
 {
     if (is_dir(APP_PATH) && is_file(APP_PATH . '../library/Scriptloader.php')) {
@@ -116,6 +137,9 @@ function check_loader()
     
 }
 
+/**
+ * Checking Log Directory. It is writable or not
+ */
 function check_log_dir()
 {
     if (is_dir(APP_PATH ) && is_dir(APP_PATH . '../public/log') && is_writable(APP_PATH . '../public/log')) {
@@ -130,9 +154,26 @@ function check_log_dir()
     
 }
 
+/**
+ * Checking Cache Directory. It is writable or not
+ */
 function check_cache_dir()
 {
     if (is_dir(APP_PATH) && is_dir(APP_PATH . '../public/cache') && is_writable(APP_PATH . '../public/cache')) {
+        
+        return true;
+        
+    } else {
+        
+        return false;
+        
+    }
+    
+}
+
+function check_plugin_dir()
+{
+    if (is_dir(APP_PATH) && is_dir(APP_PATH . '../library/plugins') && is_writable(APP_PATH . '../library/plugins')) {
         
         return true;
         

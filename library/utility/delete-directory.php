@@ -4,6 +4,7 @@
  * 
  * @param string $dirname
  * @return boolean
+ * 
  */
 function delete_directory($dirname)
 {

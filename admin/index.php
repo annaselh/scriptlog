@@ -26,7 +26,7 @@ $breadCrumbs = isset($_GET['load']) ? htmlentities(strip_tags($_GET['load'])) : 
 $stylePath = $config['app']['url'] . APP_ADMIN;
 
 // current URL
-$currentURL = $app_protocol . '://'. $app_hostname . dirname($_SERVER['PHP_SELF']) . DS;
+$currentURL = APP_PROTOCOL . '://'. APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . DS;
 
 $allowedQuery = array(
     'dashboard', 'posts', 'pages', 'topics', 'comments', 'themes',

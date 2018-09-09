@@ -16,11 +16,6 @@ function url_validation($url)
     $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?"; // GET Query
     $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?"; // Anchor 
     
-    if (preg_match("/^$regex$/", $url)) {
-        
-        return true;
-    }
-    
-    return false;
-    
+    return preg_match("/^$regex$/", $url) ? true : false;
+
 }

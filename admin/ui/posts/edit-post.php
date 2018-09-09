@@ -51,7 +51,8 @@ echo "Error saving data. Please try again." . $saveError;
 endif;
 ?>
 
-<form method="post" action="index.php?load=posts&action=<?=(isset($formAction)) ? $formAction : null; ?>&postId=<?=(isset($postData['ID'])) ? $postData['ID'] : 0; ?>" role="form">
+<form method="post" action="index.php?load=posts&action=<?=(isset($formAction)) ? $formAction : null; ?>&postId=<?=(isset($postData['ID'])) ? $postData['ID'] : 0; ?>" 
+role="form" enctype="multipart/form-data" autocomplete="off">
 <input type="hidden" name="post_id" value="<?=(isset($postData['ID'])) ? $postData['ID'] : 0; ?>" />
 <input type="hidden" name="MAX_FILE_SIZE" value="697856" />
 
@@ -62,6 +63,7 @@ endif;
 <?=(isset($postData['post_title'])) ? htmlspecialchars($postData['post_title']) : ""; ?>
 <?=(isset($formData['post_title'])) ? htmlspecialchars($formData['post_title'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
 </div>
+
 <?=(isset($topics)) ? $topics : ""; ?>
 
 <?php 
@@ -69,11 +71,11 @@ if (isset($postData['post_image'])) :
 ?>
 <div class="form-group">
 <?php 
-$image = __DIR__ . '/../public/files/pictures/'.$postData['post_image'];
-$imageThumb = __DIR__ . '/../public/files/pictures/thumbs/thumb_'.$postData['post_image'];
+$image = '../public/files/pictures/'.$postData['post_image'];
+$imageThumb = '../public/files/pictures/thumbs/thumb_'.$postData['post_image'];
 
 if (!is_readable($imageThumb)) :
-    $imageThumb = __DIR__ . '/../public/files/pictures/thumbs/nophoto.jpg';
+    $imageThumb = '../public/files/pictures/thumbs/nophoto.jpg';
 endif;
 
 if (is_readable($image)) :
@@ -124,7 +126,7 @@ endif;
 
 <div class="form-group">
 <label>Content (required)</label>
-<textarea class="form-control" id="sl" name="post_content" rows="10" maxlength="100000" >
+<textarea class="form-control" id="sl" name="post_content" rows="10" maxlength="100000"required>
 <?=(isset($postData['post_content'])) ? $postData['post_content'] : ""; ?>
 <?=(isset($formData['post_content'])) ? htmlspecialchars($formData['post_content'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>

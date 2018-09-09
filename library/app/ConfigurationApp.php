@@ -13,7 +13,7 @@ class ConfigurationApp extends BaseApp
 {
   private $view;
 
-  private $confiEvent;
+  private $configEvent;
 
   public function __construct(ConfigurationEvent $configEvent)
   {
@@ -77,11 +77,11 @@ class ConfigurationApp extends BaseApp
 
     if (isset($_POST['configFormSubmit'])) {
       
-      $app_url = filter_input('INPUT_POST', 'app_url', FILTER_SANITIZE_URL);
-      $site_title = filter_input('INPUT_POST', 'site_title', FILTER_SANITIZE_STRING);
+      $app_url = (isset($_POST['app_url']) ? filter_var($_POST['app_url'], FILTER_SANITIZE_URL) : "");
+      $site_title = trim($_POST['site_title']);
       $meta_desc = prevent_injection($_POST['meta_description']);
       $meta_key = prevent_injection($_POST['meta_keywords']);
-      $email_address = filter_input('INPUT_POST', 'email', FILTER_SANITIZE_EMAIL);
+      $email_address = (isset($_POST['email']) ? filter_var($_POST['email'], FILTER_SANITIZE_EMAIL) : "");
       $facebook = filter_input('INPUT_POST', 'facebook', FILTER_SANITIZE_URL);
       $twitter = filter_input('INPUT_POST', 'twitter', FILTER_SANITIZE_URL);
       $instagram = filter_input('INPUT_POST', 'instagram', FILTER_SANITIZE_URL);
@@ -95,23 +95,56 @@ class ConfigurationApp extends BaseApp
 
         }
 
+        if (empty($site_title) || empty($app_url) || empty($email_address)) {
+
+          $checkError = false;
+          array_push($errors, "All columns required must be filled");
+
+        }
+
+        if (!empty($app_url)) {
+          if(!filter_var($app_url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED)) {
+             
+             $checkError = false;
+             array_push($errors, "Site address is not a valid URL");
+
+          }
+
+        } elseif (!url_validation($app_url)) {
+           
+            $checkError = false;
+            array_push($errors, "Site address is not a valid URL");
+
+        }
+
         if (strlen($site_title) > 60) {
 
            $checkError = false;
-           array_push($errors, 'Exceeded characters limit. Maximum 60 characters are allowed.');
+           array_push($errors, "Exceeded characters limit. Maximum 60 characters are allowed.");
 
         }
 
         if (strlen($meta_desc) > 300) {
 
            $checkError = false;
-           array_push($errors, 'Exceeded characters limit. Maximum 300 characters are allowed.');
+           array_push($errors, "Exceeded characters limit. Maximum 300 characters are allowed.");
+
+        }
+
+        if (!empty($email_address)) {
+           
+           if (email_validation($email_address) == 0) {
+ 
+             $checkError = false;
+             array_push($errors, "$email_address is not a valid email address");
+             
+           }
 
         }
 
         if (!$checkError) {
 
-           $this->setView('options-form.php');
+           $this->setView('options-form');
            $this->setPageTitle('General Setting');
            $this->setFormAction('setConfig');
            $this->view->set('pageTitle', $this->getPageTitle());
@@ -125,6 +158,12 @@ class ConfigurationApp extends BaseApp
           $this->configEvent->setAppUrl($app_url);
           $this->configEvent->setSiteName($site_title);
           $this->configEvent->setMetaDesc($meta_desc);
+          $this->configEvent->setEmailAddress($email_address);
+          $this->configEvent->setFacebook($facebook);
+          $this->configEvent->setTwitter($twitter);
+          $this->configEvent->setInstagram($instagram);
+          $this->configEvent->setupSetting();
+          direct_page('index.php?load=settings&status=configUpdated', 200);
            
         }
 
@@ -136,15 +175,7 @@ class ConfigurationApp extends BaseApp
 
       }
 
-    } else {
-
-      $this->setView('options-form');
-      $this->setPageTitle('General Setting');
-      $this->setFormAction('setConfig');
-      $this->view->set('pageTitle', $this->getPageTitle());
-      $this->view->set('formAction', $this->getFormAction());
-      
-    }
+    } 
 
     return $this->view->render();
 
@@ -169,7 +200,7 @@ class ConfigurationApp extends BaseApp
       'meta_description' => $getSetting['meta_description'],
       'meta_keywords' => $getSetting['meta_keywords'],
       'logo' => $getSetting['logo'],
-      'email]_address' => $getSetting['email_address'],
+      'email_address' => $getSetting['email_address'],
       'facebook' => $getSetting['facebook'],
       'twitter' => $getSetting['twitter'],
       'instagram' => $getSetting['instagram']

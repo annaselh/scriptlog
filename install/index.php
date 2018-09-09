@@ -437,7 +437,7 @@ if ($install != 'install') {
                    
                   endif;
                  ?>
-                  <small class="<?=(isset($log_passed)) ? $log_passed : 'text-danger'; ?>"><?=(isset($log_passed)) ? '../public/log writeable' : $errors['errorChecking'] = 'Log directory is not writeable'; ?></small>
+                  <small class="<?=(isset($log_passed)) ? $log_passed : 'text-danger'; ?>"><?=(isset($log_passed)) ? 'public/log writeable' : $errors['errorChecking'] = 'public/log directory is not writeable'; ?></small>
               </div>
               <span class="<?=(isset($log_passed)) ? $log_passed : 'text-danger' ?>"><i class="<?=(isset($log_checked)) ? $log_checked : 'fa fa-close fa-lg'; ?>"></i></span>
             </li>
@@ -453,10 +453,27 @@ if ($install != 'install') {
                    
                   endif;
                  ?>
-                  <small class="<?=(isset($cache_passed)) ? $cache_passed : 'text-danger'; ?>"><?=(isset($cache_passed)) ? '../public/cache writeable' : $errors['errorChecking'] = '../public/cache is not writeable'; ?></small>
+                  <small class="<?=(isset($cache_passed)) ? $cache_passed : 'text-danger'; ?>"><?=(isset($cache_passed)) ? 'public/cache writeable' : $errors['errorChecking'] = 'public/cache is not writeable'; ?></small>
               </div>
               <span class="<?=(isset($cache_passed)) ? $cache_passed : 'text-danger' ?>"><i class="<?=(isset($cache_checked)) ? $cache_checked : 'fa fa-close fa-lg'; ?>"></i></span>
             </li>
+
+            <li class="list-group-item d-flex justify-content-between lh-condensed" >
+              <div>
+                 <h6 class="my-0">Plug-in Directory</h6>
+                 <?php 
+                  if (check_plugin_dir()) :
+                   
+                   $cache_passed = 'text-success';
+                   $cache_checked = 'fa fa-check fa-lg';
+                   
+                  endif;
+                 ?>
+                  <small class="<?=(isset($cache_passed)) ? $cache_passed : 'text-danger'; ?>"><?=(isset($cache_passed)) ? 'library/plugins writeable' : $errors['errorChecking'] = 'library/plugins is not writeable'; ?></small>
+              </div>
+              <span class="<?=(isset($cache_passed)) ? $cache_passed : 'text-danger' ?>"><i class="<?=(isset($cache_checked)) ? $cache_checked : 'fa fa-close fa-lg'; ?>"></i></span>
+            </li>
+
           </ul>
         </div>
         

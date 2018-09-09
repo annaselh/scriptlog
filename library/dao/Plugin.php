@@ -31,7 +31,7 @@ class Plugin extends Dao
   public function getPlugins($orderBy = 'ID')
   {
      
-    $sql = "SELECT ID, plugin_name, plugin_desc, 
+    $sql = "SELECT ID, plugin_name, plugin_link, plugin_desc, 
             plugin_status, plugin_level,
             plugin_sort FROM plugin ORDER BY :orderBy DESC";
    
@@ -57,8 +57,8 @@ class Plugin extends Dao
   {
      $idsanitized = $this->filteringId($sanitize, $id, 'sql');
      
-     $sql = "SELECT ID, plugin_name, plugin_desc, plugin_status, plugin_level,
-            plugin_sort FROM plugin WHERE ID = ?"; 
+     $sql = "SELECT ID, plugin_name, plugin_link, plugin_desc, 
+             plugin_status, plugin_level, plugin_sort FROM plugin WHERE ID = ?"; 
      
      $this->setSQL($sql);
      
@@ -75,16 +75,20 @@ class Plugin extends Dao
    * 
    * @param array $bind
    */
-  public function addPlugin($bind)
+  public function insertPlugin($bind)
   {
-    
+    $getSort = "SELECT plugin_sort FROM plugin ORDER BY plugin_sort DESC";
+    $this->setSQL($getSort);
+    $rows = $this->findColumn();
+    $plugin_sorted = $rows['plugin_sort'] + 1;
+
      // input data plugin
      $stmt = $this->create("plugin", [
          'plugin_name' => $bind['plugin_name'],
          'plugin_link' => $bind['plugin_link'],
          'plugin_desc' => $bind['plugin_desc'],
          'plugin_level' => $bind['plugin_level'],
-         'plugin_sort' => $bind['plugin_sort']
+         'plugin_sort' => $plugin_sorted
      ]);
      
      $plugin_id = $this->lastId();
@@ -95,9 +99,9 @@ class Plugin extends Dao
      
      $link = $this->findColumn([$plugin_id]);
      
-     if ($link->plugin_link == '') {
+     if ($link['plugin_link'] == '') {
          
-         $stmt2 = $this->modify("plugin", ['plugin_link' => '#'], "`ID` = {$link->ID}");
+         $stmt2 = $this->modify("plugin", ['plugin_link' => '#'], "`ID` = {$link['ID']}");
          
      }
      
@@ -127,9 +131,10 @@ class Plugin extends Dao
    * 
    * @param integer $id
    */
-  public function activatePlugin($id)
+  public function activatePlugin($id, $sanitize)
   {
-    $stmt = $this->modify("plugin", ['plugin_status' => 'Y'], "`ID` = {$id}");
+    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+    $stmt = $this->modify("plugin", ['plugin_status' => 'Y'], "`ID` = {$idsanitized}");
   }
   
   /**
@@ -137,9 +142,10 @@ class Plugin extends Dao
    * 
    * @param integer $id
    */
-  public function deactivatePlugin($id)
+  public function deactivatePlugin($id, $sanitize)
   {
-    $stmt = $this->modify("plugin", ['plugin_status' => 'N'], "`ID` = {$id}");  
+    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+    $stmt = $this->modify("plugin", ['plugin_status' => 'N'], "`ID` = {$idsanitized}");  
   }
   
   /**
@@ -178,7 +184,7 @@ class Plugin extends Dao
    */
   public function isPluginActived($plugin_name)
   {
-      if (self::plugiExists($plugin_name) == true) {
+      if ($this->plugiExists($plugin_name) == true) {
           
          $sql = "SELECT plugin_status FROM plugin WHERE plugin_name = ?";
          $this->setSQL($sql);
@@ -195,60 +201,18 @@ class Plugin extends Dao
       }
       
   }
-  
-  /**
-   * Set plugin level
-   * 
-   * @param string $selected
-   * @return string
-   */
-  public function setPluginLevel($selected = '')
-  {
-     $name = 'plugin_level';
-
-     $plugin_level = array('public' => 'Public', 'private' => 'Private');
-
-     if ($selected != '') {
-         $selected = $selected;
-     }
-
-     return dropdown($name, $plugin_level, $selected);
- 
-  }
-  
-  /**
-   * Set private plugin
-   * 
-   * @return boolean|array|object
-   */
-  protected function setPrivatePlugins()
-  {
-    $sql = "SELECT ID, plugin_name, plugin_link, plugin_desc, 
-            plugin_status, plugin_level, plugin_sort
-            FROM plugin WHERE plugin_level = 'private' AND plugin_status = 'Y' 
-            ORDER BY plugin_name";
-    
-    $this->setSQL($sql);
-    
-    $privatePlugins = $this->findRow();
-    
-    if (empty($privatePlugins)) return false;
-    
-    return $privatePlugins;
-    
-  }
-  
+   
   /**
    * Set menu plugin
    * 
    * @param UserEvent $userEvent
    * @return string
    */
-  protected function setMenuPlugin(UserEvent $userEvent)
+  public function setMenuPlugin($accessLevel)
   {
-    $this->accessLevel = $userEvent;
+    $this->accessLevel =$accessLevel;
     
-    $plugins = self::setPrivatePlugins();
+    $plugins = $this->setPrivatePlugins();
     
     $html = array();
     
@@ -273,12 +237,68 @@ class Plugin extends Dao
   }
   
   /**
+   * Drop down plugin level
+   * 
+   * @param string $selected
+   * @return string
+   */
+  public function dropDownPluginLevel($selected = '')
+  {
+     $name = 'plugin_level';
+
+     $plugin_level = array('public' => 'Public', 'private' => 'Private');
+
+     if ($selected != '') {
+         $selected = $selected;
+     }
+
+     return dropdown($name, $plugin_level, $selected);
+ 
+  }
+  
+  /**
+   * Total plugins records
+   * 
+   * @param array $data
+   * @return boolean
+   * 
+   */
+  public function totalPluginRecords($data = null)
+  {
+    $sql = "SELECT ID FROM plugin";
+    $this->setSQL($sql);
+    return $this->checkCountValue($data);
+  }
+  
+  /**
+   * Set private plugin
+   * 
+   * @return boolean|array|object
+   */
+  public function setPrivatePlugins()
+  {
+    $sql = "SELECT ID, plugin_name, plugin_link, plugin_desc, 
+            plugin_status, plugin_level, plugin_sort
+            FROM plugin WHERE plugin_level = 'private' AND plugin_status = 'Y' 
+            ORDER BY plugin_name";
+    
+    $this->setSQL($sql);
+    
+    $privatePlugins = $this->findRow();
+    
+    if (empty($privatePlugins)) return false;
+    
+    return $privatePlugins;
+    
+  }
+ 
+  /**
    * is plugin exists or not
    * 
    * @param string $plugin_name
    * @return boolean
    */
-  protected function pluginExists($plugin_name)
+  public function pluginExists($plugin_name)
   {
     $sql = "SELECT COUNT(ID) FROM plugin WHERE plugin_name = ?";
     $this->setSQL($sql);

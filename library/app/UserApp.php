@@ -99,7 +99,7 @@ class UserApp extends BaseApp
             if (empty($user_login) || empty($user_email) || empty($user_pass)) {
                 
                $checkError = false;
-               array_push($errors, "All column required must be filled");
+               array_push($errors, "All columns required must be filled");
                
             }
             

@@ -10,23 +10,41 @@ $pluginApp = new PluginApp($pluginEvent);
 switch ($action) {
 
     case 'installPlugin':
-        # code...
+        
+        if ($pluginId == 0) {
+            
+            $pluginApp -> installPlugin();
+            
+        } else {
+
+            direct_page('index.php?load=dashboard', 200);
+
+        }
+
         break;
     
     case 'activatePlugin':
-        # code...
+        
+        $pluginApp -> enablePlugin($pluginId);
+
         break;
 
     case 'deactivatePlugin':
-        # code... 
+        
+        $pluginApp -> disablePlugin($pluginId);
+
         break;
 
-    case 'addPlugin':
+    case 'newPlugin':
        
        if ($pluginId == 0) {
 
           $pluginApp -> insert();
 
+       } else {
+
+          direct_page('index.php?load=dashboard', 200);
+          
        }
 
        break;

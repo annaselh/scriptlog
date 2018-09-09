@@ -170,7 +170,7 @@ class ConfigurationEvent
     return $this->configDao->findConfig($id, $this->sanitize);
   }
   
-  public function createSetting()
+  public function setupSetting()
   {
     $uploadPath = __DIR__ . '/../../public/files/pictures/';
     $image_uploader = new ImageUploader('image', $uploadPath);

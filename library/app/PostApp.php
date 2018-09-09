@@ -44,7 +44,7 @@ class PostApp extends BaseApp
     if (isset($_GET['status'])) {
         $checkStatus = true;
         if ($_GET['status'] == 'postAdded') array_push($status, "New post added");
-        if ($_GET['status'] == 'postUpdated') array_push($status, "Post has been updated");
+        if ($_GET['status'] == 'postUpdated') array_push($status, "Post updated");
         if ($_GET['status'] == 'postDeleted') array_push($status, "Post deleted");
     }
    

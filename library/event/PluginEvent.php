@@ -121,31 +121,22 @@ class PluginEvent
 
   public function grabPlugin($id)
   {
-    return $this->pluginDao->getPlugin($id);
+    return $this->pluginDao->getPlugin($id, $this->sanitize);
   }
 
-  public function insertPlugin()
+  public function addPlugin()
   {
     $this->validator->sanitize($this->name, 'string');
-    $this->validator->sanitize($this->link, 'string');
+    $this->validator->sanitize($this->link, 'url');
     $this->validator->sanitize($this->description, 'string');
-
-    $getSort = "SELECT plugin_sort FROM plugin ORDER BY plugin_sort DESC";
-     
-    $this->setSQL($getSort);
-     
-    $rows = $this->findColumn();
-     
-    $plugin_sorted = $rows['plugin_sort'] + 1;
 
     if(empty($this->link)) $this->link = "#";
 
-    return $this->pluginDao->addPlugin([
+    return $this->pluginDao->insertPlugin([
       'plugin_name' => $this->name,
       'plugin_link' => $this->link,
       'plugin_desc' => $this->description,
-      'plugin_level' => $this->level,
-      'plugin_sort' => $plugin_sorted
+      'plugin_level' => $this->level
     ]);
 
   }
@@ -159,15 +150,129 @@ class PluginEvent
     $this->validator->sanitize($this->description, 'string');
 
     return $this->pluginDao->updatePlugin([
-      'plugin_name' => $this->name,
-      'plugin_link' => $this->link,
+      'plugin_name'   => $this->name,
+      'plugin_link'   => $this->link,
+      'plugin_desc'   => $this->description,
+      'plugin_status' => $this->status,
+      'plugin_level'  => $this->level,
+      'plugin_sort'   => $this->sort
     ], $this->plugin_id);
 
   }
 
-  
-  public function removePlugin()
+  public function activateInstalledPlugin()
   {
+    $this->validator->sanitize($this->plugin_id, 'int');
+
+    if(!$data_plugin = $this->pluginDao->getPlugin($this->plugin_id, $this->sanitize)) {
+      direct_page('index.php?load=plugins&error=pluginNotFound', 404);
+    }
+
+    $sql_path = '../library/plugins/'.$data_plugin['plugin_name'].'sql';
+
+    if(file_exists($sql_path)) {
+      $sql_contents = file_get_contents($sql_path);
+      $sql_contents = explode(";", $sql_contents);
+      
+      foreach($sql_contents as $sql) {
+        $result = '';
+        $result = $this->pluginDao->setSQL($sql);
+
+        if(!$result) {
+
+          unlink($sql_path);
+          direct_page('index.php?load=plugins&error=tableNotFound', 404);
+
+        } else {
+
+          return $this->pluginDao->activatePlugin($this->plugin_id, $this->sanitize);
+          unlink($sql_path);
+
+        }
+
+      }
+
+    } else {
+
+       return $this->pluginDao->activatePlugin($this->plugin_id, $this->sanitize);
+       
+    }
 
   }
+
+  public function deactivateInstalledPlugin()
+  {
+    $this->validator->sanitize($this->plugin_id, 'int');
+
+    if (!$data_plugin = $this->pluginDao->getPlugin($this->plugin_id, $this->sanitize)) {
+      direct_page('index.php?load=plugins&error=pluginNotFound', 404);
+    }
+
+    return $this->pluginDao->deactivatePlugin($this->plugin_id, $this->sanitize);
+
+  }
+
+  public function removePlugin()
+  {
+    $this->validator->sanitize($this->plugin_id, 'int');
+
+    if (!$data_plugin = $this->pluginDao->getPlugin($this->plugin_id, $this->sanitize)) {
+       direct_page('index.php?load=plugins&error=pluginNotFound', 404);
+    }
+
+    $plugin_name = $data_plugin['plugin_name'];
+    $plugin_link = $data_plugin['plugin_link'];
+
+    if ($plugin_link != '#') {
+
+       if (is_readable("../library/plugins/$plugin_name")) {
+          
+          delete_directory("../library/plugins/$plugin_name");
+          unlink("../library/plugins/$plugin_name.php");
+
+       }
+
+       return $this->pluginDao->deletePlugin($this->plugin_id, $this->sanitize);
+
+    } else {
+
+       return $this->pluginDao->deletePlugin($this->plugin_id, $this->sanitize);
+
+    }
+
+  }
+
+  /**
+   * checking plugin exists or not
+   * 
+   * @param string $plugin_name
+   */
+  public function isPluginExists($plugin_name)
+  {
+    return $this->pluginDao->pluginExists($plugin_name);
+  }
+
+  /**
+   * Plugin level drop down
+   * 
+   * @param string $selected
+   * @return string
+   * 
+   */
+  public function pluginLevelDropDown($selected = "")
+  {
+    return $this->pluginDao->dropDownPluginLevel($selected);
+  }
+
+  /**
+   * Total plugin records
+   * 
+   * @param array $data
+   * @return integer
+   */
+  public function totalPlugins($data = null)
+  {
+    return $this->pluginDao->totalPluginRecords($data);
+  }
+  
 }

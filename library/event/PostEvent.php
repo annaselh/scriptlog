@@ -375,11 +375,11 @@ class PostEvent
            
        }
        
-       return  $this->postDao->deletePost($this->postId, $this->sanitizer);
+      return  $this->postDao->deletePost($this->postId, $this->sanitizer);
        
-    }    else {
+    } else {
         
-       return $this->postDao->deletePost($this->postId, $this->sanitizer);
+      return $this->postDao->deletePost($this->postId, $this->sanitizer);
         
     }
     
@@ -411,7 +411,7 @@ class PostEvent
    * Total posts records
    * 
    * @param array $data
-   * @return integer
+   * @return boolean
    */
   public function totalPosts($data = null)
   {
