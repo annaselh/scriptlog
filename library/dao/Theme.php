@@ -20,33 +20,45 @@ class Theme extends Dao
     
   }
   
-  public function findThemes($position, $limit, $fetchMode = null, $orderBy = "ID")
+  /**
+   * findThemes function
+   * Retrieve all themes records 
+   * ordered by ID (default)
+   * 
+   * @method mixed findThemes()
+   * @param integer $orderBy
+   * @return mixed
+   * 
+   */
+  public function findThemes($orderBy = "ID")
   {
     $sql = "SELECT ID, theme_title, theme_desc, theme_designer, theme_directory, 
-                theme_status FROM themes ORDER BY :orderBy
-           LIMIT :position, :limit";
+            theme_status FROM themes ORDER BY :orderBy DESC";
     
     $this->setSQL($sql);
     
-    if (is_null($fetchMode)) {
-        
-        $themes = $this->findAll([':orderBy' => $orderBy, ':position' => $position, ':limit' => $limit]);
-        
-    } else {
-        
-        $themes = $this->findAll([':orderBy' => $orderBy,':position' => $position, ':limit' => $limit], $fetchMode);
-        
-    }
-    
+    $themes = $this->findAll([':orderBy' => $orderBy]);
+
     if (empty($themes)) return false;
     
     return $themes;
     
   }
   
-  public function findTheme($themeId, $sanitize, $fetchMode = null)
+  /**
+   * findTheme function
+   * Retrieve single theme record
+   * based on ID
+   * 
+   * @method mixed findTheme()
+   * @param integer $id
+   * @param object $sanitize
+   * @return mixed
+   * 
+   */
+  public function findTheme($id, $sanitize)
   {
-    $cleanId = $this->filteringId($sanitize, $themeId, 'sql');
+    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
     
     $sql = "SELECT ID, theme_title, theme_desc, theme_designer, 
                 theme_directory, theme_status 
@@ -54,97 +66,137 @@ class Theme extends Dao
     
     $this->setSQL($sql);
     
-    if (is_null($fetchMode)) {
-        
-       $themeDetails = $this->findRow([$cleanId]);
-       
-    } else {
-        
-       $themeDetails = $this->findRow([$cleanId], $fetchMode);
-       
-    }
+    $themeDetails = $this->findRow([$idsanitized]);
     
     if (empty($themeDetails)) return false;
-    
+
     return $themeDetails;
-    
+
   }
-  
-  public function addTheme($accessLevel, $bind)
+
+  /**
+   * addTheme function
+   * Insert new theme record into theme table
+   * 
+   * @method mixed addTheme()
+   * @param array $bind
+   * 
+   */
+  public function insertTheme($bind)
   {
-    if ($accessLevel == 'Administrator') {
-    
-        $stmt = $this->create("themes", [
-            'theme_title' => $bind['theme_title'],
-            'theme_desc' => $bind['theme_desc'],
-            'theme_designer' => $bind['theme_designer'],
-            'theme_directory' => $bind['theme_directory'],
-            'theme_status' => $bind['theme_status']
-        ]);
-        
-    }
-    
-    return false;
-    
+    $stmt = $this->create("themes", [
+      'theme_title' => $bind['theme_title'],
+      'theme_desc' => $bind['theme_desc'],
+      'theme_designer' => $bind['theme_designer'],
+      'theme_directory' => $bind['theme_directory']
+   ]);
+  
   }
   
-  public function updateTheme($accessLevel, $sanitize, $bind, $themeId)
+  /**
+   * updateTheme function
+   * update an existing theme record
+   * 
+   * @method mixed updateTheme()
+   * @param integer $id
+   * @param array $bind
+   * 
+   */
+  public function updateTheme($bind, $id)
   {
-      $cleanId = $this->filteringId($sanitize, $themeId, 'sql');
-      if ($accessLevel == 'Administrator') {
-          $bind = [
-              'theme_title' => $bind['theme_title'],
-              'theme_desc' => $bind['theme_desc'],
-              'theme_designer' => $bind['theme_designer'],
-              'theme_director' => $bind['theme_directory'],
-              'theme_status' => $bind['theme_status']
-          ];
-          
-          $stmt = $this->modify("themes", $params, "`ID` = {$cleanId}");
-          
-      }
-      
-      return false;
-      
+     $stmt = $this->modify("plugin", [
+       'theme_title' => $bind['theme_title'],
+       'theme_desc' => $bind['theme_desc'],
+       'theme_designer' => $bind['theme_designer'],
+       'theme_directory' => $bind['theme_directory'],
+       'theme_status' => $bind['theme_status']
+     ], "`ID` = {$id}");
+
   }
   
-  public function deleteTheme($accessLevel, $sanitize, $themeId)
+  /**
+   * deleteTheme function
+   * Remove theme record from theme table
+   * 
+   * @method mixed deleteTheme()
+   * @param integer $id
+   * @param object $sanitize
+   * 
+   */
+  public function deleteTheme($id, $sanitize)
   {
-    $cleanId = $this->filteringId($sanitize, $themeId, 'sql');
-   
-    if ($accessLevel == 'Administrator') {
-        
-      $stmt = $this->delete("themes", "`ID` = {$cleanId}");
-        
-    }
-    
-    return false;
-    
+    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+    $stmt = $this->delete("themes", "`ID` = {$idsanitized}");
   }
   
-  public function activateTheme($accessLevel, $sanitize, $themeId)
+  /**
+   * Check theme function
+   * checking ID theme
+   * 
+   * @method mixed checkThemeId()
+   * @param integer $id
+   * @param object $sanitize
+   * @return boolean
+   * 
+   */
+  public function checkThemeId($id, $sanitize)
   {
-    $cleanId = $this->filteringId($sanitize, $themeId, 'sql');
+    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+    $sql = "SELECT ID FROM themes WHERE ID = ?";
+    $this->setSQL($sql);
+    $stmt = $this->checkCountValue([$idsanitized]);
+    return($stmt > 0);
+  }
+
+  /**
+   * Activate theme function
+   * 
+   * @method mixed activateTheme()
+   * @param integer $id
+   * @param object $
+   * 
+   */
+  public function activateTheme($id, $sanitize)
+  {
+    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
     
-    if ($accessLevel == 'Administrator') {
+    // activate theme
+    $stmt = $this->modify("themes", [
+      'theme_status' => 'Y'
+    ], "`ID` = {$idsanitized}");
     
-      // activate theme
-      $stmt = $this->modify("themes", [
-          'theme_status' => 'Y'
-      ], "`ID` = {$cleanId}");
-        
-      // non-activate the other table
-      $stmt2 = $this->modify("themes", [
-          'theme_status' => 'N'
-      ], "`ID` != {$cleanId}");
-      
-    }
-    
-    return false;
-    
+  // non-activate the other table
+    $stmt2 = $this->modify("themes", [
+      'theme_status' => 'N'
+    ], "`ID` != {$idsanitized}");
+  
   }
   
-  public function isThemeExists($theme_title)
+  /**
+   * Total theme record function
+   * 
+   * @method totalThemeRecords()
+   * @param array $data
+   * @return boolean
+   * 
+   */
+  public function totalThemeRecords($data = null)
+  {
+    $sql = "SELECT ID FROM themes";
+    $this->setSQL($sql);
+    return $this->checkCountValue($data);
+  }
+
+  /**
+   * Theme exists function
+   * is theme exists or not
+   * 
+   * @method themeExists()
+   * @param string $theme_title
+   * @return boolean
+   * 
+   */
+  public function themeExists($theme_title)
   {
     $sql = "SELECT COUNT(ID) FROM themes WHERE theme_title = ?";
     $this->setSQL($sql);
@@ -161,14 +213,26 @@ class Theme extends Dao
     }
     
   }
-  
+
+  /**
+   * Load theme function
+   * 
+   * @method loadTheme()
+   * @param string $theme_status
+   * @return array
+   * 
+   */
   public function loadTheme($theme_status)
   {
     $sql = "SELECT ID, theme_title, theme_desc, theme_designer, theme_directory, 
             theme_status FROM themes WHERE theme_status = ?";
-    
     $this->setSQL($sql);
-    $stmt = $this->findRow([$theme_status], PDO::FETCH_ASSOC);
+    $loadTheme = $this->findRow([$theme_status]);
+
+    if (empty($loadTheme)) return false;
+
+    return $loadTheme;
+    
   }
   
 }

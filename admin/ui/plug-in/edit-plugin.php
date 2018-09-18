@@ -56,8 +56,8 @@ endif;
 
 <div class="box-body">
 <div class="form-group">
-<label>Name (required)</label>
-<input type="text" class="form-control" name="plugin" placeholder="Enter title here" value="
+<label>Plugin (required)</label>
+<input type="text" class="form-control" name="plugin_name" placeholder="Enter plugin name here" value="
 <?=(isset($pluginData['plugin_name'])) ? htmlspecialchars($pluginData['plugin_name']) : ""; ?>
 <?=(isset($formData['plugin_name'])) ? htmlspecialchars($formData['plugin_name'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
 </div>
@@ -71,7 +71,7 @@ endif;
 
 <div class="form-group">
 <label>Description (required)</label>
-<textarea class="form-control" id="sl" name="description" rows="10" maxlength="100000" >
+<textarea class="form-control" id="sl" name="description" rows="10" maxlength="1000" >
 <?=(isset($pluginData['plugin_desc'])) ? $pluginData['plugin_desc'] : ""; ?>
 <?=(isset($formData['description'])) ? htmlspecialchars($formData['description'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>
@@ -99,8 +99,8 @@ endif;
 <?php 
  if(!empty($pluginData['ID'])) :
 ?>
-<a href="javascript:deleteModule('<?=(isset($pluginData['ID']) ? $pluginData['ID'] : 0); ?>', '<?=(isset($pluginData['plugin_name']) ? $pluginData['plugin_name'] : ""); ?>')"
-	title="Uninstall Modul" class="btn btn-danger pull-right"> <i
+<a href="javascript:deletePlugin('<?=(isset($pluginData['ID']) ? $pluginData['ID'] : 0); ?>', '<?=(isset($pluginData['plugin_name']) ? $pluginData['plugin_name'] : ""); ?>')"
+	title="Uninstall Plugin" class="btn btn-danger pull-right"> <i
 					class="fa fa-exclamation-circle fa-fw"></i> Uninstall
 </a>
 <?php 

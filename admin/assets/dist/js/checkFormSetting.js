@@ -1,4 +1,9 @@
-// Checking Form Field
+/**
+ * Check form setting
+ * validate general setting form field is being filled or not
+ * 
+ * @param {*} form 
+ */
 
 function checkFormSetting(form)
 {

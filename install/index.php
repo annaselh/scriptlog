@@ -86,11 +86,10 @@ if ($install != 'install') {
         
         $_SESSION['token'] = $token;
         
-        install_database_table($link, $username, $password, $email, $token);
-        
-        write_config_file($dbhost, $dbuser, $dbpass, $dbname, $email, $token);
-        
-        header("Location:".$protocol."://".$server_host.dirname($_SERVER['PHP_SELF'])."/finish.php?status=success&token=".$token);
+        if (check_mysql_version('5.6.0')) 
+            install_database_table($link, $username, $password, $email, $token);
+            write_config_file($dbhost, $dbuser, $dbpass, $dbname, $email, $token);
+            header("Location:".$protocol."://".$server_host.dirname($_SERVER['PHP_SELF'])."/finish.php?status=success&token=".$token);
         
     }
     
@@ -453,9 +452,25 @@ if ($install != 'install') {
                    
                   endif;
                  ?>
-                  <small class="<?=(isset($cache_passed)) ? $cache_passed : 'text-danger'; ?>"><?=(isset($cache_passed)) ? 'public/cache writeable' : $errors['errorChecking'] = 'public/cache is not writeable'; ?></small>
+                  <small class="<?=(isset($cache_passed)) ? $cache_passed : 'text-danger'; ?>"><?=(isset($cache_passed)) ? 'public/cache writeable' : $errors['errorChecking'] = 'public/cache directory is not writeable'; ?></small>
               </div>
               <span class="<?=(isset($cache_passed)) ? $cache_passed : 'text-danger' ?>"><i class="<?=(isset($cache_checked)) ? $cache_checked : 'fa fa-close fa-lg'; ?>"></i></span>
+            </li>
+
+            <li class="list-group-item d-flex justify-content-between lh-condensed" >
+              <div>
+                 <h6 class="my-0">Theme Directory</h6>
+                 <?php 
+                  if (check_theme_dir()) :
+                   
+                   $theme_passed = 'text-success';
+                   $theme_checked = 'fa fa-check fa-lg';
+                   
+                  endif;
+                 ?>
+                  <small class="<?=(isset($theme_passed)) ? $theme_passed : 'text-danger'; ?>"><?=(isset($theme_passed)) ? 'public/themes writeable' : $errors['errorChecking'] = 'public/themes directory is not writeable'; ?></small>
+              </div>
+              <span class="<?=(isset($theme_passed)) ? $theme_passed : 'text-danger' ?>"><i class="<?=(isset($theme_checked)) ? $theme_checked : 'fa fa-close fa-lg'; ?>"></i></span>
             </li>
 
             <li class="list-group-item d-flex justify-content-between lh-condensed" >
@@ -464,14 +479,14 @@ if ($install != 'install') {
                  <?php 
                   if (check_plugin_dir()) :
                    
-                   $cache_passed = 'text-success';
-                   $cache_checked = 'fa fa-check fa-lg';
+                   $plugin_passed = 'text-success';
+                   $plugin_checked = 'fa fa-check fa-lg';
                    
                   endif;
                  ?>
-                  <small class="<?=(isset($cache_passed)) ? $cache_passed : 'text-danger'; ?>"><?=(isset($cache_passed)) ? 'library/plugins writeable' : $errors['errorChecking'] = 'library/plugins is not writeable'; ?></small>
+                  <small class="<?=(isset($plugin_passed)) ? $plugin_passed : 'text-danger'; ?>"><?=(isset($plugin_passed)) ? 'library/plugins writeable' : $errors['errorChecking'] = 'library/plugins directory is not writeable'; ?></small>
               </div>
-              <span class="<?=(isset($cache_passed)) ? $cache_passed : 'text-danger' ?>"><i class="<?=(isset($cache_checked)) ? $cache_checked : 'fa fa-close fa-lg'; ?>"></i></span>
+              <span class="<?=(isset($plugin_passed)) ? $plugin_passed : 'text-danger' ?>"><i class="<?=(isset($plugin_checked)) ? $plugin_checked : 'fa fa-close fa-lg'; ?>"></i></span>
             </li>
 
           </ul>

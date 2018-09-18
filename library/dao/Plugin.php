@@ -101,7 +101,7 @@ class Plugin extends Dao
      
      if ($link['plugin_link'] == '') {
          
-         $stmt2 = $this->modify("plugin", ['plugin_link' => '#'], "`ID` = {$link['ID']}");
+        $stmt2 = $this->modify("plugin", ['plugin_link' => '#'], "`ID` = {$link['ID']}");
          
      }
      

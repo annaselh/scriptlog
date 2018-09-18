@@ -170,12 +170,11 @@ class Dao
  }
  
  /**
-  * check count values
-  * row count
-  * 
+  * CheckCountValue function
+  *
   * @param array $data
   * @throws DbException
-  * @return boolean
+  * @return Boolean
   */
  protected function checkCountValue($data = null)
  {

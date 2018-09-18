@@ -1,3 +1,4 @@
+
 <?php 
 /**
  * Uploader Class
@@ -97,7 +98,7 @@ class Uploader
 		}
 		else if ( $this->_errorCode === 1)
 		{
-			$maxSize = ini_get( 'upload_max_filesize' );
+			$maxSize = ini_get('upload_max_filesize');
 			$this->_errorMessage = "Error: File is too big";
 			$this->_errorMessage .= " Max file size is $maxSize";
 			$canUpload = false;

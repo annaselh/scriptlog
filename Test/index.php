@@ -10,37 +10,6 @@ $users = new User();
 $data = $users -> getUsers();
 */
 
-?>
+$path_root = APP_ROOT;
 
-<html>
-<head>
-<title></title>
-</head>
-<body>
-<table>
-<thead>
-<tr>
-   <th>URL :</th>
-</tr>
-</thead>
-<tbody>
-<?php 
-//foreach ($data as $key => $value) :
-?>
-<tr>
-  <td>
-  <?php 
-    $field = array('load' => 'banners');
-    
-    $url = APP_PROTOCOL . '://' . APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . '/index.php?'.http_build_query($field);
-
-    echo $url;
-  ?>
-  </td>
-</tr>
-<?php //endforeach; ?>
-</tbody>
-</table>
-</body>
-</html>
-
+echo $path_root;

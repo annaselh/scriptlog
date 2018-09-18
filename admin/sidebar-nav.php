@@ -73,7 +73,7 @@ function sidebarNavigation($module, $url, $level = null)
               </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="<?= $url.'index.php?load=themes'; ?>">Themes</a></li>
+            <li><a href="<?= $url.'index.php?load=templates'; ?>">Themes</a></li>
             <li><a href="<?= $url.'index.php?load=menu'; ?>">Menu</a></li>
           </ul>
         </li>

@@ -51,35 +51,22 @@ echo "Error saving data. Please try again." . $saveError;
 endif;
 ?>
 
-<form method="post" action="index.php?load=plugins&action=<?=(isset($formAction)) ? $formAction : null; ?>&pluginId=0" 
-  role="form" onsubmit="return(mandatoryPluginUpload());" enctype="multipart/form-data" autocomplete="off">
+<form method="post" action="index.php?load=templates&action=<?=(isset($formAction)) ? $formAction : null; ?>&themeId=0" 
+  role="form" onsubmit="return(mandatoryThemeUpload());" enctype="multipart/form-data" autocomplete="off">
   <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
 <div class="box-body">
 
 <div class="form-group">
-<label>Upload Plugin (required)</label>
-<input type="file"  name="zip_file" id="pluginUploaded" accept="application/zip,application/octet-stream,application/x-zip,application/x-zip-compressed" required>
-<p class="help-block">If you have a plugin in a .zip format, you may install it by uploading it here.</p>
+<label>Upload Theme (required)</label>
+<input type="file"  name="zip_file" id="themeUploaded" accept="application/zip,application/octet-stream,application/x-zip,application/x-zip-compressed" required>
+<p class="help-block">If you have a theme in a .zip format, you may install it by uploading it here.</p>
 </div>
-
-<div class="form-group">
-<label>Description (required)</label>
-<textarea class="form-control" id="sl" name="description" rows="10" maxlength="100000" required>
-<?=(isset($formData['description'])) ? $formData['description'] : ""; ?>
-</textarea>
-</div>
-
-<div class="form-group">
-<label>Level</label>
-<?=(isset($pluginLevel)) ? $pluginLevel : ""; ?>
-</div>
-<!-- /.plugin level -->
 
 </div>
 <!-- /.box-body -->
 <div class="box-footer">
 <input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">  
-<input type="submit" name="pluginFormSubmit" class="btn btn-primary" value="Install Now">
+<input type="submit" name="themeFormSubmit" class="btn btn-primary" value="Install Now">
 
 </div>
 </form>
@@ -95,7 +82,7 @@ endif;
 </div>
 <!-- /.content-wrapper -->
 <script type="text/javascript">
-document.getElementById('pluginUploaded').addEventListener('change', checkFile, false);
+document.getElementById('themeUploaded').addEventListener('change', checkFile, false);
 
 function checkFile(e) {
 

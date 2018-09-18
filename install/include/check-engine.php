@@ -22,6 +22,18 @@ function check_php_version()
 }
 
 /**
+ * Checking MySQL Server Version
+ */
+function check_mysql_version($link, $min)
+{
+  if ($link instanceof mysqli) 
+  $mysql_version = $link -> query('SELECT VERSION()')->fetchColumn();
+  preg_match("/^[0-9\.]+/", $mysql_version, $match);
+  $mysql_version = $match[0];
+  return (version_compare($mysql_version, $min) >= 0);
+}
+
+/**
  * Checking Operating System
  */
 function check_os()
@@ -155,6 +167,23 @@ function check_log_dir()
 }
 
 /**
+ * Checking Theme Directory It is writeable or not
+ */
+function check_theme_dir()
+{
+    if (is_dir(APP_PATH ) && is_dir(APP_PATH . '../public/themes') && is_writable(APP_PATH . '../public/themes')) {
+        
+        return true;
+        
+    } else {
+        
+        return false;
+        
+    }
+    
+}
+
+/**
  * Checking Cache Directory. It is writable or not
  */
 function check_cache_dir()
@@ -171,6 +200,9 @@ function check_cache_dir()
     
 }
 
+/**
+ * Checking Library Plugin Directory. It is writeable or not
+ */
 function check_plugin_dir()
 {
     if (is_dir(APP_PATH) && is_dir(APP_PATH . '../library/plugins') && is_writable(APP_PATH . '../library/plugins')) {

@@ -143,7 +143,6 @@ class PluginEvent
 
   public function modifyPlugin()
   {
-    
     $this->validator->sanitize($this->plugin_id, 'int');
     $this->validator->sanitize($this->name, 'string');
     $this->validator->sanitize($this->link, 'string');
@@ -164,7 +163,7 @@ class PluginEvent
   {
     $this->validator->sanitize($this->plugin_id, 'int');
 
-    if(!$data_plugin = $this->pluginDao->getPlugin($this->plugin_id, $this->sanitize)) {
+    if(!($data_plugin = $this->pluginDao->getPlugin($this->plugin_id, $this->sanitize))) {
       direct_page('index.php?load=plugins&error=pluginNotFound', 404);
     }
 
@@ -231,15 +230,11 @@ class PluginEvent
           unlink("../library/plugins/$plugin_name.php");
 
        }
+ 
+    } 
 
-       return $this->pluginDao->deletePlugin($this->plugin_id, $this->sanitize);
-
-    } else {
-
-       return $this->pluginDao->deletePlugin($this->plugin_id, $this->sanitize);
-
-    }
-
+    return $this->pluginDao->deletePlugin($this->plugin_id, $this->sanitize);
+    
   }
 
   /**

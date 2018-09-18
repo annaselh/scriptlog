@@ -6,7 +6,7 @@
  * @param string $file_name
  * @param array $file_location
  */
-function upload_plugin($file_name, $file_location, $blacklist = array())
+function upload_plugin($file_name, $file_location, $max_filesize, array $blacklist)
 {
   $file_type = (isset($_FILES['zip_file']['type']) ? $_FILES['zip_file']['type'] : null) ;
   $file_size = (isset($_FILES['zip_file']['size']) ? $_FILES['zip_file']['size'] : null);
@@ -17,14 +17,14 @@ function upload_plugin($file_name, $file_location, $blacklist = array())
   // get file extension
   $file_extension = substr($file_name, strripos($file_name, '.'));
 
-  $rename_file = rename_file(md5(rand(000000, 999999) . $file_basename));
+  $rename_file = rename_file(sha1(rand(000000, 999999) . $file_basename));
   $slug = make_slug($file_basename);
   $fileNameUnique = $slug . "-" . $rename_file . "-scriptlog" . $file_extension;
   $pathFile = '../library/plugins/'.$fileNameUnique;
 
   $finfo = new finfo(FILEINFO_MIME_TYPE);
-  $fileContent = file_get_contents($file_location);
-  $mime_type = $finfo -> buffer($fileContent);
+  $file_content = file_get_contents($file_location);
+  $mime_type = $finfo -> buffer($file_content);
 
   $accepted_types = array('application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/x-compressed');
   
@@ -46,8 +46,8 @@ function upload_plugin($file_name, $file_location, $blacklist = array())
 
   }
 
-  if ($file_size > 897856 ) {
-     scriptlog_error('Exceeded filesize limit.Maximum file size: '.format_size_unit(897856));
+  if ($file_size > $max_filesize) {
+     scriptlog_error('Exceeded filesize limit.Maximum file size: '.format_size_unit(10485760));
   }
 
   $ext = array_search($mime_type, $accepted_types, true);

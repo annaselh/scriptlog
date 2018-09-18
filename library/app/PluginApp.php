@@ -79,18 +79,18 @@ class PluginApp extends BaseApp
         if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
          
           header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
-          throw new AppException("Sorry, unpleasant attempt detected!");
+          throw new AppException("Sorry, unpleasant attempt detected!.");
           
         }
 
         if (empty($plugin_name) || empty($plugin_desc)) {
            $checkError = false;
-           array_push($errors, "All columns required must be filled");
+           array_push($errors, "All columns required must be filled.");
         }
 
         if($this->pluginEvent->isPluginExists($plugin_name) === true) {
           $checkError = false;
-          array_push($errors, "Plugin already exists");
+          array_push($errors, "Sorry you have installed this plugin before.");
         }
 
         if($plugin_link != '') {
@@ -100,12 +100,12 @@ class PluginApp extends BaseApp
            if(!filter_var($plugin_link, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED)) {
              
              $checkError = false;
-             array_push($errors, "Invalid plugin link");
+             array_push($errors, "Invalid plugin link.");
 
            } elseif($plugin_link !== unparse_url(parse_url($plugin_link))) {
              
              $checkError = false;
-             array_push($errors, "Not match!");
+             array_push($errors, "Not match!.");
 
            } elseif($parseOutQuery['load'] !== $plugin_name) {
 
@@ -171,7 +171,8 @@ class PluginApp extends BaseApp
 
       $file_name = (isset($_FILES['zip_file']['name']) ? $_FILES['zip_file']['name']  : "");
       $file_location = (isset($_FILES['zip_file']['tmp_name']) ? $_FILES['zip_file']['tmp_name'] : "");
-
+      $max_filesize = $_POST['MAX_FILE_SIZE'];
+      
       $plugin_desc = prevent_injection($_POST['description']);
       $plugin_level = (isset($_POST['plugin_level']) ? $_POST['plugin_level'] : "");
       $plugin_name = current(explode(".", $file_name));
@@ -191,9 +192,9 @@ class PluginApp extends BaseApp
           
         }
 
-        if (empty($file_location || empty($plugin_desc))) {
-          $checkError = false;
-          array_push($errors, "All columns required must be filled.");
+        if ((empty($plugin_desc)) || (empty($file_location))) {
+           $checkError = false;
+           array_push($errors, "All columns required must be filled.");
         }
         
         if (!$validate_format) {
@@ -207,8 +208,15 @@ class PluginApp extends BaseApp
            array_push($errors, "Permission denied.");
 
         } elseif ((is_dir('../library/plugins/'.$plugin_name.'/')) || (is_readable('../library/plugins/'.$plugin_name.'.php'))) {
+           
            $checkError = false;
            array_push($errors, "Sorry you have installed this plugin before.");
+
+        } elseif ($this->pluginEvent->isPluginExists($plugin_name) == true) {
+
+           $checkError = false;
+           array_push($errors, "Sorry you have installed this plugin before.");
+
         }
 
         if (!$checkError) {
@@ -225,7 +233,7 @@ class PluginApp extends BaseApp
 
         } else {
           
-          upload_plugin($file_name, $file_location, [".php", ".html", ".php5", ".php4", ".pl", ".py", ".sh"]);
+          upload_plugin($file_name, $file_location, $max_filesize, [".php", ".html", ".phtml", ".php5", ".php4", ".pl", ".py", ".sh", ".htaccess"]);
 
           $this->pluginEvent->setPluginName($plugin_name);
           $this->pluginEvent->setPluginLink($plugin_link);
@@ -394,7 +402,7 @@ class PluginApp extends BaseApp
   {
     $this->pluginEvent->setPluginId($id);
     $this->pluginEvent->removePlugin();
-    direct_page('index.php?load=plugins&status=pluginDeleted');
+    direct_page('index.php?load=plugins&status=pluginDeleted', 200);
   }
 
   protected function setView($viewName)

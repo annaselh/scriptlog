@@ -29,7 +29,7 @@ $stylePath = $config['app']['url'] . APP_ADMIN;
 $currentURL = APP_PROTOCOL . '://'. APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . DS;
 
 $allowedQuery = array(
-    'dashboard', 'posts', 'pages', 'topics', 'comments', 'themes',
+    'dashboard', 'posts', 'pages', 'topics', 'comments', 'templates',
     'menu', 'menu-child', 'users', 'settings', 'plugins'
 );    
 

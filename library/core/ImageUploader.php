@@ -53,6 +53,7 @@ class ImageUploader
  
  /**
   * File basename
+  *
   * @var string
   */
  private $file_basename;
@@ -104,6 +105,12 @@ class ImageUploader
   */
  private $error_message;
  
+ /**
+  * constructor
+  * @param string $key
+  * @param string $path
+  * 
+  */
  public function __construct($key, $path)
  {
    $this->file_location = isset($_FILES[$key]['tmp_name']) ? $_FILES[$key]['tmp_name'] : "";
@@ -313,7 +320,7 @@ class ImageUploader
     // save picture's thumbnail
     if ($this->file_type == "image/jpeg") {
         
-        imagejpeg($img_processed, $upload_path_thumb . "thumb_" . $file_name);
+        imagejpeg($img_processed, $upload_path_thumb . "thumb_" . $file_name, 75);
         
     } elseif ($this->file_type == "image/png") {
         
@@ -325,7 +332,7 @@ class ImageUploader
         
     } elseif ($this->file_type == "image/jpg") {
         
-        imagejpeg($img_processed, $upload_path_thumb . "thumb_" . $file_name);
+        imagejpeg($img_processed, $upload_path_thumb . "thumb_" . $file_name, 75);
         
     }
     
@@ -398,7 +405,7 @@ protected function saveImagePost($file_name, $width, $height, $mode)
          // save picture's thumbnail
          if ($this->file_type == "image/jpeg") {
              
-             imagejpeg($img_processed, $upload_path_thumb . "thumb_" . $file_name);
+             imagejpeg($img_processed, $upload_path_thumb . "thumb_" . $file_name, 75);
              
          } elseif ($this->file_type == "image/png") {
              
@@ -410,7 +417,7 @@ protected function saveImagePost($file_name, $width, $height, $mode)
              
          } elseif ($this->file_type == "image/jpg") {
              
-             imagejpeg($img_processed, $upload_path_thumb . "thumb_" . $file_name);
+             imagejpeg($img_processed, $upload_path_thumb . "thumb_" . $file_name, 75);
              
          }
          
