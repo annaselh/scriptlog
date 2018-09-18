@@ -206,10 +206,10 @@ class ThemeApp extends BaseApp
            if (file_exists(APP_ROOT.'public/themes/'.$theme_title.'/theme.ini'))
               $theme_ini = parse_ini_file(APP_ROOT.'public/themes/'.$theme_title.'/theme.ini');
               
-              $this->themeEvent->setThemeTitle($theme_title);
-              $this->themeEvent->setThemeDescription();
-              $this->themeEvent->setThemeDesigner();
-              $this->themeEvent->setThemeDirectory();
+              $this->themeEvent->setThemeTitle($theme_ini['theme_name']);
+              $this->themeEvent->setThemeDescription($theme_ini['theme_description']);
+              $this->themeEvent->setThemeDesigner($theme_ini['theme_designer']);
+              $this->themeEvent->setThemeDirectory($theme_dir);
               $this->themeEvent->addTheme();
               direct_page('index.php?load=templates&status=themeAdded', 200);
               

@@ -20,39 +20,23 @@ class MenuChild extends Dao
     
  }
  
- public function findMenuChilds($position = null, $limit = null, $orderBy = 'ID')
+ public function findMenuChilds($orderBy = 'ID')
  {
-     if (is_null($position) && is_null($limit)) {
-         
-         $sql = "SELECT mc.ID, mc.menu_child_label, mc.menu_child_link, 
+    
+    $sql = "SELECT mc.ID, mc.menu_child_label, mc.menu_child_link, 
            mc.menu_id, mc.menu_sub_child, mc.menu_child_sort, 
            mc.menu_child_status, mp.menu_label
            FROM menu_child AS mc
            INNER JOIN  menu AS mp ON mc.menu_id = mp.ID
            ORDER BY :orderBy";
              
-         $this->setSQL($sql);
+    $this->setSQL($sql);
          
-         $menuChilds = $this->findAll([':orderBy' => $orderBy]);
+    $menuChilds = $this->findAll([':orderBy' => $orderBy]);
          
-     } else {
-         
-     
-       $sql = "SELECT mc.ID, mc.menu_child_label, mc.menu_child_link, 
-           mc.menu_id, mc.menu_sub_child, mc.menu_child_sort, 
-           mc.menu_child_status, mp.menu_label
-           FROM menu_child AS mc
-           INNER JOIN  menu AS mp ON mc.menu_id = mp.ID
-           ORDER BY :orderBy LIMIT :position, :limit";
+    if (empty($menuChilds)) return false;
    
-       $this->setSQL($sql);
-       $menuChilds = $this -> findAll([':orderBy' => $orderBy,':position' => $position, ':limit' => $limit], PDO::FETCH_ASSOC);
-   
-    }
-    
-   if (empty($menuChilds)) return false;
-   
-   return $menuChilds;
+    return $menuChilds;
    
  }
  
@@ -66,7 +50,9 @@ class MenuChild extends Dao
            WHERE mc.ID = ?";
    
    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+   
    $this->setSQL($sql);
+   
    $menuChildDetails = $this->findRow([$idsanitized], PDO::FETCH_ASSOC);
    
    if (empty($menuChildDetails)) return false;

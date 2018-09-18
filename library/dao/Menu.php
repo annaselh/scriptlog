@@ -30,31 +30,18 @@ class Menu extends Dao
   * @param string $orderBy
   * @return boolean|array|object
   */
- public function findMenus($position = null, $limit = null, $orderBy = 'menu_label')
+ public function findMenus($orderBy = 'ID')
  {
-     if (is_null($position) && is_null($limit)) {
-         
-         $sql = "SELECT ID, menu_label, menu_link, menu_sort, menu_status
-                FROM menu ORDER BY  :orderBy";
-         
-         $this->setSQL($sql);
-         
-         $menus = $this->findAll([':orderBy' => $orderBy]);
-         
-     } else {
-         
-         $sql = "SELECT ID, menu_label, menu_link, menu_sort, menu_status
-                FROM menu ORDER BY :orderBy LIMIT :position, :limit";
-         
-         $this->setSQL($sql);
-         
-         $menus = $this->findAll([':orderBy' => $orderBy,':position' => $position, ':limit' => $limit]);
-         
-     }
+    $sql = "SELECT ID, menu_label, menu_link, menu_sort, menu_status
+    FROM menu ORDER BY  :orderBy DESC";
+
+    $this->setSQL($sql);
+
+    $menus = $this->findAll([':orderBy' => $orderBy]);
+
+    if (empty($menus)) return false;
      
-     if (empty($menus)) return false;
-     
-     return $menus;
+    return $menus;
      
  }
 
@@ -66,7 +53,7 @@ class Menu extends Dao
   * @param static $fetchMode
   * @return boolean|array|object
   */
- public function findMenu($menuId, $sanitizing, $fetchMode = null)
+ public function findMenu($menuId, $sanitizing)
  {
      
      $sql = "SELECT ID, menu_label, menu_link, menu_sort, menu_status
@@ -76,15 +63,7 @@ class Menu extends Dao
      
      $this->setSQL($sql);
      
-     if (is_null($fetchMode)) {
-         
-         $menuDetails = $this->findRow([$idsanitized]);
-         
-     } else {
-         
-         $menuDetails = $this->findRow([$idsanitized], $fetchMode);
-         
-     }
+     $menuDetails = $this->findRow([$idsanitized]);
      
      if (empty($menuDetails)) return false;
      

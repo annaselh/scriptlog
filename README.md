@@ -9,20 +9,19 @@
 
 Scriptlog is Free and Open Source PHP blogging system. We're refactoring our legacy blog code. Make it more simple, modular and fast blogging system. Scriptlog runs on PHP 5.6 or higher, it uses MySQL.
 
-### Installation
-
-Before you install scriptlog on your server, make sure scriptlog can work correctly in your environment. Scriptlog need the following system requirement:
+Before you install scriptlog on your server, make sure scriptlog can work correctly in your environment. Scriptlog need the following **System Requirement:**
 
  - Apache 2.4.xx
  - MySQL 5.6 or higher
  - PHP 5.6 or higher
 
- 1. Download scriptlog [here](https://scriptlog.sourceforge.net).
+### Installation
+
+ 1. Download scriptlog [here](https://sourceforge.net/projects/scriptlog/).
  2. second
  3. third
 
 ### Usage
 
-After you finish installation, you can populate your blog or configure it 
- To Manage your blog content, you can go to administrator panel:
+After you finish installation, you can populate your blog. To manage your blog content, you can go to administrator panel:
    `http://your-server-name/admin/`

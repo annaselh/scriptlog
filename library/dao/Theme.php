@@ -58,12 +58,13 @@ class Theme extends Dao
    */
   public function findTheme($id, $sanitize)
   {
-    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
     
     $sql = "SELECT ID, theme_title, theme_desc, theme_designer, 
                 theme_directory, theme_status 
             FROM themes WHERE ID = ?";
     
+    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+
     $this->setSQL($sql);
     
     $themeDetails = $this->findRow([$idsanitized]);
