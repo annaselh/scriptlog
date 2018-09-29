@@ -258,9 +258,11 @@ public function createPost($bind, $topicId)
  * @param integer $id
  * @param integer $topicId
  */
-public function updatePost($bind, $id, $topicId) 
+public function updatePost($sanitize, $bind, $ID, $topicId) 
 {
-  	  
+        
+ $cleanId = $this->filteringId($sanitize, $ID, 'sql');
+
  if (!empty($bind['post_image'])) {
   	  	
   	$stmt = $this->modify("posts", [
@@ -274,7 +276,7 @@ public function updatePost($bind, $id, $topicId)
   	    'post_keyword' => $bind['post_keyword'],
   	    'post_status' => $bind['post_status'],
   	    'comment_status' => $bind['comment_status']
-  	], "`ID` = {$id}");
+  	], "`ID` = {$cleanId}");
   	 	
   } else {
   	 
@@ -288,23 +290,23 @@ public function updatePost($bind, $id, $topicId)
           'post_keyword' => $bind['post_keyword'],
           'post_status' => $bind['post_status'],
           'comment_status' => $bind['comment_status']
-      ], "`ID` = {$id}");
+      ], "`ID` = {$cleanId}");
       
   }
   
   // query Id
   $this->setSQL("SELECT ID FROM posts WHERE ID = ?");
-  $post_id = $this->findColumn([$id]);
+  $post_id = $this->findColumn([$cleanId]);
   
   // delete post_topic
-  $stmt2 = $this->delete("post_topic", "`ID` = {$post_id->ID}");
+  $stmt2 = $this->delete("post_topic", "`ID` = {$post_id['ID']}");
   	  
   if (is_array($topicId)) {
   	     
   	 foreach ($_POST['catID'] as $topicId) {
   	     
   	    $stmt3 = $this->create("post_topic", [
-  	        'post_id' => $id,
+  	        'post_id' => $cleanId,
   	        'topic_id' => $topicId
   	    ]);
   	    
@@ -313,7 +315,7 @@ public function updatePost($bind, $id, $topicId)
   } else {
   	      
       $stmt3 = $this->create("post_topic", [
-          'post_id' => $id,
+          'post_id' => $cleanId,
           'topic_id' => $topicId
       ]);
       
@@ -327,9 +329,9 @@ public function updatePost($bind, $id, $topicId)
  * @param integer $id
  * @param object $sanitizing
  */
-public function deletePost($id, $sanitizing)
+public function deletePost($id, $sanitize)
 { 
- $idsanitized = $this->filteringId($sanitizing, $id, 'sql');
+ $idsanitized = $this->filteringId($sanitize, $id, 'sql');
  $stmt = $this->delete("posts", "`ID` = {$idsanitized}"); 	  
 }
 
@@ -346,7 +348,7 @@ public function checkPostId($id, $sanitizing)
   $sql = "SELECT ID FROM posts WHERE ID = ? AND post_type = 'blog'";
   $this->setSQL($sql);
   $stmt = $this->checkCountValue([$cleanId]);
-  return $stmt > 0; 		
+  return($stmt > 0); 		
 }
 
 /**

@@ -50,8 +50,10 @@ public function createConfig($bind)
 	
 }
 
-public function updateConfig($bind, $id)
+public function updateConfig($sanitize, $bind, $ID)
 {
+	$cleanId = $this->filteringId($sanitize, $ID, 'sql');
+
   if(empty($bind['logo'])) {
 
 	$stmt = $this->modify("settings", [
@@ -62,7 +64,7 @@ public function updateConfig($bind, $id)
 		'facebook' => $bind['facebook'],
 		'twitter' => $bind['twitter'],
 		'instagram' => $bind['instagram']
-	], "`ID` = {$id}");
+	], "`ID` = {$cleanId}");
 
   } else {
 	
@@ -75,7 +77,7 @@ public function updateConfig($bind, $id)
 		'facebook' => $bind['facebook'],
 		'twitter' => $bind['twitter'],
 		'instagram' => $bind['instagram']
-	], "`ID` = {$id}");
+	], "`ID` = {$cleanId}");
 
   }
 

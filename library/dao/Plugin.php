@@ -113,16 +113,17 @@ class Plugin extends Dao
    * @param integer $id
    * @param array $bind
    */
-  public function updatePlugin($bind, $id)
+  public function updatePlugin($sanitize, $bind, $ID)
   {
 
+    $cleanId = $this->filteringId($sanitize, $ID, 'sql');
     $stmt = $this->modify("plugin", [
         'plugin_name' => $bind['plugin_name'],
         'plugin_link' => $bind['plugin_link'],
         'plugin_desc' => $bind['plugin_desc'],
         'plugin_status' => $bind['plugin_status'],
         'plugin_sort' => $bind['plugin_sort']
-    ], "`ID` = {$id}");
+    ], "`ID` = {$cleanId}");
     
   }
   
@@ -157,7 +158,7 @@ class Plugin extends Dao
   public function deletePlugin($id, $sanitize)
   {
     $idsanitized = $this->filteringId($sanitize, $id, 'sql');
-    $stmt = $this->delete("plugin", "`ID` = {$idsanitized}");
+    $stmt = $this->deleteRecord("plugin", "`ID` = {$idsanitized}");
   }
   
   /**

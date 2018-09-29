@@ -154,7 +154,7 @@ class TopicApp extends BaseApp
         
         try {
             
-            if (!csrf_check_token($key, $origin)) {
+            if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
                 
                 header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
                 throw new AppException("Sorry, unpleasant attempt detected!");
@@ -172,7 +172,7 @@ class TopicApp extends BaseApp
                 
                 $this->setView('edit-topic');
                 $this->setPageTitle('Edit Topic');
-                $this->setFormAction('updateTopic');
+                $this->setFormAction('editTopic');
                 $this->view->set('pageTitle', $this->getPageTitle());
                 $this->view->set('formAction', $this->getFormAction());
                 $this->view->set('errors', $errors);
@@ -202,7 +202,7 @@ class TopicApp extends BaseApp
           
       $this->setView('edit-topic');
       $this->setPageTitle('Edit Topic');
-      $this->setFormAction('updateTopic');
+      $this->setFormAction('editTopic');
       $this->view->set('pageTitle', $this->getPageTitle());
       $this->view->set('formAction', $this->getFormAction());
       $this->view->set('topicData', $data_topic);
@@ -214,7 +214,7 @@ class TopicApp extends BaseApp
     
   }
   
-  public function delete($id)
+  public function remove($id)
   {
     $this->topicEvent->setTopicId($id);
     $this->topicEvent->removeTopic();

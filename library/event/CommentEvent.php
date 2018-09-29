@@ -127,11 +127,11 @@ class CommentEvent
     
     $id_sanitized = $this->sanitizer->sanitasi($this->comment_id, 'sql');
     
-    return $this->commentDao->updateComment($this->comment_id, [
+    return $this->commentDao->updateComment($this->sanitizer, [
         'comment_author_name' => $this->author_name,
         'comment_content' => $this->content,
         'comment_status' => $this->status
-    ]);
+    ], $this->comment_id);
     
   }
   

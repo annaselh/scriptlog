@@ -80,7 +80,7 @@ class ThemeApp extends BaseApp
 
         if (empty($theme_title) || empty($theme_designer) || empty($theme_dir)) {
           $checkError = false;
-          array_push($errors, "All column required must be filled");
+          array_push($errors, "All columns required must be filled");
         }
 
         if ($this->themeEvent->isThemeExists($theme_title) === true) {
@@ -201,7 +201,7 @@ class ThemeApp extends BaseApp
         } else {
 
            # upload theme and populate database
-           upload_theme($file_name, $file_location, $max_filesize, [".php", ".html", ".phtml", ".php5", ".php4", ".pl", ".py", ".sh", ".htaccess"]);
+           upload_theme($file_name, $file_location, $max_filesize, ["..", ".git", ".svn", "composer.json", "composer.lock", "framework_config.yaml", ".php", ".html", ".phtml", ".php5", ".php4", ".pl", ".py", ".sh", ".htaccess"]);
            
            if (file_exists(APP_ROOT.'public/themes/'.$theme_title.'/theme.ini'))
               $theme_ini = parse_ini_file(APP_ROOT.'public/themes/'.$theme_title.'/theme.ini');
@@ -276,7 +276,7 @@ class ThemeApp extends BaseApp
 
         if (empty($theme_title) || empty($theme_designer) || empty($theme_dir)) {
           $checkError = false;
-          array_push($errors, "All column required must be filled");
+          array_push($errors, "All columns required must be filled");
         }
 
         if (!$checkError) {
@@ -327,7 +327,7 @@ class ThemeApp extends BaseApp
 
   }
 
-  public function delete($id)
+  public function remove($id)
   {
     $this->themeEvent->setThemeId($id);
     $this->themeEvent->removeTheme();

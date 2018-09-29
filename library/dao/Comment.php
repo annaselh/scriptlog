@@ -75,21 +75,22 @@ class Comment extends Dao
     
  }
  
- public function updateComment($id, $bind)
+ public function updateComment($sanitize, $bind, $ID)
  {
    
+   $cleanId = $this->filteringId($sanitize, $ID, 'sql');
    $stmt = $this->modify("comments", [
        'comment_author_name' => $bind['comment_author_name'],
        'comment_content' => $bind['comment_content'],
        'comment_status' => $bind['comment_status']
-   ], "`ID` = {$id}");
+   ], "`ID` = {$cleanId}");
    
  }
  
  public function deleteComment($id, $sanitize)
  {
    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
-   $stmt = $this->delete("comments", "`ID` = {$idsanitized}");
+   $stmt = $this->deleteRecord("comments", "`ID` = {$idsanitized}");
  }
  
  public function checkCommentId($id, $sanitize)

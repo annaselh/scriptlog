@@ -13,12 +13,14 @@
  */
 class Menu extends Dao
 {
-    
+ 
+/**
+ * Constructor
+ * 
+ */
  public function __construct()
  {
-	
-  parent::__construct();
-		
+	parent::__construct();	
  }
 
  /**
@@ -52,6 +54,7 @@ class Menu extends Dao
   * @param object $sanitizing
   * @param static $fetchMode
   * @return boolean|array|object
+  *
   */
  public function findMenu($menuId, $sanitizing)
  {
@@ -76,18 +79,29 @@ class Menu extends Dao
   * 
   * @param array $bind
   */
- public function addMenu($bind)
+ public function insertMenu($bind)
  {
      
    $menuSorted = $this->findSortMenu();
-   
    $stmt = $this->create("menu", [
        'menu_label' => $bind['menu_label'],
        'menu_link' => $bind['menu_link'],
-       'menu_sort' => $menuSorted,
-       'menu_status' => $bind['menu_status']
+       'menu_sort' => $menuSorted
    ]);
    
+   $menu_id = $this->lastId();
+
+   $getLink = "SELECT ID, menu_link FROM menu WHERE ID = ?";
+
+   $this->setSQL($getLink);
+
+   $menu_link = $this->findColumn([$menu_id]);
+
+   if (empty($menu_link['menu_link'])) {
+
+      $stmt2 = $this->modify("menu", ['menu_link' => '#'], "`ID` = {$menu_link['ID']}");
+   }
+
  }
  
  /**
@@ -96,28 +110,56 @@ class Menu extends Dao
   * @param integer $id
   * @param array $bind
   */
- public function updateMenu($id, $bind)
+ public function updateMenu($sanitize, $bind, $ID)
  {
-     
+  
+  $cleanId = $this->filteringId($sanitize, $ID, 'sql');
   $stmt = $this->modify("menu", [
       'menu_label' => $bind['menu_label'],
       'menu_link' => $bind['menu_link'],
       'menu_sort' => $bind['menu_sort'],
       'menu_status' => $bind['menu_status']
-  ], "`ID` = {$id}");
+  ], "`ID` = {$cleanId}");
   
  }
  
+ /**
+  * Activate menu
+  * 
+  * @param integer $id
+  * @param object $sanitize
+  *
+  */
+ public function activateMenu($id, $sanitize)
+ {
+   $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+   $stmt = $this->modify("menu", ['menu_status' => 'Y'], "`ID` => {$idsanitized}");
+ }
+
+ /**
+  * Deactivate menu
+  *
+  * @param integer $id
+  * @param object $sanitize
+  *
+  */
+ public function deactivateMenu($id, $sanitize)
+ {
+  $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+  $stmt = $this->modify("menu", ['menu_status' => 'N'], "`ID` => {$idsanitized}");
+ }
+
  /**
   * Delete menu
   * 
   * @param integer $id
   * @param object $sanitizing
+  *
   */
- public function deleteMenu($id, $sanitizing)
+ public function deleteMenu($id, $sanitize)
  {
-  $cleanId = $this->filteringId($sanitizing, $id, 'sql');
-  $stmt = $this->delete("menu", "`ID` = {$cleanId}");
+  $cleanId = $this->filteringId($sanitize, $id, 'sql');
+  $stmt = $this->deleteRecord("menu", "`ID` = {$cleanId}");
  }
 
  /**
@@ -126,6 +168,7 @@ class Menu extends Dao
   * @param integer $id
   * @param object $sanitizing
   * @return boolean
+  *
   */
  public function checkMenuId($id, $sanitizing)
  {
@@ -140,6 +183,56 @@ class Menu extends Dao
   
   return($stmt > 0);
   
+ }
+
+ /**
+  * @method menuExists()
+  * @param string $menu_label
+  *
+  */
+ public function menuExists($menu_label)
+ {
+   $sql = "SELECT COUNT(ID) FROM menu WHERE menu_label = ?";
+   $this->setSQL($sql);
+   $stmt = $this->findColumn([$menu_label]);
+
+   if ($stmt == 1) {
+
+      return true;
+
+   } else {
+
+      return true;
+
+   }
+
+ }
+
+ /**
+  * Drop down menu
+  *
+  * @param string $selected
+  *
+  */
+ public function dropDownMenu($selected = '')
+ {
+   $name = 'parent';
+
+   $menus = $this->findMenus('menu_label');
+
+   if ($selected != '') {
+      $selected = $selected;
+   }
+
+   return dropdown($name, $menus, $selected);
+
+ }
+
+ public function totalMenuRecords($data = null)
+ {
+   $sql = "SELECT ID FROM menu";
+   $this->setSQL($sql);
+   return $this->checkCountValue($data);
  }
  
  /**
@@ -161,5 +254,5 @@ class Menu extends Dao
   return $menu_sorted;
   
  }
- 
+
 }

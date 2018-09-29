@@ -137,8 +137,8 @@ class Topic extends Dao
    */
   public function updateTopic($sanitize, $bind, $ID)
   {
-   $cleanId = $this->filteringId($sanitize, $ID, 'sql');
-   
+      
+   $cleanId = $this->filteringId($sanitize, $ID, 'sql'); 
    $stmt = $this->modify("topics", [
        'topic_title' => $bind['topic_title'],
        'topic_slug' => $bind['topic_slug'],
@@ -157,7 +157,7 @@ class Topic extends Dao
  {  	
   $cleanId = $this->filteringId($sanitize, $ID, 'sql');
   
-  $stmt = $this->delete("topics", "`ID` = $cleanId");
+  $stmt = $this->deleteRecord("topics", "`ID` = $cleanId");
  }
 
  /**
@@ -275,15 +275,22 @@ class Topic extends Dao
   * @param integer $sanitizing
   * @return boolean
   */
- public function checkTopicId($topicId, $sanitizing)
+ public function checkTopicId($id, $sanitizing)
  {
    $sql = "SELECT ID FROM topics WHERE ID = ?";
-   $cleanUpId = $this->filteringId($sanitizing, $id, 'sql');
+   $cleanId = $this->filteringId($sanitizing, $id, 'sql');
    $this->setSQL($sql);
-   $stmt = $this->checkCountValue([$cleanUpId]);
+   $stmt = $this->checkCountValue([$cleanId]);
    return($stmt > 0);
  }
 
+ /**
+  * Total topic records
+  * 
+  * @param array $data
+  * @return boolean
+  *
+  */
  public function totalTopicRecords($data = null)
  {
     $sql = "SELECT ID FROM topics";

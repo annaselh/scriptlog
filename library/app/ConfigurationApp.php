@@ -268,7 +268,7 @@ class ConfigurationApp extends BaseApp
 
   }
 
-  public function delete($id)
+  public function remove($id)
   {
 
   }

@@ -22,7 +22,7 @@ function check_php_version()
 }
 
 /**
- * Checking MySQL Server Version
+ * Checking MySQL Server Version Function
  */
 function check_mysql_version($link, $min)
 {
@@ -217,6 +217,9 @@ function check_plugin_dir()
     
 }
 
+/**
+ * Check PCRE UTF-8
+ */
 function check_pcre_utf8()
 {
     if (!@preg_match('/^.$/u', 'ñ')) {

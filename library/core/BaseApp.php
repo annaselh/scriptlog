@@ -42,6 +42,6 @@ abstract class BaseApp implements AppInterface
   
   abstract protected function update($id);
   
-  abstract protected function delete($id);
+  abstract protected function remove($id);
   
 }

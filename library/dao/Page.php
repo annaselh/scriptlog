@@ -144,9 +144,11 @@ public function createPage($bind)
  * @param array $bind
  * @param integer $id
  */
-public function updatePage($bind, $id)
+public function updatePage($sanitize, $bind, $ID)
 {
  
+ $cleanId = $this->filteringId($sanitize, $ID, 'sql');
+
  if (empty($bind['post_image'])) {
  
  	$stmt = $this->modify("posts", [
@@ -155,7 +157,7 @@ public function updatePage($bind, $id)
  	    'post_slug' => $bind['post_slug'],
  	    'post_status' => $bind['post_status'],
  	    'comment_status' => $bind['comment_status']
- 	], "`ID` = {$id}"." AND `post_type` = {$bind['post_type']}");
+ 	], "`ID` = {$cleanId}"." AND `post_type` = {$bind['post_type']}");
  	
  } else {
  	
@@ -166,7 +168,7 @@ public function updatePage($bind, $id)
  	    'post_slug' => $bind['post_slug'],
  	    'post_status' => $bind['post_status'],
  	    'comment_status' => $bind['comment_status']
- 	    ], "`ID` = {$id}"." AND `post_type` = {$bind['post_type']}");
+ 	    ], "`ID` = {$cleanId}"." AND `post_type` = {$bind['post_type']}");
  	
  }
   	
@@ -179,12 +181,10 @@ public function updatePage($bind, $id)
  * @param object $sanitizing
  * @param string $type
  */
-public function deletePage($id, $sanitizing, $type)
+public function deletePage($ID, $sanitize, $type)
 {
-
- $id_sanitized = $this->filteringId($sanitizing, $id, 'sql');
- $stmt = $this->delete("posts", "`ID` = {$id_sanitized} AND post_type = {$type}");
-   
+ $id_sanitized = $this->filteringId($sanitize, $ID, 'sql');
+ $stmt = $this->deleteRecord("posts", "`ID` = {$id_sanitized} AND post_type = {$type}");  
 }
 
 /**

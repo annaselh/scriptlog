@@ -225,7 +225,7 @@ class ConfigurationEvent
   
     if ($image_uploader -> isImageUploaded()) {
       
-      return $this->configDao->updateConfig([
+      return $this->configDao->updateConfig($this->sanitize, [
         'app_url' => $this->app_url,
         'site_name' => $this->site_title,
         'meta_description' => $this->meta_description,
@@ -241,7 +241,7 @@ class ConfigurationEvent
        $newFileName = $image_uploader -> renameImage();
        $uploadImageLogo = $image_uploader -> uploadImage('logo', $newFileName, 320, 251, 'crop');
        
-       return $this->configDao->updateConfig([
+       return $this->configDao->updateConfig( $this->sanitize, [
         'app_url' => $this->app_url,
         'site_name' => $this->site_title,
         'meta_description' => $this->meta_description,

@@ -1,7 +1,7 @@
 <?php  
 $time_start = microtime(true);
-require('include/settings.php');
-require('include/setup.php');
+require 'include/settings.php';
+require 'include/setup.php';
 
 ?>
 
@@ -36,7 +36,7 @@ require('include/setup.php');
         <p class="lead">
            Oops!, Already Installed ... 
         </p>
-        <script type="text/javascript">function leave() {  window.location = "<?php echo $protocol."://".$server_host.dirname(dirname($_SERVER['PHP_SELF']))."/admin/login.php";; ?>";} setTimeout("leave()", 3640);</script>
+        <script type="text/javascript">function leave() {  window.location = "<?php echo $protocol."://".$server_host.dirname(dirname($_SERVER['PHP_SELF']))."/admin/login.php";; ?>";} setTimeout("leave()", 5000);</script>
         <?php 
          else:
         ?>
@@ -77,9 +77,9 @@ require('include/setup.php');
         </p>
         
         <ul class="list-inline">
-          <li class="list-inline-item"><a href="<?php echo $installURL . '../LICENSE'; ?>">License</a></li>
-          <li class="list-inline-item"><a href="#"><?php echo 'Memory Consumption is '. round(memory_get_usage()/1048576,2).''.' MB'; ?></a></li>
-          <li class="list-inline-item"><a href="#"><?php echo $time . ' seconds'; ?></a></li>
+          <li class="list-inline-item"><a href="<?= $installURL . '../LICENSE'; ?>">License</a></li>
+          <li class="list-inline-item"><a href="#"><?= 'Memory Consumption is '. round(memory_get_usage()/1048576,2).''.' MB'; ?></a></li>
+          <li class="list-inline-item"><a href="#"><?= $time . ' seconds'; ?></a></li>
         </ul>
       </footer>
     </div>

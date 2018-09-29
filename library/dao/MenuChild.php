@@ -28,7 +28,7 @@ class MenuChild extends Dao
            mc.menu_child_status, mp.menu_label
            FROM menu_child AS mc
            INNER JOIN  menu AS mp ON mc.menu_id = mp.ID
-           ORDER BY :orderBy";
+           ORDER BY :orderBy DESC";
              
     $this->setSQL($sql);
          
@@ -53,7 +53,7 @@ class MenuChild extends Dao
    
    $this->setSQL($sql);
    
-   $menuChildDetails = $this->findRow([$idsanitized], PDO::FETCH_ASSOC);
+   $menuChildDetails = $this->findRow([$idsanitized]);
    
    if (empty($menuChildDetails)) return false;
    
@@ -61,7 +61,17 @@ class MenuChild extends Dao
    
  }
  
- public function addMenuChild($bind)
+ public function findAscMenu($id, $sanitize)
+ {
+   $sql = "SELECT menu_id FROM menu_child WHERE ID = ?";
+   $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+   $this->setSQL($sql);
+   $ascendentMenu = $this->findColumn([$idsanitized]);
+   if (empty($ascendentMenu)) return false;
+   return $ascendentMenu;
+ }
+
+ public function insertMenuChild($bind)
  {
      
   $menuChildSorted = $this->findSortMenuChild();
@@ -70,39 +80,60 @@ class MenuChild extends Dao
       'menu_child_link'  => $bind['menu_child_link'],
       'menu_id' => $bind['menu_id'],
       'menu_sub_child' => $bind['menu_sub_child'],
-      'menu_child_sort' => $menuChildSorted,
-      
+      'menu_child_sort' => $menuChildSorted
   ]);
   
  }
  
- public function updateMenuChild($id, $bind)
+ public function updateMenuChild($sanitize, $bind, $ID)
  {
+   
+   $cleanId = $this->filteringId($sanitize, $ID, 'sql');
    $stmt = $this->modify("menu_child", [
        'menu_child_label' => $bind['menu_child_label'],
        'menu_child_link'  => $bind['menu_child_link'],
        'menu_id' => $bind['menu_id'],
        'menu_sub_child' => $bind['menu_sub_child'],
-       'menu_child_sort' => $bind['menu_child_sort']
-   ], "`ID` = {$id}");
+       'menu_child_sort' => $bind['menu_child_sort'],
+       'menu_child_status' => $bind['menu_child_status']
+   ], "`ID` = {$cleanId}");
+
  }
  
+ public function activateMenuChild($id, $sanitize)
+ {
+   $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+   $stmt = $this->modify("menu_child", ['menu_child_status' => 'Y'], "`ID` => {$idsanitized}");
+ }
+
+ public function deactivateMenuChild($id, $sanitize)
+ {
+   $idsanitized = $this->filteringId($sanitize, $id, 'sql');
+   $stmt = $this->modify("menu_child", ['menu_child_status' => 'N'], "`ID` => {$idsanitized}");
+ }
+
  public function deleteMenuChild($id, $sanitize)
  {
    $id_sanitized = $this->filteringId($sanitize, $id, 'sql');
-   $stmt = $this->delete("menu_child", "`ID` = {$id_sanitized}");    
+   $stmt = $this->deleteRecord("menu_child", "`ID` = {$id_sanitized}");    
  }
  
- public function isMenuChildExists($menu_child_label)
+ public function menuChildExists($menu_child_label)
  {
    $sql = "SELECT COUNT(ID) FROM menu_child WHERE menu_child_label = ?";
+   
    $this->setSQL($sql);
+   
    $stmt = $this->findColumn([$menu_child_label]);
    
    if ($stmt == 1) {
-       return true;
+       
+    return true;
+
    } else {
-       return false;
+       
+    return false;
+
    }
    
  }
@@ -120,42 +151,20 @@ class MenuChild extends Dao
      return($stmt > 0);
  }
  
- public function setMenuChild($selected = null)
+ public function dropDownMenuChild($selected = '') 
  {
-     $option_selected = '';
-     
-     if (!is_null($selected)) {
-         
-       $option_selected = ' selected="selected"';
-       
-     }
-     
-     // get child menus
-     $child_menus = $this->findMenuChilds();
-     
-     $html = array();
-     $html[] = '<label for="sub_menu">Sub Menu</label>';
-     $html[] = '<select class="form-control" name="menu_child">';
-     $html[] = '<option value=0 selected>--Pilih Sub Menu--</option>';
-     
-     foreach ($child_menus as $child_menu) {
+   $name = 'child';
 
-         if ((int)$selected == $child_menu -> ID) {
-             $option_selected = ' selected="selected"';
-         }
-         
-         $html[] = '<option value="'. $child_menu -> ID.'"'.$option_selected.'>' . $child_menu -> menu_child_label . '</option>';
-         
-         //clear out the selected option flag
-         $option_selected = '';
-     }
-     
-     $html[] = '</select>';
-     
-     return implode("\n", $html);
-     
+   $sub_menus = $this->findMenuChilds('menu_child_label');
+
+   if ($selected != '') {
+     $selected = $selected;
+   }
+
+   return dropdown($name, $sub_menus, $selected);
+
  }
- 
+
  private function findSortMenuChild()
  {
    $sql = "SELECT menu_child_sort FROM menu_child ORDER BY menu_child_sort DESC";
@@ -168,6 +177,13 @@ class MenuChild extends Dao
    
    return $menu_child_sorted;
    
+ }
+ 
+ public function totalMenuChildRecords($data = null)
+ {
+   $sql = "SELECT ID FROM menu_child";
+   $this->setSQL($sql);
+   return $this->checkCountValue($data);  
  }
  
 }

@@ -36,12 +36,15 @@ class PluginApp extends BaseApp
     }
 
     if (isset($_GET['status'])) {
+
+      $checkStatus = true;
       if ($_GET['status'] == 'pluginAdded') array_push($status, "New plugin added");
       if ($_GET['status'] == 'pluginInstalled') array_push($status, "New plugin installed");
       if ($_GET['status'] == 'pluginUpdated') array_push($status, "Plugin updated");
       if ($_GET['status'] == 'pluginActivated') array_push($status, "Plugin actived");
       if ($_GET['status'] == 'pluginDeactivated') array_push($status, "Plugin deactivated");
       if ($_GET['status'] == 'pluginDeleted') array_push($status, "Plugin deleted");
+      
     }
 
     $this->setView('all-plugins');
@@ -233,7 +236,7 @@ class PluginApp extends BaseApp
 
         } else {
           
-          upload_plugin($file_name, $file_location, $max_filesize, [".php", ".html", ".phtml", ".php5", ".php4", ".pl", ".py", ".sh", ".htaccess"]);
+          upload_plugin($file_name, $file_location, $max_filesize, ["..", ".git", ".svn", "composer.json", "composer.lock", "framework_config.yaml", ".php", ".html", ".phtml", ".php5", ".php4", ".pl", ".py", ".sh", ".htaccess"]);
 
           $this->pluginEvent->setPluginName($plugin_name);
           $this->pluginEvent->setPluginLink($plugin_link);
@@ -398,7 +401,7 @@ class PluginApp extends BaseApp
    direct_page('index.php?load=plugins&status=pluginDeactivated', 200);
   }
 
-  public function delete($id)
+  public function remove($id)
   {
     $this->pluginEvent->setPluginId($id);
     $this->pluginEvent->removePlugin();

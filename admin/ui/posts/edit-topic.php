@@ -62,7 +62,7 @@ endif;
 <?=(isset($formData['topic_title'])) ? htmlspecialchars($formData['topic_title'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
 </div>
 
-<?php if (isset($formData['topic_status'])) : ?>
+<?php if (isset($topicData['topic_status'])) : ?>
 <div class="form-group">
 <label>Actived</label>
 <div class="radio">

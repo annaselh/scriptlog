@@ -292,7 +292,7 @@ class PostApp extends BaseApp
    * {@inheritDoc}
    * @see BaseApp::delete()
    */
-  public function delete($id)
+  public function remove($id)
   {
     $this->postEvent->setPostId($id);
     $this->postEvent->removePost();  

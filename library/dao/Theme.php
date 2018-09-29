@@ -103,15 +103,17 @@ class Theme extends Dao
    * @param array $bind
    * 
    */
-  public function updateTheme($bind, $id)
+  public function updateTheme($sanitize, $bind, $ID)
   {
-     $stmt = $this->modify("plugin", [
+
+    $cleanId = $this->filteringId($sanitize, $ID, 'sql');
+    $stmt = $this->modify("plugin", [
        'theme_title' => $bind['theme_title'],
        'theme_desc' => $bind['theme_desc'],
        'theme_designer' => $bind['theme_designer'],
        'theme_directory' => $bind['theme_directory'],
        'theme_status' => $bind['theme_status']
-     ], "`ID` = {$id}");
+     ], "`ID` = {$cleanId}");
 
   }
   
@@ -127,7 +129,7 @@ class Theme extends Dao
   public function deleteTheme($id, $sanitize)
   {
     $idsanitized = $this->filteringId($sanitize, $id, 'sql');
-    $stmt = $this->delete("themes", "`ID` = {$idsanitized}");
+    $stmt = $this->deleteRecord("themes", "`ID` = {$idsanitized}");
   }
   
   /**

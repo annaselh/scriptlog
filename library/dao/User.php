@@ -238,9 +238,10 @@ class User extends Dao
   * @param array $bind
   * @param integer $userId
   */
- public function updateUserSession($accessLevel, $sanitize, $bind, $userId)
+ public function updateUserSession($sanitize, $bind, $userId)
  {
    try {
+       
        $cleanId = $this->filteringId($sanitize, $userId, 'sql');
        
        if (function_exists("random_bytes")) {
@@ -251,8 +252,7 @@ class User extends Dao
           throw new DbException("No cryptographycal support for your php version!");    
        }
        
-       $bind = ['user_session' => $user_session];
-       $stmt = $this->modify("users", $bind, "`ID` = {$cleanId}");
+       $stmt = $this->modify("users", ['user_session' => $user_session], "`ID` = {$cleanId}");
        
    } catch (DbException $e) {
        
@@ -298,7 +298,7 @@ class User extends Dao
   
   $clean_id = $this->filteringId($sanitize, $ID, 'sql');
    
-  $stmt = $this->delete("users", "`ID` = {$clean_id}");
+  $stmt = $this->deleteRecord("users", "`ID` = {$clean_id}");
 	 
  }
  

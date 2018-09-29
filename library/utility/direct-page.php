@@ -4,6 +4,7 @@
  * 
  * @param string $page
  * @param number $http_status_code default null
+ * 
  */
 function direct_page($page = '', $http_status_code = null)
 {

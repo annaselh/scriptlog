@@ -110,11 +110,15 @@ class Dao
     }
     
     if (!is_null($fetchMode)) {
+
         $stmt = $this->dbc->dbQuery($this->sql, $data);
         return $stmt -> fetch($fetchMode);
+
     } else {
+
         $stmt = $this->dbc->dbQuery($this->sql, $data);
         return $stmt->fetch();
+        
     }
     
   } catch (DbException $e) {
@@ -230,7 +234,7 @@ class Dao
   * @param integer $where
   * @param integer $limit
   */
- protected function delete($table, $where, $limit = null)
+ protected function deleteRecord($table, $where, $limit = null)
  {
      if (!is_null($limit)) {
          $stmt = $this->dbc->dbDelete($table, $where, $limit);

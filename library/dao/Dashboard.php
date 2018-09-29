@@ -17,7 +17,6 @@ class Dashboard extends Dao
  public function __construct()
  {
    parent::__construct();
-        
  }
 
  public function getPosts(Post $post, $position, $limit, $orderBy = null, $author = null)

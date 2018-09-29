@@ -290,8 +290,8 @@ class UserEvent
      $this->user_level = $_SESSION['user_level'] = $account_info['user_level'];
      $this->user_login = $_SESSION['user_login'] = $account_info['user_login'];
      
-     $this->userDao->updateUserSession($this->user_level, $this->sanitize, 
-                 array('user_session'=>$this->user_session), $this->user_id);
+     $this->userDao->updateUserSession($this->sanitize, 
+                 ['user_session'=>$this->user_session], $this->user_id);
      
      if ($remember_me == 'true') {
          

@@ -24,9 +24,10 @@ function make_slug($slug)
     // remove unwanted characters
     $slug = preg_replace('~[^-\w]+~', '', $slug);
     
-    if (empty($slug)) {
-        return 'n-a';
-    }
+    $slug = preg_replace('/[^-a-z0-9_]+/', $slug);
+
+    if (empty($slug)) return 'n-a';
     
     return $slug;
+
 }

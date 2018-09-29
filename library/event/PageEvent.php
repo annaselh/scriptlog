@@ -161,7 +161,7 @@ class PageEvent
     
     if ($image_uploader -> isImageUploaded()) {
         
-      return $this->pageDao->updatePage([
+      return $this->pageDao->updatePage($this->sanitizer, [
           'post_author' => $this->author,
           'date_modified' => date("Y-m-d H:i:s"),
           'post_title' => $this->title,
@@ -179,7 +179,7 @@ class PageEvent
        $newFileName = $image_uploader -> renameImage();
        $uploadImagePost = $image_uploader -> uploadImage('post', $newFileName, 770, 400, 'crop');
        
-       return $this->pageDao->updatePage([
+       return $this->pageDao->updatePage($this->sanitizer, [
            'post_image' => $newFileName,
            'date_modified' => date("Y-m-d H:i:s"),
            'post_title' => $this->title,

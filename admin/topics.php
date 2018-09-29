@@ -17,15 +17,15 @@ switch ($action) {
         
         break;
         
-    case 'updateTopic':
+    case 'editTopic':
         
         if ($topicDao -> checkTopicId($topicId, $sanitizer)) {
             
             $topicApp -> update($topicId);
             
         } else {
-            
-            header("Location: index.php?load=topics&error=topicNotFound");
+
+            direct_page('index.php?load=topics&error=topicNotFound', 404);
             
         }
         

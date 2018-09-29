@@ -148,7 +148,7 @@ class PluginEvent
     $this->validator->sanitize($this->link, 'string');
     $this->validator->sanitize($this->description, 'string');
 
-    return $this->pluginDao->updatePlugin([
+    return $this->pluginDao->updatePlugin($this->sanitize, [
       'plugin_name'   => $this->name,
       'plugin_link'   => $this->link,
       'plugin_desc'   => $this->description,

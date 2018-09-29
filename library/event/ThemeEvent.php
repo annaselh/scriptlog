@@ -125,7 +125,7 @@ class ThemeEvent
     $this->validator->sanitize($this->theme_title, 'string');
     $this->validator->sanitize($this->theme_description, 'string');
     
-    return $this->themeDao->updateTheme([
+    return $this->themeDao->updateTheme( $this->sanitize, [
       'theme_title' => $this->theme_title,
       'theme_desc' => $this->theme_description,
       'theme_designer' => $this->theme_designer,

@@ -94,7 +94,7 @@ $tableMenu = "CREATE TABLE IF NOT EXISTS menu(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
 menu_label VARCHAR(200) NOT NULL,
 menu_link VARCHAR(255) NOT NULL DEFAULT '#',
-menu_sort INT(5) DEFAULT NULL,
+menu_sort INT(5) NOT NULL DEFAULT '0',
 menu_status enum('Y','N') NOT NULL DEFAULT 'Y',
 PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
@@ -105,7 +105,7 @@ menu_child_label VARCHAR(200) NOT NULL,
 menu_child_link VARCHAR(255) NOT NULL DEFAULT '#',
 menu_id BIGINT(20) unsigned NOT NULL,
 menu_sub_child BIGINT(20) unsigned NOT NULL,
-menu_child_sort INT(5) DEFAULT NULL,
+menu_child_sort INT(5) NOT NULL DEFAULT '0',,
 menu_child_status enum('Y','N') NOT NULL DEFAULT 'Y',
 PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
@@ -215,8 +215,7 @@ $link = mysqli_connect($host, $user, $password, $database);
 if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
    
    $getAppKey = "SELECT ID, app_key FROM settings WHERE app_key = '$key' LIMIT 1";
-   $retrieve_app_info = mysqli_query($link, $getAppKey);
-   $row = mysqli_fetch_assoc($retrieve_app_info);
+   $row = mysqli_fetch_assoc(mysqli_query($link, $getAppKey));
    
    if (function_exists("random_bytes")) {
        

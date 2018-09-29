@@ -254,7 +254,7 @@ class PostEvent
                  'post_slug'  => $this->slug,
                  'post_content' => $this->content,
                  'post_summary' => $this->meta_desc,
-                    'post_keyword' => $this->meta_key,
+                 'post_keyword' => $this->meta_key,
                  'post_status' => $this->post_status,
                  'comment_status' => $this->comment_status
              ], $this->topics);
@@ -322,7 +322,7 @@ class PostEvent
       
     if ($image_uploader -> isImageUploaded()) {
           
-        return $this->postDao->updatePost([
+        return $this->postDao->updatePost($this->sanitizer, [
             'post_author' => $this->author,
             'date_modified' => date("Y-m-d H:i:s"),
             'post_title' => $this->title,
@@ -339,7 +339,7 @@ class PostEvent
         $newFileName = $image_uploader -> renameImage();
         $uploadImagePost = $image_uploader -> uploadImage('post', $newFileName, 770, 400, 'crop');
         
-        return $this->postDao->updatePost([
+        return $this->postDao->updatePost($this->sanitizer, [
             'post_image' => $newFileName,
             'post_author' => $this->author,
             'date_modified' => date("Y-m-d H:i:s"),

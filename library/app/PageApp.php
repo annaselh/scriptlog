@@ -259,7 +259,7 @@ class PageApp extends BaseApp
    
  }
  
- public function delete($id)
+ public function remove($id)
  {
    $this->pageEvent->setPageId($id);
    $this->pageEvent->removePage();

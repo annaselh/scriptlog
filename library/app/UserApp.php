@@ -343,7 +343,7 @@ class UserApp extends BaseApp
    * {@inheritDoc}
    * @see BaseApp::delete()
    */
-  public function delete($id)
+  public function remove($id)
   {
     $this->userEvent->setUserId($id);
     $this->userEvent->removeUser();

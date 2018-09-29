@@ -103,6 +103,7 @@ class TopicEvent
     return $this->topicDao->updateTopic($this->sanitizer, [
          'topic_title' => $this->topic_title, 
          'topic_slug' => $this->topic_slug,
+         'topic_status' => $this->topic_status
         ], $this->topic_id);
   }
   
@@ -117,11 +118,6 @@ class TopicEvent
     
     return $this->topicDao->deleteTopic($this->topic_id, $this->sanitizer);
     
-  }
-  
-  public function checkBoxTopic($post_id = '', $checked = null)
-  {
-    return $this->topicDao->setCheckBoxTopic($post_id, $checked);
   }
   
   public function totalTopics($data = null)
