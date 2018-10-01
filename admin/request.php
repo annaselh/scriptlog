@@ -1,7 +1,6 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed");
 
-$load = '';
-$pathToLoad = null;
+$load = null;
 
 try {
 

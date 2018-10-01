@@ -246,21 +246,21 @@ endif;
 <label>Facebook</label>
 <input type="text" class="form-control" name="facebook" placeholder="facebook.com/scriptlog" value="
 <?=(isset($configData['facebook'])) ? htmlspecialchars($configData['facebook']) : ""; ?>
-<?=(isset($formData['facebook'])) ? htmlspecialchars($formData['facebook'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
+<?=(isset($formData['facebook'])) ? htmlspecialchars($formData['facebook'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" >
 </div>
 
 <div class="form-group">
 <label>Twitter</label>
 <input type="text" class="form-control" name="twitter" placeholder="@scriptlog" value="
 <?=(isset($configData['twitter'])) ? htmlspecialchars($configData['twitter']) : ""; ?>
-<?=(isset($formData['twitter'])) ? htmlspecialchars($formData['twitter'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
+<?=(isset($formData['twitter'])) ? htmlspecialchars($formData['twitter'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" >
 </div>
 
 <div class="form-group">
 <label>Instagram</label>
 <input type="text" class="form-control" name="instagram" placeholder="Scriptlog" value="
 <?=(isset($configData['instagram'])) ? htmlspecialchars($configData['instagram']) : ""; ?>
-<?=(isset($formData['instagram'])) ? htmlspecialchars($formData['instagram'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
+<?=(isset($formData['instagram'])) ? htmlspecialchars($formData['instagram'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" >
 </div>
 
 </div>

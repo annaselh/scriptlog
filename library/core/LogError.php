@@ -165,6 +165,7 @@ class LogError
                 break;
             
             case E_ERROR:
+            case E_CORE_ERROR:
             case E_USER_ERROR:
             case E_RECOVERABLE_ERROR:
                 

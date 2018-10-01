@@ -45,7 +45,7 @@ switch ($action) {
 
     case 'deleteTheme':
 
-       $themeApp -> delete($themeId);
+       $themeApp -> remove($themeId);
 
     default:
         # show list of all themes

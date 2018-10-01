@@ -56,13 +56,13 @@ class CommentEvent
 
   private $validator;
 
-  private $sanitizer;
+  private $sanitize;
   
-  public function __construct(Comment $commentDao, FormValidator $validator, Sanitize $sanitizer)
+  public function __construct(Comment $commentDao, FormValidator $validator, Sanitize $sanitize)
   {
    $this->commentDao = $commentDao;
    $this->validator = $validator;
-   $this->sanitizer = $sanitizer;
+   $this->sanitize = $sanitize;
   }
   
   public function setCommentId($comment_id)

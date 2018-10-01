@@ -33,7 +33,7 @@ switch ($action) {
         
     case 'deleteTopic':
         
-        $topicApp -> delete($topicId);
+        $topicApp -> remove($topicId);
         
         break;
         

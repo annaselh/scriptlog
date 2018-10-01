@@ -33,7 +33,7 @@ switch ($action) {
         
     case 'deletePage':
         
-        $pageApp -> delete($pageId);
+        $pageApp -> remove($pageId);
         
         break;
     

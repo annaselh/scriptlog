@@ -36,7 +36,7 @@ switch ($action) {
         
     case 'deleteUser':
         
-        $userApp -> delete($userId);
+        $userApp -> remove($userId);
         
         break;
                 

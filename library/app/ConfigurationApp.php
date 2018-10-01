@@ -82,9 +82,9 @@ class ConfigurationApp extends BaseApp
       $meta_desc = prevent_injection($_POST['meta_description']);
       $meta_key = prevent_injection($_POST['meta_keywords']);
       $email_address = (isset($_POST['email']) ? filter_var($_POST['email'], FILTER_SANITIZE_EMAIL) : "");
-      $facebook = filter_input('INPUT_POST', 'facebook', FILTER_SANITIZE_URL);
-      $twitter = filter_input('INPUT_POST', 'twitter', FILTER_SANITIZE_URL);
-      $instagram = filter_input('INPUT_POST', 'instagram', FILTER_SANITIZE_URL);
+      $facebook = (is_string($_POST['facebook']) ? filter_var($_POST['facebook'], FILTER_SANITIZE_URL) : "");
+      $twitter = (is_string($_POST['twitter']) ? filter_var($_POST['twitter'], FILTER_SANITIZE_URL) : "");
+      $instagram = (is_string($_POST['instagram']) ? filter_var($_POST['instagram'], FILTER_SANITIZE_URL) : "");
 
       try {
 

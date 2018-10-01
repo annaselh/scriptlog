@@ -153,16 +153,42 @@ class MenuChild extends Dao
  
  public function dropDownMenuChild($selected = '') 
  {
-   $name = 'child';
+   $option_selected = '';
 
-   $sub_menus = $this->findMenuChilds('menu_child_label');
-
-   if ($selected != '') {
-     $selected = $selected;
+   if (!$selected) {
+      $option_selected = ' selected="selected"';
    }
 
-   return dropdown($name, $sub_menus, $selected);
+   $subMenus = $this->findMenuChilds();
 
+   $dropDown = '<select class="form-control" name="child" id="child">'."\n";
+
+   if (!empty($subMenus)) {
+
+    foreach ($subMenus as $subMenu) {
+
+      if ((int)$selected === (int)$subMenu['ID']) {
+
+          $option_selected = ' selected="selected"';
+
+      }
+
+      $dropDown .= '<option value="'.$subMenu['ID'].'"'.$option_selected.'>'.$subMenu['menu_child_label'].'</option>'."\n";
+
+      $option_selected = '';
+
+    }
+   
+  }
+
+   if (empty($selected) || empty($menu['ID'])) {
+      $dropDown .= '<option value="0" selected>--Sub Menu--</option>';
+   }
+
+   $dropDown .= '</select>'."\n";
+
+   return $dropDown;
+   
  }
 
  private function findSortMenuChild()

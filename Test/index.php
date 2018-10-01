@@ -20,4 +20,12 @@ $data_ini = parse_ini_file(APP_ROOT . 'public/themes/soerabaia/theme.ini');
 
 print('<pre>'.$data_ini['theme_name'].'</pre>');
 
+$menus = new Menu();
+$getMenus = $menus->findMenus();
+
+var_dump($getMenus) . '<br>';
+
+print_r($getMenus);
+
+
 }

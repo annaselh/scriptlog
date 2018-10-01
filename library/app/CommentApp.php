@@ -221,7 +221,7 @@ class CommentApp extends BaseApp
     
   }
   
-  public function delete($id)
+  public function remove($id)
   {
      $this->commentEvent->setCommentId($id);
      $this->commentEvent->removeComment();

@@ -35,7 +35,7 @@ class Menu extends Dao
  public function findMenus($orderBy = 'ID')
  {
     $sql = "SELECT ID, menu_label, menu_link, menu_sort, menu_status
-    FROM menu ORDER BY  :orderBy DESC";
+    FROM menu ORDER BY :orderBy DESC";
 
     $this->setSQL($sql);
 
@@ -82,24 +82,22 @@ class Menu extends Dao
  public function insertMenu($bind)
  {
      
-   $menuSorted = $this->findSortMenu();
    $stmt = $this->create("menu", [
        'menu_label' => $bind['menu_label'],
        'menu_link' => $bind['menu_link'],
-       'menu_sort' => $menuSorted
+       'menu_sort' => $this->findSortMenu()
    ]);
    
-   $menu_id = $this->lastId();
-
    $getLink = "SELECT ID, menu_link FROM menu WHERE ID = ?";
 
    $this->setSQL($getLink);
 
-   $menu_link = $this->findColumn([$menu_id]);
+   $menu_link = $this->findColumn([$this->lastId()]);
 
    if (empty($menu_link['menu_link'])) {
 
       $stmt2 = $this->modify("menu", ['menu_link' => '#'], "`ID` = {$menu_link['ID']}");
+
    }
 
  }
@@ -202,7 +200,7 @@ class Menu extends Dao
 
    } else {
 
-      return true;
+      return false;
 
    }
 
@@ -216,16 +214,42 @@ class Menu extends Dao
   */
  public function dropDownMenu($selected = '')
  {
-   $name = 'parent';
+   $option_selected = '';
 
-   $menus = $this->findMenus('menu_label');
-
-   if ($selected != '') {
-      $selected = $selected;
+   if (!$selected) {
+     $option_selected = ' selected="selected"';
    }
 
-   return dropdown($name, $menus, $selected);
+   $menus = $this->findMenus();
+   
+   $dropDown = '<select class="form-control" name="parent" id="parent">'."\n"; 
 
+   if (!empty($menus)) {
+
+   foreach ($menus as $menu) {
+      
+      if ((int)$selected === (int)$menu['ID']) {
+
+          $option_selected = ' selected="selected"';
+          
+      }
+
+      $dropDown .= '<option value="'.$menu['ID'].'"'.$option_selected.'>'.$menu['menu_label'].'</option>'."\n";
+
+      $option_selected = '';
+
+   }
+
+  }
+
+   if (empty($selected) || empty($menu['ID'])) {
+      $dropDown .= '<option value="0" selected>--Menu--</option>';
+   }
+   
+   $dropDown .= '</select>'."\n";
+
+   return $dropDown;
+   
  }
 
  public function totalMenuRecords($data = null)
@@ -249,7 +273,7 @@ class Menu extends Dao
   
   $field = $this->findColumn();
   
-  $menu_sorted = $field->menu_sort + 1;
+  $menu_sorted = $field['menu_sort'] + 1;
   
   return $menu_sorted;
   

@@ -74,8 +74,6 @@ class MenuEvent
     $this->validator->sanitize($this->label, 'string');
     $this->validator->sanitize($this->link, 'url');
     
-    if (empty($this->link)) $this->link = '#';
-
     return $this->menuDao->insertMenu([
       'menu_label' => $this->label,
       'menu_link' => $this->link

@@ -118,7 +118,7 @@ function admin_footer($stylePath)
 <!-- FastClick -->
 <script src="<?= $stylePath; ?>/assets/components/fastclick/lib/fastclick.js"></script>
 <!-- Checking Form Field -->
-<script src="<?= $stylePath; ?>/assets/dist/js/checkformSetting.js"></script>
+<script src="<?= $stylePath; ?>/assets/dist/js/checkFormSetting.js"></script>
 <!-- Mandatory Plugin File Uploaded -->
 <script src="<?= $stylePath; ?>/assets/dist/js/mandatory-plugin-upload.js"></script>
 <!-- Mandatory Theme File Uploaded -->

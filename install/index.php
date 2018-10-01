@@ -105,7 +105,7 @@ if ($install != 'install') {
     <meta name="description" content="Scriptlog Installation">
     <link rel="icon" href="../favicon.ico">
 
-    <title>Scritplog Installation</title>
+    <title>Scriptlog Installation</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">

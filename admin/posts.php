@@ -35,7 +35,7 @@ switch ($action) {
         
     case 'deletePost':
         
-        $postApp -> delete($postId);
+        $postApp -> remove($postId);
         
         break;
         

@@ -4,7 +4,7 @@ order allow,deny
 deny from all
 </Files>
 
-Options All -Indexes
+Options -Indexes
 
 ############### SET Keep-Alive ##################
 <IfModule mod_headers.c>

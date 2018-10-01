@@ -40,7 +40,7 @@ class MenuChildApp extends BaseApp
     }
 
     $this->setView('all-submenus');
-    $this->setPageTitle('Sub Menus');
+    $this->setPageTitle('Sub Menu');
     $this->view->set('pageTitle', $this->getPageTitle());
 
     if (!$checkError) {
@@ -51,7 +51,7 @@ class MenuChildApp extends BaseApp
       $this->view->set('status', $status);
     }
 
-    $this->view->set('subMenusTotal', $this->menuChildEvent->totalSubMenus());
+    $this->view->set('subMenusTotal', $this->menuChildEvent->totalMenuChilds());
     $this->view->set('subMenus', $this->menuChildEvent->grabMenuChilds());
 
     return $this->view->render();
@@ -198,7 +198,9 @@ class MenuChildApp extends BaseApp
           $this->view->set('pageTitle', $this->getPageTitle());
           $this->view->set('formAction', $this->getFormAction());
           $this->view->set('errors', $errors);
-          $this->view->set('submenuData', $data_submenu);
+          $this->view->set('subMenuData', $data_submenu);
+          $this->view->set('menus', $menus->dropDownMenu($getMenuChild['menu_id']));
+          $this->view->set('submenus', $this->menuChildEvent->descMenuDropDown());
           $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
 
         } else {
@@ -230,8 +232,9 @@ class MenuChildApp extends BaseApp
       $this->setFormAction('editSubmenu');
       $this->view->set('pageTitle', $this->getPageTitle());
       $this->view->set('formAction', $this->getFormAction());
-      $this->view->set('menus', $menus->dropDownMenu());
-      $this->view->set('submenus', $this->menuChildEvent->descMenuDropDown());
+      $this->view->set('subMenuData', $data_submenu);
+      $this->view->set('menus', $menus->dropDownMenu($getMenuChild['menu_id']));
+      $this->view->set('submenus', $this->menuChildEvent->descMenuDropDown($getMenuChild['menu_child_id']));
       $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
 
     }

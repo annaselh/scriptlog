@@ -8,6 +8,7 @@ echo '</pre>';
 die();
 }
 
+
 /*
 function getMySQLVersion() 
 { 

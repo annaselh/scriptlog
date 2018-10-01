@@ -17,7 +17,9 @@ switch ($action) {
             $configApp -> update($configId);
             
         } else {
+
             direct_page('index.php?load=settings&error=configNotFound', 404);
+            
         }
 
         break;

@@ -65,7 +65,7 @@ switch ($action) {
 
     case 'deletePlugin':
        
-        $pluginApp -> delete($pluginId);
+        $pluginApp -> remove($pluginId);
 
        break;
 

@@ -34,6 +34,6 @@ $allowedQuery = array(
 );    
 
 admin_header($stylePath, $breadCrumbs, $allowedQuery);
-require 'navigation.php';
+//require 'navigation.php';
 require 'request.php';
 admin_footer($currentURL);

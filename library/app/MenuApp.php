@@ -68,8 +68,8 @@ class MenuApp extends BaseApp
 
     if (isset($_POST['menuFormSubmit'])) {
       
-      $menu_label = prevent_injection($_POST['menu_label']);
-      $menu_link = trim($_POST['menu_link']);
+      $menu_label = isset($_POST['menu_label']) ? prevent_injection($_POST['menu_label']) : "";
+      $menu_link = isset($_POST['menu_link']) ? trim($_POST['menu_link']) : "";
 
       try {
 
@@ -214,6 +214,7 @@ class MenuApp extends BaseApp
       $this->setFormAction('editMenu');
       $this->view->set('pageTitle', $this->getPageTitle());
       $this->view->set('formAction', $this->getFormAction());
+      $this->view->set('menuData', $data_menu);
       $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
 
     }

@@ -129,8 +129,9 @@ $frontPaginator = new Paginator(10, 'p');
 $postFeeds = new RssFeed($dbc);
 $sanitizer = new Sanitize();
 
-set_exception_handler('LogError::exceptionHandler');
-set_error_handler('LogError::errorHandler');
+# set_exception_handler('LogError::exceptionHandler');
+# set_error_handler('LogError::errorHandler');
+# register_shutdown_function('scriptlog_shutdown_fatal');
 
 if (!isset($_SESSION)) {
     

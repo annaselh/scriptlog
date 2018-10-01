@@ -25,7 +25,7 @@ switch ($action) {
  
     case 'deleteComment':
         
-        $commentApp -> delete($commentId);
+        $commentApp -> remove($commentId);
         
         break;
         

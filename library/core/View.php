@@ -28,7 +28,7 @@ class View
    * Data
    * @var array
    */
-  private $data = array();
+  private $data = [];
   
   /**
    * Error
