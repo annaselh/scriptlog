@@ -71,6 +71,12 @@ class UserEvent
  private $authenticator;
 
  private $sanitize;
+
+ public $loggedIn;
+
+ const INTRUDER_NAME = "INTRUDER";
+
+ const INTRUDER_LEVEL = 0;
  
  const COOKIE_EXPIRE =  8640000;  //60*60*24*100 seconds = 100 days by default
 
@@ -79,17 +85,19 @@ class UserEvent
  public function __construct(User $userDao, Authentication $authenticator, Sanitize $sanitize)
  {
     $this->userDao = $userDao;
+
     $this->authenticator = $authenticator;
+    
     $this->sanitize = $sanitize;
     
-    /*$this->loggedIn = $this->isLoggedIn();
+    $this->loggedIn = $this->isLoggedIn();
     
     if (!$this->loggedIn) {
         
-        header("Location: ".APP_PROTOCOL."://".APP_HOSTNAME.dirname(dirname($_SERVER['PHP_SELF']))."/".APP_ADMIN.'/login.php');
-        exit();
-        
-    }*/
+        $this->user_email = $_SESSION['user_email'] = self::INTRUDER_NAME;
+        $this->user_level = self::INTRUDER_LEVEL;
+
+    }
     
  }
   
@@ -150,45 +158,34 @@ class UserEvent
  
  public function addUser()
  {
-     
-   try {
-       
-       if (empty($this->user_activation_key)) {
+    if (empty($this->user_activation_key)) {
            
-           return $this->userDao->createUser([
-               'user_login' => $this->user_login,
-               'user_email' => $this->user_email,
-               'user_pass'  => $this->user_pass,
-               'user_level' => $this->user_level,
-               'user_fullname' => $this->user_fullname,
-               'user_url' => $this->user_url,
-               'user_registered' => date("Y-m-d H:i:s"),
-               'user_session' => $this->user_session
-           ]);
-           
-       } else {
-           
-           return $this->userDao->createUser([
-               'user_login' => $this->user_login,
-               'user_email' => $this->user_email,
-               'user_pass'  => $this->user_pass,
-               'user_level' => $this->user_level,
-               'user_fullname' => $this->user_fullname,
-               'user_url' => $this->user_url,
-               'user_activation_key' => $this->user_activation_key,
-               'user_session' => $this->user_session
-           ]);
-           
-       }
-       
-   } catch (Exception $e) {
-       
-       LogError::setStatusCode(http_response_code());
-       LogError::newMessage($e);
-       LogError::customErrorMessage('admin');
-       
-   }      
-   
+        return $this->userDao->createUser([
+            'user_login' => $this->user_login,
+            'user_email' => $this->user_email,
+            'user_pass'  => $this->user_pass,
+            'user_level' => $this->user_level,
+            'user_fullname' => $this->user_fullname,
+            'user_url' => $this->user_url,
+            'user_registered' => date("Y-m-d H:i:s"),
+            'user_session' => $this->user_session
+        ]);
+        
+    } else {
+        
+        return $this->userDao->createUser([
+            'user_login' => $this->user_login,
+            'user_email' => $this->user_email,
+            'user_pass'  => $this->user_pass,
+            'user_level' => $this->user_level,
+            'user_fullname' => $this->user_fullname,
+            'user_url' => $this->user_url,
+            'user_activation_key' => $this->user_activation_key,
+            'user_session' => $this->user_session
+        ]);
+        
+    }
+    
  }
  
  public function modifyUser()
@@ -247,13 +244,13 @@ class UserEvent
  public function removeUser()
  {
    
-     if (!$data_user = $this->userDao->getUserById($this->user_id, $this->sanitize)) {
+   if (!$data_user = $this->userDao->getUserById($this->user_id, $this->sanitize)) {
        
-         direct_page('index.php?load=users&error=userNotFound', 404);
+    direct_page('index.php?load=users&error=userNotFound', 404);
    
-     }
+   }
    
-     return $this->userDao->deleteUser($this->user_id, $this->sanitize);
+   return $this->userDao->deleteUser($this->user_id, $this->sanitize);
    
  }
  
@@ -266,42 +263,66 @@ class UserEvent
  {
      $this->user_email = $values['user_email'];
      $this->user_pass = $values['user_pass'];
-     $remember_me = isset($values['remember_me']) ? $values['remember_me'] : '';
+     $remember_me = isset($values['rememberme']) ? $values['rememberme'] : '';
      
-     $this->authenticator->validate("user_email", $this->user_email);
-     $this->authenticator->validate("user_pass", $this->user_pass);
+     $this->authenticator->validate('user_email', $this->user_email);
+     $this->authenticator->validate('user_pass', $this->user_pass);
      
-     if ($this->authenticator->numErrors > 0) {
-         return false;
-     }
-     
-     if (!$this->authenticator->validateUserAccount($this->user_email, $this->user_pass)) {
-         return false;
-     }
-     
-     $account_info = $this->userDao->getUserByEmail($this->user_email);
-     if (!$account_info) {
-         return false;
-     }
-     
-     $this->user_id = $_SESSION['user_id'] = $account_info['ID'];
-     $this->user_email = $_SESSION['user_email'] = $account_info['user_email'];
-     $this->user_session = $_SESSION['user_session'] = $account_info['user_session'];
-     $this->user_level = $_SESSION['user_level'] = $account_info['user_level'];
-     $this->user_login = $_SESSION['user_login'] = $account_info['user_login'];
-     
-     $this->userDao->updateUserSession($this->sanitize, 
-                 ['user_session'=>$this->user_session], $this->user_id);
-     
-     if ($remember_me == 'true') {
+     try {
+
+        if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
+              
+            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+            throw new Exception("Sorry, unpleasant attempt detected!");
+            
+         }
+    
+         if ($this->authenticator->numErrors > 0) {
+             return false;
+         }
          
-         setcookie("cookie_email", $this->user_email, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
-         setcookie("cookie_id", $this->user_session, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
+         if (!$this->authenticator->validateUserAccount($this->user_email, $this->user_pass)) {
+             return false;
+         }
          
+         $account_info = $this->userDao->getUserByEmail($this->user_email);
+         if (!$account_info) {
+             return false;
+         }
+         
+         $this->user_id = $_SESSION['user_id'] = $account_info['ID'];
+         $this->user_email = $_SESSION['user_email'] = $account_info['user_email'];
+        
+        if (function_exists("random_bytes")) {
+            $this->user_session = $_SESSION['user_session'] = bin2hex(random_bytes(32).microtime()*10000000);
+        } elseif (function_exists("openssl_random_pseudo_bytes")) {
+            $this->user_session = $_SESSION['user_session'] = bin2hex(openssl_random_pseudo_bytes(32).microtime()*10000000);
+        } else {
+           throw new Exception("No cryptographycal support for your php version!");    
+        }
+        
+        $this->user_level = $_SESSION['user_level'] = $account_info['user_level'];
+        $this->user_login = $_SESSION['user_login'] = $account_info['user_login'];
+        
+        $this->userDao->updateUserSession($this->sanitize, $this->user_session, $this->user_id);
+         
+        if ($remember_me === true) {
+             
+            setcookie("cookie_email", $this->user_email, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
+            setcookie("cookie_id", $this->user_session, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
+             
+        }
+         
+     } catch (Exception $e) {
+
+       LogError::setStatusCode(http_response_code());
+       LogError::newMessage($e);
+       LogError::customErrorMessage();
+       
      }
-     
+
      return true;
-     
+
  }
  
  /**
@@ -421,31 +442,33 @@ class UserEvent
  private function isLoggedIn()
  {
      if (isset($_SESSION['user_email']) && isset($_SESSION['user_session'])
-         && isset($_SESSION['user_id'])) {
+         && isset($_SESSION['user_id']) && $_SESSION['user_email'] != self::INTRUDER_NAME) {
              
          // check userDao session
          if ($this->userDao->checkUserSession($_SESSION['user_session']) === false) {
                  
-                 unset($_SESSION['user_id']);
-                 unset($_SESSION['user_email']);
-                 unset($_SESSION['user_level']);
-                 unset($_SESSION['user_login']);
-                 
-                 return false;
+            unset($_SESSION['user_id']);
+            unset($_SESSION['user_email']);
+            unset($_SESSION['user_level']);
+            unset($_SESSION['user_login']);
+            return false;
                  
           }
              
-         $account_info = $this->userDao->getUserByEmail($_SESSION['user_email'], PDO::FETCH_ASSOC);
+         $account_info = $this->userDao->getUserByEmail($_SESSION['user_email']);
          if (!$account_info) {
-               return false;
+
+            return false;
+
          }
              
-         $this->user_id = $account_info['ID'];
-         $this->user_email = $account_info['user_email'];
-         $this->user_login = $account_info['user_login'];
-         $this->user_session = $account_info['user_session'];
-         $this->user_level = $account_info['user_level'];
-         return true;
+           $this->user_id = $account_info['ID'];
+           $this->user_email = $account_info['user_email'];
+           $this->user_login = $account_info['user_login'];
+           $this->user_session = $account_info['user_session'];
+           $this->user_level = $account_info['user_level'];
+         
+           return true;
              
          }
          

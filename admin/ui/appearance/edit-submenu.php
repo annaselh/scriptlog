@@ -66,7 +66,7 @@ endif;
 <label>Link</label>
 <input type="text" class="form-control" name="child_link" placeholder="ex:about-us" value="
 <?=(isset($subMenuData['menu_child_link'])) ? htmlspecialchars($subMenuData['menu_child_link']) : ""; ?>
-<?=(isset($formData['child_link'])) ? htmlspecialchars($formData['child_link'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" required>
+<?=(isset($formData['child_link'])) ? htmlspecialchars($formData['child_link'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" >
 </div>
 
 <div class="form-group">

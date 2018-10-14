@@ -223,9 +223,12 @@ class PostEvent
      
      $this->validator->sanitize($this->author, 'int');
      $this->validator->sanitize($this->title, 'string');
-     $this->validator->sanitize($this->meta_desc, 'string');
-     $this->validator->sanitize($this->meta_key, 'string');
-    
+     
+     if ((!empty($this->meta_desc)) || (!empty($this->meta_key))) {
+      $this->validator->sanitize($this->meta_desc, 'string');
+      $this->validator->sanitize($this->meta_key, 'string');
+     }
+     
      if ($image_uploader->isImageUploaded()) {
          
          if ($this->topics == 0) {

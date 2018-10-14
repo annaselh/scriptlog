@@ -129,11 +129,13 @@ class PostApp extends BaseApp
             
          } else {
              
+            if ((!empty($meta_desc)) || (!empty($meta_keys))) {
+                $this->postEvent->setMetaDesc($meta_desc);
+                $this->postEvent->setMetaKeys($meta_keys);
+            }
              $this->postEvent->setPostTitle($title);
              $this->postEvent->setPostSlug($slug);
              $this->postEvent->setPostContent($content);
-             $this->postEvent->setMetaDesc($meta_desc);
-             $this->postEvent->setMetaKeys($meta_keys);
              $this->postEvent->setPublish($post_status);
              $this->postEvent->setComment($comment_status);
              $this->postEvent->addPost();

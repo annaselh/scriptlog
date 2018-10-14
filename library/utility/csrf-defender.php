@@ -11,10 +11,15 @@ function csrf_check_token($key, $origin, $timespan = null)
 {
   $check_csrf = NoCSRF::check($key, $origin, true, $timespan, false);
   if ($check_csrf) {
+
     return true;
+
   } else {
+
     return false;
+
   }
+  
 }
 
 /**

@@ -86,11 +86,15 @@ if ($install != 'install') {
         
         $_SESSION['token'] = $token;
         
-        if (check_mysql_version($link,'5.6.0')) 
-            install_database_table($link, $username, $password, $email, $token);
-            write_config_file($dbhost, $dbuser, $dbpass, $dbname, $email, $token);
-            header("Location:".$protocol."://".$server_host.dirname($_SERVER['PHP_SELF'])."/finish.php?status=success&token=".$token);
+        if (check_mysql_version($link,'5.6.0')) {
+
+          install_database_table($link, $username, $password, $email, $token);
+          write_config_file($dbhost, $dbuser, $dbpass, $dbname, $email, $token);
+          header("Location:".$protocol."://".$server_host.dirname($_SERVER['PHP_SELF'])."/finish.php?status=success&token=".$token);
         
+
+        }
+            
     }
     
 }

@@ -28,6 +28,7 @@
  *
  * @author SchizoDuckie
  * @copyright SchizoDuckie 2008
+ * @link  https://stackoverflow.com/questions/737385/easiest-form-validation-library-for-php#738510
  * @version 1.0
  * @access public
  * 
@@ -138,14 +139,18 @@ class FormValidator
   */
  public function sanitize($items)
  {
-     foreach($items as $key=>$val) {
+     if (!empty($items)) { 
+
+      foreach($items as $key=>$val) {
          
-         if(array_search($key, $this->sanitations) === false && !array_key_exists($key, $this->sanitations)) continue;
+         if((array_search($key, $this->sanitations) === false) && (!array_key_exists($key, $this->sanitations))) continue;
          $items[$key] = self::sanitizeItem($val, $this->validations[$key]);
          
-     }
+      }
      
-     return($items);
+    }
+
+    return($items);
      
  }
  

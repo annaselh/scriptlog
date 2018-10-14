@@ -82,6 +82,15 @@ class MenuChild extends Dao
       'menu_sub_child' => $bind['menu_sub_child'],
       'menu_child_sort' => $menuChildSorted
   ]);
+ 
+  $sql = "SELECT ID, menu_child_link FROM menu_child WHERE ID = ?";
+  $this->setSQL($sql);
+  $getChildLink = $this->findColumn([$this->lastId()]);
+  $data_child_link = array("menu_child_link" => ['#']);
+
+  if (empty($getChildLink['menu_child_link'])) {
+     $stmt2 = $this->modify("menu_child", $data_child_link, "`ID` = {$getChildLink['ID']}");
+  }
   
  }
  

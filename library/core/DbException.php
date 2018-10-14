@@ -1,6 +1,6 @@
 <?php
 /**
- * DbException Class
+ * DbException class extends Abstract Class CoreException
  *
  * @package   SCRIPTLOG
  * @author    Maoelana Noermoehammad
@@ -9,7 +9,7 @@
  * @since     Since Release 1.0
  *
  */
-class DbException extends AppException
+class DbException extends CoreException
 {
   
 }

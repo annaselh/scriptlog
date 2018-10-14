@@ -143,7 +143,7 @@ class Topic extends Dao
        'topic_title' => $bind['topic_title'],
        'topic_slug' => $bind['topic_slug'],
        'topic_status' => $bind['topic_status']
-   ], "`ID` = {$cleanId}");
+   ], "ID = {$cleanId}");
    
   }
 
@@ -157,7 +157,7 @@ class Topic extends Dao
  {  	
   $cleanId = $this->filteringId($sanitize, $ID, 'sql');
   
-  $stmt = $this->deleteRecord("topics", "`ID` = $cleanId");
+  $stmt = $this->deleteRecord("topics", "ID = $cleanId");
  }
 
  /**

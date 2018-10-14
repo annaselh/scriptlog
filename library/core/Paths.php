@@ -71,16 +71,21 @@ class Paths
 
  public function buildQuery($get, $value)
  {
-   if($this->checkQuery($get)) 
+   if($this->checkQuery($get)) {
+
      $this->editQuery($get, $value);
-   else 
+
+    } else {
+
      $this->addQuery($get, $value);
-   
+
+    } 
+     
  }
 
  public function resetQuery()
  {
-     $this->url = parse_url($_SERVER['REQUEST_URI']);
+   $this->url = parse_url($_SERVER['REQUEST_URI']);
  }
 
 }

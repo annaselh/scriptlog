@@ -187,12 +187,12 @@ class ImageUploader
       
       if (false === $ext) {
            
-          throw new ImageUploaderException('Invalid file format');
+          throw new UploadException('Invalid file format');
       }
       
       return true;
       
-  } catch (ImageUploaderException $e) {
+  } catch (UploadException $e) {
       
       $this->error_message = LogError::newMessage($e);
       $this->error_message = LogError::customErrorMessage();
@@ -211,7 +211,7 @@ class ImageUploader
     if (!isset($this->file_error) || is_array($this->file_error)) {
         
         $canUpload = false;
-        throw new ImageUploaderException('Invalid parameters');
+        throw new UploadException('Invalid parameters');
         
     }
   
@@ -223,30 +223,30 @@ class ImageUploader
     
     if ($this->checkImageSize($this->file_location) === false) {
         $canUpload = false;
-        throw new ImageUploaderException("File is too big");
+        throw new UploadException("File is too big");
     }
     
     if ($this->checkImageMimeType($this->file_location) === false) {
 
         $canUpload = false;
-        throw new ImageUploaderException("File type is not supported");
+        throw new UploadException("File type is not supported");
 
     }
     
     if ($writableFolder === false ) {
         
         $canUpload = false;
-        throw new ImageUploaderException("destination folder is not writable");
+        throw new UploadException("destination folder is not writable");
 
     } elseif ($this->file_error === 1) {
        
         $canUpload = false;
-        throw new ImageUploaderException("Error! Exceeded file limit. Max file size is ".format_size_unit($maxSize));
+        throw new UploadException("Error! Exceeded file limit. Max file size is ".format_size_unit($maxSize));
         
     } elseif ($this->file_error > 1) {
         
         $canUpload = false;
-        throw new ImageUploaderException("Something Went Wrong");
+        throw new UploadException("Something Went Wrong");
 
     } else {
         
@@ -256,7 +256,7 @@ class ImageUploader
     
     return $canUpload;
     
-   } catch(ImageUploaderException $e) {
+   } catch(UploadException $e) {
 
       $this->error_message = LogError::newMessage($e);
       $this->error_message = LogError::customErrorMessage();
@@ -342,7 +342,7 @@ class ImageUploader
     
 } else {
     
-    $exception = new Exception($this->error_message);
+    $exception = new UploadException($this->error_message);
     $this->error_message = LogError::newMessage($exception);
     $this->error_message = LogError::customErrorMessage();
     
@@ -427,7 +427,7 @@ protected function saveImagePost($file_name, $width, $height, $mode)
          
      } else {
          
-         $exception = new Exception($this->error_message);
+         $exception = new UploadException($this->error_message);
          $this->error_message = LogError::newMessage($exception);
          $this->error_message = LogError::customErrorMessage();
          

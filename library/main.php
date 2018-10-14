@@ -49,16 +49,16 @@ if (file_exists(__DIR__ . '/../config.php')) {
 } else {
     
     if (is_dir(APP_ROOT . 'install'))
-        header("Location: ".APP_PROTOCOL."://".APP_HOSTNAME.dirname($_SERVER['PHP_SELF']).'/install');
+        header("Location: ".APP_PROTOCOL."://".APP_HOSTNAME.dirname($_SERVER['PHP_SELF']).DS.'install');
         exit();
         
 }
 
-# call functions in directory library/utility
-$function_directory = new RecursiveDirectoryIterator(__DIR__ . '/utility/', FilesystemIterator::FOLLOW_SYMLINKS);
+// call functions in directory library/utility
+$function_directory = new RecursiveDirectoryIterator(__DIR__ . DS .'utility'. DS, FilesystemIterator::FOLLOW_SYMLINKS);
 $filter_iterator = new RecursiveCallbackFilterIterator($function_directory, function ($current, $key, $iterator){
     
-    # skip hidden files and directories
+    // skip hidden files and directories
     if ($current->getFilename()[0] === '.') {
         return false;
     }
@@ -66,7 +66,7 @@ $filter_iterator = new RecursiveCallbackFilterIterator($function_directory, func
     if ($current->isDir()) {
         
         # only recurse into intended subdirectories
-        return $current->getFilename() === __DIR__ . '/utility/';
+        return $current->getFilename() === __DIR__ . DS .'utility'. DS;
         
     } else {
         
@@ -86,37 +86,54 @@ foreach ($files_dir_iterator as $file) {
 }
 
 // check if loader is exists
-if (is_dir(APP_ROOT . APP_LIBRARY) && is_file(APP_ROOT . APP_LIBRARY . '/Scriptloader.php')) {
+if (is_dir(APP_ROOT . APP_LIBRARY) && is_file(APP_ROOT . APP_LIBRARY . DS . 'Scriptloader.php')) {
  
     require 'Scriptloader.php';
         
 }
 
-// load all libraries needed
+// load all libraries needed by scriptlog
 $loader = new Scriptloader();
 $loader -> setLibraryPaths(array(
-    APP_ROOT . APP_LIBRARY . '/core/',
-    APP_ROOT . APP_LIBRARY . '/dao/',
-    APP_ROOT . APP_LIBRARY . '/event/',
-    APP_ROOT . APP_LIBRARY . '/app/',
-    APP_ROOT . APP_LIBRARY . '/plugins/',
+    APP_ROOT . APP_LIBRARY . DS .'core'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'dao'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'event'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'app'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'controller'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'plugins'. DS
 ));
 
 $loader -> runLoader();
 
-// rules
+//=========================================
+// RULES
+//=========================================
+
+/* rules used by dispatcher to route request */
+
+/* 
+    'picture'   => "/picture/(?'text'[^/]+)/(?'id'\d+)",    // '/picture/some-text/51'
+    'album'     => "/album/(?'album'[\w\-]+)",              // '/album/album-slug'
+    'category'  => "/category/(?'category'[\w\-]+)",        // '/category/category-slug'
+    'page'      => "/page/(?'page'about|contact)",          // '/page/about', '/page/contact'
+    'post'      => "/(?'post'[\w\-]+)",                     // '/post-slug'
+    'home'      => "/"                                      // '/'  
+ */
+
+//=========================================
+
 $rules = array(
     
-    '/'        => "/",
+    'home'     => "/",                               
     'category' => "/category/(?'category'[\w\-]+)",
-    'page'     => "(?'page'[^/]+)",
-    'post'     => "/post/(?'id'\d+)/(?'post'[\w\-]+)",
+    'page'     => "/page/(?'page'about|contact|faculty|)",
+    'post'     => "/(?'post'[\w\-]+)",
     'posts'    => "/posts/([^/]*)",
     'search'   => "(?'search'[\w\-]+)"
     
 );
 
-# an instantiation of Database connection
+// an instantiation of Database connection
 $dbc = DbFactory::connect([
     'mysql:host='.$config['db']['host'].';dbname='.$config['db']['name'],
     $config['db']['user'], $config['db']['pass']

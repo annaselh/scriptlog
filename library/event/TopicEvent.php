@@ -123,6 +123,6 @@ class TopicEvent
   public function totalTopics($data = null)
   {
     return $this->topicDao->totalTopicRecords($data);
-
   }
+  
 }

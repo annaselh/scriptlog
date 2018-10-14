@@ -1,160 +1,147 @@
-<?php 
+<?php
 /**
  * Dispatcher Class
- * Dispatching request from url
- *
- * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
- * @license   MIT
- * @version   1.0
- * @since     Since Release 1.0
- *
+ * 
+ * @package  SCRIPTLOG
+ * @author   Maoelana Noermoehammad
+ * @license  MIT
+ * @version  1.0
+ * @since    Since Release 1.0
+ * 
  */
 class Dispatcher
 {
-/**
- * Errors 
- * @var string errors
- */
-protected $errors;
- 
-protected $rules;
+  private $route;
 
-public function __construct()
-{
+  private $errors;
+
+  private $theme;
+
+  public function __construct()
+  {
+     if (Registry::isKeySet('route')) {
+
+        $this->route = Registry::get('route');
+
+     }
+
+     $this->theme = new Theme();
+
+  }
+
+  public function dispatch()
+  {
+
+    if (!$themeActived = $this->grabTheme()) {
+        # maintenance
+        include(APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS.'maintenance.php');
+
+    } else {
+
+      foreach ( $this->route as $action => $routes ) {
     
- if (Registry::isKeySet('route')) $this->rules = Registry::get('route');
-     
-}
+        if ( preg_match( '~^'.$routes.'$~i', $this->requestURI(), $params ) ) {
+           
+            if (is_dir(APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS)) {
+               include(APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS.$action . '.php' );
+            }
+           
+           // avoid the 404 message 
+           exit();
+   
+        } 
+   
+      }
 
-public function findRules()
-{
-  $keys = array();
-  $values = array();
+      // nothing is found so handle the 404 error
+      include(APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS.'404.php');
+
+    }
+    
+  }
+
+  public function grabTheme()
+  {
+    return $themeSelected = $this->theme->loadTheme('Y');
+  }
+
+  public function findRules()
+  {
+    $keys = array();
+    $values = array();
   
-  foreach ($this->rules as $key => $value) {
+    foreach ($this->rules as $key => $value) {
       
       $keys[] = $key; 
       $values[] = $value;    
+   }
+  
+   return(array("keys" => $keys, "values" => $values));
+  
   }
-  
-  return(array("keys" => $keys, "values" => $values));
-  
-}
 
-public function findRequestParam()
-{
-  $parameters = array();
-  
-  foreach ($this->rules as $key => $value) {
-      
-    if (preg_match('~^'.$value.'$~i', $this->requestURI(), $matches)) {
-        
-      return $parameters[] = $matches;
-   
+  public function findRequestPath($args)
+  {
+    $path = $this->requestPath();
+    $path = explode('/', $path);
+
+    if (isset($path[$args])) {
+
+      return $path[$args];
+
+    } else {
+       
+       return false;
+
     }
-   
+    
   }
-  
-}
 
-public function parseQuery($var)
-{
-    /**
-     *  Use this function to parse out the query array element from
-     *  the output of parse_url().
-     */
+  public function parseQuery()
+  {
     $var  = parse_url($var, PHP_URL_QUERY);
     $var  = html_entity_decode($var);
     $var  = explode('&', $var);
-    $arr  = array();
+    $queries  = array();
     
     foreach($var as $val)
     {
         $x          = explode('=', $val);
-        $arr[$x[0]] = $x[1];
+        $queries[$x[0]] = $x[1];
     }
     
     unset($val, $x, $var);
     
-    return $arr;
+    return $queries;
     
-}
-
-public function URLDispatcher($action = '', $param = null)
-{
- 
- try {
- 
-    $views = array();
-     
-    foreach ($this->rules as $r => $rule) {
-          
-       if (preg_match('~^'.$rule.'$~i', $this->requestURI())) {
-              
-           if (!empty($action) && $action == $r) $fileName = strtolower($r) . '.php';
-           
-           if (is_readable(APP_ROOT . 'public' . DS . $fileName)) {
-          
-               if (!is_null($param)) $views['param'] = preventInject($param);
-               
-               include(APP_ROOT . 'public' . DS . $fileName);
-           
-           }
-        }
-          
-     }
-                 
-  } catch (RuntimeException $e) {
-      
-      $this->errors = LogError::newMessage($e);
-      $this->errors = LogError::customErrorMessage();
   }
+
+  protected function requestPath()
+  {
+    $request_uri = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+    $script_name = explode('/', trim($_SERVER['SCRIPT_NAME'], '/'));
+    $parts = array_diff_assoc($request_uri, $script_name);
      
- }
- 
- public function URLElement($args)
- {
-   $element = $this->requestPath();
-   $element = explode('/', $element);
-   
-   if (isset($element[$args])) {
-       
-       return $element[$args];
-   
-   } else {
-       
-       return false;
-   }
-   
- }
-  
- protected function requestPath()
- {
-   $request_uri = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
-   $script_name = explode('/', trim($_SERVER['SCRIPT_NAME'], '/'));
-   $parts = array_diff_assoc($request_uri, $script_name);
-     
-   if (empty($parts)) {
+    if (empty($parts)) {
       return '/';
-   }
+    }
      
-   $path = implode('/', $parts);
+    $path = implode('/', $parts);
    
-   if (($position = strpos($path, '?')) !== FALSE) {
+    if (($position = strpos($path, '?')) !== FALSE) {
      $path = substr($path, 0, $position);
-   }
+    }
      
-   return $path;
-     
- }
- 
- protected function requestURI()
- {
-   $uri = rtrim(dirname($_SERVER["SCRIPT_NAME"]), '/' );
-   $uri = '/' . trim(str_replace( $uri, '', $_SERVER['REQUEST_URI'] ), '/' );
-   $uri = urldecode($uri);
-   return $uri;
- }
- 
+    return $path;
+   
+  }
+
+  protected function requestURI()
+  {
+    $uri = rtrim(dirname($_SERVER["SCRIPT_NAME"]), '/' );
+    $uri = '/' . trim( str_replace( $uri, '', $_SERVER['REQUEST_URI'] ), '/' );
+    $uri = urldecode( $uri );
+    return $uri;
+  }
+  
 }

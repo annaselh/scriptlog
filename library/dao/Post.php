@@ -229,7 +229,7 @@ public function createPost($bind, $topicId)
   	
  $postId = $this->lastId();
  
- if (is_array($topicId)) {
+ if ((is_array($topicId)) && (!empty($postId))) {
   			
   	foreach ($_POST['topic_id'] as $topicId) {
   	
@@ -276,7 +276,7 @@ public function updatePost($sanitize, $bind, $ID, $topicId)
   	    'post_keyword' => $bind['post_keyword'],
   	    'post_status' => $bind['post_status'],
   	    'comment_status' => $bind['comment_status']
-  	], "`ID` = {$cleanId}");
+  	], "ID = {$cleanId}");
   	 	
   } else {
   	 
@@ -290,7 +290,7 @@ public function updatePost($sanitize, $bind, $ID, $topicId)
           'post_keyword' => $bind['post_keyword'],
           'post_status' => $bind['post_status'],
           'comment_status' => $bind['comment_status']
-      ], "`ID` = {$cleanId}");
+      ], "ID = {$cleanId}");
       
   }
   
@@ -299,7 +299,7 @@ public function updatePost($sanitize, $bind, $ID, $topicId)
   $post_id = $this->findColumn([$cleanId]);
   
   // delete post_topic
-  $stmt2 = $this->delete("post_topic", "`ID` = {$post_id['ID']}");
+  $stmt2 = $this->delete("post_topic", "ID = {$post_id['ID']}");
   	  
   if (is_array($topicId)) {
   	     
@@ -332,7 +332,7 @@ public function updatePost($sanitize, $bind, $ID, $topicId)
 public function deletePost($id, $sanitize)
 { 
  $idsanitized = $this->filteringId($sanitize, $id, 'sql');
- $stmt = $this->delete("posts", "`ID` = {$idsanitized}"); 	  
+ $stmt = $this->delete("posts", "ID = {$idsanitized}"); 	  
 }
 
 /**

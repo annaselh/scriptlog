@@ -70,7 +70,7 @@ class RssFeed
    foreach ($dataPosts as $dataPost) {
        
      //build the full URL to the post
-     $url = APP_URL . 'post'.'/'.(int)$dataPost['ID'].'/'.$dataPost['post_slug'];
+     $url = APP_PROTOCOL . '://'. APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . '/post/'.(int)$dataPost['ID'].'/'.$dataPost['post_slug'];
      
      // date post created
      $published = date(DATE_RSS, strtotime($dataPost['date_created']));

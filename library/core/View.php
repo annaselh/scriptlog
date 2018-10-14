@@ -48,7 +48,9 @@ class View
   public function __construct($eventPath, $uiPath, $modulePath, $file = null)
   {
     
-    if ($eventPath == 'admin') $this->dir = APP_ROOT . APP_ADMIN . DS . $uiPath . DS .$modulePath . DS;
+    if ($eventPath == 'admin') {
+      $this->dir = APP_ROOT . APP_ADMIN . DS . $uiPath . DS .$modulePath . DS;
+    }
    
     if (!is_null($file)) $this->file = $file;
     

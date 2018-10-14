@@ -113,7 +113,7 @@ class Theme extends Dao
        'theme_designer' => $bind['theme_designer'],
        'theme_directory' => $bind['theme_directory'],
        'theme_status' => $bind['theme_status']
-     ], "`ID` = {$cleanId}");
+     ], "ID = {$cleanId}");
 
   }
   
@@ -129,7 +129,7 @@ class Theme extends Dao
   public function deleteTheme($id, $sanitize)
   {
     $idsanitized = $this->filteringId($sanitize, $id, 'sql');
-    $stmt = $this->deleteRecord("themes", "`ID` = {$idsanitized}");
+    $stmt = $this->deleteRecord("themes", "ID = {$idsanitized}");
   }
   
   /**
@@ -227,8 +227,7 @@ class Theme extends Dao
    */
   public function loadTheme($theme_status)
   {
-    $sql = "SELECT ID, theme_title, theme_desc, theme_designer, theme_directory, 
-            theme_status FROM themes WHERE theme_status = ?";
+    $sql = "SELECT ID, theme_directory, theme_status FROM themes WHERE theme_status = ?";
     $this->setSQL($sql);
     $loadTheme = $this->findRow([$theme_status]);
 

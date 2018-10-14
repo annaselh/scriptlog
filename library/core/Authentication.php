@@ -54,8 +54,8 @@ class Authentication
           $this->errors = $_SESSION['errors'];
           $this->numErrors = count($this->errors);
           
-          unset($_SESSION['value_array']);
-          unset($_SESSION['error_array']);
+          unset($_SESSION['values']);
+          unset($_SESSION['errors']);
       } else {
           $this->numErrors = 0;
       }
@@ -139,6 +139,23 @@ class Authentication
     return $this->errors;    
   }
   
+  /**
+   * ValidateCSRFToken
+   * @return boolean
+   */
+  public function validateCSRFToken($key)
+  {
+    $checkCSRFToken = csrf_check_token('csrfToken', $_POST, 60*10);
+
+    if ($checkCSRFToken === false) {
+        $this->setError("Sorry there was unsuspected attempt");
+        return false;
+    }
+    
+    return true;
+
+  }
+
   /**
    * validate form field and its value
    * 
@@ -274,7 +291,7 @@ class Authentication
    * @param string $value
    * @return boolean
    */
-  private function checFormat($field, $value)
+  private function checkFormat($field, $value)
   {
       switch ($field) {
           
@@ -290,7 +307,7 @@ class Authentication
           case 'new_pass':
               
               $regex = "/^(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$";
-                $msg = "Password must contain at least (1) upper case letter";
+                $msg  = "Password must contain at least (1) upper case letter";
                 $msg .= "Password must contain at least (1) lower case letter";
                 $msg .= "Password must contain at least (1) number or special character";
                 $msg .= "Password must contain at least (8) characters in length";

@@ -7,8 +7,8 @@ ini_set("memory_limit", "2M");
 
 $key = '5c12IpTl0g!@#';
 $checkIncKey = sha1(mt_rand(1, 1000).$key);
-$app_hostname = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
-$app_protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https';
+$protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https';
+$hostname = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 
 define('DS', DIRECTORY_SEPARATOR);
 define('APP_TITLE', 'Scriptlog');
@@ -23,9 +23,9 @@ if (!defined('APP_ROOT')) define('APP_ROOT', dirname(dirname(__FILE__)) . DS);
 
 if (!defined('PHP_EOL')) define('PHP_EOL', strtoupper(substr(PHP_OS, 0, 3) == 'WIN') ? "\r\n" : "\n");
 
-if (!defined('APP_PROTOCOL')) define('APP_PROTOCOL', $app_protocol);
+if (!defined('APP_PROTOCOL')) define('APP_PROTOCOL', $protocol);
 
-if (!defined('APP_HOSTNAME')) define('APP_HOSTNAME', $app_hostname);
+if (!defined('APP_HOSTNAME')) define('APP_HOSTNAME', $hostname);
 
 if (!defined('SCRIPTLOG_START_TIME')) define('SCRIPTLOG_START_TIME', microtime(true));
 
@@ -38,7 +38,7 @@ if (file_exists(__DIR__ . '/../config.sample.php')) {
 }
 
 // call functions in folder utility
-$function_directory = new RecursiveDirectoryIterator(__DIR__ . '/utility/', FilesystemIterator::FOLLOW_SYMLINKS);
+$function_directory = new RecursiveDirectoryIterator(__DIR__ . DS .'utility'. DS, FilesystemIterator::FOLLOW_SYMLINKS);
 $filter_iterator = new RecursiveCallbackFilterIterator($function_directory, function ($current, $key, $iterator){
     
     // skip hidden files and directories
@@ -49,7 +49,7 @@ $filter_iterator = new RecursiveCallbackFilterIterator($function_directory, func
     if ($current->isDir()) {
         
         // only recurse into intended subdirectories
-        return $current->getFilename() === __DIR__ . '/utility/';
+        return $current->getFilename() === __DIR__ . DS .'utility'. DS;
         
     } else {
         
@@ -68,7 +68,7 @@ foreach ($files_dir_iterator as $file) {
         
 }
     
-if (is_dir(APP_ROOT . APP_LIBRARY) && is_file(APP_ROOT . APP_LIBRARY . '/Scriptloader.php')) {
+if (is_dir(APP_ROOT . APP_LIBRARY) && is_file(APP_ROOT . APP_LIBRARY . DS . 'Scriptloader.php')) {
     
     require 'Scriptloader.php';
     
@@ -76,25 +76,44 @@ if (is_dir(APP_ROOT . APP_LIBRARY) && is_file(APP_ROOT . APP_LIBRARY . '/Scriptl
 
 $loader = new Scriptloader();
 $loader -> setLibraryPaths(array(
-    APP_ROOT . APP_LIBRARY . '/core/',
-    APP_ROOT . APP_LIBRARY . '/dao/',
-    APP_ROOT . APP_LIBRARY . '/event/',
-    APP_ROOT . APP_LIBRARY . '/app/',
-    APP_ROOT . APP_LIBRARY . '/plugins/',
+    APP_ROOT . APP_LIBRARY . DS .'core'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'dao'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'event'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'app'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'controller'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'plugins'. DS
 ));
 
 $loader -> runLoader();
 
+//=========================================
+// RULES
+//=========================================
+
+/* rules used by dispatcher to route request */
+
+/* 
+    'picture'   => "/picture/(?'text'[^/]+)/(?'id'\d+)",    // '/picture/some-text/51'
+    'album'     => "/album/(?'album'[\w\-]+)",              // '/album/album-slug'
+    'category'  => "/category/(?'category'[\w\-]+)",        // '/category/category-slug'
+    'page'      => "/page/(?'page'about|contact)",          // '/page/about', '/page/contact'
+    'post'      => "/(?'post'[\w\-]+)",                     // '/post-slug'
+    'home'      => "/"                                      // '/'  
+ */
+
+//=========================================
+
 $rules = array(
     
-    '/'        => "/",
+    'home'     => "/",
     'category' => "/category/(?'category'[\w\-]+)",
-    'page'     => "(?'page'[^/]+)",
-    'post'     => "/post/(?'id'\d+)/(?'post'[\w\-]+)",
+    'page'     => "/page/(?'page'about|contact|faculty|)",
+    'post'     => "/(?'post'[\w\-]+)",
     'posts'    => "/posts/([^/]*)",
     'search'   => "(?'search'[\w\-]+)"
     
 );
+
 
 $dbc = DbFactory::connect(['mysql:host='.$config['db']['host'].';dbname='.$config['db']['name'],
     $config['db']['user'], $config['db']['pass']
@@ -110,7 +129,7 @@ $sanitizer = new Sanitize();
 
 # set_exception_handler('LogError::exceptionHandler');
 # set_error_handler('LogError::errorHandler');
-register_shutdown_function('scriptlog_shutdown_fatal');
+# register_shutdown_function('scriptlog_shutdown_fatal');
 
 if (!isset($_SESSION)) {
     

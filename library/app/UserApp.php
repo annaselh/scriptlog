@@ -18,9 +18,7 @@ class UserApp extends BaseApp
   
   public function __construct(UserEvent $userEvent)
   {
-    
-    $this->userEvent = $userEvent;
-   
+    $this->userEvent = $userEvent;   
   }
   
   public function listItems()
@@ -350,6 +348,36 @@ class UserApp extends BaseApp
     direct_page('index.php?load=users&status=userDeleted', 200);
   }
   
+  public function login()
+  {
+    $success = $this->userEvent->login($_POST);
+
+    if ($success) {
+    
+        $_SESSION['statusMessage'] = "Successful login!";
+    
+        $_SESSION['KCFINDER'] = array();
+         
+        $_SESSION['KCFINDER']['disabled'] = false;
+        
+        $_SESSION['KCFINDER']['uploadURL'] =  APP_DIR . 'files/picture/';
+        
+        $_SESSION['KCFINDER']['uploadDir'] =  "";
+
+        
+    
+      } else {
+    
+        $_SESSION['values'] = $_POST;
+        $_SESSION['errors'] = $authenticator->getListErrors();
+    
+      }
+    
+      $logInPage = APP_PROTOCOL . '://' . APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . '/index.php?load=dashboard';
+      header("Location: $logInPage");
+      
+  }
+
   protected function setView($viewName)
   {
      $this->view = new View('admin', 'ui', 'users', $viewName);

@@ -28,5 +28,13 @@ Header set Cache-Control "max-age=31536000, public"
 ############## URL Friendly ################
 <IfModule mod_rewrite.c>
 RewriteEngine On 
-
+#RewriteCond %{HTTP_HOST} ^www\.yourdomain\.TLD$
+#RewriteRule ^/?$ "https\:\/\/yourdomain\.TLD\/" [R==301, L]
+RewriteCond %{REQUEST_FILENAME} !\.(ico|css|png|jpg|gif|js|eot|svg|ttf|woff|woff2)$ [NC]
+RewriteRule ^public/.*$ index.php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l 
+RewriteRule ^(.*)$ index.php [QSA,L]
+ErrorDocument 404 /public/404.php
 </IfModule>

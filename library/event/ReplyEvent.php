@@ -60,5 +60,62 @@ class ReplyEvent
     $this->reply_status = $replyStatus;
   }
 
-  
+  public function grabReplies($orderBy = 'ID') 
+  {
+    return $this->replyDao->findReplies($orderBy);
+  }
+
+  public function grabReply($id)
+  {
+    return $this->replyDao->findReply($id, $this->sanitize);
+  }
+
+  public function addReply()
+  {
+    $this->validator->sanitize($this->comment_id, 'int');
+    $this->validator->sanitize($this->user_id, 'int');
+    $this->validator->sanitize($this->reply_content, 'string');
+
+    return $this->replyDao->createReply([
+      'comment_id' => $this->comment_id,
+      'user_id' => $this->user_id,
+      'reply_content' => $this->reply_content,
+      'date_publish' => date("Y-m-d H:i:s")
+    ]);
+
+  }
+
+  public function modifyReply()
+  {
+    $this->validator->sanitize($this->reply_id, 'int');
+    $this->validator->sanitize($this->comment_id, 'int');
+    $this->validator->sanitize($this->user_id, 'int');
+    $this->validator->sanitize($this->reply_content, 'string');
+
+    return $this->replyDao->updateReply($this->sanitize, [
+      'comment_id' => $this->comment_id,
+      'user_id' => $this->user_id,
+      'reply_content' => $this->reply_content,
+      'reply_status' => $this->reply_status
+    ], $this->reply_id);
+
+  }
+
+  public function removeReply()
+  {
+    $this->validator->sanitize($this->reply_id, 'int');
+
+    if (!$data_reply = $this->replyDao->findReply($this->reply_id, $this->sanitize)) {
+       direct_page('index.php?load=reply&error=replyNotFound', 404);
+    }
+
+    return $this->replyDao->deleteReply($this->reply_id, $this->sanitize);
+
+  }
+
+  public function totalReplies($data = null)
+  {
+    return $this->replyDao->totalRelyRecords($data);
+  }
+
 }

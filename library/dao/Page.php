@@ -157,7 +157,7 @@ public function updatePage($sanitize, $bind, $ID)
  	    'post_slug' => $bind['post_slug'],
  	    'post_status' => $bind['post_status'],
  	    'comment_status' => $bind['comment_status']
- 	], "`ID` = {$cleanId}"." AND `post_type` = {$bind['post_type']}");
+ 	], "ID = {$cleanId}"." AND `post_type` = {$bind['post_type']}");
  	
  } else {
  	
@@ -168,7 +168,7 @@ public function updatePage($sanitize, $bind, $ID)
  	    'post_slug' => $bind['post_slug'],
  	    'post_status' => $bind['post_status'],
  	    'comment_status' => $bind['comment_status']
- 	    ], "`ID` = {$cleanId}"." AND `post_type` = {$bind['post_type']}");
+ 	    ], "ID = {$cleanId}"." AND `post_type` = {$bind['post_type']}");
  	
  }
   	

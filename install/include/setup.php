@@ -93,7 +93,7 @@ PRIMARY KEY(ID)
 $tableMenu = "CREATE TABLE IF NOT EXISTS menu(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
 menu_label VARCHAR(200) NOT NULL,
-menu_link VARCHAR(255) NOT NULL DEFAULT '#',
+menu_link VARCHAR(255) DEFAULT NULL,
 menu_sort INT(5) NOT NULL DEFAULT '0',
 menu_status enum('Y','N') NOT NULL DEFAULT 'Y',
 PRIMARY KEY(ID)
@@ -102,7 +102,7 @@ PRIMARY KEY(ID)
 $tableMenuChild = "CREATE TABLE IF NOT EXISTS menu_child(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
 menu_child_label VARCHAR(200) NOT NULL,
-menu_child_link VARCHAR(255) NOT NULL DEFAULT '#',
+menu_child_link VARCHAR(255) DEFAULT NULL,
 menu_id BIGINT(20) unsigned NOT NULL,
 menu_sub_child BIGINT(20) unsigned NOT NULL,
 menu_child_sort INT(5) NOT NULL DEFAULT '0',,
@@ -151,11 +151,19 @@ user_registered, user_session)
 VALUES (?, ?, ?, ?, ?, ?)";
 
 $saveAppKey = "INSERT INTO settings (app_key) VALUES(?)";
+$saveTheme = "INSERT INTO themes (theme_title, theme_desc, theme_designer, theme_directory, theme_status) VALUES (?, ?, ?, ?, ?)";
 
+// Users  
 $date_registered = date("Ymd");
 $user_session = md5($user_email);
 $shield_pass = password_hash(base64_encode(hash('sha384', $password, true)), PASSWORD_DEFAULT);;
 $user_level = 'administrator';
+
+// Theme 
+$theme_title = "Soerabaia";
+$theme_designer = "Ondrej Svestka";
+
+
 
 #create users table
 if ($link instanceof mysqli) $newTableUser = $link -> query($tableUser);

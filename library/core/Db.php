@@ -53,13 +53,15 @@ class Db implements DbInterface
       
       $dbc = new PDO($dsn, $dbUser, $dbPass, $options);
       
-      $this->dbc = $dbc;
+      if (!$this->dbc = $dbc) {
+          throw new DbException("Connection Failed!");
+      }
        
    } catch (DbException $e) {
        
       $this->closeDbConnection();
       $this->error = LogError::newMessage($e);
-      $this->error = LogError::customErrorMessage();
+      $this->error = LogError::customErrorMessage('admin');
       
    }
    
@@ -98,27 +100,35 @@ class Db implements DbInterface
   * {@inheritDoc}
   * @see DbInterface::dbInsert()
   */
- public function dbInsert($tablename, $params)
+ public function dbInsert($tablename, array $params)
  {
     try {
         
-        ksort($params);
-        $columnsNames = implode('`,`',array_keys($params));
-        $columnsValues = ':' . implode(', :',array_keys($params));
-        
-        $stmt = $this->dbc->prepare("INSERT INTO $tablename(`$columnsNames`) VALUES($columnsValues)");
-        
-        foreach ($params as $key => $value) {
-            $stmt->bindValue(":$key", $value);
+        $sql = "INSERT INTO $tablename ";
+        $fields = array_keys($params);
+        $values = array_values($params);
+
+        $sql .= '('.implode(',', $fields).') ';
+
+        $args = [];
+        foreach ($fields as $f) {
+            $args[] = '?';
         }
+        $sql .= 'VALUES ('.implode(',', $args).') ';
+
+        $statement = $this->dbc->prepare($sql);
         
-        return $stmt->execute();
-        
+        foreach ($values as $i => $v) {
+            $statement->bindValue($i+1, $v);
+        }
+
+        return $statement->execute();
+
     } catch (DbException $e) {
         
        $this->closeDbConnection();
        $this->error = LogError::newMessage($e);
-       $this->error = LogError::customErrorMessage();
+       $this->error = LogError::customErrorMessage('admin');
        
     }
     
@@ -149,12 +159,13 @@ class Db implements DbInterface
        
        foreach ($params as $key => $value) {
            
-           $columns .= "`$key` = :$key,";
+           $columns .= "$key = :$key,";
+           
        }
        
        $columns = rtrim($columns,',');
        
-       $stmt = $this->dbc->prepare("UPDATE $tablename SET $columns WHERE $where");
+       $stmt = $this->dbc->prepare("UPDATE $tablename SET $columns WHERE  $where");
        
        foreach ($params as $key => $value) {
            $stmt->bindValue(":$key", $value);

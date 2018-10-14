@@ -88,18 +88,18 @@ class Menu extends Dao
        'menu_sort' => $this->findSortMenu()
    ]);
    
+   $menu_id = $this->lastId();
+
    $getLink = "SELECT ID, menu_link FROM menu WHERE ID = ?";
 
    $this->setSQL($getLink);
 
-   $menu_link = $this->findColumn([$this->lastId()]);
+   $link = $this->findRow([$menu_id]);
 
-   if (empty($menu_link['menu_link'])) {
-
-      $stmt2 = $this->modify("menu", ['menu_link' => '#'], "`ID` = {$menu_link['ID']}");
-
+   if ($link['menu_link'] == '') {
+     $stmt2 = $this->modify("menu", ['menu_link' => '#'], "ID = {$link['ID']}");
    }
-
+   
  }
  
  /**
@@ -117,7 +117,7 @@ class Menu extends Dao
       'menu_link' => $bind['menu_link'],
       'menu_sort' => $bind['menu_sort'],
       'menu_status' => $bind['menu_status']
-  ], "`ID` = {$cleanId}");
+  ], "ID = {$cleanId}");
   
  }
  
@@ -131,7 +131,7 @@ class Menu extends Dao
  public function activateMenu($id, $sanitize)
  {
    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
-   $stmt = $this->modify("menu", ['menu_status' => 'Y'], "`ID` => {$idsanitized}");
+   $stmt = $this->modify("menu", ['menu_status' => 'Y'], "ID => {$idsanitized}");
  }
 
  /**
@@ -144,7 +144,7 @@ class Menu extends Dao
  public function deactivateMenu($id, $sanitize)
  {
   $idsanitized = $this->filteringId($sanitize, $id, 'sql');
-  $stmt = $this->modify("menu", ['menu_status' => 'N'], "`ID` => {$idsanitized}");
+  $stmt = $this->modify("menu", ['menu_status' => 'N'], "ID => {$idsanitized}");
  }
 
  /**
@@ -157,7 +157,7 @@ class Menu extends Dao
  public function deleteMenu($id, $sanitize)
  {
   $cleanId = $this->filteringId($sanitize, $id, 'sql');
-  $stmt = $this->deleteRecord("menu", "`ID` = {$cleanId}");
+  $stmt = $this->deleteRecord("menu", "ID = {$cleanId}");
  }
 
  /**

@@ -7,7 +7,7 @@
  * @author   Maoelana Noermoehammad <alanmoehammad@gmail.com>
  * @license  https://opensource.org/licenses/MIT MIT License
  * @link     https://scriptlog.kartatopia.com
- * PHP version 7
+ * 
  */
 if (file_exists(__DIR__ . '/../config.php')) {
     
@@ -19,6 +19,8 @@ if (file_exists(__DIR__ . '/../config.php')) {
     
 }
 
+if (check_creadentials($sanitizer)) {
+    
 require 'admin-layout.php';
 
 $breadCrumbs = isset($_GET['load']) ? htmlentities(strip_tags($_GET['load'])) : http_response_code();
@@ -37,3 +39,5 @@ admin_header($stylePath, $breadCrumbs, $allowedQuery);
 //require 'navigation.php';
 require 'request.php';
 admin_footer($currentURL);
+
+}

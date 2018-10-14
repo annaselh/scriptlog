@@ -1,7 +1,8 @@
 <?php
 
 if (file_exists(__DIR__ . '/../config.php')) {
-    include(__DIR__ . '/../library/main.php');
+    
+  include(__DIR__ . '/../library/main.php');
     
 } else {
     
@@ -9,6 +10,17 @@ if (file_exists(__DIR__ . '/../config.php')) {
     include(__DIR__ . '/../library/main-reserve.php');
 }
 
+$user = new User();
+$authenticator = new Authentication();
+$authenticator->setUser($user);
+$userEvent = new UserEvent($user, $authenticator, $sanitizer);
+$userApp = new UserApp($userEvent);
+
+$loginFormSubmitted = isset($_POST['Login']);
+
+if (empty($loginFormSubmitted) == false) {
+    
+}
 
 ?>
 
@@ -50,33 +62,36 @@ if (file_exists(__DIR__ . '/../config.php')) {
   <!-- /.login-logo -->
   <div class="login-box-body">
   
-    <form action="../../index2.html" method="post">
+    <form name="formlogin" action="login.php" method="post" onSubmit="return validasi(this)" role="form" autocomplete="off">
       <div class="form-group has-feedback">
-        <input type="email" class="form-control" placeholder="Email">
+        <input type="email" class="form-control" name="user_email" placeholder="Email" required autofocus maxlength="186" value="<?= $authenticator->getValue("user_email"); ?>" >
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        <p class="help-block"><?= "<span style=\"color:#ff0000;\">".$authenticator->getError("user_email")."</span>"; ?></p>
       </div>
       <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password">
+        <input type="password" class="form-control" name="user_pass" placeholder="Password" required maxlength="32" autocomplete="off" >
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        <p class="help-block"><?= "<span style=\"color:#ff0000;\">".$authenticator->getError("user_pass")."</span>"; ?></p>
       </div>
       <div class="row">
         <div class="col-xs-8">
           <div class="checkbox icheck">
             <label>
-              <input type="checkbox"> Remember Me
+              <input type="checkbox" name="rememberme" <?=($authenticator->getValue("rememberme") != "") ? "checked": ""?>> Remember Me
             </label>
           </div>
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">Log In</button>
+        <input type="hidden" name="csrfToken" value="<?= csrf_generate_token('csrfToken'); ?>">
+        <input type="submit" class="btn btn-primary btn-block btn-flat" name="Login" value="Login">
         </div>
         <!-- /.col -->
       </div>
     </form>
 
     <a href="reset-password.php" class="text-center">Lost your password?</a>
-
+    
   </div>
   <!-- /.login-box-body -->
 </div>
@@ -88,6 +103,7 @@ if (file_exists(__DIR__ . '/../config.php')) {
 <script src="assets/components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- iCheck -->
 <script src="assets/components/iCheck/icheck.min.js"></script>
+<script src="assets/dist/js/checklogin.js"></script>
 <script>
   $(function () {
     $('input').iCheck({

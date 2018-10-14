@@ -97,11 +97,11 @@ class Plugin extends Dao
      
      $this->setSQL($getLink);
      
-     $link = $this->findColumn([$plugin_id]);
+     $link = $this->findRow([$plugin_id]);
      
      if ($link['plugin_link'] == '') {
          
-        $stmt2 = $this->modify("plugin", ['plugin_link' => '#'], "`ID` = {$link['ID']}");
+        $stmt2 = $this->modify("plugin", ['plugin_link' => '#'], "ID = {$link['ID']}");
          
      }
      
@@ -123,7 +123,7 @@ class Plugin extends Dao
         'plugin_desc' => $bind['plugin_desc'],
         'plugin_status' => $bind['plugin_status'],
         'plugin_sort' => $bind['plugin_sort']
-    ], "`ID` = {$cleanId}");
+    ],  "ID = {$cleanId}");
     
   }
   
@@ -135,7 +135,7 @@ class Plugin extends Dao
   public function activatePlugin($id, $sanitize)
   {
     $idsanitized = $this->filteringId($sanitize, $id, 'sql');
-    $stmt = $this->modify("plugin", ['plugin_status' => 'Y'], "`ID` = {$idsanitized}");
+    $stmt = $this->modify("plugin", ['plugin_status' => 'Y'], "ID = {$idsanitized}");
   }
   
   /**
@@ -146,7 +146,7 @@ class Plugin extends Dao
   public function deactivatePlugin($id, $sanitize)
   {
     $idsanitized = $this->filteringId($sanitize, $id, 'sql');
-    $stmt = $this->modify("plugin", ['plugin_status' => 'N'], "`ID` = {$idsanitized}");  
+    $stmt = $this->modify("plugin", ['plugin_status' => 'N'], "ID = {$idsanitized}");  
   }
   
   /**

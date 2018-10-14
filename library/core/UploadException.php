@@ -9,7 +9,7 @@
  * @since     Since Release 1.0
  *
  */
-class ImageUploaderException extends AppException
+class UploadException extends CoreException
 {
 
 }

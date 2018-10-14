@@ -9,7 +9,7 @@
  * @since     Since Release 1.0
  *
  */
-class ViewException extends AppException
+class ViewException extends CoreException
 {
   
 }

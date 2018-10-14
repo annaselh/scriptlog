@@ -12,9 +12,9 @@
  * $config['main']['array'][] = 'Some Value';
  * $config['main']['array'][] = 'ADD';
  * $config['third_section']['urls']['docs'] = 'http://php.net';
- * // write ini file
- * ===> call function: 
- *      write_ini('config.ini', $config);
+ * ===== write ini file =====
+ * call function: 
+ * write_ini('config.ini', $config);
  * 
  * @link https://stackoverflow.com/questions/5695145/how-to-read-and-write-to-an-ini-file-with-php
  * @param string $file

@@ -226,7 +226,7 @@ class User extends Dao
           
      }
      
-     $stmt = $this->modify("users", $bind, "`ID` = {$cleanId}");
+     $stmt = $this->modify("users", $bind, "ID = {$cleanId}");
      
  }
 
@@ -238,28 +238,11 @@ class User extends Dao
   * @param array $bind
   * @param integer $userId
   */
- public function updateUserSession($sanitize, $bind, $userId)
+ public function updateUserSession($sanitize, $user_session, $userId)
  {
-   try {
-       
-       $cleanId = $this->filteringId($sanitize, $userId, 'sql');
-       
-       if (function_exists("random_bytes")) {
-           $user_session = bin2hex(random_bytes(32).microtime()*10000000);
-       } elseif (function_exists("openssl_random_pseudo_bytes")) {
-           $user_session = bin2hex(openssl_random_pseudo_bytes(32).microtime()*10000000);
-       } else {
-          throw new DbException("No cryptographycal support for your php version!");    
-       }
-       
-       $stmt = $this->modify("users", ['user_session' => $user_session], "`ID` = {$cleanId}");
-       
-   } catch (DbException $e) {
-       
-       $this->error = LogError::newMessage($e);
-       $this->error = LogError::customErrorMessage();
-       
-   }
+    $cleanId = $this->filteringId($sanitize, $userId, 'sql');
+    $bind = ['user_session' => $user_session];
+    $stmt = $this->modify("users", $bind, "ID = {$cleanId}");
  }
  
  /**
@@ -279,7 +262,7 @@ class User extends Dao
    } else {
        
        $bind = ['user_activation_key' => '1', 'user_registered' => date("Ymd")];
-       $stmt = $this->modify("users", $bind, "`user_activation_key` = {$key}");
+       $stmt = $this->modify("users", $bind, "user_activation_key = {$key}");
        return $stmt -> rowCount();
        
    }
@@ -298,7 +281,7 @@ class User extends Dao
   
   $clean_id = $this->filteringId($sanitize, $ID, 'sql');
    
-  $stmt = $this->deleteRecord("users", "`ID` = {$clean_id}");
+  $stmt = $this->deleteRecord("users", "ID = {$clean_id}");
 	 
  }
  

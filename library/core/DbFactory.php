@@ -46,7 +46,7 @@ class DbFactory
      } catch (DbException $e) {
          
          self::$error = LogError::newMessage($e);
-         $self::$error = LogError::customErrorMessage();
+         self::$error = LogError::customErrorMessage();
          
      }
      

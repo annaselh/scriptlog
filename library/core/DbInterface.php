@@ -1,6 +1,6 @@
 <?php 
 /**
- * DbInterface - Interface
+ * DbInterface interface
  * Describe the functionality
  * that any database adapter will need.
  *
@@ -20,7 +20,7 @@ interface DbInterface
  
  public function dbQuery($sql, $parameters = null);
  
- public function dbInsert($tablename, $params);
+ public function dbInsert($tablename, array $params);
  
  public function dbUpdate($tablename, $params, $where);
  

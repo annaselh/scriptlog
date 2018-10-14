@@ -22,7 +22,7 @@ class Reply extends Dao
   public function findReplies($orderBy = 'ID')
   {
     $sql = "SELECT ID, comment_id, user_id, 
-            reply_content, reply_status, date_publish 
+            reply_content, reply_status, reply_date 
             FROM comment_reply ORDER BY :orderBy DESC ";
     
     $this->setSQL($sql);
@@ -37,8 +37,8 @@ class Reply extends Dao
   public function findReply($id, $sanitize)
   {
     $idsanitized = $this->filteringId($sanitize, $id, 'sql');
-    $sql = "SELECT ID, comment_id, user_id, reply_content, reply_status
-            date_publish FROM comment_reply WHERE ID = ?";
+    $sql = "SELECT ID, comment_id, user_id, reply_content, reply_status, reply_date 
+            FROM comment_reply WHERE ID = ?";
     $this->setSQL($sql);
     $replyDetails = $this->findRow([$idsanitized], PDO::FETCH_ASSOC);
     if (empty($replyDetails)) return false;
@@ -53,19 +53,20 @@ class Reply extends Dao
         'comment_id' => $bind['comment_id'],
         'user_id' => $bind['user_id'],
         'reply_content' => $bind['reply_content'],
-        'date_publish' => $bind['date_publish']
+        'reply_date' => $bind['reply_date']
     ]);
     
   }
   
-  public function updateReply($id, $bind)
+  public function updateReply($sanitize, $bind, $id)
   {
+     $cleanId = $this->filteringId($sanitize, $id, 'sql');
      $stmt = $this->modify("comment", [
          'comment_id' => $bind['comment_id'],
          'user_id' => $bind['user_id'],
          'reply_content' => $bind['reply_content'],
          'reply_status' => $bind['reply_status']
-     ], "`ID` = {$id}");
+     ], "ID = {$cleanId}");
      
   }
   
@@ -97,5 +98,12 @@ class Reply extends Dao
     return dropdown($name, $reply_status, $selected);
 
   }
-  
+
+  public function totalReplyRecords($data = null)
+  {
+    $sql = "SELECT ID FROM comment_reply";
+    $this->setSQL($sql);
+    return $this->checkCountValue($data);
+  }
+
 }
