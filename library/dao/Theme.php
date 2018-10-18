@@ -227,13 +227,14 @@ class Theme extends Dao
    */
   public function loadTheme($theme_status)
   {
-    $sql = "SELECT ID, theme_directory, theme_status FROM themes WHERE theme_status = ?";
+    $sql = "SELECT ID, theme_directory, 
+           theme_status FROM themes WHERE theme_status = :theme_status";
     $this->setSQL($sql);
-    $loadTheme = $this->findRow([$theme_status]);
+    $activeTheme = $this->findRow([':theme_status' => $theme_status]);
 
-    if (empty($loadTheme)) return false;
+    if (empty($activeTheme)) return false;
 
-    return $loadTheme;
+    return $activeTheme;
     
   }
   

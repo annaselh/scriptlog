@@ -7,19 +7,41 @@ if (file_exists(__DIR__ . '/../config.php')) {
 } else {
     
     $config = require dirname(dirname(__FILE__)).'/config.sample.php';
-    include(__DIR__ . '/../library/main-reserve.php');
+    include(__DIR__ . '/../library/main-dev.php');
 }
 
-$user = new User();
-$authenticator = new Authentication();
-$authenticator->setUser($user);
-$userEvent = new UserEvent($user, $authenticator, $sanitizer);
-$userApp = new UserApp($userEvent);
-
+$errors = [];
 $loginFormSubmitted = isset($_POST['Login']);
 
 if (empty($loginFormSubmitted) == false) {
-    
+  
+  $userDao = new User();
+  $authenticator = new Authentication($dbc);
+
+  $user_email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+  $user_pass = isset($_POST['password']) ? preventInject($_POST['password']) : "";
+
+  $badCSRF = true;
+
+  $_SESSION['userLoggedIn'] = false;
+
+  if (!isset($_POST['csrf']) || !isset($_SESSION['CSRF']) || empty($_POST['csrf'])
+ 	|| $_POST['csrf'] !== $_SESSION['CSRF']) {
+ 			
+ 	 $errors['errorMessage'] = 'Sorry, there was a security issue';
+ 	
+ 	 $badCSRF = true;
+ 	
+ } elseif (empty($user_email) || empty($user_pass)) {
+
+   $errors['errorMessage'] = "All Column must be filled";
+
+ } elseif (is_valid_email_address($user_email) === 0) {
+
+   $errors['errorMessage'] = "Please enter a valid email address";
+
+ } 
+
 }
 
 ?>
@@ -62,28 +84,58 @@ if (empty($loginFormSubmitted) == false) {
   <!-- /.login-logo -->
   <div class="login-box-body">
   
-    <form name="formlogin" action="login.php" method="post" onSubmit="return validasi(this)" role="form" autocomplete="off">
+  <?php if (isset($errors['errorMessage'])) { ?>
+
+        
+<div class="alert alert-danger alert-dismissable">
+  <button type="button" class="close" data-dismiss="alert"
+    aria-hidden="true">&times;</button>
+  <?php echo $errors['errorMessage']; ?>
+</div>
+
+<?php 	} 
+
+if (isset($_GET['status']) && $_GET['status'] == 'ganti'){
+
+   echo '<div class="alert alert-info alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Kata sandi sudah di' . $_GET['status'] . '. Silahkan masuk!</div>';
+
+}elseif (isset($_GET['status']) && $_GET['status'] == 'aktif')
+{
+  echo '<div class="alert alert-info alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Akun sudah di' . $_GET['status'] . 'kan. Silahkan masuk!</div>';
+}
+
+?>
+
+  <form name="formlogin" action="login.php" method="post" onSubmit="return validasi(this)" role="form" autocomplete="off">
       <div class="form-group has-feedback">
-        <input type="email" class="form-control" name="user_email" placeholder="Email" required autofocus maxlength="186" value="<?= $authenticator->getValue("user_email"); ?>" >
+        <input type="email" class="form-control" name="user_email" placeholder="Email" required autofocus maxlength="186" 
+        value="<?=(isset($_POST['user_email'])) ? htmlspecialchars(stripslashes($_POST['user_email']), ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?> " >
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-        <p class="help-block"><?= "<span style=\"color:#ff0000;\">".$authenticator->getError("user_email")."</span>"; ?></p>
+        
       </div>
       <div class="form-group has-feedback">
         <input type="password" class="form-control" name="user_pass" placeholder="Password" required maxlength="32" autocomplete="off" >
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-        <p class="help-block"><?= "<span style=\"color:#ff0000;\">".$authenticator->getError("user_pass")."</span>"; ?></p>
+        
       </div>
       <div class="row">
         <div class="col-xs-8">
           <div class="checkbox icheck">
             <label>
-              <input type="checkbox" name="rememberme" <?=($authenticator->getValue("rememberme") != "") ? "checked": ""?>> Remember Me
+              <input type="checkbox" name="rememberme" <?=(isset($_POST['rememberme']) != "") ? "checked": ""; ?>> Remember Me
             </label>
           </div>
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-        <input type="hidden" name="csrfToken" value="<?= csrf_generate_token('csrfToken'); ?>">
+        <?php 
+    // prevent CSRF
+    $key= random_generator(13);
+    $CSRF = bin2hex(openssl_random_pseudo_bytes(32).$key);
+    $_SESSION['CSRF'] = $CSRF;
+    ?>
+     <input type="hidden" name="csrf" value="<?php echo $CSRF; ?>">
         <input type="submit" class="btn btn-primary btn-block btn-flat" name="Login" value="Login">
         </div>
         <!-- /.col -->

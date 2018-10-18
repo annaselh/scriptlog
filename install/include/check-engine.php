@@ -27,7 +27,7 @@ function check_php_version()
 function check_mysql_version($link, $min)
 {
   if ($link instanceof mysqli) 
-  $mysql_version = $link -> query('SELECT VERSION()')->fetchColumn();
+  $mysql_version = $link->server_info;
   preg_match("/^[0-9\.]+/", $mysql_version, $match);
   $mysql_version = $match[0];
   return (version_compare($mysql_version, $min) >= 0);

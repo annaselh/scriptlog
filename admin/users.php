@@ -3,9 +3,9 @@
 $action = isset($_GET['action']) ? htmlentities(strip_tags($_GET['action'])) : "";
 $userId = isset($_GET['userId']) ? abs((int)$_GET['userId']) : 0;
 $sessionId = isset($_GET['sessionId']) ? $_GET['sessionId'] : "";
-$authenticator = new Authentication();
 $userDao = new User();
-$userEvent = new UserEvent($userDao, $authenticator, $sanitizer);
+$validator = new FormValidator();
+$userEvent = new UserEvent($userDao, $validator, $sanitizer);
 $userApp = new UserApp($userEvent);
 
 switch ($action) {

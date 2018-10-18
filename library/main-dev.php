@@ -121,7 +121,6 @@ $dbc = DbFactory::connect(['mysql:host='.$config['db']['host'].';dbname='.$confi
 
 Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
 
-$configurations = new Configuration($dbc);
 $searchPost = new SearchSeeker($dbc);
 $frontPaginator = new Paginator(10, 'p');
 $postFeeds = new RssFeed($dbc);

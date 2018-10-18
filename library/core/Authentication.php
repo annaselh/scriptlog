@@ -11,133 +11,45 @@
  */
 class Authentication
 {
-  /**
-   * values
-   * @var array
-   */
-  private $values = [];
   
   /**
    * errors
    * @var array
    */
-  private $errors = [];
+  private $errors;
   
+
   /**
    * User
    * @var string
    */
   private $userDao;
-  
-  /**
-   * status message
-   * @var string;
-   */
-  public $statusMessage = null;
-  
-  /**
-   * number of errors
-   * @var integer
-   */
-  public $numErrors;
    
-  const NAME_LENGTH_MIN = 6;
-  
-  const NAME_LENGTH_MAX = 120;
-  
-  const PASS_LENGTH_MIN = 8;
-  
-  public function __construct()
+  public $loggedIn;
+
+  const INTRUDER_NAME = "INTRUDER";
+
+  const INTRUDER_LEVEL = 0;
+ 
+  const COOKIE_EXPIRE =  8640000;  //60*60*24*100 seconds = 100 days by default
+
+  const COOKIE_PATH = "/";  //Available in whole domain
+ 
+  public function __construct(User $userDao, FormValidator $validator)
   {
-      if (isset($_SESSION['values']) && isset($_SESSION['errors'])) {
-          $this->values = $_SESSION['values'];
-          $this->errors = $_SESSION['errors'];
-          $this->numErrors = count($this->errors);
-          
-          unset($_SESSION['values']);
-          unset($_SESSION['errors']);
-      } else {
-          $this->numErrors = 0;
-      }
-      
-      if (isset($_SESSION['statusMessage'])) {
-          $this->statusMessage = $_SESSION['statusMessage'];
-          unset($_SESSION['statusMessage']);
-      }
-      
+    $this->userDao = $userDao;
+
+    $this->loggedIn = $this->isLoggedIn();
+    
+    if (!$this->loggedIn) {
+        
+        $this->user_email = $_SESSION['user_email'] = self::INTRUDER_NAME;
+        $this->user_level = self::INTRUDER_LEVEL;
+
+    }
+    
   }
   
-  /**
-   * Dependency Injection
-   * 
-   * @method setUser
-   * @param User $userDao
-   */
-  public function setUser(User $userDao)
-  {
-     $this->userDao = $userDao;
-  }
-  
-  /**
-   * Set Value
-   * 
-   * @param string $field
-   * @param string $value
-   */
-  public function setValue($field, $value)
-  {
-     $this->values[$field] = $value;
-  }
-  
-  /**
-   * getValue
-   * 
-   * @param string $field
-   * @return string
-   */
-  public function getValue($field)
-  {
-     if (array_key_exists($field, $this->values)) {
-          
-        return htmlspecialchars(stripslashes($this->values[$field]));
-      
-     } else {
-       
-        return "";
-      
-     }
-      
-  }
-  
-  /**
-   * getError
-   * 
-   * @param string $field
-   * @return string
-   */
-  public function getError($field)
-  {
-      if (array_key_exists($field, $this->errors)) {
-          
-         return $this->errors[$field];
-         
-      } else {
-          
-         return "";
-          
-      }
-      
-  }
-  
-  /**
-   * getListErrors
-   * 
-   * @return array
-   */
-  public function getListErrors()
-  {
-    return $this->errors;    
-  }
   
   /**
    * ValidateCSRFToken
@@ -157,39 +69,12 @@ class Authentication
   }
 
   /**
-   * validate form field and its value
-   * 
-   * @param string $field
-   * @param string $value
-   * @return boolean
-   */
-  public function validate($field, $value)
-  {
-    $valid = false;
-    
-    if ($valid == $this->isEmpty($field, $value)) {
-        
-        $valid = true;
-        
-        if ($field == "user_login") $valid = $this->checkSize($field, $value, self::NAME_LENGTH_MIN, self::NAME_LENGTH_MAX);
-        
-        if ($field == "user_pass" || $field == "new_pass" ) $valid = $this->checkSize($field, $value, self::PASS_LENGTH_MIN);
-        
-        if ($valid) $valid = $this->checkFormat($field, $value);
-        
-    }
-    
-    return $valid;
-    
-  }
-  
-  /**
    * Is Email Exists
    * 
    * @param string  $email
    * @return boolean
    */
-  public function isEmailExists($email)
+  public function checkEmailExists($email)
   {
       if ($this->userDao->checkUserEmail($email)) {
          
@@ -200,7 +85,150 @@ class Authentication
       return false;
       
   }
-  
+
+  /**
+  * 
+  * @param string $user_login
+  * @return boolean
+  */
+ public function checkUserLogin($user_login)
+ {
+   return $this->userDao->isUserLoginExists($user_login);
+ }
+ 
+
+ /**
+  * Checking access level
+  * @return boolean
+  */
+ public function accessLevel()
+ {
+    if (isset($_SESSION['user_level'])) {
+         
+      return ($_SESSION['user_level']);
+        
+    }
+      
+    return false;
+
+ }
+ 
+ /**
+  * Logout
+  */
+ public function logout()
+ {
+     
+   if (isset($_COOKIE['cookie_email']) && isset($_COOKIE['cookie_id'])) {
+   
+       setcookie("cookie_email", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
+       setcookie("cookie_id", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
+     
+   }
+   
+   $_SESSION = array();
+   
+   session_destroy();
+   
+   setcookie('PHPSESSID', '', time()-3600, '/', '', 0, 0);
+   
+   $this->loggedIn = false;
+   
+   $loginPage = APP_PROTOCOL."://".APP_HOSTNAME.dirname($_SERVER['PHP_SELF']).'/';
+   
+   header("Location: ".$loginPage);
+   exit();
+   
+ }
+ 
+ /**
+  * get User data and validate it
+  * 
+  * @param string $user_email
+  * @return boolean|boolean|array|object
+  */
+ public function getUserData($user_email)
+ {
+     $this->validator->sanitize($user_email, "email");
+     
+    
+     if (!$this->checkEmailExists($user_email)) {
+         return false;
+     }
+     
+     $account_info = $this->userDao->getUserByEmail($user_email);
+     
+     if ($account_info) {
+         return $account_info;
+     }
+     
+     return false;
+     
+ }
+ 
+  /**
+  * Login
+  * @param array $values
+  * @return boolean
+  */
+ public function login($values)
+ {
+     $user_email = $values['user_email'];
+     $user_pass = $values['user_pass'];
+     $remember_me = isset($values['rememberme']);
+    
+     $this->validator->sanitize($user_email, 'email');
+     $this->validator->validate($user_email, 'email');
+     $this->validator->validate($user_pass, 'password'); 
+     
+     try {
+
+        if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
+              
+            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+            throw new Exception("Sorry, unpleasant attempt detected!");
+            
+         }
+     
+         if (!$this->validateUserAccount($user_email, $user_pass)) {
+             return false;
+         }
+         
+         $account_info = $this->userDao->getUserByEmail($user_email);
+         if (!$account_info) {
+             return false;
+         }
+         
+        $user_id = $_SESSION['user_id'] = $account_info['ID'];
+        $user_email = $_SESSION['user_email'] = $account_info['user_email'];
+        $user_level = $_SESSION['user_level'] = $account_info['user_level'];
+        $user_login = $_SESSION['user_login'] = $account_info['user_login'];
+        
+        $last_session = session_id();
+        session_regenerate_id(true);
+        $recent_session = session_id();
+
+        $sessionUserUpdated = $this->userDao->updateUserSession($this->sanitize, $recent_session, $user_id);
+         
+        if ($remember_me == true) {
+             
+            setcookie("cookie_email", $this->user_email, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
+            setcookie("cookie_id", $this->user_session, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
+             
+        }
+         
+     } catch (Exception $e) {
+
+       LogError::setStatusCode(http_response_code());
+       LogError::newMessage($e);
+       LogError::customErrorMessage();
+       
+     }
+
+     return true;
+
+ }
+ 
   public function isUserLoginExists($user_login)
   {
       if ($this->userDao->isUserLoginExists($user_login)) {
@@ -222,9 +250,7 @@ class Authentication
     $result = $this->userDao->checkUserPassword($email, $password);
     
     if ($result === false) {
-        
-        $this->setError("user_pass", "Current password incorrect");
-        
+    
         return false;
         
     }
@@ -244,7 +270,6 @@ class Authentication
     $result = $this->userDao->checkUserPassword($email, $password);
     if ($result === false) {
         
-        $this->setError("user_pass", "Email address or password is incorrect");
         return false;
         
     }
@@ -254,117 +279,52 @@ class Authentication
   }
   
   /**
-   * Set Error
-   * 
-   * @param string $field
-   * @param string $errorMessage
-   */
-  private function setError($field, $errorMessage)
-  {
-     $this->errors[$field] = $errorMessage;
-     $this->numErrors = count($this->errors);
-  }
-  
-  /**
-   * Is Form Field Empty 
-   * 
-   * @param string $field
-   * @param string $value
-   * @return boolean
-   */
-  private function isEmpty($field, $value)
-  {
-     $value = trim($value);
-     if (empty($value)) {
-         $this->setError($field, "Field value not entered");
-         return true;
-     }
-     
-     return false;
-     
-  }
-  
-  /**
-   * Check Format
-   * 
-   * @param string $field
-   * @param string $value
-   * @return boolean
-   */
-  private function checkFormat($field, $value)
-  {
-      switch ($field) {
-          
-          case 'user_email':
-              
-              $regex = "/^[_+a-z0-9-]+(\.[_+a-z0-9-]+)*"
-                      . "@[a-z0-9-]+(\.[a-z0-9-]{1,})*"
-                      . "\.([a-z]{2,}){1}$/i";
-              $msg = "Email address invalid";
-              break;
-              
-          case 'user_pass':
-          case 'new_pass':
-              
-              $regex = "/^(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$";
-                $msg  = "Password must contain at least (1) upper case letter";
-                $msg .= "Password must contain at least (1) lower case letter";
-                $msg .= "Password must contain at least (1) number or special character";
-                $msg .= "Password must contain at least (8) characters in length";
-              break;
-              
-          case 'user_login':
-              
-              $regex = "/^([a-z ])+$/i";
-              $msg = "";
-              break;
-              
-          default:;
-              
-      }
-      
-      if (!preg_match($regex, ($value = rtrim($value)))) {
-          
-           $this->setError($field, $msg);
-           return false;
-           
-      }
-      
-  }
-  
-  /**
-   * Check Size
-   * 
-   * @param string $field
-   * @param string $value
-   * @param integer $minLength
-   * @param integer $maxLength
-   * @return boolean
-   */
-  private function checkSize($field, $value, $minLength, $maxLength = null)
-  {
-     $value = trim($value);
-     
-     if (!is_null($maxLength)) {
-         
-         if (strlen($value) < $minLength || strlen($value) > $maxLength) {
+  * Is logged in
+  * @return boolean
+  */
+ private function isLoggedIn()
+ {
+     if (isset($_SESSION['user_email']) && isset($_SESSION['user_session'])
+         && isset($_SESSION['user_id']) && $_SESSION['user_email'] != self::INTRUDER_NAME) {
              
-             $this->setError($field, "Value length should be within ".$minLength." & ".$maxLength." characters");
-             return false;
+         // check userDao session
+         if ($this->userDao->checkUserSession($_SESSION['user_session']) === false) {
+                 
+            unset($_SESSION['user_id']);
+            unset($_SESSION['user_email']);
+            unset($_SESSION['user_level']);
+            unset($_SESSION['user_login']);
+            return false;
+                 
+          }
+             
+         $account_info = $this->userDao->getUserByEmail($_SESSION['user_email']);
+         if (!$account_info) {
+
+            return false;
+
+         }
+             
+           $user_id = $account_info['ID'];
+           $user_email = $account_info['user_email'];
+           $user_login = $account_info['user_login'];
+           $user_session = $account_info['user_session'];
+           $user_level = $account_info['user_level'];
+         
+           return true;
              
          }
          
-     } else {
-         
-         if (strlen($value) < $minLength) {
+         if (isset($_COOKIE['cookie_email']) && isset($_COOKIE['cookie_id'])) {
              
-             $this->setError($field, "Value length must contain at least ".$minLength." characters");
-             return false;
+             $user_email = $_SESSION['user_email'] = $_COOKIE['cookie_email'];
+             $user_session = $_SESSION['user_session'] = $_COOKIE['cookie_id'];
+             return true;
+             
          }
-     }
-     
-     return true;
-     
-  } 
-  
+         
+         return false;
+         
+ }
+ 
 }

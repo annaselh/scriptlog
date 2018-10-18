@@ -41,17 +41,6 @@ if ($install != 'install') {
     $confirm = isset($_POST['user_pass2']) ? $_POST['user_pass2'] : "";
     $email = filter_input(INPUT_POST, 'user_email', FILTER_SANITIZE_EMAIL);
     
-    $badCSRF = true; // check CSRF
-    
-    if (!isset($_POST['csrf']) || !isset($_SESSION['CSRF']) || empty($_POST['csrf'])
-        || $_POST['csrf'] !== $_SESSION['CSRF']) {
-            
-         header($_SERVER['SERVER_PROTOCOL']." 400 Bad Request");   
-         $errors['errorSetup'] = "Sorry, There is a security issue";
-         $badCSRF = true;
-         
-     }
-     
     if ($dbhost == '' || $dbname == '' || $dbuser == '' || $dbpass == '') {
         
         $errors['errorSetup'] = "database: requires name, hostname, user and password";
@@ -60,8 +49,7 @@ if ($install != 'install') {
         
         $link = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
         
-        if ($link -> connect_errno)
-            $errors['errorSetup'] = 'Failed to connect to MySQL: (' . $link->connect_errno . ') '.$link->connect_error;
+        if ($link -> connect_errno) $errors['errorSetup'] = 'Failed to connect to MySQL: (' . $link->connect_errno . ') '.$link->connect_error;
             
     }
     
@@ -71,10 +59,13 @@ if ($install != 'install') {
         
     }
     
-    if (empty($password) && empty($confirm)) $errors['errorSetup'] = 'Admin password must not be empty';
+    if (empty($password) && empty($confirm)) {
+      $errors['errorSetup'] = 'Admin password must not be empty';
     
-    elseif ($password != $confirm) $errors['errorSetup'] = 'Admin password must both be equal';
-    
+    } elseif ($password != $confirm)  { 
+      $errors['errorSetup'] = 'Admin password must both be equal';
+    }
+
     if (empty($errors['errorSetup'])) {
         
         $badCSRF = false;
@@ -92,7 +83,6 @@ if ($install != 'install') {
           write_config_file($dbhost, $dbuser, $dbpass, $dbname, $email, $token);
           header("Location:".$protocol."://".$server_host.dirname($_SERVER['PHP_SELF'])."/finish.php?status=success&token=".$token);
         
-
         }
             
     }
@@ -107,16 +97,16 @@ if ($install != 'install') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Scriptlog Installation">
-    <link rel="icon" href="../favicon.ico">
+    <link rel="icon" href="<?= $protocol . "://" . $server_host.dirname(dirname($_SERVER['PHP_SELF'])); ?>/favicon.ico">
 
     <title>Scriptlog Installation</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="<?= $installURL; ?>assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?= $installURL; ?>assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="assets/css/form-validation.css" rel="stylesheet">
+    <link href="<?= $installURL; ?>assets/css/form-validation.css" rel="stylesheet">
   </head>
 
   <body class="bg-light">
@@ -124,7 +114,7 @@ if ($install != 'install') {
     <div class="container">
 
       <div class="py-5 text-center">
-        <img class="d-block mx-auto mb-4" src="assets/img/icon612x612.png" alt="Scriptlog Installation Procedure" width="72" height="72">
+        <img class="d-block mx-auto mb-4" src="<?= $installURL; ?>assets/img/icon612x612.png" alt="Scriptlog Installation Procedure" width="72" height="72">
         <h2>Scriptlog</h2>
         <p class="lead">Installation procedure</p>
       </div>
@@ -517,7 +507,7 @@ if ($install != 'install') {
           </div>
        
           <h4 class="mb-3">Database Settings</h4>
-          <form method="post" action="<?php echo $installURL; ?>" class="needs-validation" novalidate>
+          <form method="post" action="<?= $installURL; ?>" class="needs-validation" novalidate>
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="databaseHost">Database Host</label>
@@ -586,29 +576,7 @@ if ($install != 'install') {
             </div>
              <div class="row"></div>
             <hr class="mb-4">
-     <?php
-     $bytes = null;
-     $length = 64;
-     if (function_exists("random_bytes")) {
-         
-         $bytes = random_bytes(ceil($length / 2));
-         
-     } elseif (function_exists("openssl_random_pseudo_bytes")) {
-         
-         $bytes = openssl_random_pseudo_bytes(ceil($length / 2));
-         
-     } else {
-         
-         throw new Exception("no cryptographically secure random function available");
-         
-     }
      
-     $CSRF = substr(bin2hex($bytes.$key), 0, $length);
-     $_SESSION['CSRF'] = $CSRF;
-     
-     ?>
-     
-     <input type="hidden" name="csrf" value="<?= $CSRF; ?>"/>
      <input type="hidden" name="setup" value="install">
      <button class="btn btn-success btn-lg btn-block" type="submit">Install</button>
     </form>
@@ -637,17 +605,15 @@ if ($install != 'install') {
            }
                      
              echo "Scriptlog";
-              
-             $execution_time = (microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]);
-              
+               
         ?>
          
         </p>
         
         <ul class="list-inline">
-          <li class="list-inline-item"><a href="<?php echo $installURL . '../LICENSE'; ?>" target="_blank">License</a></li>
-          <li class="list-inline-item"><a href="#"><?php echo 'Memory used '. round(memory_get_usage()/1048576,2).''.' MB'; ?></a></li>
-          <li class="list-inline-item"><a href="#"><?php echo 'Execution time '. $execution_time; ?></a></li>
+          <li class="list-inline-item"><a href="<?= $protocol . "://" . $server_host.dirname(dirname($_SERVER['PHP_SELF'])); ?>/LICENSE" target="_blank">License</a></li>
+          <li class="list-inline-item"><a href="#"><?= 'Memory used <strong>'. convert_memory_used(memory_get_usage()).'</strong>'; ?></a></li>
+          <li class="list-inline-item"><a href="#"><?= 'Execution time <strong>'. $execution_time = ($execution_started - $_SERVER["REQUEST_TIME_FLOAT"]) . ' ms</strong>'; ?></a></li>
         </ul>
       </footer>
     </div>
@@ -655,11 +621,11 @@ if ($install != 'install') {
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="assets/vendor/bootstrap/js/jquery-3.3.1.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="<?= $installURL; ?>assets/vendor/bootstrap/js/jquery-3.3.1.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="assets/vendor/bootstrap/js/jquery-slim.min.js"><\/script>')</script>
-    <script src="assets/vendor/bootstrap/js/vendor/popper.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/holder.min.js"></script>
+    <script src="<?= $installURL; ?>assets/vendor/bootstrap/js/vendor/popper.min.js"></script>
+    <script src="<?= $installURL; ?>assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="<?= $installURL; ?>assets/vendor/bootstrap/js/holder.min.js"></script>
     <script>
       // Example starter JavaScript for disabling form submissions if there are invalid fields
       (function() {

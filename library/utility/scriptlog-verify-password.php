@@ -8,15 +8,16 @@
  */
 function scriptlog_verify_password($user_input, $stored)
 {
-    $result = 0;
     
+    return password_verify(base64_encode(hash('sha384', $user_input, true)), $stored);
+    /*
     if (!function_exists('hash_equals')) {
         
         if (timing_safe_equals($stored, $user_input)) {
             
             if (password_verify(base64_encode(hash('sha384', $user_input, true)), $stored)) {
               
-                return $result === 0;
+                return true;
                 
             } else {
                 
@@ -35,7 +36,7 @@ function scriptlog_verify_password($user_input, $stored)
             
             if (password_verify(base64_encode(hash('sha384', $user_input, true)), $stored)) {
                 
-                return $result === 0;
+                return true;
                 
             } else {
                 
@@ -49,5 +50,6 @@ function scriptlog_verify_password($user_input, $stored)
         }
         
     }
+    */
     
 }

@@ -11,12 +11,34 @@
  */
 class Dispatcher
 {
+  /**
+   * routes 
+   * 
+   * @var string
+   * 
+   */
   private $route;
 
+  /**
+   * errors
+   * 
+   * @var string
+   * 
+   */
   private $errors;
 
+  /**
+   * theme
+   * 
+   * @var string
+   * 
+   */
   private $theme;
 
+  /**
+   * Constructor
+   * Registry route and Initialize an instantiate of theme
+   */
   public function __construct()
   {
      if (Registry::isKeySet('route')) {
@@ -29,13 +51,18 @@ class Dispatcher
 
   }
 
+  /**
+   * Dispacth route requested by rules
+   * and identify where should respond in active theme
+   * 
+   */
   public function dispatch()
   {
 
     if (!$themeActived = $this->grabTheme()) {
-        # maintenance
-        include(APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS.'maintenance.php');
-
+        
+      include(APP_ROOT.APP_PUBLIC.DS.'themes'.DS.'maintenance.php');
+      
     } else {
 
       foreach ( $this->route as $action => $routes ) {
@@ -45,7 +72,7 @@ class Dispatcher
             if (is_dir(APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS)) {
                include(APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS.$action . '.php' );
             }
-           
+
            // avoid the 404 message 
            exit();
    
@@ -60,11 +87,17 @@ class Dispatcher
     
   }
 
+  /**
+   * Grab active theme
+   */
   public function grabTheme()
   {
-    return $themeSelected = $this->theme->loadTheme('Y');
+    return $this->theme->loadTheme('Y');
   }
 
+  /**
+   * Find rules defined
+   */
   public function findRules()
   {
     $keys = array();
@@ -80,6 +113,12 @@ class Dispatcher
   
   }
 
+  /**
+   * Find request path
+   * 
+   * @param array $args
+   * @return mixed
+   */
   public function findRequestPath($args)
   {
     $path = $this->requestPath();
@@ -97,6 +136,9 @@ class Dispatcher
     
   }
 
+  /**
+   * Parse query from URL requested
+   */
   public function parseQuery()
   {
     $var  = parse_url($var, PHP_URL_QUERY);
@@ -116,6 +158,11 @@ class Dispatcher
     
   }
 
+  /**
+   * Request path
+   * 
+   * @return mixed;
+   */
   protected function requestPath()
   {
     $request_uri = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
@@ -136,6 +183,11 @@ class Dispatcher
    
   }
 
+  /**
+   * Request URI
+   * 
+   * @return mixed
+   */
   protected function requestURI()
   {
     $uri = rtrim(dirname($_SERVER["SCRIPT_NAME"]), '/' );

@@ -1,8 +1,6 @@
 <?php  
-$time_start = microtime(true);
 require 'include/settings.php';
 require 'include/setup.php';
-
 ?>
 
 <!doctype html>
@@ -11,22 +9,22 @@ require 'include/setup.php';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Scriptlog Installation">
-    <link rel="icon" href="../favicon.ico">
+    <link rel="icon" href="<?= $protocol . "://" . $server_host.dirname(dirname($_SERVER['PHP_SELF'])); ?>/favicon.ico">
 
     <title>Scriptlog Installed</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="<?= $installURL; ?>assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?= $installURL; ?>assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="assets/css/form-validation.css" rel="stylesheet">
+    <link href="<?= $installURL; ?>assets/css/form-validation.css" rel="stylesheet">
   </head>
 <body class="bg-light">
 
 <div class="container">
      <div class="py-5 text-center">
-        <img class="d-block mx-auto mb-4" src="assets/img/icon612x612.png" alt="Scriptlog Installation Completed" width="72" height="72">
+        <img class="d-block mx-auto mb-4" src="<?= $installURL; ?>assets/img/icon612x612.png" alt="Scriptlog Installation Completed" width="72" height="72">
         <h2>Scriptlog</h2>
         <?php 
         if (!isset($_GET['status']) || empty($_GET['status']) || $_GET['status'] !== 'success' 
@@ -68,28 +66,25 @@ require 'include/setup.php';
            }
                      
              echo "Scriptlog";
-              
-             $time_end = microtime(true);
-             $time = $time_end - $time_start;
-              
+               
         ?>
          
         </p>
         
         <ul class="list-inline">
-          <li class="list-inline-item"><a href="<?= $installURL . '../LICENSE'; ?>">License</a></li>
-          <li class="list-inline-item"><a href="#"><?= 'Memory Consumption is '. round(memory_get_usage()/1048576,2).''.' MB'; ?></a></li>
-          <li class="list-inline-item"><a href="#"><?= $time . ' seconds'; ?></a></li>
+          <li class="list-inline-item"><a href="<?= $protocol . "://" . $server_host.dirname(dirname($_SERVER['PHP_SELF'])); ?>/LICENSE">License</a></li>
+          <li class="list-inline-item"><a href="#"><?= 'Memory used <strong>'.convert_memory_used(memory_get_usage()).'</strong>'; ?></a></li>
+          <li class="list-inline-item"><a href="#"><?= 'Execution time <strong>'.$execution_time = ($execution_started - $_SERVER["REQUEST_TIME_FLOAT"]).' ms</strong>'; ?></a></li>
         </ul>
       </footer>
     </div>
  <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="assets/vendor/bootstrap/js/jquery-3.3.1.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="<?= $installURL; ?>assets/vendor/bootstrap/js/jquery-3.3.1.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="assets/vendor/bootstrap/js/jquery-slim.min.js"><\/script>')</script>
-    <script src="assets/vendor/bootstrap/js/vendor/popper.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="<?= $installURL; ?>assets/vendor/bootstrap/js/vendor/popper.min.js"></script>
+    <script src="<?= $installURL; ?>assets/vendor/bootstrap/js/bootstrap.min.js"></script>
   
   </body>
 </html>

@@ -241,7 +241,8 @@ class User extends Dao
  public function updateUserSession($sanitize, $user_session, $userId)
  {
     $cleanId = $this->filteringId($sanitize, $userId, 'sql');
-    $bind = ['user_session' => $user_session];
+    $newSession = generate_session_key($user_session, 13);
+    $bind = ['user_session' => $newSession];
     $stmt = $this->modify("users", $bind, "ID = {$cleanId}");
  }
  
@@ -340,9 +341,9 @@ class User extends Dao
   */
  public function checkUserSession($sesi)
  {
-    $sql = "SELECT COUNT(ID) FROM users WHERE user_session = ?";
+    $sql = "SELECT COUNT(ID) FROM users WHERE user_session = :user_session";
     $this->setSQL($sql);
-    $stmt = $this->findColumn([$sesi]);
+    $stmt = $this->findColumn([':user_session' => $sesi]);
      
     if ($stmt == 1) {
          
@@ -379,15 +380,17 @@ class User extends Dao
   */
  public function checkUserPassword($email, $password)
  {
-    $sql = "SELECT user_pass FROM users WHERE user_email = ? LIMIT 1";
+    $sql = "SELECT user_pass FROM users WHERE user_email = :user_email LIMIT 1";
     $this->setSQL($sql);
     $stmt = $this->checkCountValue([$email]);
     
     if ($stmt > 0) {
         
-        $row = $this->findRow([$email], PDO::FETCH_ASSOC);
+        $row = $this->findRow([':user_email' => $email]);
         
-        return (password_verify($password, $row['user_pass']));
+        if (scriptlog_verify_password($password, $row['user_pass'])) {
+            return true;
+        }
         
     }
     
@@ -451,3 +454,5 @@ class User extends Dao
  }
  
 }
+
+

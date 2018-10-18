@@ -105,7 +105,7 @@ menu_child_label VARCHAR(200) NOT NULL,
 menu_child_link VARCHAR(255) DEFAULT NULL,
 menu_id BIGINT(20) unsigned NOT NULL,
 menu_sub_child BIGINT(20) unsigned NOT NULL,
-menu_child_sort INT(5) NOT NULL DEFAULT '0',,
+menu_child_sort INT(5) NOT NULL DEFAULT '0',
 menu_child_status enum('Y','N') NOT NULL DEFAULT 'Y',
 PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
@@ -147,55 +147,62 @@ PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
 
 $saveAdmin = "INSERT INTO users (user_login, user_email, user_pass, user_level,
-user_registered, user_session) 
-VALUES (?, ?, ?, ?, ?, ?)";
-
+              user_registered, user_session) VALUES (?, ?, ?, ?, ?, ?)";
 $saveAppKey = "INSERT INTO settings (app_key) VALUES(?)";
 $saveTheme = "INSERT INTO themes (theme_title, theme_desc, theme_designer, theme_directory, theme_status) VALUES (?, ?, ?, ?, ?)";
 
 // Users  
-$date_registered = date("Ymd");
-$user_session = md5($user_email);
-$shield_pass = password_hash(base64_encode(hash('sha384', $password, true)), PASSWORD_DEFAULT);;
+$date_registered = date("Y-m-d H:i:s");
+$user_session = md5(microtime());
+$shield_pass = password_hash(base64_encode(hash('sha384', $user_pass, true)), PASSWORD_DEFAULT);
 $user_level = 'administrator';
 
 // Theme 
-$theme_title = "Soerabaia";
+$theme_title = "Bootstrap Blog";
+$theme_desc = "Ondrej Svestka create this beautiful responsive blog theme and we are really love to use it as our default theme";
 $theme_designer = "Ondrej Svestka";
-
-
+$theme_directory = "themes/bootstrapblog";
+$theme_status = "Y";
 
 #create users table
-if ($link instanceof mysqli) $newTableUser = $link -> query($tableUser);
+if ($link instanceof mysqli)  
+
+$createUser = $link -> query($tableUser);
+
 #save administrator
 $createAdmin = $link ->prepare($saveAdmin);
-$createAdmin -> bind_param("ssssss", $user_login, $user_email, 
-    $shield_pass, $user_level, $date_registered, $user_session);
+$createAdmin -> bind_param("ssssss", $user_login, 
+$user_email, $shield_pass, $user_level, $date_registered, $user_session);
 $createAdmin -> execute();
 
 if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
     
     // create other database tables
-    $newTablePost = $link -> query($tablePost);
-    $newTableTopic = $link -> query($tableTopic);
-    $newTablePostTopic = $link -> query($tablePostTopic);
-    $newTableComment = $link -> query($tableComment);
-    $newTableReply = $link -> query($tableReply);
-    $newTableMenu = $link -> query($tableMenu);
-    $newTableMenuChild = $link -> query($tableMenuChild);
-    $newTablePlugin = $link -> query($tablePlugin);
-    $newTableSetting = $link -> query($tableSetting);
-    $newTableTheme = $link -> query($tableTheme);
+    $createPost = $link -> query($tablePost);
+    $createTopic = $link -> query($tableTopic);
+    $createPostTopic = $link -> query($tablePostTopic);
+    $createComment = $link -> query($tableComment);
+    $createReply = $link -> query($tableReply);
+    $createMenu = $link -> query($tableMenu);
+    $createMenuChild = $link -> query($tableMenuChild);
+    $createPlugin = $link -> query($tablePlugin);
+    $createSetting = $link -> query($tableSetting);
+    $createTheme = $link -> query($tableTheme);
     
     // insert app key
     $recordAppKey = $link -> prepare($saveAppKey);
     $recordAppKey -> bind_param('s', $key);
     $recordAppKey -> execute();
     
+    // insert default theme
+    $recordTheme = $link -> prepare($saveTheme);
+    $recordTheme -> bind_param('sssss', $theme_title, $theme_desc, $theme_designer, $theme_directory, $theme_status);
+    $recordTheme -> execute();
+
     if ($recordAppKey -> affected_rows > 0) $link -> close();
  
 }
- 
+
 }
 
 /**
@@ -235,7 +242,7 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
        
    } else {
        
-      trigger_error("no cryptographically secure random function available", E_USER_NOTICE);
+      trigger_error("no cryptographically secure random function available", E_USER_ERROR);
        
    }
    
@@ -246,7 +253,7 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
     mysqli_query($link, $updateAppKey);
     mysqli_close($link);
     
-    $fileconfig = '<?php  return ['."
+    $fileConfig = '<?php  return ['."
                     
             'db' => [
                   'host' => '".addslashes($host)."',
@@ -263,7 +270,11 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
 
             ];";
      
-    if (isset($_SESSION['token'])) file_put_contents(__DIR__ . '/../../config.php', $fileconfig);
+    if (isset($_SESSION['token'])) {
+
+        file_put_contents(__DIR__ . '/../../config.php', $fileConfig);
+
+    }
       
  }
 
@@ -396,6 +407,20 @@ function generate_license($suffix = null)
 }
 
 /**
+ * Convert Memory Used Function
+ * Format size memory usage onto b, kb, mb, gb, tb and pb
+ * 
+ * @param number $size
+ * @return mixed
+ * 
+ */
+function convert_memory_used($size)
+{
+  $unit=array('b','kb','mb','gb','tb','pb');
+  return round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+}
+
+/**
  * Purge Intallation Function
  * Clean up installation procedure
  * 
@@ -409,31 +434,38 @@ function purge_installation()
      
      if (is_file(__DIR__ . '/../index.php')) {
     
-         
-         if (function_exists("random_bytes")) {
+        if (is_writable(__DIR__ . '/../index.php')) {
+
+            if (function_exists("random_bytes")) {
              
-             $bytes = random_bytes(ceil($length / 2));
-             
-         } elseif (function_exists("openssl_random_pseudo_bytes")) {
-             
-             $bytes = openssl_random_pseudo_bytes(ceil($length / 2));
-             
-         } else {
-             
-             trigger_error("no cryptographically secure random function available", E_USER_NOTICE);
-             
-         }
+                $bytes = random_bytes(ceil($length / 2));
+                
+            } elseif (function_exists("openssl_random_pseudo_bytes")) {
+                
+                $bytes = openssl_random_pseudo_bytes(ceil($length / 2));
+                
+            } else {
+                
+                trigger_error("no cryptographically secure random function available", E_USER_NOTICE);
+                
+            }
+            
+           $disabled = is_dir($_SERVER['DOCUMENT_ROOT'].'/') ? $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex($bytes), 0, $length).'-'.date("Y-m-d H:i:s").'.log' : '';
+            
+           rename(__DIR__ . '/../index.php', $disabled);
+            
+           $clean_installation = '<?php ';
+               
+           file_put_contents(__DIR__ . '/../index.php', $clean_installation);
+            
+        } else {
+
+            trigger_error("Permission denied", E_USER_ERROR);
+            
+        }
          
-        $disabled = $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex($bytes), 0, $length).'-'.date("Ymd").'.log';
-         
-        rename(__DIR__ . '/../index.php', $disabled);
-         
-        $clean_installation = '<?php ';
-         
-        file_put_contents(__DIR__ . '/../index.php', $clean_installation);
-         
-     }
-     
+     } 
+
     $_SESSION = array();
         
     session_destroy();

@@ -51,12 +51,12 @@ class FormValidator
         '2digitopt' => "^\d+(\,\d{2})?\$",
         '2digitforce' => "^\d+\,\d\d\$",
         'anything' => "^[\d\D]{1,}\$",
-        'fullname' => "^[A-Z \'.-]{2,90}$/i" 
+        'fullname' => "^[A-Z \'.-]{2,90}$/i",
+        'password' => "^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$"
         
  ];
     
  private $validations, $sanitations, $mandatories, $errors, $corrects, $fields;
- 
  
  public function __construct($validations=array(), $mandatories = array(), $sanitations = array())
  {
