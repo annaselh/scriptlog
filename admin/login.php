@@ -16,10 +16,11 @@ $loginFormSubmitted = isset($_POST['Login']);
 if (empty($loginFormSubmitted) == false) {
   
   $userDao = new User();
-  $authenticator = new Authentication($dbc);
+  $validator = new FormValidator();
+  $authenticator = new Authentication($userDao, $validator);
 
-  $user_email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-  $user_pass = isset($_POST['password']) ? preventInject($_POST['password']) : "";
+  $user_email = filter_input(INPUT_POST, 'user_email', FILTER_SANITIZE_EMAIL);
+  $user_pass = isset($_POST['user_pass']) ? prevent_injection($_POST['user_pass']) : "";
 
   $badCSRF = true;
 
@@ -36,11 +37,34 @@ if (empty($loginFormSubmitted) == false) {
 
    $errors['errorMessage'] = "All Column must be filled";
 
- } elseif (is_valid_email_address($user_email) === 0) {
+ } elseif (email_validation($user_email) == 0) {
 
    $errors['errorMessage'] = "Please enter a valid email address";
 
- } 
+ } elseif ($authenticator -> checkEmailExists($user_email) === false) {
+
+   $errors['errorMessage'] = "Your email address is not registered";
+
+ } elseif (strlen($user_pass) < 8) {
+
+   $errors['errorMessage'] = "Your password must consist of least 8 characters";
+
+ } elseif (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $user_pass)) {
+
+   $errors['errorMessage'] = "Password does not meet the requirements";
+   
+ } elseif ($authenticator -> validateUserAccount($user_email, $user_pass) === false) { 
+
+   $errors['errorMessage'] = "Your email or password is incorrect!";
+
+ } else {
+
+  $badCSRF = false;
+  unset($_SESSION['CSRF']);
+
+  $authenticator -> login($_POST);
+
+ }
 
 }
 

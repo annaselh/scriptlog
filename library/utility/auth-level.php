@@ -1,17 +1,12 @@
 <?php
 /**
- * Authenticate Login Function
- * 
- * @package SCRIPTLOG
+ * Authenticate User Level Function
  * 
  */
-function auth_login()
+function auth_level()
 {
   $userDao = new User();
   $validator = new FormValidator();
   $authenticator = new Authentication($userDao, $validator);
-  return $authenticator->isUserLoggedIn();
+  return $authenticator->accessLevel();
 }
-
-
-

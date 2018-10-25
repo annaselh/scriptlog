@@ -34,11 +34,7 @@ $allowedQuery = array(
     'menu', 'menu-child', 'users', 'settings', 'plugins'
 );    
 
-if (check_creadentials($sanitizer)) {
-
 admin_header($stylePath, $breadCrumbs, $allowedQuery);
 require 'navigation.php';
 require 'request.php';
 admin_footer($currentURL);
-
-}

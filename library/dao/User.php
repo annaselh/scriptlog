@@ -238,12 +238,11 @@ class User extends Dao
   * @param array $bind
   * @param integer $userId
   */
- public function updateUserSession($sanitize, $user_session, $userId)
+ public function updateUserSession($user_session, $user_id)
  {
-    $cleanId = $this->filteringId($sanitize, $userId, 'sql');
     $newSession = generate_session_key($user_session, 13);
     $bind = ['user_session' => $newSession];
-    $stmt = $this->modify("users", $bind, "ID = {$cleanId}");
+    $stmt = $this->modify("users", $bind, "ID = {$user_id}");
  }
  
  /**

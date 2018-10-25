@@ -85,7 +85,7 @@ class Db implements DbInterface
  {
      if (!$args) {
          
-         return $this->dbc->query($sql);
+        return $this->dbc->query($sql);
          
      }
      

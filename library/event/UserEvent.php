@@ -253,7 +253,18 @@ class UserEvent
  {
     return $this->userDao->dropDownUserLevel($selected);
  }
- 
+
+ /**
+  * Checking User login
+  * @param string $user_login
+  * @return boolean
+  *
+  */
+ public function checkUserLogin($user_login)
+ {
+    return $this->userDao->isUserLoginExists($user_login);
+ }
+
  /**
   * 
   * @param string $user_email

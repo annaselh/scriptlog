@@ -125,6 +125,18 @@ class UserApp extends BaseApp
                 
             }
             
+            if (strlen($user_pass) < 8) {
+
+                $checkError = false;
+                array_push($errors, "The password must consist of least 8 characters");
+
+            } elseif (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $user_pass)) {
+
+                $checkError = false;
+                array_push($errors, "The password does not meet the requirements");
+
+            }
+
             if (!empty($user_url)) {
                 
                 if (!url_validation($user_url)) {
@@ -261,6 +273,39 @@ class UserApp extends BaseApp
               throw new AppException("Sorry, unpleasant attempt detected!");
               
           }
+
+          if (!empty($user_pass)) {
+
+            if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $user_pass)) {
+               
+                $checkError = false;
+                array_push($errors, "The Password does not meet the requirements");
+
+            }
+            
+          }
+
+          if (!empty($user_url)) {
+                
+            if (!url_validation($user_url)) {
+                
+                $checkError = false;
+                array_push($errors, "Please enter a valid URL");
+                
+            }
+            
+         }
+        
+         if (!empty($user_fullname)) {
+            
+            if (!preg_match('/^[A-Z \'.-]{2,90}$/i', $user_fullname)) {
+                
+                $checkError = false;
+                array_push($errors, "Please enter a valid fullname");
+                
+            }
+            
+         }
           
           if (!$checkError) {
             
@@ -286,6 +331,7 @@ class UserApp extends BaseApp
                   if (!empty($user_pass)) {
                       
                       $this->userEvent->setUserPass($user_pass);
+
                   }
                   
                   $this->userEvent->modifyUser();

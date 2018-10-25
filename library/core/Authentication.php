@@ -18,19 +18,20 @@ class Authentication
    */
   private $errors;
   
-
   /**
    * User
-   * @var string
+   * 
+   * @var object
    */
   private $userDao;
+
+  /**
+   * Form Validator
+   * 
+   * @var object
+   */
+  private $validator;
    
-  public $loggedIn;
-
-  const INTRUDER_NAME = "INTRUDER";
-
-  const INTRUDER_LEVEL = 0;
- 
   const COOKIE_EXPIRE =  8640000;  //60*60*24*100 seconds = 100 days by default
 
   const COOKIE_PATH = "/";  //Available in whole domain
@@ -38,34 +39,12 @@ class Authentication
   public function __construct(User $userDao, FormValidator $validator)
   {
     $this->userDao = $userDao;
-
-    $this->loggedIn = $this->isLoggedIn();
-    
-    if (!$this->loggedIn) {
-        
-        $this->user_email = $_SESSION['user_email'] = self::INTRUDER_NAME;
-        $this->user_level = self::INTRUDER_LEVEL;
-
-    }
-    
+    $this->validator = $validator;
   }
   
-  
-  /**
-   * ValidateCSRFToken
-   * @return boolean
-   */
-  public function validateCSRFToken($key)
+  public function findUserByEmail($email)
   {
-    $checkCSRFToken = csrf_check_token('csrfToken', $_POST, 60*10);
-
-    if ($checkCSRFToken === false) {
-        $this->setError("Sorry there was unsuspected attempt");
-        return false;
-    }
-    
-    return true;
-
+    return $this->userDao->getUserByEmail($email);
   }
 
   /**
@@ -78,24 +57,13 @@ class Authentication
   {
       if ($this->userDao->checkUserEmail($email)) {
          
-          return true;
+        return true;
           
       }
       
       return false;
       
   }
-
-  /**
-  * 
-  * @param string $user_login
-  * @return boolean
-  */
- public function checkUserLogin($user_login)
- {
-   return $this->userDao->isUserLoginExists($user_login);
- }
- 
 
  /**
   * Checking access level
@@ -132,7 +100,6 @@ class Authentication
    
    setcookie('PHPSESSID', '', time()-3600, '/', '', 0, 0);
    
-   $this->loggedIn = false;
    
    $loginPage = APP_PROTOCOL."://".APP_HOSTNAME.dirname($_SERVER['PHP_SELF']).'/';
    
@@ -140,32 +107,7 @@ class Authentication
    exit();
    
  }
- 
- /**
-  * get User data and validate it
-  * 
-  * @param string $user_email
-  * @return boolean|boolean|array|object
-  */
- public function getUserData($user_email)
- {
-     $this->validator->sanitize($user_email, "email");
-     
-    
-     if (!$this->checkEmailExists($user_email)) {
-         return false;
-     }
-     
-     $account_info = $this->userDao->getUserByEmail($user_email);
-     
-     if ($account_info) {
-         return $account_info;
-     }
-     
-     return false;
-     
- }
- 
+  
   /**
   * Login
   * @param array $values
@@ -180,64 +122,40 @@ class Authentication
      $this->validator->sanitize($user_email, 'email');
      $this->validator->validate($user_email, 'email');
      $this->validator->validate($user_pass, 'password'); 
-     
-     try {
 
-        if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
-              
-            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
-            throw new Exception("Sorry, unpleasant attempt detected!");
-            
-         }
-     
-         if (!$this->validateUserAccount($user_email, $user_pass)) {
-             return false;
-         }
-         
-         $account_info = $this->userDao->getUserByEmail($user_email);
-         if (!$account_info) {
-             return false;
-         }
-         
-        $user_id = $_SESSION['user_id'] = $account_info['ID'];
-        $user_email = $_SESSION['user_email'] = $account_info['user_email'];
-        $user_level = $_SESSION['user_level'] = $account_info['user_level'];
-        $user_login = $_SESSION['user_login'] = $account_info['user_login'];
+     $account_info = $this->userDao->getUserByEmail($user_email);
         
-        $last_session = session_id();
-        session_regenerate_id(true);
-        $recent_session = session_id();
+     $_SESSION['user_id'] = $account_info['ID'];
+     $_SESSION['user_email'] = $account_info['user_email'];
+     $_SESSION['user_level'] = $account_info['user_level'];
+     $_SESSION['user_login'] = $account_info['user_login'];
+     
+     $_SESSION['userLoggedIn'] = true;
+  
+     $_SESSION['KCFINDER']=array();
+     $_SESSION['KCFINDER']['disabled'] = false;
+     $_SESSION['KCFINDER']['uploadURL'] =  APP_DIR . 'files/picture/';
+     $_SESSION['KCFINDER']['uploadDir'] =  "";
 
-        $sessionUserUpdated = $this->userDao->updateUserSession($this->sanitize, $recent_session, $user_id);
-         
-        if ($remember_me == true) {
-             
-            setcookie("cookie_email", $this->user_email, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
-            setcookie("cookie_id", $this->user_session, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
-             
-        }
-         
-     } catch (Exception $e) {
+     $_SESSION['agent'] = sha1($_SERVER['HTTP_USER_AGENT']);
+     
+     $last_session = session_id();
+     session_regenerate_id(true);
+     $recent_session = session_id();
 
-       LogError::setStatusCode(http_response_code());
-       LogError::newMessage($e);
-       LogError::customErrorMessage();
-       
+     if ($remember_me == true) {
+          
+         setcookie("cookie_email", $user_email, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
+         setcookie("cookie_id", $user_session, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
+          
      }
 
-     return true;
+     $sessionUserUpdated = $this->userDao->updateUserSession($recent_session, $account_info['ID']);
 
+     direct_page('index.php?load=dashboard', 200);
+      
  }
  
-  public function isUserLoginExists($user_login)
-  {
-      if ($this->userDao->isUserLoginExists($user_login)) {
-          return true;
-      }
-      
-      return false;
-  }
-  
   /**
    * Check password
    * 
@@ -269,9 +187,7 @@ class Authentication
   {
     $result = $this->userDao->checkUserPassword($email, $password);
     if ($result === false) {
-        
         return false;
-        
     }
     
     return true;
@@ -279,13 +195,13 @@ class Authentication
   }
   
   /**
-  * Is logged in
+  * Is User logged in
   * @return boolean
   */
- private function isLoggedIn()
+ private function isUserLoggedIn()
  {
      if (isset($_SESSION['user_email']) && isset($_SESSION['user_session'])
-         && isset($_SESSION['user_id']) && $_SESSION['user_email'] != self::INTRUDER_NAME) {
+         && isset($_SESSION['user_id']) && isset($_SESSION['userLoggedIn'])) {
              
          // check userDao session
          if ($this->userDao->checkUserSession($_SESSION['user_session']) === false) {
@@ -305,11 +221,11 @@ class Authentication
 
          }
              
-           $user_id = $account_info['ID'];
-           $user_email = $account_info['user_email'];
-           $user_login = $account_info['user_login'];
-           $user_session = $account_info['user_session'];
-           $user_level = $account_info['user_level'];
+           $user_id = $_SESSION['user_id'] = $account_info['ID'];
+           $user_email = $_SESSION['user_email'] = $account_info['user_email'];
+           $user_login = $_SESSION['user_login'] = $account_info['user_login'];
+           $user_session = $_SESSION['user_session'] = $account_info['user_session'];
+           $user_level = $_SESSION['user_level'] = $account_info['user_level'];
          
            return true;
              
