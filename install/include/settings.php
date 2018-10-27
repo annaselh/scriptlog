@@ -16,7 +16,7 @@ if (file_exists(APP_PATH . APP_INC . '/vendor/autoload.php')) {
 
 if (!isset($_SESSION)) {
     
-  @session_start();
+  session_start();
     
 }
 

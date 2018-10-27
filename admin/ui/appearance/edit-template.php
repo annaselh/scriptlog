@@ -119,7 +119,7 @@ endif;
 <script type="text/javascript">
   function deleteTheme(id, theme)
   {
-	  if (confirm("Are you sure want to delete Plugin '" + theme + "'"))
+	  if (confirm("Are you sure want to uninstall Theme '" + theme + "'"))
 	  {
 	  	window.location.href = 'index.php?load=templates&action=deleteTheme&themeId=' + id;
 	  }

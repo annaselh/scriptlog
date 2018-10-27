@@ -102,7 +102,7 @@ class ThemeEvent
 
   public function grabTheme($id)
   {
-    return $this->themeDao->findTheme($id);
+    return $this->themeDao->findTheme($id, $this->sanitize);
   }
   
   public function addTheme() 

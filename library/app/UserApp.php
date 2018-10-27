@@ -246,7 +246,6 @@ class UserApp extends BaseApp
         'ID' => $getUser['ID'],
         'user_login' => $getUser['user_login'],
         'user_email' => $getUser['user_email'],
-        'user_pass' => $getUser['user_pass'],
         'user_level' => $getUser['user_level'],
         'user_fullname' => $getUser['user_fullname'],
         'user_url' => $getUser['user_url'],

@@ -1,5 +1,7 @@
  <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
+
  require 'sidebar-nav.php';
+ 
  ?>
   <!-- Main Header -->
   <header class="main-header">
@@ -29,7 +31,7 @@
               <!-- The user image in the navbar-->
               <i class="fa fa-user-o"></i>
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs">Alexander Pierce</span>
+              <span class="hidden-xs"><?=(isset($user_level) && $user_level == 'administrator') ? $user_level : $user_fullname; ?></span>
             </a>
             <ul class="dropdown-menu">
              
@@ -37,10 +39,10 @@
            <li class="user-body">
                 <div class="row">
                   <div class="col-xs-4 text-center">
-                    <a href="#">Email</a>
+                    <a href="#"></a>
                   </div>
                   <div class="col-xs-4 text-center">
-                    <a href="#">Level</a>
+                    <a href="#"></a>
                   </div>
                   <div class="col-xs-4 text-center">
                     <a href="#"></a>
@@ -51,10 +53,10 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat"><i class="fa fa-user fa-fw"></i>Profile</a>
+                  <a href="index.php?load=users&action=editUser&userId=<?= (int)$user_id; ?>&sessionId=<?= $user_session; ?>" class="btn btn-default btn-flat"><i class="fa fa-user fa-fw"></i>Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat"><i class="fa fa-sign-out fa-fw"></i>Sign out</a>
+                  <a href="index.php?load=logout" class="btn btn-default btn-flat"><i class="fa fa-sign-out fa-fw"></i>Sign out</a>
                 </div>
               </li>
             </ul>

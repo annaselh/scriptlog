@@ -91,7 +91,7 @@
                        <td><?= html_entity_decode($theme['theme_designer']); ?></td>
                        <td><?= htmlspecialchars($theme['theme_directory']); ?></td>
                        <td>
-                       <a href="index.php?load=themes&action=editTheme&themeId=<?= htmlspecialchars((int)$theme['ID']);?>" class="btn btn-warning">
+                       <a href="index.php?load=templates&action=editTheme&themeId=<?= htmlspecialchars((int)$theme['ID']);?>" class="btn btn-warning">
                        <i class="fa fa-pencil fa-fw"></i> Edit</a>
                        </td>
                        <td>
@@ -140,7 +140,7 @@
   {
 	  if (confirm("Are you sure want to activate Theme '" + theme + "'"))
 	  {
-	  	window.location.href = 'index.php?load=themes&action=activateTheme&themeId=' + id;
+	  	window.location.href = 'index.php?load=templates&action=activateTheme&themeId=' + id;
 	  }
   }
 
@@ -148,7 +148,7 @@
   {
 	  if (confirm("Are you sure want to deactivate theme '" + theme + "'"))
 	  {
-	  	window.location.href = 'index.php?load=themes&action=deactivatTheme&themeId=' + id;
+	  	window.location.href = 'index.php?load=templates&action=deactivatTheme&themeId=' + id;
 	  }
   }
 </script>

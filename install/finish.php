@@ -56,6 +56,7 @@ require 'include/setup.php';
        
           $starYear = 2013;
           $thisYear = date ( "Y" );
+          
           if ($starYear == $thisYear) {
              
               echo $starYear;
@@ -72,7 +73,7 @@ require 'include/setup.php';
         </p>
         
         <ul class="list-inline">
-          <li class="list-inline-item"><a href="<?= $protocol . "://" . $server_host.dirname(dirname($_SERVER['PHP_SELF'])); ?>/LICENSE">License</a></li>
+          <li class="list-inline-item"><a href="<?= $protocol . "://" . $server_host.dirname(dirname($_SERVER['PHP_SELF'])); ?>/LICENSE" >License</a></li>
           <li class="list-inline-item"><a href="#"><?= 'Memory used <strong>'.convert_memory_used(memory_get_usage()).'</strong>'; ?></a></li>
           <li class="list-inline-item"><a href="#"><?= 'Execution time <strong>'.$execution_time = ($execution_started - $_SERVER["REQUEST_TIME_FLOAT"]).' ms</strong>'; ?></a></li>
         </ul>

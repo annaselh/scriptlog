@@ -221,8 +221,6 @@ function write_config_file($host, $user, $password, $database, $email, $key)
 
 global $protocol, $server_host;
 
-$length = 13;
-
 $url = $protocol.'://'.$server_host.dirname(dirname($_SERVER['PHP_SELF'])).'/';
 
 $link = mysqli_connect($host, $user, $password, $database);
@@ -230,26 +228,14 @@ $link = mysqli_connect($host, $user, $password, $database);
 if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
    
    $getAppKey = "SELECT ID, app_key FROM settings WHERE app_key = '$key' LIMIT 1";
+   
    $row = mysqli_fetch_assoc(mysqli_query($link, $getAppKey));
-   
-   if (function_exists("random_bytes")) {
-       
-       $bytes = random_bytes(ceil($length / 2));
-       
-   } elseif (function_exists("openssl_random_pseudo_bytes")) {
-       
-       $bytes = openssl_random_pseudo_bytes(ceil($length / 2));
-       
-   } else {
-       
-      trigger_error("no cryptographically secure random function available", E_USER_ERROR);
-       
-   }
-   
-   $app_key = generate_license(substr(bin2hex($bytes), 0, $length));
+
+   $app_key = generate_license(substr($_SESSION['token']));
 
    $updateAppKey = "UPDATE settings SET app_key = '$app_key'
                     WHERE ID = {$row['ID']} LIMIT 1";
+
     mysqli_query($link, $updateAppKey);
     mysqli_close($link);
     
@@ -428,50 +414,40 @@ function convert_memory_used($size)
 function purge_installation()
 {
    
- $length = 32;
+ $length = 16;
  
  if (is_readable(__DIR__ . '/../../config.php')) {
      
-     if (is_file(__DIR__ . '/../index.php')) {
-    
-        if (is_writable(__DIR__ . '/../index.php')) {
-
-            if (function_exists("random_bytes")) {
+    if (function_exists("random_bytes")) {
              
-                $bytes = random_bytes(ceil($length / 2));
-                
-            } elseif (function_exists("openssl_random_pseudo_bytes")) {
-                
-                $bytes = openssl_random_pseudo_bytes(ceil($length / 2));
-                
-            } else {
-                
-                trigger_error("no cryptographically secure random function available", E_USER_NOTICE);
-                
-            }
-            
-           $disabled = is_dir($_SERVER['DOCUMENT_ROOT'].'/') ? $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex($bytes), 0, $length).'-'.date("Y-m-d H:i:s").'.log' : '';
-            
-           rename(__DIR__ . '/../index.php', $disabled);
-            
-           $clean_installation = '<?php ';
-               
-           file_put_contents(__DIR__ . '/../index.php', $clean_installation);
-            
-        } else {
-
-            trigger_error("Permission denied", E_USER_ERROR);
-            
-        }
-         
-     } 
-
-    $_SESSION = array();
+        $bytes = random_bytes(ceil($length / 2));
         
-    session_destroy();
+    } elseif (function_exists("openssl_random_pseudo_bytes")) {
         
-    setcookie('PHPSESSID', '', time()-3600, '/', '', 0, 0);
+        $bytes = openssl_random_pseudo_bytes(ceil($length / 2));
+        
+    } else {
+        
+        trigger_error("no cryptographically secure random function available", E_USER_NOTICE);
+        
+    }
+
+    $disabled = $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex($bytes), 0, $length).'-'.date("Ymd").'.log';
+
+    if (rename(__DIR__ . '/../index.php', $disabled)) {
+
+       $clean_installation = '<?php ';
+
+       file_put_contents(__DIR__ . '/../index.php', $clean_installation);
+
+       $_SESSION = array();
+
+       session_destroy();
+       
+       setcookie('PHPSESSID', '', time()-3600, '/', '', 0, 0);
+
+    }
     
- }
+  }
     
 }
