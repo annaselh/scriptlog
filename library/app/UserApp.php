@@ -130,10 +130,10 @@ class UserApp extends BaseApp
                 $checkError = false;
                 array_push($errors, "The password must consist of least 8 characters");
 
-            } elseif (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $user_pass)) {
+            } elseif (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,50}$/', $user_pass)) {
 
                 $checkError = false;
-                array_push($errors, "The password does not meet the requirements");
+                array_push($errors, "The password may contain letter and numbers, at least one number and one letter, any of these characters !@#$%");
 
             }
 
@@ -183,13 +183,12 @@ class UserApp extends BaseApp
                 
                 if ($send_notification == 1) {
                     
-                    $this->userEvent->setUserActivationKey(user_activation_key($user_email.get_ip_address()));
+                    $this->userEvent->setUserActivationKey(user_activation_key($user_login.get_ip_address()));
                       
                     $this->userEvent->addUser();
                     
-                    notify_new_user($user_email, $user_login, $user_pass);
+                    notify_new_user($user_email, $user_email, $user_pass);
                     
-                   
                 } else {
                 
                     $this->userEvent->addUser();
@@ -275,10 +274,10 @@ class UserApp extends BaseApp
 
           if (!empty($user_pass)) {
 
-            if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $user_pass)) {
+            if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,50}$/', $user_pass)) {
                
                 $checkError = false;
-                array_push($errors, "The Password does not meet the requirements");
+                array_push($errors, "The Password may contain letter and numbers, at least one number and one letter, any of these characters !@#$%");
 
             }
             
@@ -305,8 +304,19 @@ class UserApp extends BaseApp
             }
             
          }
-          
-          if (!$checkError) {
+
+         if ($user_id == 1) {
+
+            if ($user_level !== 'administrator') {
+
+                $checkError = false;
+                array_push($errors, "Sorry, administrator is your default privilege");
+
+            }
+            
+         }
+ 
+         if (!$checkError) {
             
               $this->setView('edit-user');
               $this->setPageTitle('Edit User');

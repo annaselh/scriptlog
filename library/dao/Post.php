@@ -42,11 +42,9 @@ public function findPosts($orderBy = 'ID', $author = null)
   				WHERE p.post_author = :author
   				AND p.post_type = 'blog'
   				ORDER BY p.{$orderBy} DESC";
-  		       
-        $this->setSQL($sql);
-        
-        $posts = $this->findAll([':author' => $author]);
-        
+          
+        $data = array(':author' => $author);
+
     } else {
         
         $sql = "SELECT p.ID, p.post_image, p.post_author,
@@ -61,11 +59,12 @@ public function findPosts($orderBy = 'ID', $author = null)
                  p.post_type = 'blog'
   			ORDER BY p.{$orderBy} DESC";
           
-        $this->setSQL($sql);
-        
-        $posts = $this->findAll();
-        
+        $data = array();
+
     }
+    
+    $this->setSQL($sql);
+    $posts = $this->findAll($data);
     
     if (empty($posts)) return false;
     
@@ -97,8 +96,7 @@ public function findPost($id, $sanitize, $author = null)
   	  		  WHERE ID = :ID AND post_author = :author
   			  AND post_type = 'blog'";
         
-        $this->setSQL($sql);
-        $postDetail = $this->findRow([':ID' => $sanitized_id, ':author' => $author]);
+        $data = array(':ID' => $sanitized_id, ':author' => $author);
         
    } else {
         
@@ -110,11 +108,13 @@ public function findPost($id, $sanitize, $author = null)
   	  		  FROM posts
   	  		  WHERE ID = :ID AND post_type = 'blog'";
         
-       $this->setSQL($sql);
-       $postDetail = $this->findRow([':ID' => $sanitized_id]);
+       $data = array(':ID' => $sanitized_id);
         
   }
     
+  $this->setSQL($sql);
+  $postDetail = $this->findRow($data);
+
   if (empty($postDetail)) return false;
   
   return $postDetail;
@@ -127,6 +127,7 @@ public function findPost($id, $sanitize, $author = null)
  * @param integer $id
  * @param object $sanitize
  * @return boolean|array|object
+ * 
  */
 public function showPostById($id, $sanitize)
 {
@@ -142,12 +143,40 @@ public function showPostById($id, $sanitize)
     
     $this->setSQL($sql);
     
-    $readPost = $this->findRow([':ID' => $sanitized_id], PDO::FETCH_ASSOC);
+    $readPost = $this->findRow([':ID' => $sanitized_id]);
     
     if (empty($readPost)) return false;
     
     return $readPost;
     
+}
+
+/**
+ * Show Post by slug 
+ * 
+ * @param string $slug
+ * @return mixed
+ * 
+ */
+public function showPostBySlug($slug)
+{
+  
+  $sql = "SELECT p.ID, p.post_image, p.post_author,
+                 p.post_date, p.post_modified, p.post_title,
+                 p.post_slug, p.post_content, p.post_summary, p.post_keyword, 
+                 p.post_status, p.post_type, p.comment_status, u.user_login
+          FROM posts AS p
+          INNER JOIN users AS u ON p.post_author = u.ID
+          WHERE p.post_slug = :slug AND p.post_type = 'blog'";
+
+  $this->setSQL($sql);
+
+  $readPost = $this->findRow([':slug' => $slug]);
+
+  if (empty($readPost)) return false;
+
+  return $readPost;
+   
 }
 
 /**
@@ -164,10 +193,10 @@ public function showPostsPublished(Paginator $perPage, $sanitize)
     
     $this->linkPosts = $perPage;
     
-    $getPostId = "SELECT ID FROM posts WHERE post_status = 'publish' AND post_type = 'blog'";
+    $stmt = $this->dbc->dbQuery("SELECT ID FROM posts WHERE post_status = 'publish' AND post_type = 'blog'");
     
-    $this->setSQL($getPostId);
-    $this->linkPosts->set_total($this->checkCountValue());
+    $this->linkPosts->set_total($stmt -> rowCount());
+    
     $sql = "SELECT p.ID, p.post_image, p.post_author,
                      p.post_date, p.post_modified, p.post_title,
                      p.post_slug, p.post_content, p.post_summary, p.post_keyword,
@@ -178,12 +207,41 @@ public function showPostsPublished(Paginator $perPage, $sanitize)
   			ORDER BY p.ID DESC " . $this->linkPosts->get_limit($sanitize);
     
     $this->setSQL($sql);
+    
     $postsPublished = $this->findAll();
+    
     $pagination = $this->linkPosts->page_links($sanitize);
     
     if (empty($postsPublished)) return false;
+
     return(['postsPublished' => $postsPublished, 'paginationLink' => $pagination]);
         
+}
+
+/**
+ * Show related posts 
+ * 
+ * @param string $post_title
+ * @return mixed
+ * 
+ */
+public function showRelatedPosts($post_title)
+{
+  
+  $sql = "SELECT ID, post_image, post_author, post_date, post_modified, 
+                 post_title, post_slug, post_content, MATCH(post_title, post_content) 
+                 AGAINST(?) AS score
+          FROM posts WHERE MATCH(post_title, post_content) AGAINTS(?)
+          ORDER BY score ASC LIMIT 3";
+          
+  $this->setSQL($sql);
+
+  $relatedPosts = $this->findRow([$post_title]);
+
+  if (empty($relatedPosts)) return false;
+
+  return $relatedPosts;
+
 }
 
 /**

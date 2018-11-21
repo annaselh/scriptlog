@@ -117,6 +117,7 @@ class ThemeEvent
       'theme_designer' => $this->theme_designer,
       'theme_directory' => $this->theme_directory
     ]);
+
   }
 
   public function modifyTheme()
@@ -124,6 +125,14 @@ class ThemeEvent
     $this->validator->sanitize($this->theme_id, 'int');
     $this->validator->sanitize($this->theme_title, 'string');
     $this->validator->sanitize($this->theme_description, 'string');
+    
+    $theme_config = parse_ini_file(APP_ROOT.APP_PUBLIC.DS.$this->theme_directory.DS.'theme.ini');
+    $theme_config['info']['theme_name'] = $this->theme_title;
+    $theme_config['info']['theme_designer'] = $this->theme_designer;
+    $theme_config['info']['theme_description'] = $this->theme_description;
+    $theme_config['info']['theme_directory'] = APP_ROOT.APP_PUBLIC.DS.$theme_directory.DS;
+
+    write_ini(APP_ROOT.APP_PUBLIC.DS.$this->theme_directory.DS.'theme.ini', $theme_config);
     
     return $this->themeDao->updateTheme( $this->sanitize, [
       'theme_title' => $this->theme_title,

@@ -252,6 +252,11 @@ class Menu extends Dao
    
  }
 
+ /**
+  * Total Menus
+  * @param mixed $data
+  *
+  */
  public function totalMenuRecords($data = null)
  {
    $sql = "SELECT ID FROM menu";
@@ -259,6 +264,101 @@ class Menu extends Dao
    return $this->checkCountValue($data);
  }
  
+ /**
+  * Find Front Navigation
+  * @param string $uri
+  *
+  */
+ public function findFrontNavigation($uri)
+ {
+  
+    $parent = "SELECT ID, menu_label, menu_link, menu_sort, menu_status 
+               FROM menu WHERE menu_status = 'Y'";
+    $stmt = $this->dbc->dbQuery($parent);
+
+    $html = '';
+    $html = '<ul class="navbar-nav ml-auto">';
+
+    while ($p = $stmt -> fetch()) {
+      
+      if ($uri == $r['menu_label'])  { 
+        $active = "active"; 
+      }
+
+       $html .= '<li class="nav-item">
+                 <a href="'.transform_html($p['menu_link']).'" class="nav-link '.$active.' ">Home</a>';
+       
+       $active = '';
+
+       $child = "SELECT mc.ID, mc.menu_child_label, mc.menu_child_link,
+                        mc.menu_id, mc.menu_sub_child, mc.menu_child_sort, 
+                        mc.menu_child_status,
+                        mp.menu_label, mp.menu_link, 
+                        mp.menu_sort, mp.menu_status
+                 FROM menu_child AS mc
+                 INNER JOIN menu AS mp ON mc.menu_id = mp.ID
+                 AND mc.menu_id = {$r['ID']}
+                 AND mc.menu_sub_child = 0 
+                 AND mc.menu_child_status = 'Y'";
+
+      $stmt2 = $this->dbc->dbQuery($child);
+      $total = $stmt2 -> rowCount();
+
+      // if submenu found
+      if ($total > 0) {
+      
+        $dropdown = "dropdown";
+        $dropdown_toggle = "dropdown-toggle";
+        $dropdown_menu = "dropdown-menu";
+
+        $html .= '<li class="nav-item  '.$dropdown.'">
+                  <a class="nav-link  ' .$dropdown_toggle.' '.$active.'" href="'.transform_html($p['menu_link']).'" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.htmlspecialchars($p['menu_label']).'</a>';
+      
+        $html .= '<ul class="'.$dropdown_menu.'" aria-labelledby="navbarDropdownMenuLink">';
+
+        while ($c = $stmt2 -> fetch()) {
+
+             $html .= '<li><a class="dropdown-item" href="'.transform_html($c['menu_child_link']).'">'.$c['menu_child_label'].'</a>';
+             
+             $sub_child = "SELECT ID, menu_child_label, menu_child_link, menu_id, menu_sub_child, 
+                           menu_child_sort, menu_child_status 
+                           FROM menu_child 
+                           WHERE menu_sub_child = {$c['ID']}
+                           AND menu_sub_child != 0";
+
+              $stmt3 = $this->dbc->dbQuery($sub_child);
+              $total_sub = $stmt3 -> rowCount();
+
+              if ($total_sub > 0) {
+
+                 $html .= '<ul class="'.$dropdown_menu.'">';
+
+                 while ($sc = $stmt3->fetch()) {
+
+                   $html .= '<li><a class="dropdown-item" href=""></a></li>';
+
+                 }
+
+                   $html .= '</ul></li>';
+
+              }
+             
+        }
+
+        $html .= '</li></ul></li>';
+
+      } else {
+
+         $html .= '</li>';
+         
+      }
+
+    }
+   
+    $html .= '</ul>';
+
+ }
+
  /**
   * Find menu sorted
   * 

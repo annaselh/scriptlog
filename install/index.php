@@ -1,8 +1,8 @@
-<?php
+<?php 
 
-require('include/settings.php');
-require('include/check-engine.php');
-require('include/setup.php');
+require dirname(__FILE__) . '/include/settings.php';
+require dirname(__FILE__) . '/include/check-engine.php';
+require dirname(__FILE__) . '/include/setup.php';
 
 if (file_exists(__DIR__ . '/../config.php')) exit();
 
@@ -63,17 +63,20 @@ if ($install != 'install') {
     
     if (empty($password) && empty($confirm)) { 
 
-        $errors['errorSetup'] = 'Admin password must not be empty';
+        $errors['errorSetup'] = 'Admin password should not be empty';
 
     } elseif ($password != $confirm) {
 
-        $errors['errorSetup'] = 'Admin password must both be equal';
+        $errors['errorSetup'] = 'Admin password should both be equal';
 
+    } elseif (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,50}$/', $password)) {
+
+        $errors['errorSetup'] = 'Admin password may contain letter and numbers, at least one number and one letter, any of these characters !@#$%';
     }
     
-    if ((!is_writable($_SERVER['SCRIPT_NAME'])) || (!is_writable($_SERVER['DOCUMENT_ROOT']))) {
+    if (!is_writable(__DIR__ . '/index.php')) {
 
-       $errors['errorSetup'] = 'Permission denied. Make sure your installation directory and files is writable';
+       $errors['errorSetup'] = 'Permission denied. Directory installation is not writable';
        
     }
 

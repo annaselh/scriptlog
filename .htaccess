@@ -13,8 +13,8 @@ Options -Indexes
  Header set Connection keep-alive
  Header set Referrer-Policy "no-referrer-when-downgrade"
  <filesMatch ".(js|css|ico|txt|htm|html|png|jpg|gif|js|eot|svg|ttf|woff|woff2|php)$">
-Header set Cache-Control "max-age=31536000, public"
-</filesMatch>
+   Header set Cache-Control "max-age=31536000, public"
+ </filesMatch>
 </IfModule>
 
 ############### SET COOKIES DOMAIN ##################

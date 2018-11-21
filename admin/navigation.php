@@ -31,7 +31,7 @@
               <!-- The user image in the navbar-->
               <i class="fa fa-user-o"></i>
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs"><?=(isset($user_level) && $user_level == 'administrator') ? $user_level : $user_fullname; ?></span>
+              <span class="hidden-xs"><?=(isset($user_level) && $user_level == 'administrator') ? $user_level : $user_login; ?></span>
             </a>
             <ul class="dropdown-menu">
              
@@ -71,5 +71,5 @@
   </header>
   
   <?php 
-   echo sidebarNavigation($breadCrumbs, $currentURL);
+   echo sidebar_navigation($breadCrumbs, $currentURL, $user_level);
   ?>

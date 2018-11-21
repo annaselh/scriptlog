@@ -18,7 +18,7 @@ Before you install scriptlog on your host, make sure scriptlog can work correctl
     - iconv
     - pdo_mysql
     - filter_list
- - HTTPS Support.
+    - HTTPS Support.
 
 ### Installation
 

@@ -6,33 +6,33 @@ $commentDao = new Comment();
 $validator = new FormValidator();
 $commentEvent = new CommentEvent($commentDao, $validator, $sanitizer);
 $commentApp = new CommentApp($commentEvent);
-
-switch ($action) {
     
-    case 'editComment':
-    
-        if ($commentDao -> checkCommentId($commentId, $sanitizer)) {
-            
-            $commentApp -> update($commentId);
-            
-        } else {
-            
-            direct_page('index.php?load=comments&error=commentNotFound', 404);
-            
-        }
+    switch ($action) {
         
+        case 'editComment':
+        
+            if ($commentDao -> checkCommentId($commentId, $sanitizer)) {
+                
+                $commentApp -> update($commentId);
+                
+            } else {
+                
+                direct_page('index.php?load=comments&error=commentNotFound', 404);
+                
+            }
+            
+            break;
+     
+        case 'deleteComment':
+            
+            $commentApp -> remove($commentId);
+            
+            break;
+            
+        default:
+            
+            $commentApp -> listItems();
+            
         break;
- 
-    case 'deleteComment':
         
-        $commentApp -> remove($commentId);
-        
-        break;
-        
-    default:
-        
-        $commentApp -> listItems();
-        
-    break;
-    
-}
+    }

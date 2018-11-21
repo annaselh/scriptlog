@@ -209,28 +209,32 @@ class Plugin extends Dao
    * @param UserEvent $userEvent
    * @return string
    */
-  public function setMenuPlugin($accessLevel)
+  public function setMenuPlugin($user_level, $plugin_level)
   {
-    $this->accessLevel =$accessLevel;
+    $this->accessLevel = $user_level;
     
-    $plugins = $this->setPrivatePlugins();
+    $plugins = $this->setPlugins($plugin_level);
     
     $html = array();
     
-    foreach ($plugins as $p => $plugin) {
+    if (is_array($plugins)) {
+
+      foreach ($plugins as $plugin) {
         
-      $pluginPath = APP_ROOT . APP_LIBRARY . '/plugin/'.strtolower($plugin->plugin_name).'/'.strtolower($plugin->plugin_name).'.php';
-      
-      if ($this->accessLevel == 'administrator') {
-            
-          if (is_dir(APP_ROOT.APP_LIBRARY.'/plugin/'.strtolower($plugin->plugin_name)) && is_readable($pluginPath)) {
+        $pluginPath = APP_ROOT . APP_LIBRARY . '/plugin/'.strtolower($plugin->plugin_name).'/'.strtolower($plugin->plugin_name).'.php';
+        
+        if ($this->accessLevel == 'administrator') {
               
-              $html[] = '<li><a href="'.$plugin->plugin_link.'">'.$plugin->plugin_name.'</a></li>';
-              
-          }
-           
+            if (is_dir(APP_ROOT.APP_LIBRARY.'/plugin/'.strtolower($plugin->plugin_name)) && is_readable($pluginPath)) {
+                
+                $html[] = '<li><a href="'.$plugin->plugin_link.'">'.$plugin->plugin_name.'</a></li>';
+                
+            }
+             
+        }
+        
       }
-      
+
     }
     
     return implode("\n", $html);
@@ -276,16 +280,16 @@ class Plugin extends Dao
    * 
    * @return boolean|array|object
    */
-  public function setPrivatePlugins()
+  public function setPlugins($plugin_level)
   {
     $sql = "SELECT ID, plugin_name, plugin_link, plugin_desc, 
             plugin_status, plugin_level, plugin_sort
-            FROM plugin WHERE plugin_level = 'private' AND plugin_status = 'Y' 
-            ORDER BY plugin_name";
+            FROM plugin WHERE plugin_level = :plugin_level 
+            AND plugin_status = 'Y' ORDER BY plugin_name";
     
     $this->setSQL($sql);
     
-    $privatePlugins = $this->findRow();
+    $privatePlugins = $this->findRow([':plugin_level' => $plugin_level]);
     
     if (empty($privatePlugins)) return false;
     

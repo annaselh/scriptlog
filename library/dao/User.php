@@ -74,14 +74,14 @@ class User extends Dao
    
    $this->setSQL($sql);
    
-   if (!is_null($fetchMode)) {
+   if (is_null($fetchMode)) {
        
-       $userDetails = $this->findRow([':ID' => $cleanId], $fetchMode);
+      $userDetails = $this->findRow([':ID' => $cleanId]);
        
    } else {
        
-       $userDetails = $this->findRow([':ID' => $cleanId]);
-       
+    $userDetails = $this->findRow([':ID' => $cleanId], $fetchMode);
+        
    }
    
    if (empty($userDetails)) return false;
@@ -96,13 +96,14 @@ class User extends Dao
   * @param string $user_email
   * @param static PDO::FETCH_MODE $fetchMode
   * @return boolean|array|object
+  *
   */
  public function getUserByEmail($user_email, $fetchMode = null)
  {
      
    $sql = "SELECT ID, user_login, user_email, user_level, 
            user_fullname, user_url, user_session 
-          FROM users WHERE user_email = :user_email LIMIT 1";
+           FROM users WHERE user_email = :user_email LIMIT 1";
    
    $this->setSQL($sql);
    
@@ -123,16 +124,40 @@ class User extends Dao
  }
  
  /**
+  * get User by reset key
+  * 
+  * @param string $reset_key
+  * @return mixed
+  *  
+  */
+ public function getUserByResetKey($reset_key)
+ {
+   $sql = "SELECT ID, user_reset_key, user_reset_complete FROM users 
+           WHERE user_reset_key = :reset_key LIMIT 1";
+   
+   $this->setSQL($sql);
+   
+   $resetKeyDetails = $this->findRow([':reset_key' => $reset_key]);
+
+   if (empty($resetKeyDetails)) return false;
+
+   return $resetKeyDetails;
+
+ }
+
+ /**
   * Create user
   * insert new record
   * 
   * @param array $bind
+  *
   */
  public function createUser($bind) 
  {
 	
   $hash_password = scriptlog_password($bind['user_pass']);
-  
+  $user_url = (empty($bind['user_url'])) ? '#' : $bind['user_url'];
+
   if (!empty($bind['user_activation_key'])) {
 	  
 	  $stmt = $this->create("users", [
@@ -142,7 +167,7 @@ class User extends Dao
 	          'user_pass'  => $hash_password,
 	          'user_level' => $bind['user_level'],
 	          'user_fullname' => $bind['user_fullname'],
-	          'user_url'   => $bind['user_url'],
+	          'user_url'   => $user_url,
 	          'user_activation_key' => $bind['user_activation_key'],
 	          'user_session' => $bind['user_session']
 	          
@@ -157,7 +182,7 @@ class User extends Dao
           'user_pass'  => $hash_password,
           'user_level' => $bind['user_level'],
           'user_fullname' => $bind['user_fullname'],
-          'user_url'   => $bind['user_url'],
+          'user_url'   => $user_url,
           'user_registered' => $bind['user_registered'],
           'user_session' => $bind['user_session']
           
@@ -244,7 +269,41 @@ class User extends Dao
     $bind = ['user_session' => $newSession];
     $stmt = $this->modify("users", $bind, "ID = {$user_id}");
  }
- 
+
+ /**
+  * Update reset key
+  * update temporary reset key 
+  * to reset password with key sent to user email account
+  *
+  * @param string $reset_key
+  * @param string $user_email
+  *
+  */
+ public function updateResetKey($reset_key, $user_email)
+ {
+   $bind = ['user_reset_key' => $reset_key, 'user_reset_complete' => 'No'];
+   $stmt = $this->modify("users", $bind, "user_email = {$user_email}");
+ }
+
+ /**
+  * Recover New password
+  * 
+  * @param array $bind
+  * @param integer $user_id
+  *
+  */
+ public function recoverNewPassword($bind, $user_id)
+ {
+   $recoverPassword = scriptlog_password($bind['user_pass']);
+   $stmt = $this->modify("users", [
+
+          'user_pass' => $recoverPassword, 
+          'user_reset_complete' => $bind['user_reset_complete']
+
+          ], "ID = {$user_id}");
+          
+ }
+
  /**
   * Activate user
   * 
@@ -263,7 +322,6 @@ class User extends Dao
        
        $bind = ['user_activation_key' => '1', 'user_registered' => date("Ymd")];
        $stmt = $this->modify("users", $bind, "user_activation_key = {$key}");
-       return $stmt -> rowCount();
        
    }
    

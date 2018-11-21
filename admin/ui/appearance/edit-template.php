@@ -95,8 +95,8 @@ endif;
  if(!empty($themeData['ID'])) :
 ?>
 <a href="javascript:deleteTheme('<?=(isset($themeData['ID']) ? $themeData['ID'] : 0); ?>', '<?=(isset($themeData['theme_title']) ? $themeData['theme_title'] : ""); ?>')"
-	title="Uninstall Modul" class="btn btn-danger pull-right"> <i
-					class="fa fa-exclamation-circle fa-fw"></i> Uninstall
+	title="Delete Theme" class="btn btn-danger pull-right"> <i
+					class="fa fa-exclamation-circle fa-fw"></i> Delete
 </a>
 
 <?php 

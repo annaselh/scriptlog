@@ -80,7 +80,7 @@ $loader -> setLibraryPaths(array(
     APP_ROOT . APP_LIBRARY . DS .'dao'. DS,
     APP_ROOT . APP_LIBRARY . DS .'event'. DS,
     APP_ROOT . APP_LIBRARY . DS .'app'. DS,
-    APP_ROOT . APP_LIBRARY . DS .'controller'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'front'. DS,
     APP_ROOT . APP_LIBRARY . DS .'plugins'. DS
 ));
 
@@ -105,26 +105,44 @@ $loader -> runLoader();
 
 $rules = array(
     
-    'home'     => "/",
+    'home'     => "/",                               
     'category' => "/category/(?'category'[\w\-]+)",
+    'blog'     => "/blog/([^/]*)",
     'page'     => "/page/(?'page'about|contact|faculty|)",
-    'post'     => "/(?'post'[\w\-]+)",
-    'posts'    => "/posts/([^/]*)",
+    'single'   => "/(?'single'[\w\-]+)",
     'search'   => "(?'search'[\w\-]+)"
     
 );
 
-
+// an instantiation of Database connection
 $dbc = DbFactory::connect(['mysql:host='.$config['db']['host'].';dbname='.$config['db']['name'],
     $config['db']['user'], $config['db']['pass']
 ]);
 
+// Register rules and an instance of database connection
 Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
 
+/* an instances of class that necessary for the system
+ * please do not change this below variable 
+ * 
+ * @var $searchPost used by search functionality
+ * @var $frontPaginator used by front pagination funtionality
+ * @var $postFeeds used by rss feed functionality
+ * @var $sanitizer used by sanitize functionality
+ * @var $userDao $validator $authenticator these collection of instances of classes that will used for login to control panel(admin's page)
+ * 
+ */
 $searchPost = new SearchSeeker($dbc);
 $frontPaginator = new Paginator(10, 'p');
 $postFeeds = new RssFeed($dbc);
 $sanitizer = new Sanitize();
+$userDao = new User();
+$userToken = new UserToken();
+$validator = new FormValidator();
+$authenticator = new Authentication($userDao, $userToken, $validator);
+
+//$bones = new Bones();
+//$request = new RequestHandler($bones);
 
 # set_exception_handler('LogError::exceptionHandler');
 # set_error_handler('LogError::errorHandler');

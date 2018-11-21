@@ -1,14 +1,53 @@
 <?php
 
 if (file_exists(__DIR__ . '/../config.php')) {
-    include(__DIR__ . '/../library/main.php');
     
+  include(dirname(dirname(__FILE__)).'/library/main.php');
+
 } else {
-    
-    $config = require dirname(dirname(__FILE__)).'/config.sample.php';
-    include(__DIR__ . '/../library/main-reserve.php');
+
+  header("Location: ../install");
+  exit();
+
 }
 
+$errors = [];
+$resetFormSubmitted = isset($_POST['Reset']);
+  
+if (empty($resetFormSubmitted) == false) {
+
+  $user_email = filter_input(INPUT_POST, 'user_email', FILTER_SANITIZE_EMAIL);
+  $badCSRF = true;
+
+  if (!isset($_POST['csrf']) || !isset($_SESSION['CSRF']) || empty($_POST['csrf'])
+  || $_POST['csrf'] !== $_SESSION['CSRF']) {
+      
+    $errors['errorMessage'] = "Sorry, there was a security issue";
+  
+    $badCSRF = true;
+  
+  } elseif (empty($user_email)) {
+
+     $errors['errorMessage'] = "Please enter email address";
+
+  } elseif (email_validation($user_email) == 0) {
+
+     $errors['errorMessage'] = "Please enter a valid email address";
+
+  } elseif ($authenticator -> checkEmailExists($user_email) === false) {
+
+     $errors['errorMessage'] = "Your email address is not registered";
+
+  } else {
+
+    $badCSRF = false;
+    unset($_SESSION['CSRF']);
+    $authenticator -> resetUserPassword($user_email);
+    direct_page('reset-password.php?status=reset', 200);
+
+  }
+
+}
 
 ?>
 
@@ -45,22 +84,56 @@ if (file_exists(__DIR__ . '/../config.php')) {
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="#"><img class="d-block mx-auto mb-4" src="assets/dist/img/icon612x612.png" alt="Scriptlog Installation Procedure" width="72" height="72"></a>
+    <a href="#"><img class="d-block mx-auto mb-4" src="assets/dist/img/icon612x612.png" alt="Reset Password" width="72" height="72"></a>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
   
+  <?php 
+       if (isset($errors['errorMessage'])) : 
+    ?>
+    
+       <div class="alert alert-danger alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert"
+      aria-hidden="true">&times;</button>
+           <?= $errors['errorMessage']; ?>
+    </div>
+  
+    <?php 
+      endif; 
+    ?>
+
+  <?php 
+    if (isset($_GET['status']) && $_GET['status'] == 'reset') : ?>
+				<div class="alert alert-success alert-dismissable">
+					<button type="button" class="close" data-dismiss="alert"
+						aria-hidden="true">&times;</button>
+				 password has been <strong><?= htmlspecialchars($_GET['status']); ?> </strong>.
+					check your e-mail !
+				</div>
+				
+  <?php 
+   else :
+  ?>
+
   <p class="login-box-msg">Please enter your email address. You will receive a link to create a new password via email.</p>
   
-    <form action="../../index2.html" method="post">
+    <form name="formlogin" action="reset-password.php" method="post" onSubmit="return validasi(this)" role="form" autocomplete="off">
       <div class="form-group has-feedback">
-        <input type="email" class="form-control" placeholder="Email">
+        <input type="email" class="form-control" name="user_email" placeholder="Email" autofocus required>
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       
       <div class="row">
         <div class="col-xs-8">
-          <button type="submit" class="btn btn-primary btn-flat">Get New Password</button>
+      <?php 
+      // prevent CSRF
+      $key= random_generator(13);
+      $CSRF = bin2hex(openssl_random_pseudo_bytes(32).$key);
+      $_SESSION['CSRF'] = $CSRF;
+      ?>
+        <input type="hidden" name="csrf" value="<?php echo $CSRF; ?>">
+        <input type="submit" class="btn btn-primary btn-block btn-flat" name="Reset" value="Get New Password">
         </div>
         <!-- /.col -->
       </div>
@@ -69,7 +142,9 @@ if (file_exists(__DIR__ . '/../config.php')) {
     <div class="social-auth-links text-center"></div>
     
     <a href="login.php" class="text-center">Log In</a>
-    
+    <?php 
+      endif;
+    ?>
   </div>
   <!-- /.login-box-body -->
 </div>
@@ -77,6 +152,7 @@ if (file_exists(__DIR__ . '/../config.php')) {
 
 <!-- jQuery 3 -->
 <script src="assets/components/jquery/dist/jquery.min.js"></script>
+<script src="assets/dist/js/checklogin.js"></script>
 <!-- Bootstrap 3.3.7 -->
 <script src="assets/components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- iCheck -->

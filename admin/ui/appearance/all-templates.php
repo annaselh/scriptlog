@@ -85,7 +85,7 @@
                     <tr>
                        <td><?= $no; ?></td>
                        <td>
-                       <a href="index.php?load=themes&action=editTheme&themeId=<?= htmlspecialchars((int)$theme['ID']);?>"><?= htmlspecialchars($theme['theme_title']); ?>
+                       <a href="index.php?load=templates&action=editTheme&themeId=<?= htmlspecialchars((int)$theme['ID']);?>"><?= htmlspecialchars($theme['theme_title']); ?>
                        </a>
                        </td>
                        <td><?= html_entity_decode($theme['theme_designer']); ?></td>

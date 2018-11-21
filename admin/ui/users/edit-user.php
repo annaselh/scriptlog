@@ -55,20 +55,21 @@ endif;
 <form method="post" action="index.php?load=users&action=<?=(isset($formAction)) ? $formAction : null; ?>&userId=<?=(isset($userId)) ? $userId : 0; ?>&sessionId=<?=(isset($sessionId)) ? $sessionId : md5(get_ip_address()); ?>" role="form">
 <input type="hidden" name="session_id" value="<?=(isset($userData['user_session'])) ? $userData['user_session'] : md5(get_ip_address()); ?>" />
 <input type="hidden" name="user_id" value="<?=(isset($userData['ID'])) ? $userData['ID'] : 0; ?>" />
-
 <div class="box-body">
+
 <div class="form-group">
 <label>Username (required)</label>
-<input type="text" class="form-control" name="user_login" placeholder="Enter username" 
- value="<?=(isset($userData['user_login'])) ? htmlspecialchars($userData['user_login']) : ""; ?> 
- <?=(isset($formData['user_login'])) ? htmlspecialchars($formData['user_login'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" 
- <?=(isset($userData['user_login']) && $userData['user_login'] != '') ? "disabled" :  ""; ?>>
+<input type="text" class="form-control" name="user_login" placeholder="Enter username" value="<?=(isset($formData['user_login'])) ? htmlspecialchars($formData['user_login'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
+<?=(isset($userData['user_login'])) ? htmlspecialchars($userData['user_login']) : ""; ?>" 
+  required <?=(isset($userData['user_login']) && $userData['user_login'] !== '') ? 'disabled="disabled"' : ""; ?>>
 </div>
+
 <div class="form-group">
 <label>Fullname</label>
 <input type="text" class="form-control" name="user_fullname" placeholder="Enter fullname" value="<?=(isset($userData['user_fullname'])) ? htmlspecialchars($userData['user_fullname']) : ""; ?>
 <?=(isset($formData['user_fullname'])) ? htmlspecialchars($formData['user_fullname'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : "";  ?>" >
 </div>
+
 <div class="form-group">
 <label>Email (required)</label>
 <input type="email" class="form-control" name="user_email" placeholder="Enter email" value="<?=(isset($userData['user_email'])) ? htmlspecialchars($userData['user_email']) : ""; ?>
@@ -77,21 +78,22 @@ endif;
 </div>
 <div class="form-group">
 <label>Password (required)</label>
-<input type="password" class="form-control" name="user_pass" placeholder="Enter password" autocomplete="off">
+<input type="password" class="form-control" name="user_pass" placeholder="Enter password" maxlength="50" autocomplete="off">
 </div>
 
 <?php if(!empty($userData['user_email'])) :?>
 <div class="form-group">
 <label>confirm Password (required)</label>
-<input type="password" class="form-control" name="user_pass" placeholder="Enter password" autocomplete="off">
+<input type="password" class="form-control" name="user_pass" placeholder="Confirm password" maxlength="50" autocomplete="off">
 </div>
 <?php  endif; ?>
 
 <div class="form-group">
 <label>Website</label>
-<input type="text" class="form-control" name="user_url" placeholder="Enter url" value="<?=(isset($userData['user_url'])) ? $userData['user_url'] : ""; ?> 
-<?=(isset($formData['user_url'])) ? htmlspecialchars($formData['user_url'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" >
+<input type="text" class="form-control" name="user_url" placeholder="Enter url" value="<?=(isset($formData['user_url'])) ? htmlspecialchars($formData['user_url'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
+<?=(isset($userData['user_url'])) ? $userData['user_url'] : ""; ?>" >
 </div>
+
 <div class="form-group">
 <label>Role </label>
 <?=(isset($userRole)) ? $userRole : ""; ?>

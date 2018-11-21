@@ -70,7 +70,7 @@ $filter_iterator = new RecursiveCallbackFilterIterator($function_directory, func
         
     } else {
         
-        # only consume files of interest
+        # only invoke files of interest
         return strpos($current -> getFilename(), '.php');
         
     }
@@ -99,7 +99,7 @@ $loader -> setLibraryPaths(array(
     APP_ROOT . APP_LIBRARY . DS .'dao'. DS,
     APP_ROOT . APP_LIBRARY . DS .'event'. DS,
     APP_ROOT . APP_LIBRARY . DS .'app'. DS,
-    APP_ROOT . APP_LIBRARY . DS .'controller'. DS,
+    APP_ROOT . APP_LIBRARY . DS .'front'. DS,
     APP_ROOT . APP_LIBRARY . DS .'plugins'. DS
 ));
 
@@ -109,26 +109,28 @@ $loader -> runLoader();
 // RULES
 //=========================================
 
-/* rules used by dispatcher to route request */
+// rules used by dispatcher to route request
 
 /* 
+
     'picture'   => "/picture/(?'text'[^/]+)/(?'id'\d+)",    // '/picture/some-text/51'
     'album'     => "/album/(?'album'[\w\-]+)",              // '/album/album-slug'
     'category'  => "/category/(?'category'[\w\-]+)",        // '/category/category-slug'
     'page'      => "/page/(?'page'about|contact)",          // '/page/about', '/page/contact'
     'post'      => "/(?'post'[\w\-]+)",                     // '/post-slug'
     'home'      => "/"                                      // '/'  
+
  */
 
-//=========================================
+//==========================================
 
 $rules = array(
     
     'home'     => "/",                               
     'category' => "/category/(?'category'[\w\-]+)",
+    'blog'     => "/(?'blog'[^/]*)",
     'page'     => "/page/(?'page'about|contact|faculty|)",
-    'post'     => "/(?'post'[\w\-]+)",
-    'posts'    => "/posts/([^/]*)",
+    'single'   => "/post/(?'id'\d+)/(?'post'[\w\-]+)",
     'search'   => "(?'search'[\w\-]+)"
     
 );
@@ -139,12 +141,27 @@ $dbc = DbFactory::connect([
     $config['db']['user'], $config['db']['pass']
 ]);
 
+// Register rules and an instance of database connection
 Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
 
+/* an instances of class that necessary for the system
+ * please do not change this below variable 
+ * 
+ * @var $searchPost used by search functionality
+ * @var $frontPaginator used by front pagination funtionality
+ * @var $postFeeds used by rss feed functionality
+ * @var $sanitizer used by sanitize functionality
+ * @var $userDao $validator $authenticator these collection of instances of classes that will used for login to control panel(admin's page)
+ * 
+ */
 $searchPost = new SearchSeeker($dbc);
 $frontPaginator = new Paginator(10, 'p');
 $postFeeds = new RssFeed($dbc);
 $sanitizer = new Sanitize();
+$userDao = new User();
+$userToken = new UserToken();
+$validator = new FormValidator();
+$authenticator = new Authentication($userDao, $userToken, $validator);
 
 # set_exception_handler('LogError::exceptionHandler');
 # set_error_handler('LogError::errorHandler');

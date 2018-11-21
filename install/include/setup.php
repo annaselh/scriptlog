@@ -17,11 +17,14 @@
  * @param string $user_pass
  * @param string $user_email
  * @param string $key
+ * 
  */
 function install_database_table($link, $user_login, $user_pass, $user_email, $key)
 {
 
-$tableUser = "CREATE TABLE IF NOT EXISTS users(
+global $protocol, $server_host;
+
+$tableUser = "CREATE TABLE IF NOT EXISTS users (
 ID BIGINT(20) unsigned NOT NULL auto_increment,
 user_login VARCHAR(60) NOT NULL,
 user_email VARCHAR(100) NOT NULL,
@@ -37,6 +40,17 @@ user_session VARCHAR(255) NOT NULL,
 PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
         
+$tableUserToken = "CREATE TABLE IF NOT EXISTS user_token(
+ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+user_id BIGINT(20) UNSIGNED NOT NULL,
+pwd_hash VARCHAR(255) NOT NULL,
+selector_hash VARCHAR(255) NOT NULL,
+is_expired INT(11) NOT NULL DEFAULT '0',
+expired_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (ID),
+FOREIGN KEY (user_id) REFERENCES users(ID)
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
+
 $tablePost = "CREATE TABLE IF NOT EXISTS posts (
 ID bigint(20) unsigned NOT NULL auto_increment,
 post_image varchar(512) DEFAULT NULL,
@@ -51,7 +65,8 @@ post_keyword text DEFAULT '',
 post_status varchar(20) NOT NULL DEFAULT 'publish',
 post_type varchar(120) NOT NULL DEFAULT 'blog',
 comment_status varchar(20) NOT NULL DEFAULT 'open',
-PRIMARY KEY (ID)
+PRIMARY KEY (ID),
+FOREIGN KEY (post_author) REFERENCES users(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tableTopic = "CREATE TABLE IF NOT EXISTS topics(
@@ -66,7 +81,9 @@ $tablePostTopic = "CREATE TABLE IF NOT EXISTS post_topic(
 ID BIGINT(20) unsigned NOT NULL auto_increment,
 post_id bigint(20) unsigned DEFAULT NULL,
 topic_id bigint(20) unsigned DEFAULT NULL,
-PRIMARY KEY(ID)
+PRIMARY KEY(ID),
+FOREIGN KEY (post_id) REFERENCES posts(ID),
+FOREIGN KEY (topic_id) REFERENCES topics(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tableComment = "CREATE TABLE IF NOT EXISTS comments(
@@ -77,7 +94,8 @@ comment_author_ip VARCHAR(100) NOT NULL,
 comment_content text NOT NULL,
 comment_status VARCHAR(20) NOT NULL DEFAULT 'approved',
 comment_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-PRIMARY KEY(ID)
+PRIMARY KEY (ID),
+FOREIGN KEY (comment_post_id) REFERENCES posts(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
 
 $tableReply = "CREATE TABLE IF NOT EXISTS comment_reply(
@@ -87,7 +105,9 @@ user_id BIGINT(20) unsigned NOT NULL,
 reply_content text NOT NULL,
 reply_status enum('0','1') NOT NULL DEFAULT '1',
 reply_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-PRIMARY KEY(ID)
+PRIMARY KEY (ID, comment_id),
+FOREIGN KEY (comment_id) REFERENCES comments(ID),
+FOREIGN KEY (user_id) REFERENCES users(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tableMenu = "CREATE TABLE IF NOT EXISTS menu(
@@ -107,7 +127,8 @@ menu_id BIGINT(20) unsigned NOT NULL,
 menu_sub_child BIGINT(20) unsigned NOT NULL,
 menu_child_sort INT(5) NOT NULL DEFAULT '0',
 menu_child_status enum('Y','N') NOT NULL DEFAULT 'Y',
-PRIMARY KEY(ID)
+PRIMARY KEY(ID),
+FOREIGN KEY(menu_id) REFERENCES menu(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tablePlugin = "CREATE TABLE IF NOT EXISTS plugin(
@@ -122,7 +143,7 @@ PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
 $tableSetting = "CREATE TABLE IF NOT EXISTS settings(
-ID SMALLINT(5) unsigned NOT NULL,
+ID SMALLINT(5) unsigned NOT NULL AUTO_INCREMENT,
 app_key VARCHAR(255) DEFAULT NULL,
 app_url VARCHAR(255) NOT NULL DEFAULT '#',
 site_name VARCHAR(100) NOT NULL,
@@ -146,10 +167,10 @@ theme_status enum('Y','N') NOT NULL DEFAULT 'N',
 PRIMARY KEY(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
 
-$saveAdmin = "INSERT INTO users (user_login, user_email, user_pass, user_level,
-              user_registered, user_session) VALUES (?, ?, ?, ?, ?, ?)";
-$saveAppKey = "INSERT INTO settings (app_key) VALUES(?)";
-$saveTheme = "INSERT INTO themes (theme_title, theme_desc, theme_designer, theme_directory, theme_status) VALUES (?, ?, ?, ?, ?)";
+$saveAdmin   = "INSERT INTO users (user_login, user_email, user_pass, user_level,
+                            user_registered, user_session) VALUES (?, ?, ?, ?, ?, ?)";
+$saveSetting = "INSERT INTO settings (app_key, app_url) VALUES(?, ?)";
+$saveTheme   = "INSERT INTO themes (theme_title, theme_desc, theme_designer, theme_directory, theme_status) VALUES (?, ?, ?, ?, ?)";
 
 // Users  
 $date_registered = date("Y-m-d H:i:s");
@@ -163,6 +184,9 @@ $theme_desc = "Ondrej Svestka create this beautiful responsive blog theme and we
 $theme_designer = "Ondrej Svestka";
 $theme_directory = "themes/bootstrapblog";
 $theme_status = "Y";
+
+// Setting
+$url = $protocol.'://'.$server_host.dirname(dirname($_SERVER['PHP_SELF'])).'/';
 
 #create users table
 if ($link instanceof mysqli)  
@@ -178,6 +202,7 @@ $createAdmin -> execute();
 if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
     
     // create other database tables
+    $createUserToken = $link -> query($tableUserToken);
     $createPost = $link -> query($tablePost);
     $createTopic = $link -> query($tableTopic);
     $createPostTopic = $link -> query($tablePostTopic);
@@ -189,9 +214,9 @@ if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
     $createSetting = $link -> query($tableSetting);
     $createTheme = $link -> query($tableTheme);
     
-    // insert app key
-    $recordAppKey = $link -> prepare($saveAppKey);
-    $recordAppKey -> bind_param('s', $key);
+    // insert configuration - setting
+    $recordAppKey = $link -> prepare($saveSetting);
+    $recordAppKey -> bind_param('ss', $key, $url);
     $recordAppKey -> execute();
     
     // insert default theme
@@ -215,23 +240,20 @@ if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
  * @param string $email
  * @param string $key
  * @throws Exception
+ * 
  */
 function write_config_file($host, $user, $password, $database, $email, $key)
 {
-
-global $protocol, $server_host;
-
-$url = $protocol.'://'.$server_host.dirname(dirname($_SERVER['PHP_SELF'])).'/';
 
 $link = mysqli_connect($host, $user, $password, $database);
 
 if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
    
-   $getAppKey = "SELECT ID, app_key FROM settings WHERE app_key = '$key' LIMIT 1";
+   $getAppKey = "SELECT ID, app_key, app_url FROM settings WHERE app_key = '$key' LIMIT 1";
    
    $row = mysqli_fetch_assoc(mysqli_query($link, $getAppKey));
 
-   $app_key = generate_license(substr($_SESSION['token']));
+   $app_key = generate_license(substr($row['app_key']));
 
    $updateAppKey = "UPDATE settings SET app_key = '$app_key'
                     WHERE ID = {$row['ID']} LIMIT 1";
@@ -239,7 +261,7 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
     mysqli_query($link, $updateAppKey);
     mysqli_close($link);
     
-    $fileConfig = '<?php  return ['."
+    $configFile = '<?php  return ['."
                     
             'db' => [
                   'host' => '".addslashes($host)."',
@@ -249,7 +271,7 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
                   ],
         
             'app' => [
-                   'url'   => '".addslashes($url)."',
+                   'url'   => '".addslashes($row['app_url'])."',
                    'email' => '".addslashes($email)."',
                    'key'   => '".addslashes($app_key)."'
                    ]
@@ -258,8 +280,8 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
      
     if (isset($_SESSION['token'])) {
 
-        file_put_contents(__DIR__ . '/../../config.php', $fileConfig);
-
+        file_put_contents(__DIR__ . '/../../config.php', $configFile);
+        
     }
       
  }
@@ -315,6 +337,7 @@ function remove_bad_characters($str_words, $escape = false, $level = 'high')
  * 
  * @param string $html
  * @return string
+ * 
  */
 function escapeHTML($html)
 {
@@ -328,6 +351,7 @@ function escapeHTML($html)
  * @link https://stackoverflow.com/questions/3687878/serial-generation-with-php
  * @param string $suffix
  * @return string
+ * 
  */
 function generate_license($suffix = null) 
 {
@@ -432,22 +456,28 @@ function purge_installation()
         
     }
 
-    $disabled = $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex($bytes), 0, $length).'-'.date("Ymd").'.log';
+    $disabled = $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex($bytes), 0, $length).'.log';
 
-    if (rename(__DIR__ . '/../index.php', $disabled)) {
+    if (!is_writable($_SERVER['DOCUMENT_ROOT'])) {
 
-       $clean_installation = '<?php ';
+        trigger_error("Permission denied. Web root is not writable.", E_USER_ERROR);
 
-       file_put_contents(__DIR__ . '/../index.php', $clean_installation);
+    } else {
 
-       $_SESSION = array();
+        if (rename(__DIR__ . '/../index.php', $disabled)) {
 
-       session_destroy();
-       
-       setcookie('PHPSESSID', '', time()-3600, '/', '', 0, 0);
+            $clean_installation = '<?php ';
+     
+            file_put_contents(__DIR__ . '/../index.php', $clean_installation);
+     
+            $_SESSION = array();
+     
+            session_destroy();
+            
+         }
 
     }
-    
+
   }
     
 }

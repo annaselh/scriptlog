@@ -59,18 +59,24 @@ class Dispatcher
   public function dispatch()
   {
 
-    if (!$themeActived = $this->grabTheme()) {
+    if (!$themeActived = $this->invokeTheme()) {
         
       include(APP_ROOT.APP_PUBLIC.DS.'themes'.DS.'maintenance.php');
       
     } else {
 
+      $theme_dir = APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS;
+
       foreach ( $this->route as $action => $routes ) {
     
         if ( preg_match( '~^'.$routes.'$~i', $this->requestURI(), $params ) ) {
            
-            if (is_dir(APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS)) {
-               include(APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS.$action . '.php' );
+            if (is_dir($theme_dir)) {
+
+               include($theme_dir.'header.php');
+               include($theme_dir.$action . '.php' );
+               include($theme_dir.'footer.php');
+               
             }
 
            // avoid the 404 message 
@@ -80,30 +86,22 @@ class Dispatcher
    
       }
 
-      // nothing is found so handle the 404 error
-      include(APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS.'404.php');
+      // nothing is found so handle the error page 404
+      include($theme_dir.'404.php');
 
     }
     
   }
 
   /**
-   * Grab active theme
-   */
-  public function grabTheme()
-  {
-    return $this->theme->loadTheme('Y');
-  }
-
-  /**
-   * Find rules defined
+   * Find route defined by rules
    */
   public function findRules()
   {
     $keys = array();
     $values = array();
   
-    foreach ($this->rules as $key => $value) {
+    foreach ($this->route as $key => $value) {
       
       $keys[] = $key; 
       $values[] = $value;    
@@ -137,6 +135,28 @@ class Dispatcher
   }
 
   /**
+   * Find Request Parameters
+   * 
+   * @return mixed
+   * 
+   */
+  public function findRequestParam()
+  {
+    $parameters = [];
+
+    foreach ($this->route as $key => $value) {
+      
+       if (preg_match('~^'.$value.'$~i', $this->requestURI(), $matches)) {
+
+         return $parameters[] = $matches;
+
+       }
+
+    }
+
+  }
+
+  /**
    * Parse query from URL requested
    */
   public function parseQuery()
@@ -148,7 +168,7 @@ class Dispatcher
     
     foreach($var as $val)
     {
-        $x          = explode('=', $val);
+        $x = explode('=', $val);
         $queries[$x[0]] = $x[1];
     }
     
@@ -194,6 +214,14 @@ class Dispatcher
     $uri = '/' . trim( str_replace( $uri, '', $_SERVER['REQUEST_URI'] ), '/' );
     $uri = urldecode( $uri );
     return $uri;
+  }
+
+  /**
+   * Grab active theme
+   */
+  protected function invokeTheme()
+  {
+    return $this->theme->loadTheme('Y');
   }
   
 }

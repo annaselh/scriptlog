@@ -6,41 +6,41 @@ $menuDao = new Menu();
 $validator = new FormValidator();
 $menuEvent = new MenuEvent($menuDao, $validator, $sanitizer);
 $menuApp = new MenuApp($menuEvent);
-
-switch ($action) {
-
-    case 'newMenu':
-        # Add New Menu
-        if ($menuId == 0) {
-
-            $menuApp -> insert();
-
-        }
-
-        break;
     
-    case 'editMenu':
-
-        if ($menuDao -> checkMenuId($menuId, $sanitizer)) {
-
-            $menuApp -> update($menuId);
-
-        } else {
-
-            direct_page('index.php?load=menu&error=menuNotFound', 404);
-
-        }
-
-        break;
-
-    case 'deleteMenu':
-
-        $menuApp -> remove($menuId);
-
-    default:
+    switch ($action) {
+    
+        case 'newMenu':
+            # Add New Menu
+            if ($menuId == 0) {
+    
+                $menuApp -> insert();
+    
+            }
+    
+            break;
         
-        $menuApp -> listItems();
-
-        break;
-        
-}
+        case 'editMenu':
+    
+            if ($menuDao -> checkMenuId($menuId, $sanitizer)) {
+    
+                $menuApp -> update($menuId);
+    
+            } else {
+    
+                direct_page('index.php?load=menu&error=menuNotFound', 404);
+    
+            }
+    
+            break;
+    
+        case 'deleteMenu':
+    
+            $menuApp -> remove($menuId);
+    
+        default:
+            
+            $menuApp -> listItems();
+    
+            break;
+            
+    }

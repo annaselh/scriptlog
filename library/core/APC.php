@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * APC Class extends Cache
+ * @package  SCRIPTLOG
+ */
 class APC extends Cache
 {
    

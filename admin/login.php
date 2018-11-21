@@ -1,76 +1,85 @@
 <?php
-
+/**
+ * login.php
+ * login functionality 
+ * to access control panel or administrator page
+ * 
+ */
 if (file_exists(__DIR__ . '/../config.php')) {
     
-  include(__DIR__ . '/../library/main.php');
-    
+    include __DIR__ . '/../library/main.php';
+    require 'authorizer.php';
+
 } else {
-    
-    $config = require dirname(dirname(__FILE__)).'/config.sample.php';
-    include(__DIR__ . '/../library/main-dev.php');
+
+  header("Location: ../install");
+  exit();
+  
 }
 
 $errors = [];
-  $loginFormSubmitted = isset($_POST['Login']);
+$loginFormSubmitted = isset($_POST['Login']);
   
-  if (empty($loginFormSubmitted) == false) {
-    
-    $userDao = new User();
-    $validator = new FormValidator();
-    $authenticator = new Authentication($userDao, $validator);
+if (!empty($loginFormSubmitted)) {
+      
+  $isAuthenticated = false;
+
+  $user_email = filter_input(INPUT_POST, 'user_email', FILTER_SANITIZE_EMAIL);
+  $user_pass = isset($_POST['user_pass']) ? prevent_injection($_POST['user_pass']) : "";
   
-    $user_email = filter_input(INPUT_POST, 'user_email', FILTER_SANITIZE_EMAIL);
-    $user_pass = isset($_POST['user_pass']) ? prevent_injection($_POST['user_pass']) : "";
+  $badCSRF = true;
   
-    $badCSRF = true;
-  
-    $_SESSION['userLoggedIn'] = false;
-  
-    if (!isset($_POST['csrf']) || !isset($_SESSION['CSRF']) || empty($_POST['csrf'])
+  if (!isset($_POST['csrf']) || !isset($_SESSION['CSRF']) || empty($_POST['csrf'])
      || $_POST['csrf'] !== $_SESSION['CSRF']) {
          
-      $errors['errorMessage'] = 'Sorry, there was a security issue';
+      $errors['errorMessage'] = "Sorry, there was a security issue";
      
       $badCSRF = true;
      
-   } elseif (empty($user_email) || empty($user_pass)) {
+  } elseif (empty($user_email) || empty($user_pass)) {
   
      $errors['errorMessage'] = "All Column must be filled";
   
-   } elseif (email_validation($user_email) == 0) {
+  } elseif (email_validation($user_email) == 0) {
   
      $errors['errorMessage'] = "Please enter a valid email address";
   
-   } elseif ($authenticator -> checkEmailExists($user_email) === false) {
+  } elseif ($authenticator -> checkEmailExists($user_email) === false) {
   
      $errors['errorMessage'] = "Your email address is not registered";
   
-   } elseif (strlen($user_pass) < 8) {
+  } elseif (strlen($user_pass) < 8) {
   
      $errors['errorMessage'] = "Your password must consist of least 8 characters";
   
-   } elseif (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $user_pass)) {
+  } elseif (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,50}$/', $user_pass)) {
   
-     $errors['errorMessage'] = "Password does not meet the requirements";
+     $errors['errorMessage'] = "The Password does not meet the requirements";
      
-   } elseif ($authenticator -> validateUserAccount($user_email, $user_pass) === false) { 
-  
-     $errors['errorMessage'] = "Your email or password is incorrect!";
-  
-   } else {
-  
+  } else {
+
     $badCSRF = false;
     unset($_SESSION['CSRF']);
 
-    $_SESSION['userLoggedIn'] = true;
+    if ($authenticator -> validateUserAccount($user_email, $user_pass) === true) {
+        $isAuthenticated = true;
+    }
+  
+    if ($isAuthenticated) {
 
-    $authenticator -> login($_POST);
+      $authenticator -> login($_POST);
   
-   }
-  
+    } else {
+
+       $errors['errorMessage'] = "Invalid Login";
+       
+    }
+    
   }
   
-  ?>
+}
+  
+?>
   
   <!DOCTYPE html>
   <html>
@@ -110,18 +119,23 @@ $errors = [];
     <!-- /.login-logo -->
     <div class="login-box-body">
     
-    <?php if (isset($errors['errorMessage'])) { ?>
-  
-          
-  <div class="alert alert-danger alert-dismissable">
+    <?php 
+       if (isset($errors['errorMessage'])) : 
+    ?>
+    
+       <div class="alert alert-danger alert-dismissable">
     <button type="button" class="close" data-dismiss="alert"
       aria-hidden="true">&times;</button>
-    <?php echo $errors['errorMessage']; ?>
-  </div>
+           <?= $errors['errorMessage']; ?>
+    </div>
   
-  <?php 	} 
+    <?php 
+      endif; 
+    ?>
+
+  <?php 	
   
-  if (isset($_GET['status']) && $_GET['status'] == 'ganti'){
+  if (isset($_GET['status']) && $_GET['status'] == 'ganti') {
   
      echo '<div class="alert alert-info alert-dismissable">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Kata sandi sudah di' . $_GET['status'] . '. Silahkan masuk!</div>';
@@ -134,22 +148,24 @@ $errors = [];
   ?>
   
     <form name="formlogin" action="login.php" method="post" onSubmit="return validasi(this)" role="form" autocomplete="off">
+        
         <div class="form-group has-feedback">
           <input type="email" class="form-control" name="user_email" placeholder="Email" required autofocus maxlength="186" 
-          value="<?=(isset($_POST['user_email'])) ? htmlspecialchars(stripslashes($_POST['user_email']), ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?> " >
+          value="<?=(isset($_COOKIE['user_email'])) ? $_COOKIE['user_email'] : ""; ?> " >
           <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-          
         </div>
+
         <div class="form-group has-feedback">
-          <input type="password" class="form-control" name="user_pass" placeholder="Password" required maxlength="32" autocomplete="off" >
-          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-          
+          <input type="password" class="form-control" name="user_pass" placeholder="Password" required maxlength="50" autocomplete="off" 
+           value="<?=(isset($_COOKIE['user_pwd'])) ? $_COOKIE['user_pwd'] : ""; ?>" >
+          <span class="glyphicon glyphicon-lock form-control-feedback"></span>  
         </div>
+        
         <div class="row">
           <div class="col-xs-8">
             <div class="checkbox icheck">
               <label>
-                <input type="checkbox" name="rememberme" <?=(isset($_POST['rememberme']) != "") ? "checked": ""; ?>> Remember Me
+                <input type="checkbox" name="remember" <?=(isset($_COOKIE["user_email"])) ? "checked" : "" ?> > Remember Me
               </label>
             </div>
           </div>
@@ -161,7 +177,7 @@ $errors = [];
       $CSRF = bin2hex(openssl_random_pseudo_bytes(32).$key);
       $_SESSION['CSRF'] = $CSRF;
       ?>
-       <input type="hidden" name="csrf" value="<?php echo $CSRF; ?>">
+          <input type="hidden" name="csrf" value="<?= $CSRF; ?>">
           <input type="submit" class="btn btn-primary btn-block btn-flat" name="Login" value="Login">
           </div>
           <!-- /.col -->

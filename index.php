@@ -2,6 +2,4 @@
 
 require 'library/main.php';
 
-$dispatcher = new Dispatcher();
-$dispatcher -> dispatch();
-
+route_request();

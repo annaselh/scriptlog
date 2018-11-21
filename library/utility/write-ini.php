@@ -2,20 +2,22 @@
 /**
  * Write a to an INI file
  * 
- * Example usage:
+ * ===== Example usage: =====
  * // load ini file values into array
- * $config = parse_ini_file('config.ini', true);
+ * $theme = parse_ini_file('theme.ini', true);
  * // add some additional values
- * $config['main']['foobar'] = 'baz';
- * $config['main']['const']['a'] = 'UPPERCASE';
- * $config['main']['const']['b'] = 'UPPER_CASE WITH SPACE';
- * $config['main']['array'][] = 'Some Value';
- * $config['main']['array'][] = 'ADD';
- * $config['third_section']['urls']['docs'] = 'http://php.net';
+ * $theme['main']['foobar'] = 'baz';
+ * $theme['main']['const']['a'] = 'UPPERCASE';
+ * $theme['main']['const']['b'] = 'UPPER_CASE WITH SPACE';
+ * $theme['main']['array'][] = 'Some Value';
+ * $theme['main']['array'][] = 'ADD';
+ * $theme['third_section']['urls']['docs'] = 'http://php.net';
+ * 
  * ===== write ini file =====
  * call function: 
  * write_ini('config.ini', $config);
  * 
+ * @author  Lawrence Cherone
  * @link https://stackoverflow.com/questions/5695145/how-to-read-and-write-to-an-ini-file-with-php
  * @param string $file
  * @param array $data

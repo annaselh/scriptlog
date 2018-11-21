@@ -7,7 +7,7 @@
  * @param string $content
  * @return boolean
  */
-function notify_new_user($recipient, $user_login, $user_pass)
+function notify_new_user($recipient, $user_email, $user_pass)
 {
   
   $site_info = app_info();
@@ -18,16 +18,18 @@ function notify_new_user($recipient, $user_login, $user_pass)
   $sanitize_sender = sanitize_email($sender);
   
   $subject = "Join for The Best Team in Town!";
-  $content = "If you never ask to be a user at {$site_name}.
+  $content = "<html><body>
+              If you never ask to be a user at {$site_name}.
               please feel free to ignore this email.
               But if you are asking for this information,
               here is your profile data:<br />
-              <b>Username:</b>{$user_login}<br />
+              <b>Email address:</b>{$user_email}<br />
               <b>Password:</b>{$user_pass}<br />
               Activate your account by clicking the link below:<br />
               <a href={$app_url}".APP_ADMIN."/activate-user.php?key={$activation_key}>Activate My Account</a><br /><br />
               Thank you, <br />
-              <b>{$site_name}</b>";
+              <b>{$site_name}</b>
+              </body></html>";
   
   // Define Headers
   $email_headers = 'From '. $sanitize_sender . "\r\n" .

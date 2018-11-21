@@ -94,8 +94,6 @@ class Widget extends Dao
  public function showRecentPosts($status, $position, $limit)
  {
   
-  try {
-  
   $sql = "SELECT
              ID, post_image, post_author,
              date_created, date_modified, post_title, post_slug,
@@ -104,7 +102,9 @@ class Widget extends Dao
             posts
   		WHERE
             post_status = :status AND post_type = 'blog'
-  		ORDER BY ID DESC LIMIT :position, :limit";
+      ORDER BY ID DESC LIMIT :position, :limit";
+      
+  try {
   
   $this->setSQL($sql);
   

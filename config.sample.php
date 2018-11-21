@@ -1,21 +1,31 @@
-<?php 
+<?php
+
+/*
 
 return [
-    
+
+    // Database configuration
+
     'db' => [
-        
-        'host' => 'database host',
-        'name' => 'database name',
-        'user' => 'database user',
-        'pass' => 'database password'
+
+        'host' => 'hostname',  # database's hostname 
+        'user' => 'user',      # database's user
+        'pass' => 'password',  # database's password
+        'name' => 'dbname'     # database's name
+
     ],
-    
+
+    // Application configuration
+
     'app' => [
-        
-        'url' => 'application_url',
-        'email' => 'application_email',
-        'key' => 'application_key'
+
+         'url'   => 'URL',            # Application URL
+         'email' => 'email address',  # Email address (administrator's email)
+         'key'   => 'license key'     # Application license key
+
     ]
     
 ];
+
+*/
 
