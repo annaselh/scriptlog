@@ -1,5 +1,14 @@
 <?php 
-
+/**
+ * File index.php 
+ * 
+ * @category  installation file index.php
+ * @package   SCRIPTLOG INSTALLATION
+ * @author    M.Noermoehammad
+ * @license   MIT
+ * @version   1.0
+ * 
+ */
 require dirname(__FILE__) . '/include/settings.php';
 require dirname(__FILE__) . '/include/check-engine.php';
 require dirname(__FILE__) . '/include/setup.php';
@@ -130,7 +139,7 @@ if ($install != 'install') {
     <meta name="description" content="Scriptlog Installation">
     <link rel="icon" href="../favicon.ico">
 
-    <title>Scritplog Installation</title>
+    <title>Scriptlog Installation</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -180,8 +189,15 @@ if ($install != 'install') {
                 <?php 
              
                   $osname = check_os()['Operating_system'];
-                  $oslist = array('Linux', 'OS X', 'FreeBSD', 'Chrome OS', 
-                      'OpenBSD',  'NetBSD', 'OpenSolaris', 'Windows');
+                  $oslist = array(
+                            'Linux', 
+                            'OS X', 
+                            'FreeBSD', 
+                            'Chrome OS', 
+                            'OpenBSD',  
+                            'NetBSD', 
+                            'OpenSolaris', 
+                            'Windows');
                   
                   foreach ($oslist as $operating_system) :
                   
@@ -241,12 +257,14 @@ if ($install != 'install') {
                  $serverList = array('Apache', 'Nginx', 'Litespeed');
                  
                  foreach ($serverList as $server) :
+
                  if ($server_name === $server) {
                  
                       $server_success = "text-success";
                       $server_checked = "fa fa-check fa-lg";
                       
                  }
+                 
                  endforeach;
                 ?>
                 <small class="<?=(isset($server_success)) ? $server_success : 'text-danger'; ?>"><?=(isset($server_name)) ? $server_name.' '.$server_version : $errors['errorChecking'] = 'Web server not supported'; ?></small>

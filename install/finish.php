@@ -1,6 +1,17 @@
-<?php  
+<?php 
+/**
+ * File finish.php
+ * 
+ * @category  installation file finish.php
+ * @package   SCRIPTLOG INSTALLATION
+ * @author    M.Noermoehammad
+ * @license   MIT
+ * @version   1.0
+ *   
+ * */
 require 'include/settings.php';
 require 'include/setup.php';
+
 ?>
 
 <!doctype html>

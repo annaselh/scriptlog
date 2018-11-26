@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * File check-engine.php
+ * 
+ * @category  installation file check-engine.php
+ * @package   SCRIPTLOG INSTALLATION
+ * @author    M.Noermoehammad
+ * @license   MIT
+ * @version   1.0
+ * 
+ */
 use Sinergi\BrowserDetector\Os;
 use Sinergi\BrowserDetector\Browser;
 
@@ -40,7 +49,11 @@ function check_os()
 {
    $os = new Os();
    
-   if (($os -> getName() === Os::LINUX) || ($os -> getName() === Os::FREEBSD) || 
+   if (($os -> getName() === Os::LINUX) || 
+       ($os -> getName() === Os::FREEBSD) || 
+       ($os -> getName() === Os::NETBSD) ||
+       ($os -> getName() === Os::OPENBSD) ||
+       ($os -> getName() === Os::OPENSOLARIS) ||
        ($os -> getName() === Os::CHROME_OS) ||
        ($os -> getName() === Os::WINDOWS) || 
        ($os -> getName() === Os::OSX)) {
@@ -117,7 +130,6 @@ function check_web_server()
 
 /**
  * Checking Main Engine
- * 
  */
 function check_main_dir()
 {
@@ -239,6 +251,9 @@ function check_pcre_utf8()
     
 }
 
+/**
+ * Checking SPL
+ */
 function check_spl_enabled($value)
 {
     if (function_exists($value)) {
@@ -253,6 +268,10 @@ function check_spl_enabled($value)
     
 }
 
+/**
+ * Checking filter_list function
+ * whether enabled or not
+ */
 function check_filter_enabled()
 {
    if (function_exists('filter_list')) {
@@ -267,6 +286,9 @@ function check_filter_enabled()
    
 }
 
+/**
+ * Checking extension iconv
+ */
 function check_iconv_enabled()
 {
     if (extension_loaded('iconv')) {
@@ -281,6 +303,10 @@ function check_iconv_enabled()
     
 }
 
+/**
+ * Checking ctype_digit function 
+ * exists or not
+ */
 function check_character_type()
 {
     if (!function_exists('ctype_digit')) {
@@ -295,6 +321,9 @@ function check_character_type()
     
 }
 
+/**
+ * Checking server request global
+ */
 function check_uri_determination()
 {
     if (isset($_SERVER['REQUEST_URI']) || isset($_SERVER['PHP_SELF']) || isset($_SERVER['PHP_INFO'])) {
@@ -308,6 +337,9 @@ function check_uri_determination()
     
 }
 
+/**
+ * Checking extension pdo_mysql and PDO class
+ */
 function check_pdo_mysql()
 {
     
@@ -324,6 +356,9 @@ function check_pdo_mysql()
     
 }
 
+/**
+ * Checking mysqli function
+ */
 function check_mysqli_enabled()
 {
     if (function_exists('mysqli_connect')) {
@@ -338,6 +373,9 @@ function check_mysqli_enabled()
     
 }
 
+/**
+ * Checking GD function
+ */
 function check_gd_enabled()
 {
     if (function_exists('gd_info')) {
@@ -352,6 +390,9 @@ function check_gd_enabled()
     
 }
 
+/**
+ * Checking mod_rewrite apache module function
+ */
 function check_modrewrite()
 {
   $apache_modules = (function_exists('apache_get_modules')) ? apache_get_modules() : exit;

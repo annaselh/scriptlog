@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * File settings.php
+ * 
+ * @category  installation file settings.php
+ * @package   SCRIPTLOG INSTALLATION
+ * @author    M.Noermoehammad
+ * @license   MIT
+ * @version   1.0
+ * 
+ */
 define('APP_PATH', dirname(dirname(__FILE__)) . '/');
 define('APP_INC', 'include');
 
