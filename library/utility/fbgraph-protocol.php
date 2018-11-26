@@ -1,11 +1,22 @@
 <?php
 /**
+ * Facebook graph protocol function
+ * 
+ * @package  SCRIPTLOG
+ * @author   Maoelana Noermoehammad
  * 
  */
-function fbgraph_protocol($locale, $site_name, $id, $title, $desc, $type, $post_url)
+function fbgraph_protocol($locale, $site_name, $id, $post_image, $title, $desc, $type, $post_url, $width, $height)
 {
   
   $ogp = new OpenGraphProtocol();
+  $imageGraph = new OpenGraphProtocolImage();
+  
+  $imageGraph -> setURL(app_info()['app_url'].APP_PUBLIC.DS.'files'.DS.'pictures'.DS.$post_image);
+  $imageGraph -> setSecureURL(app_info()['app_url'].APP_PUBLIC.DS.'files'.DS.'pictures'.DS.$post_image);
+  $imageGraph -> setType('image/jpeg');
+  $imageGraph -> setWidth($width);
+  $imageGraph -> setHeight($height);
 
   $ogp -> setLocale($locale);
   $ogp -> setSiteName($site_name);
@@ -14,18 +25,9 @@ function fbgraph_protocol($locale, $site_name, $id, $title, $desc, $type, $post_
   $ogp -> setType($type);
   $ogp -> setURL($post_url);
   $ogp -> setDeterminer("");
+  $ogp -> addImage($imageGraph);
 
-
-
-
-}
-
-function image_graph($post_image, $width, $height)
-{
-
-  $imageGraph = new OpenGraphProtocolImage();
-  $site_info = app_info();
-  
-  $imageGraph -> setURL($site_info['app_url'].APP_PUBLIC.DS.'files'.DS.pictures.DS.$post_image);
+  return $ogp -> toHTML();
 
 }
+

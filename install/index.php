@@ -238,7 +238,7 @@ if ($install != 'install') {
                  $server_name = $web_server['WebServer'];
                  $server_version = $web_server['Version'];
                  
-                 $serverList = array('Apache', 'Litespeed');
+                 $serverList = array('Apache', 'Nginx', 'Litespeed');
                  
                  foreach ($serverList as $server) :
                  if ($server_name === $server) {

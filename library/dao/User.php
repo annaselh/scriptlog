@@ -76,7 +76,7 @@ class User extends Dao
    
    if (is_null($fetchMode)) {
        
-      $userDetails = $this->findRow([':ID' => $cleanId]);
+    $userDetails = $this->findRow([':ID' => $cleanId]);
        
    } else {
        

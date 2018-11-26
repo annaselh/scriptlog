@@ -1,7 +1,11 @@
 <?php
 /**
  * APC Class extends Cache
+ * 
  * @package  SCRIPTLOG
+ * @author   Contributors
+ * @license  MIT
+ * 
  */
 class APC extends Cache
 {

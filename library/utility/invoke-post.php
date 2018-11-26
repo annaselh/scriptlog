@@ -2,23 +2,34 @@
 /**
  * Invoke Post Function
  * 
- * @param mixed $args
+ * @param integer $args
+ * 
  */
 function invoke_post($args = null)
 {
   global $frontPaginator, $sanitizer;
 
+  $errors = array();
+
   $postDao = new Post();
-  $articleContent = new PostFront();
-  $frontContent = new FrontContent($articleContent);
 
-  if (!empty($args)) {
+  $content =  new ContentGateway($frontPaginator, $sanitizer);
+  
+  $frontContent = new FrontContent();
 
-    return $frontContent->getContent->grabItem($postDao, $args);
+  if (is_null($args)) {
+
+
     
   } else {
 
-    return $frontContent->getContent->grabItems($postDao, $frontPaginator, $sanitizer);
+    $detail_post = $frontContent -> readPost($postDao, $args);
+    
+    if ($detail_post === false) {
+      
+      $errors[] = 'Post requested not found';
+
+    }
 
   }
 

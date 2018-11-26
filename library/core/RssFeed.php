@@ -25,7 +25,7 @@ class RssFeed
    $postFeed = array();
    
    $sql = "SELECT p.ID, p.post_image, p.post_author,
-             p.date_created, p.date_modified, p.post_title,
+             p.post_date, p.post_modified, p.post_title,
              p.post_slug, p.post_content, p.post_type,
              p.post_status, u.user_login
   		   FROM posts AS p

@@ -80,36 +80,51 @@ $loader -> setLibraryPaths(array(
     APP_ROOT . APP_LIBRARY . DS .'dao'. DS,
     APP_ROOT . APP_LIBRARY . DS .'event'. DS,
     APP_ROOT . APP_LIBRARY . DS .'app'. DS,
-    APP_ROOT . APP_LIBRARY . DS .'front'. DS,
     APP_ROOT . APP_LIBRARY . DS .'plugins'. DS
 ));
 
 $loader -> runLoader();
 
-//=========================================
+//=======================================================
 // RULES
-//=========================================
+//=======================================================
 
-/* rules used by dispatcher to route request */
+// rules used by dispatcher to route request
 
-/* 
-    'picture'   => "/picture/(?'text'[^/]+)/(?'id'\d+)",    // '/picture/some-text/51'
-    'album'     => "/album/(?'album'[\w\-]+)",              // '/album/album-slug'
-    'category'  => "/category/(?'category'[\w\-]+)",        // '/category/category-slug'
-    'page'      => "/page/(?'page'about|contact)",          // '/page/about', '/page/contact'
-    'post'      => "/(?'post'[\w\-]+)",                     // '/post-slug'
-    'home'      => "/"                                      // '/'  
- */
+/*********************************************************  
 
-//=========================================
+     ### '/picture/some-text/51' 
+    'picture' => "/picture/(?'text'[^/]+)/(?'id'\d+)",    
+    
+     ### '/album/album-slug'
+    'album' => "/album/(?'album'[\w\-]+)",              
+    
+     ### '/category/category-slug'
+    'category' => "/category/(?'category'[\w\-]+)",        
+    
+     ### '/blog?p=255'
+    'blog' => "/(?'blog'[^/]*)",                       
+    
+     ### '/page/about', '/page/contact'
+    'page' => "/page/(?'page'about|contact)",          
+    
+     ### '/post/60/post-slug'
+    'post' => "/post/(?'id'\d+)/(?'post'[\w\-]+)",     
+    
+     ### '/'
+    'home' => "/"                                        
+
+ *********************************************************/
+
+//=========================================================
 
 $rules = array(
     
     'home'     => "/",                               
     'category' => "/category/(?'category'[\w\-]+)",
-    'blog'     => "/blog/([^/]*)",
+    'blog'     => "/(?'blog'[^/]*)",
     'page'     => "/page/(?'page'about|contact|faculty|)",
-    'single'   => "/(?'single'[\w\-]+)",
+    'single'   => "/post/(?'id'\d+)/(?'post'[\w\-]+)",
     'search'   => "(?'search'[\w\-]+)"
     
 );

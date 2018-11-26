@@ -30,7 +30,7 @@ class Authentication
 
   public $user_level;
 
-  const COOKIE_EXPIRE =  86400;  // default 86400 = 1 day
+  const COOKIE_EXPIRE =  2592000;  // default 1 month
 
   const COOKIE_PATH = "/";  //Available in whole domain
  
@@ -154,8 +154,11 @@ class Authentication
            $expired_date = date("Y-m-d H:i:s", time() + self::COOKIE_EXPIRE);
 
            $token_info = $this->findTokenByUserEmail($email, 0);
+
            if (!empty($token_info['ID'])) {
+
              $updateExpired = $this->userToken->updateTokenExpired($token_info['ID']);
+
            }
 
            $bind = ['user_id' => $account_info['ID'], 'pwd_hash' => $hashed_password, 
@@ -170,7 +173,9 @@ class Authentication
       }
 
        $last_session = session_id();
+
        session_regenerate_id(true);
+       
        $recent_session = session_id();
 
        $this->userDao->updateUserSession($recent_session, abs((int)$account_info['ID']));

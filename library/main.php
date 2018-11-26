@@ -5,11 +5,12 @@
  * Define constants, object instantiated
  * include functions needed by application
  * 
- * @package SCRIPTLOG
- * @author  Maoelana Noermoehammad
- * @license MIT
- * @version 1.0.0
- * @since   Since Release 1.0.0
+ * @category File
+ * @package  SCRIPTLOG
+ * @author   Maoelana Noermoehammad
+ * @license  https://opensource.org/licenses/MIT MIT License
+ * @version  1.0
+ * @since    Since Release 1.0
  * 
  */
 
@@ -99,30 +100,43 @@ $loader -> setLibraryPaths(array(
     APP_ROOT . APP_LIBRARY . DS .'dao'. DS,
     APP_ROOT . APP_LIBRARY . DS .'event'. DS,
     APP_ROOT . APP_LIBRARY . DS .'app'. DS,
-    APP_ROOT . APP_LIBRARY . DS .'front'. DS,
     APP_ROOT . APP_LIBRARY . DS .'plugins'. DS
 ));
 
 $loader -> runLoader();
 
-//=========================================
+//=======================================================
 // RULES
-//=========================================
+//=======================================================
 
 // rules used by dispatcher to route request
 
-/* 
+/*********************************************************  
 
-    'picture'   => "/picture/(?'text'[^/]+)/(?'id'\d+)",    // '/picture/some-text/51'
-    'album'     => "/album/(?'album'[\w\-]+)",              // '/album/album-slug'
-    'category'  => "/category/(?'category'[\w\-]+)",        // '/category/category-slug'
-    'page'      => "/page/(?'page'about|contact)",          // '/page/about', '/page/contact'
-    'post'      => "/(?'post'[\w\-]+)",                     // '/post-slug'
-    'home'      => "/"                                      // '/'  
+     ### '/picture/some-text/51' 
+    'picture' => "/picture/(?'text'[^/]+)/(?'id'\d+)",    
+    
+     ### '/album/album-slug'
+    'album' => "/album/(?'album'[\w\-]+)",              
+    
+     ### '/category/category-slug'
+    'category' => "/category/(?'category'[\w\-]+)",        
+    
+     ### '/blog?p=255'
+    'blog' => "/(?'blog'[^/]*)",                       
+    
+     ### '/page/about', '/page/contact'
+    'page' => "/page/(?'page'about|contact)",          
+    
+     ### '/post/60/post-slug'
+    'post' => "/post/(?'id'\d+)/(?'post'[\w\-]+)",     
+    
+     ### '/'
+    'home' => "/"                                        
 
- */
+ *********************************************************/
 
-//==========================================
+//=========================================================
 
 $rules = array(
     
@@ -151,7 +165,8 @@ Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
  * @var $frontPaginator used by front pagination funtionality
  * @var $postFeeds used by rss feed functionality
  * @var $sanitizer used by sanitize functionality
- * @var $userDao $validator $authenticator these collection of instances of classes that will used for login to control panel(admin's page)
+ * @var $userDao, $validator, $authenticator 
+ * these collection of instances of classes that will used for login
  * 
  */
 $searchPost = new SearchSeeker($dbc);

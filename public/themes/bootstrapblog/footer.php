@@ -1,3 +1,4 @@
+
 <footer class="main-footer">
       <div class="container">
         <div class="row">
@@ -37,15 +38,15 @@
           <div class="col-md-4">
             <div class="latest-posts"><a href="#">
                 <div class="post d-flex align-items-center">
-                  <div class="image"><img src="img/small-thumbnail-1.jpg" alt="..." class="img-fluid"></div>
+                  <div class="image"><img src="<?= grab_theme(); ?>img/small-thumbnail-1.jpg" alt="..." class="img-fluid"></div>
                   <div class="title"><strong>Hotels for all budgets</strong><span class="date last-meta">October 26, 2016</span></div>
                 </div></a><a href="#">
                 <div class="post d-flex align-items-center">
-                  <div class="image"><img src="img/small-thumbnail-2.jpg" alt="..." class="img-fluid"></div>
+                  <div class="image"><img src="<?= grab_theme(); ?>img/small-thumbnail-2.jpg" alt="..." class="img-fluid"></div>
                   <div class="title"><strong>Great street atrs in London</strong><span class="date last-meta">October 26, 2016</span></div>
                 </div></a><a href="#">
                 <div class="post d-flex align-items-center">
-                  <div class="image"><img src="img/small-thumbnail-3.jpg" alt="..." class="img-fluid"></div>
+                  <div class="image"><img src="<?= grab_theme(); ?>img/small-thumbnail-3.jpg" alt="..." class="img-fluid"></div>
                   <div class="title"><strong>Best coffee shops in Sydney</strong><span class="date last-meta">October 26, 2016</span></div>
                 </div></a></div>
           </div>
@@ -58,7 +59,7 @@
               <p>&copy; 2017. All rights reserved. Your great site.</p>
             </div>
             <div class="col-md-6 text-right">
-              <p>Template By <a href="https://bootstraptemple.com" class="text-white">Bootstrap Temple</a>
+              <p>Template By <a href="https://bootstrapious.com" class="text-white">Ondrej Svetska</a>
                 <!-- Please do not remove the backlink to Bootstrap Temple unless you purchase an attribution-free license @ Bootstrap Temple or support us at http://bootstrapious.com/donate. It is part of the license conditions. Thanks for understanding :)                         -->
               </p>
             </div>
@@ -67,12 +68,12 @@
       </div>
     </footer>
     <!-- JavaScript files-->
-    <script src="<?= load_template(); ?>vendor/jquery/jquery.min.js"></script>
-    <script src="<?= load_template(); ?>vendor/popper.js/umd/popper.min.js"> </script>
-    <script src="<?= load_template(); ?>vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="<?= load_template(); ?>vendor/jquery.cookie/jquery.cookie.js"> </script>
-    <script src="<?= load_template(); ?>vendor/@fancyapps/fancybox/jquery.fancybox.min.js"></script>
-    <script src="<?= load_template(); ?>js/front.js"></script>
-    <script src="<?= load_template(); ?>js/multidropdown.js"></script>
+    <script src="<?= grab_theme(); ?>vendor/jquery/jquery.min.js"></script>
+    <script src="<?= grab_theme(); ?>vendor/popper.js/umd/popper.min.js"> </script>
+    <script src="<?= grab_theme(); ?>vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="<?= grab_theme(); ?>vendor/jquery.cookie/jquery.cookie.js"> </script>
+    <script src="<?= grab_theme(); ?>vendor/@fancyapps/fancybox/jquery.fancybox.min.js"></script>
+    <script src="<?= grab_theme(); ?>js/front.js"></script>
+    <script src="<?= grab_theme(); ?>js/multidropdown.js"></script>
   </body>
 </html>

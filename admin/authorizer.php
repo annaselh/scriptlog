@@ -1,14 +1,17 @@
 <?php
 /**
- * authorizer.php
+ * File authorizer.php
  * checking whether session or cookies exists or not
  * 
+ * @category File
+ * @package  SCRIPTLOG
+ * @author   Contributors
+ * @license  https://opensource.org/licenses/MIT MIT License
+ * 
  */
+$current_date = date("Y-m-d H:i:s", time()); 
 
-$current_date = date("Y-m-d H:i:s", time());
-
-// Expired cookies for 1 month
-$cookie_expired_time = time() + (30 * 24 * 60 * 60);
+$cookie_expired_time = time() + (30 * 24 * 60 * 60); // Expired cookies for 1 month
 
 $isUserLoggedIn = false;
 
@@ -38,15 +41,16 @@ if (!empty($_SESSION['user_id'])) {
         $isExpiredDateVerified = true;
     }
 
-    if (!empty($token_info['ID']) && $isPasswordVerified && $isSelectorVerified 
-          && $isExpiredDateVerified) {
+    if (!empty($token_info['ID']) && $isPasswordVerified && $isSelectorVerified && $isExpiredDateVerified) {
 
         $isUserLoggedIn = true;
 
     } else {
 
          if (!empty($token_info['ID'])) {
+
              $userToken -> updateTokenExpired($token_info['ID']);
+             
          }
 
          $authenticator -> removeCookies();

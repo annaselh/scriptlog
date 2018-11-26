@@ -1,32 +1,45 @@
 <?php
 /**
  * Theme Meta Function 
- * Display meta tag, title tag based on client request
+ * Display meta tag, link tag, title tag based on client request
  *  
  */
 function theme_meta()
 {
-  $findParam = find_request();
+  $match = find_request(0);
+  $param1 = find_request(1);
+  $param2 = find_request(2);
 
-  $match = (is_array($findParam) && array_key_exists(0, $findParam)) ? $findParam[0] : '';
-  $param1 = (is_array($findParam) && array_key_exists(1, $findParam)) ? $findParam[1] : '';
-  $param2 = (is_array($findParam) && array_key_exists(2, $findParam)) ? $findParam[0] : '';
+  $meta_title = (!empty(app_info()['site_name'])) ? app_info()['site_name'] : $_SERVER['REQUEST_URI'];
+  $theme_dir = theme_dir();
 
   switch ($match) {
 
-      case 'single':
-      
-           echo title_tag($match, $param1);
-
+      case 'post':
+ 
+          meta_tag();
+          title_tag($param2);
+          
           break;
 
       case 'blog':
 
+          meta_tag();
+          title_tag($meta_title);
           
           break;
       
       case 'category':
           
+          meta_tag();
+          title_tag($param1);
+          
+          break;
+
+       default:
+          
+          meta_tag();
+          title_tag($meta_title);
           
           break;
 
@@ -34,27 +47,25 @@ function theme_meta()
   
 }
 
-function title_tag($match, $param)
+function title_tag($title)
 {
+    print<<<_HTML_
 
-  $errors = false;
-  $html = '';
+ <title>$title</title>
 
-  if (($match == 'single') && (!empty($param))) {
-   
-    $detail_post = invoke_post($param);
-    $html = '<title>'.$detail_post['post_title'].'</title>';
-
-  } elseif (($match == 'category') && (!empty($param))) {
-
-     
-  }
-
-  return $html;
+_HTML_;
 
 }
 
 function meta_tag()
 {
+  print<<<_HTML_
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+
+_HTML_;
 
 }

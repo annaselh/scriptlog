@@ -64,6 +64,7 @@ public function findPosts($orderBy = 'ID', $author = null)
     }
     
     $this->setSQL($sql);
+
     $posts = $this->findAll($data);
     
     if (empty($posts)) return false;
@@ -113,6 +114,7 @@ public function findPost($id, $sanitize, $author = null)
   }
     
   $this->setSQL($sql);
+  
   $postDetail = $this->findRow($data);
 
   if (empty($postDetail)) return false;

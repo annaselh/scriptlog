@@ -1,18 +1,22 @@
 <?php
-
+/**
+ * functions.php
+ * This file is collection of functions that will used by theme functionality
+ * 
+ */
 function grab_site_url()
 {
  return app_info()['app_url'];
 }
 
-function load_template()
+function grab_theme()
 {
-  $themeActived = is_theme('Y');
+ return theme_dir();
+}
 
-  $folder = $themeActived['theme_directory'].'/';
-
-  return grab_site_url() . APP_PUBLIC. DS . $folder;
-  
+function grab_link_canonical()
+{
+  return APP_PROTOCOL . '://' . APP_HOSTNAME . $_SERVER['REQUEST_URI'];
 }
 
 function grab_cdn($link)
@@ -21,20 +25,15 @@ function grab_cdn($link)
 
   if (filter_var($cdn_url, FILTER_VALIDATE_URL)) {
 
-    return htmlspecialchars(autolink($cdn_url));
+    return htmlspecialchars(strip_tags(autolink($cdn_url)));
     
   }
 
 }
 
-function grab_title()
-{
-  
-}
-
 function grab_post($slug = null)
 {
-  return invoke_post($slug);
+  
 }
 
 function grab_navigation()

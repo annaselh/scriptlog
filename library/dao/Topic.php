@@ -98,9 +98,13 @@ class Topic extends Dao
       $this->setSQL($sql);
       
       if (is_null($fetchMode)) {
+
           $topicDetails = $this->findRow([$slug_sanitized]);
+
       } else {
+
           $topicDetails = $this->findRow([$slug_sanitized], $fetchMode);
+          
       }
       
       if (empty($topicDetails)) return false;

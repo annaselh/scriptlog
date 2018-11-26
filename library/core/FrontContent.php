@@ -1,22 +1,129 @@
 <?php
 /**
- * FrontContent Class
+ * FrontContent Class extends ContentGateway Class
  * 
  * @package  SCRIPTLOG
  * @author   Maoelana Noermoehammad
+ * @license  MIT
+ * @version  1.0
+ * 
  */
-class FrontContent
+class FrontContent extends ContentGateway
 {
-  protected $content;
 
-  public function __construct(Content $content)
+  /**
+   * Error
+   * 
+   * @var string
+   */
+  private $errors;
+
+  /**
+   * 
+   */
+  public function __construct()
   {
-    $this->content = $content;
+    parent::__construct();
   }
 
-  public function getContent()
+  /**
+   * readPost
+   * 
+   * @param object $post
+   * @param string  $param
+   */
+  public function readPost($post, $param = null)
   {
-    return $this->content;
+
+    try {
+
+        if (is_object($post)) {
+
+            if (is_null($param)) {
+
+                return $this->grabPost($post);
+
+            } else {
+
+                return $this->grabPost($post, $param);
+
+            }
+
+        } else {
+          
+            throw new FrontException('Sorry, the variable requested is not an object');
+
+        }
+
+    } catch (FrontException $e) {
+
+        $this->errors = LogError::newMessage($e);
+        $this->errors = LogError::customErrorMessage();
+
+    }
+
+  }
+
+  /**
+   * readTopic
+   * 
+   * @param object $topic
+   * @param string $param
+   * 
+   */
+  public function readTopic($topic, $param)
+  {
+
+    try {
+
+        if (is_object($topic)) {
+
+            return $this->grabTopic($topic, $param);
+
+        } else {
+
+            throw new FrontException('Sorry, the variable requested is not an object');
+
+        }
+
+    } catch(FrontException $e) {
+
+        $this->errors = LogError::newMessage($e);
+        $this->errors = LogError::customErrorMessage();
+
+    }
+
+  }
+
+  /**
+   * readPage
+   * 
+   * @param object $page
+   * @param string $param
+   * 
+   */
+  public function readPage($page, $param)
+  {
+
+    try {
+        
+        if (is_object($page)) {
+
+            return $this->grabPage($page, $param);
+
+        } else {
+
+            throw new FrontException('Sorry, the variable requested is not an object');
+
+        }
+
+    } catch (FrontException $e) {
+        
+        $this->errors = LogError::newMessage($e);
+        $this->errors = LogError::customErrorMessage();
+
+    }
+
   }
 
 }

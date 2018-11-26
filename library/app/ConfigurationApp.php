@@ -38,12 +38,15 @@ class ConfigurationApp extends BaseApp
        if ($_GET['status'] == 'configDeleted') array_push($status, "Setting deleted");
     }
 
-      $data_config = $this->configEvent->grabSettings();
+      foreach ($this->configEvent->grabSettings() as $readConfig) {
+        $setting_id = $readConfig['ID'];
+      }
 
       $this->setView('options-form');
+      
       $this->setPageTitle('General Setting');
       
-    if (empty($data_config['ID'])) {
+    if (empty($setting_id)) {
 
       $this->setformAction('setConfig');
 
@@ -63,7 +66,7 @@ class ConfigurationApp extends BaseApp
 
     $this->view->set('pageTitle', $this->getPageTitle());
     $this->view->set('formAction', $this->getFormAction());
-    $this->view->set('configData', $data_config);
+    $this->view->set('configData', $this->configEvent->grabSettings());
     $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
 
     return $this->view->render();

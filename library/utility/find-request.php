@@ -6,11 +6,11 @@
  * @return array
  * 
  */
-function find_request()
+function find_request($args)
 {
 
   $dispatcher = new Dispatcher();
   
-  return $dispatcher -> findRequestParam();
+  return $dispatcher -> findRequestPath($args);
 
 }

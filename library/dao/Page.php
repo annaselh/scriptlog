@@ -79,8 +79,9 @@ public function findPageById($pageId, $post_type, $sanitize)
  * 
  * @param string $slug
  * @return boolean|array|object
+ * 
  */
-public function findPageBySlug($slug)
+public function findPageBySlug($slug, $sanitize)
 {
     $sql = "SELECT
               posts.ID, posts.post_image, posts.post_author,
@@ -94,8 +95,11 @@ public function findPageBySlug($slug)
               AND posts.post_status = 'publish'
               AND posts.post_type = 'page' ";
     
-    $this->setSQL($sql);
-    $pageBySlug = $this->findRow([':slug' => $slug]);
+	$this->setSQL($sql);
+	
+	$slug_sanitized = $this->filteringId($sanitize, $slug, 'xss');
+
+    $pageBySlug = $this->findRow([':slug' => $slug_sanitized]);
     
     if (empty($pageBySlug)) return false;
     

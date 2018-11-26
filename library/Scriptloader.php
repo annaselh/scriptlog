@@ -69,11 +69,13 @@ class Scriptloader
  public function loadLibrary($class)
  {
      $libraryPath = '';
+     
      foreach (self::$librayPaths as $path) {
          
          if ($libraryPath = self::isLibraryFile($class, $path)) {
-             
+
           include($libraryPath);
+
           return true;
             
          }
@@ -84,13 +86,15 @@ class Scriptloader
  
  /**
   * checking library file and it's directory
+  *
   * @param string $class
   * @param string $directory
   * @return boolean|string|string|boolean
+  *
   */
  protected static function isLibraryFile($class, $directory)
  {
-     if (is_dir($directory) && is_readable($directory)) {
+     if ((is_dir($directory)) && (is_readable($directory))) {
          
         $directoryIterator = dir($directory);
          

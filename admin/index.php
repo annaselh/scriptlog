@@ -3,8 +3,8 @@
  * File index.php
  * 
  * @category File
- * @package  ScriptLog
- * @author   Maoelana Noermoehammad <alanmoehammad@gmail.com>
+ * @package  SCRIPTLOG
+ * @author   Maoelana Noermoehammad 
  * @license  https://opensource.org/licenses/MIT MIT License
  * @link     https://scriptlog.kartatopia.com
  * 
@@ -12,7 +12,7 @@
 if (file_exists(__DIR__ . '/../config.php')) {
     
     include __DIR__ . '/../library/main.php';
-    require 'authorizer.php';
+    require __DIR__ . '/authorizer.php';
 
 } else {
 

@@ -17,10 +17,7 @@
     outline: 0;
 }
 
-
-
 /*submenu style start from here*/
-
 
 .dropdown-menu {
     padding: 0px 0; 
@@ -56,14 +53,14 @@
 
     .btco-hover-menu .collapse ul li{position:relative;}
     .btco-hover-menu .collapse ul li:hover> ul{display:block}
-    .btco-hover-menu .collapse ul ul{position:absolute;top:100%;left:0;min-width:250px;display:none}
+    .btco-hover-menu .collapse ul ul{position:absolute;top:100%;left:0;max-width:250px;min-width:250px;display:none}
     /*******/
     .btco-hover-menu .collapse ul ul li{position:relative}
     .btco-hover-menu .collapse ul ul li:hover> ul{display:block}
-    .btco-hover-menu .collapse ul ul ul{position:absolute;top:0;left:100%;min-width:250px;display:none}
+    .btco-hover-menu .collapse ul ul ul{position:absolute;top:0;left:100%;max-width:250px;min-width:250px;display:none}
     /*******/
     .btco-hover-menu .collapse ul ul ul li{position:relative}
     .btco-hover-menu .collapse ul ul ul li:hover ul{display:block}
-    .btco-hover-menu .collapse ul ul ul ul{position:absolute;top:0;left:-100%;min-width:250px;display:none;z-index:1}
+    .btco-hover-menu .collapse ul ul ul ul{position:absolute;top:0;left:-100%;max-width:250px;min-width:250px;display:none;z-index:1;}
 
 }

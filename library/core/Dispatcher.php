@@ -53,7 +53,7 @@ class Dispatcher
 
   /**
    * Dispacth route requested by rules
-   * and identify where should respond in active theme
+   * and identify where should respond it in active theme
    * 
    */
   public function dispatch()
@@ -95,6 +95,9 @@ class Dispatcher
 
   /**
    * Find route defined by rules
+   * 
+   * @return mixed
+   * 
    */
   public function findRules()
   {
@@ -105,6 +108,7 @@ class Dispatcher
       
       $keys[] = $key; 
       $values[] = $value;    
+      
    }
   
    return(array("keys" => $keys, "values" => $values));
@@ -158,6 +162,9 @@ class Dispatcher
 
   /**
    * Parse query from URL requested
+   * 
+   * @return mixed
+   * 
    */
   public function parseQuery()
   {
@@ -166,10 +173,11 @@ class Dispatcher
     $var  = explode('&', $var);
     $queries  = array();
     
-    foreach($var as $val)
-    {
-        $x = explode('=', $val);
-        $queries[$x[0]] = $x[1];
+    foreach($var as $val) {
+
+      $x = explode('=', $val);
+      $queries[$x[0]] = $x[1];
+
     }
     
     unset($val, $x, $var);
@@ -182,6 +190,7 @@ class Dispatcher
    * Request path
    * 
    * @return mixed;
+   * 
    */
   protected function requestPath()
   {
@@ -207,11 +216,12 @@ class Dispatcher
    * Request URI
    * 
    * @return mixed
+   * 
    */
   protected function requestURI()
   {
     $uri = rtrim(dirname($_SERVER["SCRIPT_NAME"]), '/' );
-    $uri = '/' . trim( str_replace( $uri, '', $_SERVER['REQUEST_URI'] ), '/' );
+    $uri = '/' . trim(str_replace( $uri, '', $_SERVER['REQUEST_URI'] ), '/' );
     $uri = urldecode( $uri );
     return $uri;
   }

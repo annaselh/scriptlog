@@ -4,6 +4,7 @@
  * 
  * @param integer $input
  * @return boolean
+ * 
  */
 function check_integer($input)
 {
