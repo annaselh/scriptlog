@@ -3,7 +3,7 @@
  * Dispatcher Class
  * 
  * @package  SCRIPTLOG
- * @author   Maoelana Noermoehammad
+ * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0
  * @since    Since Release 1.0
@@ -67,28 +67,37 @@ class Dispatcher
 
       $theme_dir = APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS;
 
-      foreach ( $this->route as $action => $routes ) {
-    
-        if ( preg_match( '~^'.$routes.'$~i', $this->requestURI(), $params ) ) {
-           
-            if (is_dir($theme_dir)) {
+      if ($this->allowedPath(['/', '//', 'post', 'page', 'blog', 'category', 'contact']) === false) {
 
-               include($theme_dir.'header.php');
-               include($theme_dir.$action . '.php' );
-               include($theme_dir.'footer.php');
-               
-            }
+        // nothing is found so handle the error page 404
+        $this->errorNotFound($theme_dir);
 
-           // avoid the 404 message 
-           exit();
-   
-        } 
-   
+      } else {
+
+        foreach ($this->route as $action => $routes) {
+        
+          if (preg_match( '~^'.$routes.'$~i', $this->requestURI(), $params)) {
+             
+              if (is_dir($theme_dir)) {
+  
+                 include($theme_dir.'header.php');
+                 include($theme_dir.$action . '.php' );
+                 include($theme_dir.'footer.php');
+                 
+              }
+  
+             // avoid the 404 message 
+             exit();
+     
+          } 
+     
+        }
+  
+        // nothing is found so handle the error page 404
+        $this->errorNotFound($theme_dir);
+  
       }
-
-      // nothing is found so handle the error page 404
-      include($theme_dir.'404.php');
-
+      
     }
     
   }
@@ -111,7 +120,7 @@ class Dispatcher
       
    }
   
-   return(array("keys" => $keys, "values" => $values));
+   return array("keys" => $keys, "values" => $values);
   
   }
 
@@ -199,13 +208,17 @@ class Dispatcher
     $parts = array_diff_assoc($request_uri, $script_name);
      
     if (empty($parts)) {
+
       return '/';
+      
     }
      
     $path = implode('/', $parts);
    
     if (($position = strpos($path, '?')) !== FALSE) {
+
      $path = substr($path, 0, $position);
+
     }
      
     return $path;
@@ -229,9 +242,49 @@ class Dispatcher
   /**
    * Grab active theme
    */
-  protected function invokeTheme()
+  private function invokeTheme()
   {
     return $this->theme->loadTheme('Y');
   }
   
-}
+  /**
+   * allowed path
+   * 
+   * @param string $theme_dir
+   * @param array $path
+   * @return bool|true|false
+   * 
+   */
+  private function allowedPath(array $path)
+  {
+    
+    $findParam = $this->findRequestParam();
+    
+    $param1 = (is_array($findParam) && array_key_exists(0, $findParam)) ? $findParam[0] : '';
+    
+    if (!(in_array($this->findRequestPath(0), $path, true) || (in_array($param1, $path, true)))) {
+
+      return false; 
+       
+    } else {
+
+      return true;
+
+    }
+
+  }
+
+  /**
+   * Error not found 404
+   * set 404 error page
+   * 
+   * @param string $theme_dir
+   * 
+   */
+  private function errorNotFound($theme_dir)
+  {
+    header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found", true, 404);
+    include($theme_dir.'404.php');
+  }
+
+} // End of class Dispatcher

@@ -3,7 +3,7 @@
  * ContentGateway Class
  * 
  * @package  SCRIPTLOG
- * @author   Maoelana Noermoehammad
+ * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0
  * @since    Since Releases 1.0

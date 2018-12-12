@@ -1,5 +1,11 @@
 <?php 
-
+/**
+ * file recover-password.php
+ * 
+ * @category  recovering user password
+ * @package   SCRIPTLOG
+ * @author    M.Noermoehammad
+ */
 if (file_exists(__DIR__ . '/../config.php')) {
     
     include(dirname(dirname(__FILE__)).'/library/main.php');

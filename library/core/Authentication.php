@@ -3,7 +3,7 @@
  * Authentication Class
  *
  * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -185,7 +185,7 @@ class Authentication
  }
  
  
- /**
+/**
   * Logout
   */
 public function logout()
@@ -201,7 +201,7 @@ public function logout()
     
     $this->removeCookies();
     
-    $logout = APP_PROTOCOL . '://' . APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . '/';
+    $logout = APP_PROTOCOL . '://' . APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . DS;
 
     header("Location: $logout");
     exit();
@@ -229,7 +229,14 @@ public function validateUserAccount($email, $password)
   return true;
     
 }
-  
+
+/**
+ * Reset user password
+ * updating reset key and send notification to user
+ * 
+ * @param string $email
+ * 
+ */
 public function resetUserPassword($user_email)
 {
    
@@ -244,6 +251,14 @@ public function resetUserPassword($user_email)
 
 }
 
+/**
+ * Update new password
+ * Recovering user password
+ * 
+ * @param string $user_pass
+ * @param integer $user_id
+ * 
+ */
 public function updateNewPassword($user_pass, $user_id)
 {
   $this->validator->sanitize($user_id, 'int');
@@ -258,22 +273,125 @@ public function updateNewPassword($user_pass, $user_id)
 
 }
 
+/**
+ * Remove cookies
+ * removing cookies when logging out
+ * from administrator page
+ * 
+ */
 public function removeCookies()
 {
 
   if (isset($_COOKIE['cookie_user_email']) && isset($_COOKIE['random_pwd']) && isset($_COOKIE['random_selector'])) {
 
-      setcookie("cookie_user_email", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
-      setcookie("cookie_user_id", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
-      setcookie("cookie_user_level", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
-      setcookie("cookie_user_login", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
-      setcookie("cookie_user_session", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
-      setcookie("cookie_user_fullname", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
-      setcookie("random_pwd", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);  
-      setcookie("random_selector", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
+    setcookie("cookie_user_email", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
+    setcookie("cookie_user_id", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
+    setcookie("cookie_user_level", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
+    setcookie("cookie_user_login", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
+    setcookie("cookie_user_session", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
+    setcookie("cookie_user_fullname", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
+    setcookie("random_pwd", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);  
+    setcookie("random_selector", "", time() - self::COOKIE_EXPIRE, self::COOKIE_PATH);
 
   }
 
 }
- 
+
+/**
+ * Activate user account
+ * user activation
+ * 
+ * @param string $keys
+ */
+public function activateUserAccount($key)
+{
+  if ($this->userDao->activateUser($key) === false) {
+    
+    direct_page();
+
+  } else {
+
+    $actived = APP_PROTOCOL . '://' . APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . '/login.php?status=active';
+    header("Location: $actived");
+    exit();
+    
+  }
+
+}
+
+/**
+ * User access control
+ * 
+ * @param string $control
+ * 
+ */
+public function userAccessControl($control = '')
+{
+
+    switch ($control) {
+
+        case 'users':
+            
+            if($this->accessLevel() != 'administrator' && $this->accessLevel() != 'manager') {
+
+                return true;
+            }
+
+            break;
+
+        case 'plugin':
+           
+            if($this->accessLevel() != 'administrator' && $this->accessLevel() != 'manager') {
+
+                return true;
+
+            }
+
+            break;
+
+        case 'themes':
+
+           if($this->accessLevel() != 'manager') {
+
+               return true;
+
+           }
+
+            break;
+
+        default:
+          
+            if($this->accessLevel != 'administrator' && $this->accessLevel() != 'manager' && $this->accessLevel != 'editor'
+              && $this->accessLevel != 'author' && $this->accessLevel != 'manager') {
+
+              return true;
+
+            }
+             
+           break;
+
+    }
+
+    return false;
+
+}
+
+private function userGroup()
+{
+  $userGroup = array('administrator', 'manager', 'editor', 'author', 'contributor');
+  return $userGroup;
+}
+
+private function adminGroup()
+{
+  $adminGroup = array('administrator', 'manager');
+  return $adminGroup;
+}
+
+private function masterGroup()
+{
+  $masterGroup = array('administrator');
+  return $masterGroup;
+}
+
 }

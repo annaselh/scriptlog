@@ -63,7 +63,7 @@
           </li>
           <!-- Control Sidebar Toggle Button -->
           <li>
-            <a href="#" data-toggle="control-sidebar" title="view site"><i class="fa fa-home"></i></a>
+            <a href="<?= app_url(); ?>" title="view site" target="_blank"><i class="fa fa-home"></i></a>
           </li>
         </ul>
       </div>

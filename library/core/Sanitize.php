@@ -2,6 +2,7 @@
 /**
  * sanitize.class.php
  * Sanitizing  input and output
+ * 
  * @author     Khairu a.k.a wenkhairu
  * @copyright  wenkhairu
  *

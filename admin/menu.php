@@ -1,5 +1,5 @@
 <?php if (!defined('SCRIPTLOG')) die("Direct Access Not Allowed!");
-
+ 
 $action = isset($_GET['action']) ? htmlentities(strip_tags($_GET['action'])) : "";
 $menuId = isset($_GET['menuId']) ? abs((int)$_GET['menuId']) : 0;
 $menuDao = new Menu();

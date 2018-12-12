@@ -1,8 +1,10 @@
 <?php
 /**
- * Reset Account Notification Functionality
- * reset_password() send reset key to user account
- * recover_password() change password
+ * Reset password
+ * sending reset key to user
+ * 
+ * @param string $recipient
+ * @param string $reset_key
  * 
  */
 function reset_password($recipient, $reset_key)
@@ -43,6 +45,7 @@ function reset_password($recipient, $reset_key)
             } else {
                 
                 scriptlog_error("E-mail notification fail to sent");
+                
             }
             
         }
@@ -51,6 +54,13 @@ function reset_password($recipient, $reset_key)
 
 }
 
+/**
+ * Recover password
+ * changing password
+ * 
+ * @param string $user_pass
+ * 
+ */
 function recover_password($user_pass)
 {
     $site_info = app_info();
@@ -90,6 +100,7 @@ function recover_password($user_pass)
             } else {
                 
                 scriptlog_error("E-mail notification fail to sent");
+
             }
             
         }

@@ -2,7 +2,7 @@
 
 function admin_header($stylePath, $breadCrumbs, $allowedQuery) 
 {
- 
+  
 ?>
 <!DOCTYPE html>
 <html>

@@ -1,6 +1,6 @@
 <?php
 /**
- * AppException Class extends Abstract Class CoreException
+ * AppException Class extends CoreException
  * 
  */
 class AppException extends CoreException

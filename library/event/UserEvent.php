@@ -3,7 +3,7 @@
  * UserEvent Class
  *
  * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -72,7 +72,6 @@ class UserEvent
 
  private $sanitize;
 
- 
  public function __construct(User $userDao, FormValidator $validator, Sanitize $sanitize)
  {
     $this->userDao = $userDao;
@@ -180,7 +179,7 @@ class UserEvent
   $this->validator->sanitize($this->user_fullname, 'string');
   $this->validator->sanitize($this->user_email, 'email');
   
-   if ($this->accessLevel() != 'administrator') {
+   if ($this->isUserLevel() != 'administrator' && $this->isUserLevel() != 'manager') {
    
        if (!empty($this->user_pass)) {
            
@@ -226,7 +225,7 @@ class UserEvent
        
    }
       
-   return $this->userDao->updateUser($this->accessLevel(), $this->sanitize, $bind, $this->user_id);
+   return $this->userDao->updateUser($this->isUserLevel(), $this->sanitize, $bind, $this->user_id);
    
  }
  
@@ -266,7 +265,8 @@ class UserEvent
  }
 
  /**
-  * 
+  * Whether email address exists or not
+  *
   * @param string $user_email
   * @return boolean
   */
@@ -275,6 +275,23 @@ class UserEvent
    return $this->userDao->checkUserEmail($user_email);    
  }
  
+ /**
+  * Checking user level
+  * 
+  */
+ public function isUserLevel()
+ {
+
+   if (isset($_SESSION['user_level'])) {
+
+      return $_SESSION['user_level'];
+
+   }
+
+   return false;
+
+ }
+
  /**
   * Total Users records
   * @return boolean

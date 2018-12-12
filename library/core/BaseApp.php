@@ -1,10 +1,10 @@
 <?php 
 /**
- * BaseApp Class
+ * Abstract Class BaseApp
  *
  * @package   SCRIPTLOG
  * @abstract  BaseApp Class
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -12,15 +12,35 @@
  */
 abstract class BaseApp implements AppInterface
 {
+  /**
+   * Page title
+   * 
+   * @var string
+   */
   protected $pageTitle;
-  
+
+  /**
+   * Form action
+   * 
+   * @var string
+   */
   protected $formAction;
   
+  /**
+   * set page title
+   * 
+   * @param string $pageTitle
+   */
   public function setPageTitle($pageTitle)
   {
     $this->pageTitle = $pageTitle; 
   }
-  
+
+  /**
+   * get page title
+   * 
+   * @return string
+   */
   public function getPageTitle()
   {
     return $this->pageTitle;
@@ -44,4 +64,4 @@ abstract class BaseApp implements AppInterface
   
   abstract protected function remove($id);
   
-}
+} // End of abstract class BaseApp

@@ -11,105 +11,66 @@
  */
 class Configuration extends Dao
 {
-  
+
+/**
+ * 
+ */
 public function __construct()
 {
+
   parent::__construct();
+
 }
 
+/**
+ * 
+ */
 public function createConfig($bind)
 {
-  if(empty($bind['logo'])) {
-		// insert into settings
-		$stmt = $this->create('settings', [
-			'app_url' => $bind['app_url'],
-			'site_name' => $bind['site_name'],
-			'meta_description' => $bind['meta_description'],
-			'meta_keywords' => $bind['meta_keywords'],
-			'email_address' => $bind['email_address'],
-			'facebook' => $bind['facebook'],
-			'twitter' => $bind['twitter'],
-			'instagram' => $bind['instagram']
-		]);
+  // insert into settings
+  $stmt = $this->create('settings', [
+	'setting_name' => $bind['setting_name'],
+	'setting_value' => $bind['setting_value'],
+	'setting_desc' => $bind['setting_desc']
+  ]);
 
-	} else {
-
-		$stmt = $this->create('settings', [
-			'app_url' => $bind['app_url'],
-			'site_name' => $bind['site_name'],
-			'meta_description' => $bind['meta_description'],
-			'meta_keywords' => $bind['meta_keywords'],
-			'logo' => $bind['logo'],
-			'email_address' => $bind['email_address'],
-			'facebook' => $bind['facebook'],
-			'twitter' => $bind['twitter'],
-			'instagram' => $bind['instagram']
-		]);
-
-	}
-	
 }
 
+/**
+ * 
+ */
 public function updateConfig($sanitize, $bind, $ID)
 {
-	$cleanId = $this->filteringId($sanitize, $ID, 'sql');
-
-  if(empty($bind['logo'])) {
-
-	$stmt = $this->modify("settings", [
-		'site_name' => $bind['site_name'],
-		'meta_description' => $bind['meta_description'],
-		'meta_keywords' => $bind['meta_keywords'], 
-		'email_address' => $bind['email_address'],
-		'facebook' => $bind['facebook'],
-		'twitter' => $bind['twitter'],
-		'instagram' => $bind['instagram']
-	], "`ID` = {$cleanId}");
-
-  } else {
 	
-	$stmt = $this->modify("settings", [
-		'site_name' => $bind['site_name'],
-		'meta_description' => $bind['meta_description'],
-		'meta_keywords' => $bind['meta_keywords'],
-		'logo' => $bind['logo'], 
-		'email_address' => $bind['email_address'],
-		'facebook' => $bind['facebook'],
-		'twitter' => $bind['twitter'],
-		'instagram' => $bind['instagram']
-	], "`ID` = {$cleanId}");
+  $cleanId = $this->filteringId($sanitize, $ID, 'sql');
 
-  }
+  $stmt = $this->modify("settings", [
+	  'setting_name' => $bind['setting_name'],
+	  'setting_value' => $bind['setting_value'],
+	  'setting_desc' => $bind['setting_desc']
+  ], "`ID` = {$cleanId}");
 
 }
 
-public function checkConfigId($id, $sanitize)
+public function deleteConfig($ID, $sanitize)
 {
-  $cleanId = $this->filteringId($sanitize, $id, 'sql');
-  $sql = "SELECT ID FROM settings WHERE ID = ?";
-  $this->setSQL($sql);
-  $stmt = $this->checkCountValue([$cleanId]);
-  return $stmt > 0;
+  $cleanId = $this->filteringId($sanitize, $ID, 'sql');
+
+  $stmt = $this->deleteRecord("settings", "ID = $cleanId");
+
 }
 
-public function checkToSetup()
+/**
+ * 
+ */
+public function findConfigs($orderBy = 'ID')
 {
-	$sql = "SELECT ID FROM settings";
-	$this->setSQL($sql);
-	$stmt = $this->checkCountValue();
-	return $stmt < 1;
-}
-
-public function findConfigs()
-{
-  $sql = "SELECT ID, app_key, app_url, site_name, 
-	meta_description, meta_keywords, logo, 
-	email_address, facebook, twitter, instagram
-	FROM settings LIMIT 1";
+  $sql = "SELECT ID, setting_name, setting_value, setting_desc
+	FROM settings ORDER BY :orderBy DESC";
 
 	$this->setSQL($sql);
 
-	$configs = $this->findAll();
+	$configs = $this->findAll([':orderBy' => $orderBy]);
 
 	if (empty($configs)) return false;
 
@@ -117,12 +78,14 @@ public function findConfigs()
 	
 }
 
+/**
+ * 
+ */
 public function findConfig($id, $sanitize)
 {
   
-  $sql = "SELECT ID, app_key, app_url, site_name, meta_description, meta_keywords, 
-		  logo, email_address, facebook, twitter, instagram
-		  FROM settings WHERE ID = :ID ";
+  $sql = "SELECT ID, setting_name, setting_value, setting_desc
+		      FROM settings WHERE ID = :ID ";
    
   $id_sanitized = $this->filteringId($sanitize, $id, 'sql');
 
@@ -134,6 +97,39 @@ public function findConfig($id, $sanitize)
 
   return $detailSetting;
   
+}
+
+/**
+ * 
+ */
+public function checkConfigId($id, $sanitize)
+{
+  $cleanId = $this->filteringId($sanitize, $id, 'sql');
+  $sql = "SELECT ID FROM settings WHERE ID = ?";
+  $this->setSQL($sql);
+  $stmt = $this->checkCountValue([$cleanId]);
+  return $stmt > 0;
+}
+
+/**
+ * 
+ */
+public function checkToSetup()
+{
+	$sql = "SELECT ID FROM settings";
+	$this->setSQL($sql);
+	$stmt = $this->checkCountValue();
+	return $stmt < 1;
+}
+
+/**
+ * 
+ */
+public function totalConfigRecords($data = null)
+{
+  $sql = "SELECT ID FROM settings";
+  $this->setSQL($sql);
+  return $this->checkCountValue($data);
 }
 
 }

@@ -3,7 +3,7 @@
  * ConfigurationApp Class extends BaseApp Class
  *
  * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -34,27 +34,14 @@ class ConfigurationApp extends BaseApp
 
     if (isset($_GET['status'])) {
        $checkStatus = true;
+       if ($_GET['status'] == 'configAdded') array_push($status, "New setting added");
        if ($_GET['status'] == 'configUpdated') array_push($status, "Setting has been updated");
        if ($_GET['status'] == 'configDeleted') array_push($status, "Setting deleted");
     }
 
-      foreach ($this->configEvent->grabSettings() as $readConfig) {
-        $setting_id = $readConfig['ID'];
-      }
-
-      $this->setView('options-form');
       
-      $this->setPageTitle('General Setting');
-      
-    if (empty($setting_id)) {
-
-      $this->setformAction('setConfig');
-
-    } else {
-
-      $this->setFormAction('editConfig');
-      
-    }
+    $this->setView('all-settings');  
+    $this->setPageTitle('Settings');
 
     if (!$checkError) {
       $this->view->set('errors', $errors);
@@ -65,10 +52,8 @@ class ConfigurationApp extends BaseApp
     }
 
     $this->view->set('pageTitle', $this->getPageTitle());
-    $this->view->set('formAction', $this->getFormAction());
-    $this->view->set('configData', $this->configEvent->grabSettings());
-    $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
-
+    $this->view->set('settingsTotal', $this->configEvent->totalSettings());
+    $this->view->set('settings', $this->configEvent->grabSettings());
     return $this->view->render();
 
   }
@@ -80,14 +65,9 @@ class ConfigurationApp extends BaseApp
 
     if (isset($_POST['configFormSubmit'])) {
       
-      $app_url = (isset($_POST['app_url']) ? filter_var($_POST['app_url'], FILTER_SANITIZE_URL) : "");
-      $site_title = trim($_POST['site_title']);
-      $meta_desc = prevent_injection($_POST['meta_description']);
-      $meta_key = prevent_injection($_POST['meta_keywords']);
-      $email_address = (isset($_POST['email']) ? filter_var($_POST['email'], FILTER_SANITIZE_EMAIL) : "");
-      $facebook = (is_string($_POST['facebook']) ? filter_var($_POST['facebook'], FILTER_SANITIZE_URL) : "");
-      $twitter = (is_string($_POST['twitter']) ? filter_var($_POST['twitter'], FILTER_SANITIZE_URL) : "");
-      $instagram = (is_string($_POST['instagram']) ? filter_var($_POST['instagram'], FILTER_SANITIZE_URL) : "");
+      $setting_name = (isset($_POST['setting_name'])) ? filter_var($_POST['setting_name'], FILTER_SANITIZE_STRING) : "";
+      $setting_value = (isset($_POST['setting_value'])) ? filter_var($_POST['setting_value'], FILTER_SANITIZE_FULL_SPECIAL_CHARS) : "";
+      $setting_desc = prevent_injection($_POST['setting_desc']);
 
       try {
 
@@ -98,58 +78,32 @@ class ConfigurationApp extends BaseApp
 
         }
 
-        if (empty($site_title) || empty($app_url) || empty($email_address)) {
+        if (empty($setting_name) || empty($setting_value)) {
 
           $checkError = false;
-          array_push($errors, "All columns required must be filled");
+          array_push($errors, "Column name and value required must be filled");
 
         }
 
-        if (!empty($app_url)) {
-          if(!filter_var($app_url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED)) {
-             
-             $checkError = false;
-             array_push($errors, "Site address is not a valid URL");
-
-          }
-
-        } elseif (!url_validation($app_url)) {
-           
-            $checkError = false;
-            array_push($errors, "Site address is not a valid URL");
-
-        }
-
-        if (strlen($site_title) > 60) {
+        if (strlen($setting_name) > 100) {
 
            $checkError = false;
-           array_push($errors, "Exceeded characters limit. Maximum 60 characters are allowed.");
+           array_push($errors, "Exceeded characters limit. Maximum 100 characters are allowed.");
 
         }
 
-        if (strlen($meta_desc) > 300) {
+        if (strlen($setting_desc) > 300) {
 
            $checkError = false;
            array_push($errors, "Exceeded characters limit. Maximum 300 characters are allowed.");
 
         }
 
-        if (!empty($email_address)) {
-           
-           if (email_validation($email_address) == 0) {
- 
-             $checkError = false;
-             array_push($errors, "$email_address is not a valid email address");
-             
-           }
-
-        }
-
         if (!$checkError) {
 
-           $this->setView('options-form');
-           $this->setPageTitle('General Setting');
-           $this->setFormAction('setConfig');
+           $this->setView('edit-setting');
+           $this->setPageTitle('Add New Setting');
+           $this->setFormAction('newConfig');
            $this->view->set('pageTitle', $this->getPageTitle());
            $this->view->set('formAction', $this->getFormAction());
            $this->view->set('errors', $errors);
@@ -158,15 +112,11 @@ class ConfigurationApp extends BaseApp
 
         } else {
 
-          $this->configEvent->setAppUrl($app_url);
-          $this->configEvent->setSiteName($site_title);
-          $this->configEvent->setMetaDesc($meta_desc);
-          $this->configEvent->setEmailAddress($email_address);
-          $this->configEvent->setFacebook($facebook);
-          $this->configEvent->setTwitter($twitter);
-          $this->configEvent->setInstagram($instagram);
-          $this->configEvent->setupSetting();
-          direct_page('index.php?load=settings&status=configUpdated', 200);
+          $this->configEvent->setConfigName($setting_name);
+          $this->configEvent->setConfigValue($setting_value);
+          $this->configEvent->setConfigDesc($setting_desc);
+          $this->configEvent->addSetting();
+          direct_page('index.php?load=settings&status=configAdded', 200);
            
         }
 
@@ -178,7 +128,16 @@ class ConfigurationApp extends BaseApp
 
       }
 
-    } 
+    } else {
+
+       $this->setView('edit-setting');
+       $this->setPageTitle('Add New Setting');
+       $this->setFormAction('newConfig');
+       $this->view->set('pageTitle', $this->getPageTitle());
+       $this->view->set('formAction', $this->getFormAction());
+       $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
+
+    }
 
     return $this->view->render();
 
@@ -197,30 +156,18 @@ class ConfigurationApp extends BaseApp
 
     $data_config = array(
       'ID' => $getSetting['ID'],
-      'app_key' => $getSetting['app_key'], 
-      'app_url' => $getSetting['app_url'],
-      'site_name' => $getSetting['site_name'],
-      'meta_description' => $getSetting['meta_description'],
-      'meta_keywords' => $getSetting['meta_keywords'],
-      'logo' => $getSetting['logo'],
-      'email_address' => $getSetting['email_address'],
-      'facebook' => $getSetting['facebook'],
-      'twitter' => $getSetting['twitter'],
-      'instagram' => $getSetting['instagram']
+      'setting_name' => $getSetting['setting_name'],
+      'setting_value' => $getSetting['setting_value'],
+      'setting_desc' => $getSetting['setting_desc']
     );
 
     if (isset($_POST['configFormSubmit'])) {
 
-      $config_id = isset($_POST['config_id']) ? abs((int)$_POST['config_id']) : 0;
-      $app_url = filter_input('INPUT_POST', 'app_url', FILTER_SANITIZE_URL);
-      $site_title = filter_input('INPUT_POST', 'site_title', FILTER_SANITIZE_STRING);
-      $meta_desc = prevent_injection($_POST['meta_description']);
-      $meta_key = prevent_injection($_POST['meta_keywords']);
-      $email_address = filter_input('INPUT_POST', 'email', FILTER_SANITIZE_EMAIL);
-      $facebook = filter_input('INPUT_POST', 'facebook', FILTER_SANITIZE_URL);
-      $twitter = filter_input('INPUT_POST', 'twitter', FILTER_SANITIZE_URL);
-      $instagram = filter_input('INPUT_POST', 'instagram', FILTER_SANITIZE_URL);
-
+      $setting_id = isset($_POST['setting_id']) ? abs((int)$_POST['setting_id']) : 0;
+      $setting_name = filter_input('INPUT_POST', 'setting_name', FILTER_SANITIZE_STRING);
+      $setting_value = filter_input('INPUT_POST', 'setting_value', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+      $setting_desc = prevent_injection($_POST['setting_desc']);
+      
       try {
 
         if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
@@ -232,8 +179,8 @@ class ConfigurationApp extends BaseApp
 
         if (!$checkError) {
 
-          $this->setView('options-form');
-          $this->setPageTitle('General Setting');
+          $this->setView('edit-setting');
+          $this->setPageTitle('Edit Setting');
           $this->setFormAction('editConfig');
           $this->view->set('pageTitle', $this->getPageTitle());
           $this->view->set('formAction', $this->getFormAction());
@@ -243,15 +190,10 @@ class ConfigurationApp extends BaseApp
 
         } else {
 
-          $this->configEvent->setConfigId($config_id);
-          $this->configEvent->setAppUrl($app_url);
-          $this->configEvent->setSiteName($site_title);
-          $this->configEvent->setMetaDesc($meta_desc);
-          $this->configEvent->setMetaKey($meta_key);
-          $this->configEvent->setEmailAddress($email_address);
-          $this->configEvent->setFacebook($facebook);
-          $this->configEvent->setTwitter($twitter);
-          $this->configEvent->setInstagram($instagram);
+          $this->configEvent->setConfigId($setting_id);
+          $this->configEvent->setConfigName($setting_name);
+          $this->configEvent->setConfigValue($setting_value);
+          $this->configEvent->setConfigDesc($setting_desc);
           $this->configEvent->modifySetting();
           direct_page('index.php?load=settings&status=configUpdated', 200);
 
@@ -265,7 +207,17 @@ class ConfigurationApp extends BaseApp
 
       }
 
-    } 
+    } else {
+      
+      $this->setView('edit-setting');
+      $this->setPageTitle('Edit Setting');
+      $this->setFormAction('editConfig');
+      $this->view->set('pageTitle', $this->getPageTitle());
+      $this->view->set('formAction', $this->getFormAction());
+      $this->view->set('settingData', $data_config);
+      $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
+      
+    }
 
     return $this->view->render();
 
@@ -273,7 +225,9 @@ class ConfigurationApp extends BaseApp
 
   public function remove($id)
   {
-
+    $this->configEvent->setConfigId($id);
+    $this->configEvent->removeSetting();
+    direct_page('index.php?load=settings&status=configDeleted', 200);
   }
 
   protected function setView($viewName)

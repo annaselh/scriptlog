@@ -4,7 +4,7 @@
  * Load all class files in any directories selected
  * 
  * @package     SCRIPTLOG
- * @author      Maoelana Noermoehammad 
+ * @author      M.Noermoehammad 
  * @license     MIT
  * @version     1.0
  * @since       Since Release 1.0
@@ -32,7 +32,7 @@ class Scriptloader
   * 
   * @var string
   */
- protected static $excludeDirName = '/^git|\..*$/';
+ protected static $excludeDirName = '/^etc|passwd|cgi-bin|\..*$/';
  
  /**
   * set library path
@@ -106,7 +106,7 @@ class Scriptloader
                 
                 if (!preg_match(self::$excludeDirName, $filename)) {
                     
-                    if ($fileLibraryPath = self::isLibraryFile($class, $subLibrary. '/')) {
+                    if ($fileLibraryPath = self::isLibraryFile($class, $subLibrary . DIRECTORY_SEPARATOR)) {
                         
                         return $fileLibraryPath;
                         
@@ -139,8 +139,18 @@ class Scriptloader
   */
  public function runLoader()
  {
-    spl_autoload_register(null, false);
-    spl_autoload_register(array('Scriptloader', 'loadLibrary'));
+     
+    if (version_compare(PHP_VERSION, '5.6', '>=')) {
+
+       if (version_compare(PHP_VERSION, '7.0', '>=')) {
+
+         spl_autoload_register(null, false);
+         spl_autoload_register(array('Scriptloader', 'loadLibrary'));
+
+       }
+
+    }
+
  }
  
 }

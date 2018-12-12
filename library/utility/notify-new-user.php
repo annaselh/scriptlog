@@ -26,7 +26,7 @@ function notify_new_user($recipient, $user_email, $user_pass)
               <b>Email address:</b>{$user_email}<br />
               <b>Password:</b>{$user_pass}<br />
               Activate your account by clicking the link below:<br />
-              <a href={$app_url}".APP_ADMIN."/activate-user.php?key={$activation_key}>Activate My Account</a><br /><br />
+              <a href={$app_url}".APP_ADMIN.DIRECTORY_SEPARATOR."activate-user.php?key={$activation_key}".">Activate My Account</a><br /><br />
               Thank you, <br />
               <b>{$site_name}</b>
               </body></html>";
@@ -49,7 +49,7 @@ function notify_new_user($recipient, $user_email, $user_pass)
                 
             } else {
                 
-                scriptlog_error("E-mail notification fail to sent");
+                scriptlog_error("E-mail notification fail to sent", E_USER_ERROR);
             }
             
         }

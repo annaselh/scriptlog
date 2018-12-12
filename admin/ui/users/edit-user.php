@@ -52,7 +52,7 @@ echo "Error saving data. Please try again." . $saveError;
 <?php 
 endif;
 ?>
-<form method="post" action="index.php?load=users&action=<?=(isset($formAction)) ? $formAction : null; ?>&userId=<?=(isset($userId)) ? $userId : 0; ?>&sessionId=<?=(isset($sessionId)) ? $sessionId : md5(get_ip_address()); ?>" role="form">
+<form method="post" action="index.php?load=users&action=<?=(isset($formAction)) ? $formAction : null; ?>&userId=<?=(isset($userData['ID'])) ? $userData['ID'] : 0; ?>&sessionId=<?=(isset($sessionId)) ? $sessionId : md5(get_ip_address()); ?>" role="form">
 <input type="hidden" name="session_id" value="<?=(isset($userData['user_session'])) ? $userData['user_session'] : md5(get_ip_address()); ?>" />
 <input type="hidden" name="user_id" value="<?=(isset($userData['ID'])) ? $userData['ID'] : 0; ?>" />
 <div class="box-body">

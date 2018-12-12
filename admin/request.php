@@ -8,7 +8,7 @@ try {
      
         $load = htmlentities(strip_tags(strtolower($_GET['load'])));
         $load = filter_var($load, FILTER_SANITIZE_URL);
-           
+        
         // checking if the string contains parent directory
         if (strstr($_GET['load'], '../') !== false) {
             

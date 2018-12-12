@@ -391,14 +391,30 @@ function check_gd_enabled()
 }
 
 /**
- * Checking mod_rewrite apache module function
+ * Checking mod_rewrite functionality
  */
 function check_modrewrite()
 {
   $apache_modules = (function_exists('apache_get_modules')) ? apache_get_modules() : exit;
   
-  if(in_array('mod_rewrite', $apache_modules)) {
-       return true;
-   }
+  if((check_web_server()['WebServer'] == 'Apache')) {
+
+    if((check_web_server()['Version'] >= '2.2')) {
+
+        if(in_array('mod_rewrite', $apache_modules)) {
+            return true;
+        }
+       
+    }
+
+  } elseif ((check_web_server()['WebServer'] == 'Litespeed')) {
+      
+    if(in_array('mod_rewrite', $apache_modules)) {
+        return true;
+    }
+    
+  } elseif ((check_web_server()['WebServer'] == 'nginx')) {
+      return false;
+  }
   
 }

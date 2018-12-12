@@ -17,6 +17,7 @@ if (file_exists(__DIR__ . '/../config.php')) exit();
 
 use Sinergi\BrowserDetector\Browser;
 
+$clean_setup = array();
 $completed = false;
 $install = isset($_POST['setup']) ? stripcslashes($_POST['setup']) : '';
 
@@ -64,7 +65,17 @@ if ($install != 'install') {
             
     }
     
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if(ctype_alnum($username) && (mb_strlen($username) > 0) && (mb_strlen($username) <= 32)) {
+      
+       $clean_setup['username'] = $username;
+
+    } else {
+
+       $errors['errorSetup'] = 'Please enter a valid username with only alphabetic and numeric characters, at least 0-32 characters length';
+
+    }
+
+    if ((!filter_var($email, FILTER_VALIDATE_EMAIL))) {
         
         $errors['errorSetup'] = 'Please enter a valid email address';
         
@@ -117,11 +128,11 @@ if ($install != 'install') {
         
         if (check_mysql_version($link, "5.6.0")) {
 
-          install_database_table($link, $username, $password, $email, $key);
+          install_database_table($link, $clean_setup['username'], $password, $email, $key);
         
           write_config_file($dbhost, $dbuser, $dbpass, $dbname, $email, $key);
         
-          header("Location:".$protocol."://".$server_host.dirname($_SERVER['PHP_SELF'])."/finish.php?status=success&token=".$key);
+          header("Location:".$protocol."://".$server_host.dirname($_SERVER['PHP_SELF']).DIRECTORY_SEPARATOR."finish.php?status=success&token={$key}");
         
         }
         
@@ -254,7 +265,7 @@ if ($install != 'install') {
                  $server_name = $web_server['WebServer'];
                  $server_version = $web_server['Version'];
                  
-                 $serverList = array('Apache', 'Nginx', 'Litespeed');
+                 $serverList = array('Apache', 'Litespeed', 'nginx');
                  
                  foreach ($serverList as $server) :
 
@@ -411,6 +422,11 @@ if ($install != 'install') {
             </li>
           </ul>
           
+          <?php 
+          if (check_modrewrite() == true) :
+            $mode_rewrite_passed = 'text-success';
+            $mode_rewrite_check = 'fa fa-check fa-lg';
+          ?>
           <h4 class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">Modes</span>
           </h4>
@@ -418,19 +434,12 @@ if ($install != 'install') {
             <li class="list-group-item d-flex justify-content-between lh-condensed">
               <div>
                 <h6 class="my-0">Mode Rewrite</h6>
-                <?php 
-                if (check_modrewrite()) :
-                  $mode_rewrite_passed = 'text-success';
-                  $mode_rewrite_check = 'fa fa-check fa-lg';
-                endif;
-                ?>
                 <small class="<?=(isset($mode_rewrite_passed)) ? $mode_rewrite_passed : 'text-danger'; ?>"><?=(isset($mode_rewrite_passed)) ? 'Pass' : $errors['errorChecking'] = 'Requires mode rewrite enabled'; ?></small>
               </div>
               <span class="<?=(isset($mode_rewrite_passed)) ? $mode_rewrite_passed : 'text-danger'; ?>"><i class="<?=(isset($mode_rewrite_check)) ? $mode_rewrite_check : 'fa fa-close fa-lg'; ?>"></i></span>
             </li>
-         
           </ul>
-          
+            <?php endif; ?>
           
           <h4 class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">Directories and Files</span>
@@ -552,7 +561,8 @@ if ($install != 'install') {
         else:
         ?>
           <div class="alert alert-success" role="alert">
-              Below you should enter all information needed. We’re going to use this information to create a config.php file 
+            We are going to use this information to create a config.php file. 
+            You should enter your database connection details and administrator account. 
           </div>
           
           <h4 class="mb-3">Database Settings</h4>

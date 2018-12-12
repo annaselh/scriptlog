@@ -3,7 +3,7 @@
  * Registry Class
  * 
  * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -19,7 +19,7 @@ class Registry
  * @static
  * @var array
  */
- private static $_data = array();
+ private static $data = array();
  
 /**
  * get
@@ -30,7 +30,7 @@ class Registry
  */
  public static function get($key)
  {
-   return (isset(self::$_data[$key]) ? self::$_data[$key] : null);
+   return (isset(self::$data[$key]) ? self::$data[$key] : null);
  }
  
 /**
@@ -43,17 +43,17 @@ class Registry
  */
  public static function set($key, $value)
  {
-   self::$_data[$key] = $value;
+   self::$data[$key] = $value;
  }
  
  public static function setAll(array $key = array()) 
  {
-   self::$_data = $key;
+   self::$data = $key;
  }
  
  public static function isKeySet($key)
  {
-   return (isset(self::$_data[$key]));  
+   return (isset(self::$data[$key]));  
  }
  
 }

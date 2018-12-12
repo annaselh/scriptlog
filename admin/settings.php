@@ -9,12 +9,22 @@ $configApp = new ConfigurationApp($configEvent);
 
 switch ($action) {
 
+    case 'newConfig':
+
+        if($settingId == 0) {
+
+           $configApp -> insert();
+
+        }
+
+        break;
+
     case 'editConfig':
         
-        #edit configuration
-        if ($configDao -> checkConfigId($configId, $sanitizer)) {
+        # edit configuration
+        if ($configDao -> checkConfigId($settingId, $sanitizer)) {
 
-            $configApp -> update($configId);
+            $configApp -> update($settingId);
             
         } else {
 
@@ -24,20 +34,16 @@ switch ($action) {
 
         break;
 
-    case 'setConfig':
+    case 'deleteConfig':
       
-        // set configuration
-        if ($configDao->checkToSetup()) {
-
-            $configApp -> insert();
-
-        } 
+        // delete setting
+        
 
         break;
     
     default:
 
-       #display setting
+       # display setting
        $configApp -> listItems();
 
        break;

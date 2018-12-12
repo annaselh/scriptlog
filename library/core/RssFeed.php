@@ -3,7 +3,7 @@
  * RssFeed Class
  *
  * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -11,9 +11,9 @@
  */
 class RssFeed
 {
- protected $dbc;
+ private $dbc;
  
- protected $error;
+ private $error;
  
  public function __construct($dbc)
  {
@@ -57,9 +57,9 @@ class RssFeed
    $rssFile = $this->setFileXML('rss.xml', 'w');
    
    $headerInit = '<?xml version="1.0" encoding="UTF-8"?> 
-                   <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"> 
-                   <channel>
-                   <atom:link href="'.$link.'rss.xml" rel="self" type="application/rss+xml" /> 
+                  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"> 
+                  <channel>
+                  <atom:link href="'.$link.'rss.xml" rel="self" type="application/rss+xml" /> 
                   <title>'.$title.'</title> 
                   <link>'.$link.'</link> 
                   <description>'.$description.'</description> 
@@ -73,7 +73,7 @@ class RssFeed
      $url = APP_PROTOCOL . '://'. APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . '/post/'.(int)$dataPost['ID'].'/'.$dataPost['post_slug'];
      
      // date post created
-     $published = date(DATE_RSS, strtotime($dataPost['date_created']));
+     $published = date(DATE_RSS, strtotime($dataPost['post_date']));
      
      // paragraf
      $content = htmlentities(strip_tags(nl2br(html_entity_decode($dataPost['post_content']))));

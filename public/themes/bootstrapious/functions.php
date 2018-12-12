@@ -6,7 +6,12 @@
  */
 function grab_site_url()
 {
- return app_info()['app_url'];
+ return app_url();
+}
+
+function grab_site_key()
+{
+  return app_key();
 }
 
 function grab_theme()

@@ -3,7 +3,7 @@
  * Menu Child App Class extends BaseApp
  * 
  * @package  SCRIPTLOG
- * @author   Maoelana Noermoehammad
+ * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0
  * @since    Since Release 1.0.0

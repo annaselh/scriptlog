@@ -5,9 +5,9 @@
  * Define constants, object instantiated
  * include functions needed by application
  * 
- * @category File
+ * @category production main engine file 
  * @package  SCRIPTLOG
- * @author   Maoelana Noermoehammad
+ * @author   M.Noermoehammad
  * @license  https://opensource.org/licenses/MIT MIT License
  * @version  1.0
  * @since    Since Release 1.0
@@ -15,8 +15,8 @@
  */
 
 #date_default_timezone_set("Asia/Jakarta");
-#ini_set("session.cookie_secure", "True");  //secure
-#ini_set("session.cookie_httponly", "True"); // httpOnly
+#ini_set("session.cookie_secure", "True");  // cookie_secure
+#ini_set("session.cookie_httponly", "True"); // cookie_httpOnly
 #header("Content-Security-Policy: default-src https:; font-src 'unsafe-inline' data: https:; form-action 'self' https://yourdomain.com;img-src data: https:; child-src https:; object-src 'self' www.google-analytics.com ajax.googleapis.com platform-api.sharethis.com yourusername.disqus.com; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;");
 
 $key = '5c12IpTl0g!@#';
@@ -43,7 +43,7 @@ if (!defined('SCRIPTLOG_START_TIME')) define('SCRIPTLOG_START_TIME', microtime(t
 
 if (!defined('SCRIPTLOG_START_MEMORY')) define('SCRIPTLOG_START_MEMORY', memory_get_usage());
 
-if (file_exists(__DIR__ . '/../config.php')) {
+if (file_exists(APP_ROOT.'config.php')) {
     
    $config = require __DIR__ . '/../config.php';
    
@@ -89,25 +89,24 @@ foreach ($files_dir_iterator as $file) {
 // check if loader is exists
 if (is_dir(APP_ROOT . APP_LIBRARY) && is_file(APP_ROOT . APP_LIBRARY . DS . 'Scriptloader.php')) {
  
-    require 'Scriptloader.php';
+    require __DIR__ . DS . 'Scriptloader.php';
         
 }
 
-// load all libraries needed by scriptlog
-$loader = new Scriptloader();
-$loader -> setLibraryPaths(array(
+// load all libraries 
+$library = array(
     APP_ROOT . APP_LIBRARY . DS .'core'. DS,
     APP_ROOT . APP_LIBRARY . DS .'dao'. DS,
     APP_ROOT . APP_LIBRARY . DS .'event'. DS,
     APP_ROOT . APP_LIBRARY . DS .'app'. DS,
     APP_ROOT . APP_LIBRARY . DS .'plugins'. DS
-));
+);
 
-$loader -> runLoader();
+load_engine($library);
 
-//=======================================================
-// RULES
-//=======================================================
+/////////////////////////////////////////////////////////
+/**** RULES ******/
+////////////////////////////////////////////////////////
 
 // rules used by dispatcher to route request
 
@@ -123,12 +122,12 @@ $loader -> runLoader();
     'category' => "/category/(?'category'[\w\-]+)",        
     
      ### '/blog?p=255'
-    'blog' => "/(?'blog'[^/]*)",                       
+    'blog' => "/blog([^/]*)",                       
     
      ### '/page/about', '/page/contact'
-    'page' => "/page/(?'page'about|contact)",          
-    
-     ### '/post/60/post-slug'
+    'page' => "/page/(?'page'[^/]+)
+     
+    ### '/post/60/post-slug'
     'post' => "/post/(?'id'\d+)/(?'post'[\w\-]+)",     
     
      ### '/'
@@ -136,14 +135,14 @@ $loader -> runLoader();
 
  *********************************************************/
 
-//=========================================================
+//========================================================//
 
 $rules = array(
     
     'home'     => "/",                               
     'category' => "/category/(?'category'[\w\-]+)",
-    'blog'     => "/(?'blog'[^/]*)",
-    'page'     => "/page/(?'page'about|contact|faculty|)",
+    'blog'     => "/blog([^/]*)",
+    'page'     => "/page/(?'page'[^/]+)",
     'single'   => "/post/(?'id'\d+)/(?'post'[\w\-]+)",
     'search'   => "(?'search'[\w\-]+)"
     
@@ -165,8 +164,8 @@ Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
  * @var $frontPaginator used by front pagination funtionality
  * @var $postFeeds used by rss feed functionality
  * @var $sanitizer used by sanitize functionality
- * @var $userDao, $validator, $authenticator 
- * these collection of instances of classes that will used for login
+ * @var $userDao, $validator, $authenticator --
+ * these collection of objects or instances of class that will used for login
  * 
  */
 $searchPost = new SearchSeeker($dbc);

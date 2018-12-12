@@ -1,5 +1,19 @@
 <?php
-// date_default_timezone_set("Asia/Jakarta");
+/**
+ * main-dev.php
+ * Initialize main engine 
+ * Define constants, object instantiated
+ * include functions needed by application
+ * 
+ * @category development main engine file
+ * @package  SCRIPTLOG
+ * @author   M.Noermoehammad
+ * @license  MIT
+ * @version  1.0
+ * 
+ */
+
+#date_default_timezone_set("Asia/Jakarta");
 ini_set("memory_limit", "2M");
 #ini_set("session.cookie_secure", "True");  //secure
 #ini_set("session.cookie_httponly", "True"); // httpOnly
@@ -31,9 +45,9 @@ if (!defined('SCRIPTLOG_START_TIME')) define('SCRIPTLOG_START_TIME', microtime(t
 
 if (!defined('SCRIPTLOG_START_MEMORY')) define('SCRIPTLOG_START_MEMORY', memory_get_usage());
 
-if (file_exists(__DIR__ . '/../config.sample.php')) {
+if (file_exists(APP_ROOT . 'config.sample.php')) {
 
-    $config = require APP_ROOT . 'config.sample.php';
+    $config = require __DIR__ . '/../config.sample.php';
     
 }
 
@@ -70,24 +84,24 @@ foreach ($files_dir_iterator as $file) {
     
 if (is_dir(APP_ROOT . APP_LIBRARY) && is_file(APP_ROOT . APP_LIBRARY . DS . 'Scriptloader.php')) {
     
-    require 'Scriptloader.php';
+    require __DIR__ . DS . 'Scriptloader.php';
     
 }
 
-$loader = new Scriptloader();
-$loader -> setLibraryPaths(array(
+// load all libraries 
+$library = array(
     APP_ROOT . APP_LIBRARY . DS .'core'. DS,
     APP_ROOT . APP_LIBRARY . DS .'dao'. DS,
     APP_ROOT . APP_LIBRARY . DS .'event'. DS,
     APP_ROOT . APP_LIBRARY . DS .'app'. DS,
     APP_ROOT . APP_LIBRARY . DS .'plugins'. DS
-));
+);
 
-$loader -> runLoader();
+load_engine($library);
 
-//=======================================================
-// RULES
-//=======================================================
+/////////////////////////////////////////////////////////
+/**** RULES ******/
+////////////////////////////////////////////////////////
 
 // rules used by dispatcher to route request
 
@@ -103,7 +117,7 @@ $loader -> runLoader();
     'category' => "/category/(?'category'[\w\-]+)",        
     
      ### '/blog?p=255'
-    'blog' => "/(?'blog'[^/]*)",                       
+    'blog' => "/blog([^/]*)",                       
     
      ### '/page/about', '/page/contact'
     'page' => "/page/(?'page'about|contact)",          
@@ -116,17 +130,15 @@ $loader -> runLoader();
 
  *********************************************************/
 
-//=========================================================
+//========================================================//
 
 $rules = array(
-    
     'home'     => "/",                               
     'category' => "/category/(?'category'[\w\-]+)",
-    'blog'     => "/(?'blog'[^/]*)",
-    'page'     => "/page/(?'page'about|contact|faculty|)",
+    'blog'     => "/blog([^/]*)",
+    'page'     => "/page/(?'page'[^/]+)",
     'single'   => "/post/(?'id'\d+)/(?'post'[\w\-]+)",
     'search'   => "(?'search'[\w\-]+)"
-    
 );
 
 // an instantiation of Database connection
@@ -144,7 +156,8 @@ Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
  * @var $frontPaginator used by front pagination funtionality
  * @var $postFeeds used by rss feed functionality
  * @var $sanitizer used by sanitize functionality
- * @var $userDao $validator $authenticator these collection of instances of classes that will used for login to control panel(admin's page)
+ * @var $userDao, $validator, $authenticator --
+ * these collection of objects or instances of class that will used for login
  * 
  */
 $searchPost = new SearchSeeker($dbc);
@@ -164,7 +177,7 @@ $authenticator = new Authentication($userDao, $userToken, $validator);
 # register_shutdown_function('scriptlog_shutdown_fatal');
 
 if (!isset($_SESSION)) {
-    
+
     session_start();
     
 }

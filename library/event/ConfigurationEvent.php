@@ -3,7 +3,7 @@
  * ConfigurationEvent Class
  *
  * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -12,81 +12,32 @@
 class ConfigurationEvent
 {
   /**
-   * config's ID
+   * setting's ID
    * 
    * @var integer
    */
-  private $config_id;
+  private $setting_id;
   
   /**
-   * App Key
+   * Setting name
    * 
    * @var string
    */
-  private $app_key;
+  private $setting_name;
   
   /**
-   * App URL
+   * Setting Value
    * 
    * @var string
    */
-  private $app_url;
+  private $setting_value;
   
   /**
-   * Site title
+   * Setting Description
    * 
    * @var string
    */
-  private $site_title;
-
-  /**
-   * Meta Description
-   * 
-   * @var meta_description
-   */
-  private $meta_description;
-
-  /**
-   * Meta Keywords
-   * 
-   * @var string
-   */
-  private $meta_keywords;
-
-  /**
-   * Logo
-   * 
-   * @var string
-   */
-  private $logo;
-
-  /**
-   * E-mail
-   * 
-   * @var E-mail
-   */
-  private $email;
-
-  /**
-   * Facebook Account URL
-   * 
-   * @var string
-   */
-  private $facebook;
-
-  /**
-   * Twitter Account URL
-   * 
-   * @var string
-   */
-  private $twitter;
-  
-  /**
-   * Instagram
-   * 
-   * @var string
-   */
-  private $instagram;
+  private $setting_desc;
 
   /**
    * Configuration Dao
@@ -96,165 +47,94 @@ class ConfigurationEvent
 
   private $validator;
 
-  private $sanitize;
+  private $sanitizer;
 
   public function __construct(Configuration $configDao, FormValidator $validator, Sanitize $sanitize)
   {
     $this->configDao = $configDao;
     $this->validator = $validator;
-    $this->sanitize = $sanitize;
+    $this->sanitizer = $sanitize;
   }
 
-  public function setConfigId($configId)
+  public function setConfigId($setting_id)
   {
-    $this->config_id = $configId;
+    $this->setting_id = $setting_id;
   }
 
-  public function setAppKey($appKey)
+  public function setConfigName($setting_name)
   {
-    $this->app_key = $appKey;
+    $this->setting_name = $setting_name;    
   }
 
-  public function setAppUrl($appUrl)
+  public function setConfigValue($setting_value)
   {
-    $this->app_url = $appUrl;
+    $this->setting_value = $setting_value;
   }
 
-  public function setSiteName($siteName)
+  public function setConfigDesc($setting_desc)
   {
-    $this->site_title = $siteName;
+    $this->setting_desc = $setting_desc;    
   }
 
-  public function setMetaDesc($description)
+  public function grabSettings($orderBy = 'ID')
   {
-    $this->meta_description = $description;
-  }
-
-  public function setMetaKey($keyword)
-  {
-    $this->meta_keywords = $keyword;
-  }
-
-  public function setLogo($image)
-  {
-    $this->logo = $image;
-  }
-
-  public function setEmailAddress($email_address)
-  {
-    $this->email = $email_address;
-  }
-
-  public function setFacebook($facebook)
-  {
-    $this->facebook = $facebook;
-  }
-
-  public function setTwitter($twitter)
-  {
-    $this->twitter = $twitter;
-  }
-
-  public function setInstagram($instagram)
-  {
-    $this->instagram = $instagram;
-  }
-
-  public function grabSettings()
-  {
-    return $this->configDao->findConfigs();
+    return $this->configDao->findConfigs($orderBy);
   }
 
   public function grabSetting($id)
   {
-    return $this->configDao->findConfig($id, $this->sanitize);
+    return $this->configDao->findConfig($id, $this->sanitizer);
   }
   
-  public function setupSetting()
+  public function addSetting()
   {
-    $uploadPath = __DIR__ . '/../../public/files/pictures/';
-    $image_uploader = new ImageUploader('image', $uploadPath);
+    
+    $this->validator->sanitize($this->setting_name, 'string');
+    $this->validator->sanitize($this->setting_value, 'string');
+    $this->validator->sanitize($this->setting_desc, 'string');
+    
+    return $this->configDao->createConfig([
 
-    $this->validator->sanitize($this->app_url. 'string');
-    $this->validator->sanitize($this->site_title, 'string');
-    $this->validator->sanitize($this->meta_description, 'string');
-    $this->validator->sanitize($this->meta_keywords, 'string');
-  
-    if ($image_uploader -> isImageUploaded()) {
-      
-       return $this->configDao->createConfig([
-        'app_url' => $this->app_url,
-        'site_name' => $this->site_title,
-        'meta_description' => $this->meta_description,
-        'meta_keywords' => $this->meta_keywords,
-        'email_address' => $this->email,
-        'facebook' => $this->facebook,
-        'twitter' => $this->twitter,
-        'instagram' => $this->instagram
-       ]);
+      'setting_name' => $this->setting_name,
+      'setting_value' => $this->setting_value,
+      'setting_desc' => $this->setting_desc
 
-    } else {
+    ]);
 
-      $newFileName = $image_uploader -> renameImage();
-      $uploadImageLogo = $image_uploader -> uploadImage('logo', $newFileName, 320, 215, 'crop');
-
-      return $this->configDao->createConfig([
-        'app_url' => $this->app_url,
-        'site_name' => $this->site_title,
-        'meta_description' => $this->meta_description,
-        'meta_keywords' => $this->meta_keywords,
-        'logo' => $newFileName,
-        'email_address' => $this->email,
-        'facebook' => $this->facebook,
-        'twitter' => $this->twitter,
-        'instagram' => $this->instagram
-      ]);
-
-    }
   }
 
   public function modifySetting()
   {
-    $uploadPath = __DIR__ . '/../../public/files/pictures/';
-    $image_uploader = new ImageUploader('image', $uploadPath);
-
-    $this->validator->sanitize($this->app_url. 'string');
-    $this->validator->sanitize($this->site_title, 'string');
-    $this->validator->sanitize($this->meta_description, 'string');
-    $this->validator->sanitize($this->meta_keywords, 'string');
+    
+    $this->validator->sanitize($this->setting_name, 'string');
+    $this->validator->sanitize($this->setting_value, 'string');
+    $this->validator->sanitize($this->setting_desc, 'string');
   
-    if ($image_uploader -> isImageUploaded()) {
-      
-      return $this->configDao->updateConfig($this->sanitize, [
-        'app_url' => $this->app_url,
-        'site_name' => $this->site_title,
-        'meta_description' => $this->meta_description,
-        'meta_keywords' => $this->meta_keywords,
-        'email_address' => $this->email,
-        'facebook' => $this->facebook,
-        'twitter' => $this->twitter,
-        'instagram' => $this->instagram
-      ], $this->config_id);
+    return $this->configDao->updateConfig($this->sanitizer, [
 
-    } else {
+       'setting_name' => $this->setting_name,
+       'setting_value' => $this->setting_value,
+       'setting_desc' => $this->setting_desc
 
-       $newFileName = $image_uploader -> renameImage();
-       $uploadImageLogo = $image_uploader -> uploadImage('logo', $newFileName, 320, 251, 'crop');
-       
-       return $this->configDao->updateConfig( $this->sanitize, [
-        'app_url' => $this->app_url,
-        'site_name' => $this->site_title,
-        'meta_description' => $this->meta_description,
-        'meta_keywords' => $this->meta_keywords,
-        'logo' => $newFileName,
-        'email_address' => $this->email,
-        'facebook' => $this->facebook,
-        'twitter' => $this->twitter,
-        'instagram' => $this->instagram
-       ], $this->config_id);
+    ], $this->setting_id);
 
+  }
+  
+  public function removeSetting()
+  {
+    $this->validator->sanitize($this->setting_id, 'int');
+
+    if (!$data_config = $this->configDao->findConfig($this->setting_id, $this->sanitizer)) {
+      direct_page('index.php?load=settings&error=configNotFound', 404);
     }
 
+    return $this->configDao->deleteConfig($this->setting_id, $this->sanitizer);
+
+  }
+
+  public function totalSettings($data = null)
+  {
+    return $this->configDao->totalConfigRecords($data);
   }
 
 }

@@ -205,7 +205,7 @@ class User extends Dao
   $cleanId = $this->filteringId($sanitize, $userId, 'sql');
   $hash_password = scriptlog_password($bind['user_pass']);
   
-     if ($accessLevel != 'Administrator') {
+     if ($accessLevel != 'administrator') {
          
          if (empty($bind['user_pass'])) {
              
@@ -296,10 +296,8 @@ class User extends Dao
  {
    $recoverPassword = scriptlog_password($bind['user_pass']);
    $stmt = $this->modify("users", [
-
           'user_pass' => $recoverPassword, 
           'user_reset_complete' => $bind['user_reset_complete']
-
           ], "ID = {$user_id}");
           
  }
@@ -312,19 +310,24 @@ class User extends Dao
   */
  public function activateUser($key)
  {
+   $userAccount = false;
+
    $cek_user_key = $this->checkActivationKey($key);
    
    if ($cek_user_key === false) {
        
-       direct_page();
+       $userAccount = false;
        
    } else {
        
-       $bind = ['user_activation_key' => '1', 'user_registered' => date("Ymd")];
+       $bind = ['user_activation_key' => '1', 'user_registered' => date("Y-m-d H:i:s")];
        $stmt = $this->modify("users", $bind, "user_activation_key = {$key}");
+       $userAccount = true;
        
    }
    
+   return $userAccount;
+
  }
  
  /**
@@ -465,8 +468,8 @@ class User extends Dao
  public function checkUserId($userId, $sanitize)
  {
      $sql = "SELECT ID FROM users WHERE ID = ?";
-     $this->setSQL($sql);
      $idsanitized = $this->filteringId($sanitize, $userId, 'sql');
+     $this->setSQL($sql);
      $stmt = $this->checkCountValue([$idsanitized]);
      return($stmt > 0);
  }

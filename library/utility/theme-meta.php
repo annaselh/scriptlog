@@ -17,24 +17,31 @@ function theme_meta()
 
       case 'post':
  
-          meta_tag();
-          title_tag($param2);
+        meta_tag();
+        title_tag($param2);
           
-          break;
+        break;
+
+      case 'page':
+
+        meta_tag();
+        title_tag($param1);
+
+        break;
 
       case 'blog':
 
-          meta_tag();
-          title_tag($meta_title);
+        meta_tag();
+        title_tag("Blog");
           
-          break;
+        break;
       
       case 'category':
           
-          meta_tag();
-          title_tag($param1);
+        meta_tag();
+        title_tag($param1);
           
-          break;
+        break;
 
        default:
           

@@ -4,7 +4,7 @@
  * Data Access Object
  * 
  * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -32,10 +32,13 @@ class Dao
  
  /**
   * Sanitize
-  * @var string
+  * @var object
   */
  protected $sanitizing;
-  
+
+ /**
+  * 
+  */
  public function __construct() 
  {
    if (Registry::isKeySet('dbc')) $this->dbc = Registry::get('dbc');
@@ -90,7 +93,7 @@ class Dao
     
  }
  
- /**
+/**
   * Find Single row record
   * getting one row
   * 
@@ -98,6 +101,7 @@ class Dao
   * @param PDO::FETCH_MODE static $fetchMode
   * @throws DbException
   * @return array|object
+  *
   */
  protected function findRow($data = null, $fetchMode = null)
  {
@@ -209,6 +213,7 @@ class Dao
   * 
   * @param string $table
   * @param array $params
+  *
   */
  protected function create($table, $params)
  {
@@ -221,6 +226,7 @@ class Dao
   * @param string $table
   * @param array $params
   * @param integer|string $where
+  *
   */
  protected function modify($table, $params, $where)
  {
@@ -285,12 +291,12 @@ class Dao
         
           if (filter_var($str, FILTER_SANITIZE_NUMBER_INT)) {
               
-              return $this->sanitizing->sanitasi($str, 'sql');
+            return $this->sanitizing->sanitasi($str, 'sql');
               
           } else {
               
-              header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
-              throw new DbException("ERROR: this - $str - Id is considered invalid.");
+            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+            throw new DbException("ERROR: this - $str - Id is considered invalid.");
               
           }
           
@@ -306,6 +312,7 @@ class Dao
               
               header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
               throw new DbException("ERROR: this - $str - is considered invalid.");
+
           }
           
           break;
@@ -314,9 +321,9 @@ class Dao
 	 	
       } catch (DbException $e) {
 	 	
-          $this->error = LogError::setStatusCode(http_response_code());
-          $this->error = LogError::newMessage($e);
-          $this->error = LogError::customErrorMessage();
+        $this->error = LogError::setStatusCode(http_response_code());
+        $this->error = LogError::newMessage($e);
+        $this->error = LogError::customErrorMessage();
           
       }
 			

@@ -4,7 +4,7 @@
  * Send e-mail via mail php function  
  * 
  * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -18,76 +18,76 @@ class Mailer
 	 * send e-mail
 	 * @var string
 	 */
-	private $_to;
+	private $to;
 
 	/**
 	 * 2nd destination
 	 * send e-mail
 	 * @var string
 	 */
-	private $_cc;
+	private $cc;
 
 	/**
 	 * 3rd destination
 	 * send e-mail
 	 * @var string
 	 */
-	private $_bcc;
+	private $bcc;
 
 	/**
 	 * email's sender
 	 * @var string
 	 */
-	private $_from;
+	private $from;
 
 	/**
 	 * email's subject
 	 * @var string
 	 */
-	private $_subject;
+	private $subject;
 
 	/**
 	 * set properties
 	 * for sending text message
 	 * @var string
 	 */
-	private $_sendText;
+	private $sendText;
 
 	/**
 	 * set properties
 	 * text email message body
 	 * @var string
 	 */
-	private $_textBody;
+	private $textBody;
 
 	/**
 	 * set properties
 	 * send email as HTML
 	 * @var string
 	 */
-	private $_sendHTML;
+	private $sendHTML;
 
 	/**
 	 * set properties
 	 * text HTML message body
 	 * @var string
 	 */
-	private $_HTMLBody;
+	private $HTMLBody;
 
 	/**
 	 * Initialize the message parts with blank or default values
 	 */
 	public function __construct()
 	{
-		$this->_to   = '';
-		$this->_cc   = '';
-		$this->_bcc  = '';
-		$this->_from = '';
-		$this->_subject = '';
-		$this->_sendText = true;
-		$this->_textBody = '';
-		$this->_sendHTML = false;
-		$this->_HTMLBody = '';
+		$this->to   = '';
+		$this->cc   = '';
+		$this->bcc  = '';
+		$this->from = '';
+		$this->subject = '';
+		$this->sendText = true;
+		$this->textBody = '';
+		$this->sendHTML = false;
+		$this->HTMLBody = '';
 
 	}
 
@@ -97,7 +97,7 @@ class Mailer
 	 */
 	public function setSendTo($value)
 	{
-		$this->_to = $value;
+		$this->to = $value;
 	}
 
 	/**
@@ -106,7 +106,7 @@ class Mailer
 	 */
 	public function setSendCc($value)
 	{
-		$this->_cc = $value;
+		$this->cc = $value;
 	}
 
 	/**
@@ -115,7 +115,7 @@ class Mailer
 	 */
 	public function setSendBcc($value)
 	{
-		$this->_bcc = $value;
+		$this->bcc = $value;
 	}
 
 	/**
@@ -124,7 +124,7 @@ class Mailer
 	 */
 	public function setFrom($value)
 	{
-		$this->_from = $value;
+		$this->from = $value;
 	}
 
 	/**
@@ -133,7 +133,7 @@ class Mailer
 	 */
 	public function setSubject($value)
 	{
-		$this->_subject = $value;
+		$this->subject = $value;
 	}
 
 	/**
@@ -142,7 +142,7 @@ class Mailer
 	 */
 	public function setSendText($value)
 	{
-		$this->_sendText = $value;
+		$this->sendText = $value;
 	}
 
 	/**
@@ -151,8 +151,8 @@ class Mailer
 	 */
 	public function setTextBody($value)
 	{
-		$this->_sendText = true;
-		$this->_textBody = $value;
+		$this->sendText = true;
+		$this->textBody = $value;
 	}
 
 	/**
@@ -161,7 +161,7 @@ class Mailer
 	 */
 	public function setSendHTML($value)
 	{
-		$this->_sendHTML = $value;
+		$this->sendHTML = $value;
 	}
 
 	/**
@@ -170,8 +170,8 @@ class Mailer
 	 */
 	public function setHTMLBody($value)
 	{
-		$this->_sendHTML = true;
-		$this->_HTMLBody = $value;
+		$this->sendHTML = true;
+		$this->HTMLBody = $value;
 	}
 
 	/**
@@ -199,38 +199,38 @@ class Mailer
 				
 			$eol = PHP_EOL;
 				
-			if (!empty($this->_from))
+			if (!empty($this->from))
 			{
-				$headers[] = 'From: ' . $this->_from;
+				$headers[] = 'From: ' . $this->from;
 			}
 
-			if (!empty($this->_cc))
+			if (!empty($this->cc))
 			{
-				$headers[] = 'CC: ' . $this->_cc;
+				$headers[] = 'CC: ' . $this->cc;
 			}
 
-			if (!empty($this->_bcc))
+			if (!empty($this->bcc))
 			{
-				$headers[] = 'BCC: ' . $this->_bcc;
+				$headers[] = 'BCC: ' . $this->bcc;
 			}
 
-			if ($this->_sendText && !$this->_sendHTML)
+			if ($this->sendText && !$this->sendHTML)
 			{
-				$message = $this->_textBody;
+				$message = $this->textBody;
 			}
 
-			elseif (!$this->_sendText && $this->_sendHTML)
+			elseif (!$this->sendText && $this->sendHTML)
 			{
 				$headers[] = 'MIME-Version: 1.0';
 				$headers[] = 'Content-Type: text/html; charset="utf-8"';
 				$headers[] = 'From: <'.APP_EMAIL.'>';
 				$headers[] = 'Reply-To: '.APP_EMAIL;
 
-				$message = $this->_HTMLBody;
+				$message = $this->HTMLBody;
 				
 			}
 			//Multipart Message in MIME format
-			elseif ($this->_sendText && $this->_sendHTML)
+			elseif ($this->sendText && $this->sendHTML)
 			{
 
 				$headers[] = 'MIME-Version: 1.0';
@@ -239,15 +239,15 @@ class Mailer
 
 				$message .= 'Content-Type: text/plain; charset="utf-8"';
 				$message .= 'Content-Transfer-Encoding: 7bit';
-				$message .= $this->_textBody . "\n";
+				$message .= $this->textBody . "\n";
 
 				$message .= 'Content-Type: text/html; charset="utf-8"' . "\n";
 				$message .= 'Content-Transfer-Encoding: 7bit' . "\n";
-				$message .= $this->_HTMLBody . "\n";
+				$message .= $this->HTMLBody . "\n";
 
 			}
 
-			$success = mail($this->_to, $this->_subject, $message, implode($eol, $headers));
+			$success = mail($this->to, $this->subject, $message, implode($eol, $headers));
 				
 			return $success;
 

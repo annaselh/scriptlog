@@ -38,6 +38,7 @@ require 'include/setup.php';
         <img class="d-block mx-auto mb-4" src="<?= $installURL; ?>assets/img/icon612x612.png" alt="Scriptlog Installation Completed" width="72" height="72">
         <h2>Scriptlog</h2>
         <?php 
+        
         if (!isset($_GET['status']) || empty($_GET['status']) || $_GET['status'] !== 'success' 
             || !isset($_GET['token']) || !isset($_SESSION['token']) || empty($_GET['token'])
             || $_GET['token'] !== $_SESSION['token']):  
@@ -61,9 +62,10 @@ require 'include/setup.php';
  <div class="row"></div>
  <footer class="my-5 pt-5 text-muted text-center text-small">
     <p class="mb-1">&copy; 
+
        <?php 
-          
-     if (isset($_SESSION['token'])) purge_installation();
+           
+         if (isset($_SESSION['token'])) purge_installation();
        
           $starYear = 2013;
           $thisYear = date ( "Y" );
@@ -82,7 +84,6 @@ require 'include/setup.php';
         ?>
          
         </p>
-        
         <ul class="list-inline">
           <li class="list-inline-item"><a href="<?= $protocol . "://" . $server_host.dirname(dirname($_SERVER['PHP_SELF'])); ?>/LICENSE" >License</a></li>
           <li class="list-inline-item"><a href="#"><?= 'Memory used <strong>'.convert_memory_used(memory_get_usage()).'</strong>'; ?></a></li>

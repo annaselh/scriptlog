@@ -3,7 +3,7 @@
  * FrontContent Class extends ContentGateway Class
  * 
  * @package  SCRIPTLOG
- * @author   Maoelana Noermoehammad
+ * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0
  * 

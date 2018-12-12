@@ -4,7 +4,7 @@
  * Implements dbInterface
  * 
  * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -51,9 +51,9 @@ class Db implements DbInterface
       
       $options = array_replace($default_options, $options);
       
-      $dbc = new PDO($dsn, $dbUser, $dbPass, $options);
+      $this->dbc = new PDO($dsn, $dbUser, $dbPass, $options);
       
-      if (!$this->dbc = $dbc) {
+      if (!$this->dbc) {
           throw new DbException("Connection Failed!");
       }
        

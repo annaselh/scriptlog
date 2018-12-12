@@ -5,7 +5,7 @@
  * and select records from posts table
  *
  * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -463,11 +463,11 @@ public function dropDownCommentStatus($selected = "")
  */
 public function totalPostRecords($data = null)
 {
-    $sql = "SELECT ID FROM posts";
+  $sql = "SELECT ID FROM posts";
     
-    $this->setSQL($sql);
+  $this->setSQL($sql);
     
-    return $this->checkCountValue($data);
+  return $this->checkCountValue($data);
     
 }
   

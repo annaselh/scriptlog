@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * file reset-password.php
+ * 
+ * @category resetting user password
+ * @package  SCRIPTLOG
+ * @author   M.Noermoehammad
+ * @license  MIT
+ * @version  1.0
+ * 
+ */
 if (file_exists(__DIR__ . '/../config.php')) {
     
   include(dirname(dirname(__FILE__)).'/library/main.php');

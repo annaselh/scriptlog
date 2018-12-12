@@ -3,7 +3,7 @@
  * TopicApp Class extends BaseApp Class
  *
  * @package   SCRIPTLOG
- * @author    Maoelana Noermoehammad
+ * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -22,7 +22,7 @@ class TopicApp extends BaseApp
   
   public function listItems()
   {
-    $this->setPageTitle('Topics');
+    
     $errors = array();
     $status = array();
     $checkError = true;
@@ -41,7 +41,7 @@ class TopicApp extends BaseApp
     }
     
     $this->setView('all-topics');
-    $this->view->set('pageTitle', $this->getPageTitle());
+    $this->setPageTitle('Topics');
     
     if (!$checkError) {
        $this->view->set('error', $errors);
@@ -51,6 +51,7 @@ class TopicApp extends BaseApp
         $this->view->set('status', $status);
     }
     
+    $this->view->set('pageTitle', $this->getPageTitle());
     $this->view->set('topicsTotal', $this->topicEvent->totalTopics());
     $this->view->set('topics', $this->topicEvent->grabTopics());
     return $this->view->render();
