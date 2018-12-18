@@ -13,8 +13,8 @@
  * 
  */
 
-#date_default_timezone_set("Asia/Jakarta");
-ini_set("memory_limit", "2M");
+ #date_default_timezone_set("Asia/Jakarta");
+ini_set("memory_limit", "128K");
 #ini_set("session.cookie_secure", "True");  //secure
 #ini_set("session.cookie_httponly", "True"); // httpOnly
 #header("Content-Security-Policy: default-src https:; font-src 'unsafe-inline' data: https:; form-action 'self' https://kartatopia.com;img-src data: https:; child-src https:; object-src 'self' www.google-analytics.com ajax.googleapis.com platform-api.sharethis.com kartatopia-studio.disqus.com; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;");
@@ -31,6 +31,7 @@ define('APP_VERSION', '1.0');
 define('APP_ADMIN', 'admin');
 define('APP_PUBLIC', 'public');
 define('APP_LIBRARY', 'library');
+define('APP_DEVELOPMENT', TRUE);
 define('SCRIPTLOG', $checkIncKey);
 
 if (!defined('APP_ROOT')) define('APP_ROOT', dirname(dirname(__FILE__)) . DS);
@@ -41,9 +42,13 @@ if (!defined('APP_PROTOCOL')) define('APP_PROTOCOL', $protocol);
 
 if (!defined('APP_HOSTNAME')) define('APP_HOSTNAME', $hostname);
 
-if (!defined('SCRIPTLOG_START_TIME')) define('SCRIPTLOG_START_TIME', microtime(true));
+if (APP_DEVELOPMENT === true) {
 
-if (!defined('SCRIPTLOG_START_MEMORY')) define('SCRIPTLOG_START_MEMORY', memory_get_usage());
+    if (!defined('SCRIPTLOG_START_TIME')) define('SCRIPTLOG_START_TIME', microtime(true));
+
+    if (!defined('SCRIPTLOG_START_MEMORY')) define('SCRIPTLOG_START_MEMORY', memory_get_usage());
+
+}
 
 if (file_exists(APP_ROOT . 'config.sample.php')) {
 
@@ -157,7 +162,7 @@ Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
  * @var $postFeeds used by rss feed functionality
  * @var $sanitizer used by sanitize functionality
  * @var $userDao, $validator, $authenticator --
- * these collection of objects or instances of class that will used for login
+ * these are collection of objects or instances of classes that will used for login
  * 
  */
 $searchPost = new SearchSeeker($dbc);

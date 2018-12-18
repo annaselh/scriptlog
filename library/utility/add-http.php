@@ -10,10 +10,12 @@ function add_http($url)
 {
     if ($retrieveURL = parse_url($url)) {
         
-        if (!isset($retrieveURL["scheme"])) {
-            $url = "http://{}";
+        if ((!preg_match( "@^[hf]tt?ps?://@", $url)) || (!isset($retrieveURL["scheme"]))) {
+            $url = "http://" . $url;
         }
+        
     }
     
     return $url;
+    
 }

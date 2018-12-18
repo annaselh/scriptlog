@@ -18,6 +18,8 @@ class Authentication
  
   private $userDao;
 
+  private $fileManager;
+
   private $userToken;
 
   private $validator;
@@ -128,10 +130,6 @@ class Authentication
       $this->user_fullname = $_SESSION['user_fullname'] = $account_info['user_fullname'];
       $this->user_session = $_SESSION['user_session'] = generate_session_key($email, 13);
 
-      $_SESSION['KCFINDER'] = array();
-      $_SESSION['KCFINDER']['disabled'] = false;
-      $_SESSION['KCFINDER']['uploadURL'] =  APP_DIR . 'files/picture/';
-      $_SESSION['KCFINDER']['uploadDir'] =  "";
       $_SESSION['agent'] = sha1($_SERVER['HTTP_USER_AGENT']);
      
       if ($remember_me == true) {
@@ -334,7 +332,7 @@ public function userAccessControl($control = '')
             
             if($this->accessLevel() != 'administrator' && $this->accessLevel() != 'manager') {
 
-                return true;
+                return false;
             }
 
             break;
@@ -343,7 +341,7 @@ public function userAccessControl($control = '')
            
             if($this->accessLevel() != 'administrator' && $this->accessLevel() != 'manager') {
 
-                return true;
+                return false;
 
             }
 
@@ -353,7 +351,7 @@ public function userAccessControl($control = '')
 
            if($this->accessLevel() != 'manager') {
 
-               return true;
+               return false;
 
            }
 
@@ -361,10 +359,10 @@ public function userAccessControl($control = '')
 
         default:
           
-            if($this->accessLevel != 'administrator' && $this->accessLevel() != 'manager' && $this->accessLevel != 'editor'
-              && $this->accessLevel != 'author' && $this->accessLevel != 'manager') {
+            if($this->accessLevel() != 'administrator' && $this->accessLevel() != 'manager' && $this->accessLevel() != 'editor'        && 
+               $this->accessLevel() != 'author' && $this->accessLevel() != 'manager') {
 
-              return true;
+              return false;
 
             }
              
@@ -372,26 +370,8 @@ public function userAccessControl($control = '')
 
     }
 
-    return false;
+    return true;
 
-}
-
-private function userGroup()
-{
-  $userGroup = array('administrator', 'manager', 'editor', 'author', 'contributor');
-  return $userGroup;
-}
-
-private function adminGroup()
-{
-  $adminGroup = array('administrator', 'manager');
-  return $adminGroup;
-}
-
-private function masterGroup()
-{
-  $masterGroup = array('administrator');
-  return $masterGroup;
 }
 
 }

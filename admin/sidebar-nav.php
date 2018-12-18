@@ -21,7 +21,8 @@ function sidebar_navigation($module, $url, $level = null)
           </li>
         
 <?php 
-if ($level == 'administrator' || $level == 'manager' || $level == 'editor' || $level == 'author' || $level == 'contributor') : ?>
+if ($level == 'administrator' || $level == 'manager' || $level == 'editor' 
+    || $level == 'author' || $level == 'contributor') : ?>
 
         <li <?=($module == 'posts' || $module == 'topics') ? 'class="treeview active"' : 'class="treeview"'; ?>>
           <a href="<?= $url.'index.php?load=posts'; ?>"><i class="fa fa-thumb-tack"></i> 
@@ -46,7 +47,9 @@ if ($level == 'administrator' || $level == 'manager' || $level == 'editor' || $l
           </ul>
         </li>
 
-<?php endif; ?>
+<?php 
+endif; 
+?>
 
 <?php 
 if ($level == 'administrator' || $level == 'manager' || $level == 'editor' || $level == 'author') :
@@ -56,7 +59,9 @@ if ($level == 'administrator' || $level == 'manager' || $level == 'editor' || $l
         <span>Comments</span></a>
         </li>
 
-<?php endif; ?>
+<?php 
+endif; 
+?>
 
 <?php 
 if ($level == 'administrator' || $level == 'manager') :
@@ -78,6 +83,9 @@ if ($level == 'administrator' || $level == 'manager') :
 <?php endif; ?>
 
 
+<?php  
+if($level == 'administrator' || $level == 'manager') :
+?>
        <li <?=($module == 'users') ? 'class="treeview active"' : 'class="treeview"'; ?>>
           <a href="<?= $url.'index.php?load=users'; ?>"><i class="fa fa-user"></i> 
           <span>Users</span>
@@ -90,7 +98,20 @@ if ($level == 'administrator' || $level == 'manager') :
             <li><a href="<?= $url.'index.php?load=users&action=newUser&userId=0'; ?>">Add New</a></li>
           </ul>
         </li>
+<?php 
+else :
+?>
+<li <?=($module == 'users') ? 'class="active"' : 'class=""'; ?>>
+<a href="<?= $url.'index.php?load=users'; ?>"><i class="fa fa-user"></i> 
+<span>My Profile</span></a>
+</li>
+<?php 
+endif;
+?>
         
+<?php 
+if($level == 'administrator' || $level == 'manager') :
+?>
         <li <?=($module == 'templates' || $module == 'menu') ? 'class="treeview active"' : 'class="treeview"'; ?>>
           <a href="#"><i class="fa fa-paint-brush"></i> 
           <span>Appearance</span>
@@ -103,7 +124,13 @@ if ($level == 'administrator' || $level == 'manager') :
             <li><a href="<?= $url.'index.php?load=menu'; ?>">Menu</a></li>
           </ul>
         </li>
-        
+<?php 
+endif;
+?>
+
+<?php 
+if($level == 'administrator') :
+?>
         <li <?=($module == 'plugins') ? 'class="treeview active"' : 'class="treeview"'; ?>>
           <a href="<?= $url.'index.php?load=plugins'; ?>"><i class="fa fa-plug"></i> 
           <span>Plugins</span>
@@ -124,7 +151,10 @@ if ($level == 'administrator' || $level == 'manager') :
         
         <li class="header">PLUGIN NAVIGATION</li>
         <?=isset($plugin_navigation) ? $plugin_navigation : ""; ?>
-        
+<?php 
+endif;
+?>
+
       </ul>
       <!-- /.sidebar-menu -->
     </section>

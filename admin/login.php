@@ -4,10 +4,15 @@
  * login functionality 
  * to access control panel or administrator page
  * 
+ * @category file
+ * @package  SCRIPTLOG
+ * @author   M.Noermoehammad
+ * @license  MIT
+ * 
  */
-if (file_exists(__DIR__ . '/../config.php')) {
+if (file_exists(__DIR__ . '/../config.sample.php')) {
     
-    include __DIR__ . '/../library/main.php';
+    include __DIR__ . '/../library/main-dev.php';
     require 'authorizer.php';
 
 } else {

@@ -53,7 +53,8 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="index.php?load=users&action=editUser&userId=<?= (int)$user_id; ?>&sessionId=<?= $user_session; ?>" class="btn btn-default btn-flat"><i class="fa fa-user fa-fw"></i>Profile</a>
+                  <a href="<?=($user_level != 'administrator' && $user_level != 'manager') ? "index.php?load=users" : "index.php?load=users&action=editUser&userId={$user_id}&sessionId={$user_session}"  ?>" 
+                  class="btn btn-default btn-flat"><i class="fa fa-user fa-fw"></i>Profile</a>
                 </div>
                 <div class="pull-right">
                   <a href="index.php?load=logout" class="btn btn-default btn-flat"><i class="fa fa-sign-out fa-fw"></i>Sign out</a>

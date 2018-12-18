@@ -66,12 +66,25 @@ class UserEvent
   */
  private $user_session;
  
+ /**
+  * @var object
+  */
  private $userDao;
 
+ /**
+  * @var object
+  */
  private $validator;
 
+ /**
+  * @var object
+  */
  private $sanitize;
 
+ /**
+  * @method __constructor()
+  * 
+  */
  public function __construct(User $userDao, FormValidator $validator, Sanitize $sanitize)
  {
     $this->userDao = $userDao;
@@ -80,12 +93,23 @@ class UserEvent
     
     $this->sanitize = $sanitize;
  }
-  
+
+ /**
+  * Set user id
+  * @param integer $userId
+  *
+  */
  public function setUserId($userId)
  {
    $this->user_id = $userId;   
  }
  
+ /**
+  * Set user login
+  *
+  * @param string $user_login
+  *
+  */
  public function setUserLogin($user_login)
  {
    $this->user_login = $user_login;
@@ -145,6 +169,7 @@ class UserEvent
     if (empty($this->user_activation_key)) {
            
         return $this->userDao->createUser([
+
             'user_login' => $this->user_login,
             'user_email' => $this->user_email,
             'user_pass'  => $this->user_pass,
@@ -153,11 +178,13 @@ class UserEvent
             'user_url' => $this->user_url,
             'user_registered' => date("Y-m-d H:i:s"),
             'user_session' => $this->user_session
+
         ]);
         
     } else {
         
         return $this->userDao->createUser([
+
             'user_login' => $this->user_login,
             'user_email' => $this->user_email,
             'user_pass'  => $this->user_pass,
@@ -166,6 +193,7 @@ class UserEvent
             'user_url' => $this->user_url,
             'user_activation_key' => $this->user_activation_key,
             'user_session' => $this->user_session
+
         ]);
         
     }
@@ -184,18 +212,18 @@ class UserEvent
        if (!empty($this->user_pass)) {
            
            $bind = [
-               'user_email' => $this->user_email,
-               'user_pass' => $this->user_pass,
+               'user_email'    => $this->user_email,
+               'user_pass'     => $this->user_pass,
                'user_fullname' => $this->user_fullname,
-               'user_url' => $this->user_url
+               'user_url'      => $this->user_url
               ];
            
        } else {
            
            $bind = [
-               'user_email' => $this->user_email,
+               'user_email'    => $this->user_email,
                'user_fullname' => $this->user_fullname,
-               'user_url' => $this->user_url
+               'user_url'      => $this->user_url
            ];
            
        }

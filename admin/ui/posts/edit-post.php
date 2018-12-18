@@ -51,8 +51,7 @@ echo "Error saving data. Please try again." . $saveError;
 endif;
 ?>
 
-<form method="post" action="index.php?load=posts&action=<?=(isset($formAction)) ? $formAction : null; ?>&postId=<?=(isset($postData['ID'])) ? $postData['ID'] : 0; ?>" 
-role="form" enctype="multipart/form-data" autocomplete="off">
+<form method="post" action="index.php?load=posts&action=<?=(isset($formAction)) ? $formAction : null; ?>&postId=<?=(isset($postData['ID'])) ? $postData['ID'] : 0; ?>" role="form" enctype="multipart/form-data" >
 <input type="hidden" name="post_id" value="<?=(isset($postData['ID'])) ? $postData['ID'] : 0; ?>" />
 <input type="hidden" name="MAX_FILE_SIZE" value="697856"/>
 
@@ -90,7 +89,7 @@ else :
 ?>
 <br><img src="<?php echo $imageThumb; ?>" class="img-responsive pad"><br> 
 <label>change picture :</label> 
-<input type="file" name="image" id="file" accept="image/*" onchange="loadFile(event)"  maxlength="512" />
+<input type="file" name="image" id="file" onchange="loadFile(event)"  maxlength="512" />
 <img id="output" class="img-responsive pad" />
 <p class="help-block">Maximum file size: <?= format_size_unit(697856); ?></p>
 <?php 
@@ -100,7 +99,7 @@ endif;
 <?php else : ?>
 <div class="form-group">
 <label>Upload Picture :</label> 
-<input type="file" name="image" id="file" accept="image/*" onchange="loadFile(event)"  maxlength="512" />
+<input type="file" name="image" id="file" onchange="loadFile(event)"  maxlength="512" />
 <img id="output" class="img-responsive pad" />
 <p class="help-block">Maximum file size: <?= format_size_unit(697856); ?></p>
 </div>
@@ -126,7 +125,9 @@ endif;
 
 <div class="form-group">
 <label>Content (required)</label>
-<textarea class="form-control" id="sl" name="post_content" rows="10" maxlength="100000"required>
+<textarea class="textarea" placeholder="Place some text here"
+style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" 
+name="post_content"  maxlength="10000"  required>
 <?=(isset($postData['post_content'])) ? $postData['post_content'] : ""; ?>
 <?=(isset($formData['post_content'])) ? htmlspecialchars($formData['post_content'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>
@@ -147,7 +148,7 @@ endif;
 <!-- /.box-body -->
 <div class="box-footer">
 <input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">  
-<input type="submit" name="postFormSubmit" class="btn btn-primary" value="<?=(isset($postData['ID']) && $postData['ID'] != '') ? "Update" : "Publish"; ?>">
+<input type="submit" class="btn btn-primary" name="postFormSubmit" value="<?=(isset($postData['ID']) && $postData['ID'] != '') ? "Update" : "Publish"; ?>" >
 </div>
 </form>
             
@@ -160,7 +161,8 @@ endif;
 </section>
 
 </div>
-<!-- /.content-wrapper -->
+<!-- /.content-wrapper --->
+
 <script type="text/javascript">
   var loadFile = function(event) {
 	  var output = document.getElementById('output');

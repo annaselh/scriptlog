@@ -76,7 +76,7 @@
 .skin-scriptlog .sidebar-menu > li.active > a,
 .skin-scriptlog .sidebar-menu > li.menu-open > a {
   color: #ffffff;
-  background: #2e5c7a;
+  background: #a4c400;
 }
 .skin-scriptlog .sidebar-menu > li.active > a {
   border-left-color: #122430;
@@ -100,13 +100,13 @@
 }
 .skin-scriptlog .sidebar-form {
   border-radius: 3px;
-  border: 1px solid #2e5c7a;
+  border: 1px solid #a4c400;
   margin: 10px 10px;
 }
 .skin-scriptlog .sidebar-form input[type="text"],
 .skin-scriptlog .sidebar-form .btn {
   box-shadow: none;
-  background-color: #2e5c7a;
+  background-color: #a4c400;
   border: 1px solid transparent;
   height: 35px;
 }

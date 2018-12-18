@@ -43,7 +43,13 @@ class Dao
  {
    if (Registry::isKeySet('dbc')) $this->dbc = Registry::get('dbc');
  }
-	
+
+ public function __desctruct()
+ {
+   Registry::set('dbc', null);
+   session_write_close();
+ }
+
  /**
   * Set SQL
   * @param string $sql

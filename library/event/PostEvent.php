@@ -18,6 +18,12 @@ class PostEvent
   private $postId;
   
   /**
+   * post's Image
+   * @var string
+   */
+  private $post_image;
+
+  /**
    * author 
    * @var string
    */
@@ -79,13 +85,35 @@ class PostEvent
    * @var integer
    */
   private $topics; 
-  
+ 
+  /**
+   * Post DAO
+   * 
+   * @var object
+   */
   private $postDao;
 
+  /**
+   * Validator
+   * 
+   * @var object
+   */
   private $validator;
 
+  /**
+   * Sanitizer
+   * 
+   * @var object
+   */
   private $sanitizer;
-  
+
+  /**
+   * Constructor
+   * 
+   * @param object $postDao
+   * @param object $validator
+   * @param object $sanitizer
+   */
   public function __construct(Post $postDao, FormValidator $validator, Sanitize $sanitizer)
   {
      $this->postDao = $postDao;
@@ -102,7 +130,29 @@ class PostEvent
   {
     $this->postId = $postId;    
   }
-  
+
+  /**
+   * set post's image
+   * 
+   * @param string $post_image
+   * 
+   */
+  public function setPostImage($post_image)
+  {
+    $this->post_image = $post_image;
+  }
+
+  /**
+   * set post's author
+   * 
+   * @param string $author
+   * 
+   */
+  public function setPostAuthor($author)
+  {
+    $this->author = $author;
+  }
+
   /**
    * set post's title
    * 
@@ -217,8 +267,7 @@ class PostEvent
    */
   public function addPost()
   {
-     $upload_path = __DIR__ . '/../../public/files/pictures/';
-     $image_uploader =  new ImageUploader('image', $upload_path);
+    
      $category = new Topic();
      
      $this->validator->sanitize($this->author, 'int');
@@ -229,7 +278,7 @@ class PostEvent
       $this->validator->sanitize($this->meta_key, 'string');
      }
      
-     if ($image_uploader->isImageUploaded()) {
+     if (empty($this->post_image)) {
          
          if ($this->topics == 0) {
              
@@ -265,17 +314,14 @@ class PostEvent
          }
          
      } else {
-       
-         $newFileName = $image_uploader -> renameImage();
-         $uploadImagePost = $image_uploader -> uploadImage('post', $newFileName, 770, 400, 'crop');
-                
+              
          if ($this->topics == 0) {
              
              $categoryId = $category -> createTopic(['topic_title' => 'Uncategorized', 'topic_slug' => 'uncategorized']);
              $getCategory = $category -> findTopicById($categoryId, $this->sanitizer, PDO::FETCH_ASSOC);
              
              return $this->postDao->createPost([
-                 'post_image' => $newFileName,
+                 'post_image' => $this->post_image,
                  'post_author' => $this->author,
                  'post_date' => date("Y-m-d H:i:s"),
                  'post_title' => $this->title,
@@ -290,7 +336,7 @@ class PostEvent
          } else {
              
              return $this->postDao->createPost([
-                 'post_image' => $newFileName,
+                 'post_image' => $this->post_image,
                  'post_author' => $this->author,
                  'post_date' => date("Y-m-d H:i:s"),
                  'post_title' => $this->title,
@@ -311,19 +357,15 @@ class PostEvent
   public function modifyPost()
   {
      
-    $upload_path = __DIR__ . '/../../public/files/pictures/';
-    $image_uploader =  new ImageUploader('image', $upload_path);
     $category = new Topic();
       
-    $this->author = isset($_SESSION['ID']) ? (int)$_SESSION['ID'] : 0;
-    
     $this->validator->sanitize($this->postId, 'int');
     $this->validator->sanitize($this->author, 'int');
     $this->validator->sanitize($this->title, 'string');
     $this->validator->sanitize($this->meta_desc, 'string');
     $this->validator->sanitize($this->meta_key, 'string');
       
-    if ($image_uploader -> isImageUploaded()) {
+    if (empty($this->post_image)) {
           
         return $this->postDao->updatePost($this->sanitizer, [
             'post_author' => $this->author,
@@ -338,12 +380,9 @@ class PostEvent
         ], $this->postId, $this->topics);
          
     } else {
-        
-        $newFileName = $image_uploader -> renameImage();
-        $uploadImagePost = $image_uploader -> uploadImage('post', $newFileName, 770, 400, 'crop');
-        
+         
         return $this->postDao->updatePost($this->sanitizer, [
-            'post_image' => $newFileName,
+            'post_image' => $this->post_image,
             'post_author' => $this->author,
             'date_modified' => date("Y-m-d H:i:s"),
             'post_title' => $this->title,
@@ -409,7 +448,26 @@ class PostEvent
   {
      return $this->postDao->dropDownCommentStatus($selected);
   }
-  
+ 
+  /**
+   * Checking whether author session exists
+   * 
+   * @return string
+   * 
+   */
+  public function isPostAuthor()
+  {
+
+    if (isset($_SESSION['user_id'])) {
+      
+        return $_SESSION['user_id'];
+
+    }
+
+    return false;
+
+  }
+
   /**
    * Total posts records
    * 

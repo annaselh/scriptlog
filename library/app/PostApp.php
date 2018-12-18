@@ -81,12 +81,15 @@ class PostApp extends BaseApp
     
     if (isset($_POST['postFormSubmit'])) {
         
+       $upload_path = __DIR__ . '/../../public/files/pictures/';
+       $image_uploader =  new ImageUploader('image', $upload_path);
+
        $title = isset($_POST['post_title']) ? trim($_POST['post_title']) : "";
        $slug = make_slug($title);
        $content = isset($_POST['post_content']) ? trim($_POST['post_content']) : "";
        $category = isset($_POST['catID']) ? $_POST['catID'] : "";
-       $meta_desc = isset($_POST['meta_description']) ? trim($_POST['meta_description']) : null;
-       $meta_keys = isset($_POST['meta_keywords']) ? trim($_POST['meta_keywords']) : null;
+       $meta_desc = isset($_POST['post_summary']) ? trim($_POST['post_summary']) : null;
+       $meta_keys = isset($_POST['post_keyword']) ? trim($_POST['post_keyword']) : null;
        $post_status = $_POST['post_status'];
        $comment_status = $_POST['comment_status'];
        
@@ -133,14 +136,65 @@ class PostApp extends BaseApp
                 $this->postEvent->setMetaDesc($meta_desc);
                 $this->postEvent->setMetaKeys($meta_keys);
             }
-             $this->postEvent->setPostTitle($title);
-             $this->postEvent->setPostSlug($slug);
-             $this->postEvent->setPostContent($content);
-             $this->postEvent->setPublish($post_status);
-             $this->postEvent->setComment($comment_status);
-             $this->postEvent->addPost();
-             direct_page('index.php?load=posts&status=postAdded', 200);
+            
+            if ($image_uploader -> isImageUploaded() === false) {
+
+                if($category == 0) {
+
+                    $this->postEvent->setTopics(0);
+                    $this->postEvent->setPostAuthor($this->postEvent->isPostAuthor());
+                    $this->postEvent->setPostTitle($title);
+                    $this->postEvent->setPostSlug($slug);
+                    $this->postEvent->setPostContent($content);
+                    $this->postEvent->setPublish($post_status);
+                    $this->postEvent->setComment($comment_status);
+
+                } else {
+
+                    $this->postEvent->setTopics($category);
+                    $this->postEvent->setPostAuthor($this->postEvent->isPostAuthor());
+                    $this->postEvent->setPostTitle($title);
+                    $this->postEvent->setPostSlug($slug);
+                    $this->postEvent->setPostContent($content);
+                    $this->postEvent->setPublish($post_status);
+                    $this->postEvent->setComment($comment_status);
+
+                }
+
+            } else {
+
+                $newFileName = $image_uploader -> renameImage();
+                $uploadImagePost = $image_uploader -> uploadImage('post', $newFileName, 770, 400, 'crop');
+
+                if ($category == 0) {
+
+                    $this->postEvent->setTopics(0);
+                    $this->postEvent->setPostImage($newFileName);
+                    $this->postEvent->setPostAuthor($this->postEvent->isPostAuthor());
+                    $this->postEvent->setPostTitle($title);
+                    $this->postEvent->setPostSlug($slug);
+                    $this->postEvent->setPostContent($content);
+                    $this->postEvent->setPublish($post_status);
+                    $this->postEvent->setComment($comment_status);
+
+                } else {
+
+                    $this->postEvent->setTopics($category);
+                    $this->postEvent->setPostImage($newFileName);
+                    $this->postEvent->setPostAuthor($this->postEvent->isPostAuthor());
+                    $this->postEvent->setPostTitle($title);
+                    $this->postEvent->setPostSlug($slug);
+                    $this->postEvent->setPostContent($content);
+                    $this->postEvent->setPublish($post_status);
+                    $this->postEvent->setComment($comment_status);
+
+                }
+
+            }
              
+            $this->postEvent->addPost();
+            direct_page('index.php?load=posts&status=postAdded', 200);
+
          }
             
       } catch (AppException $e) {
@@ -199,6 +253,9 @@ class PostApp extends BaseApp
     
     if (isset($_POST['postFormSubmit'])) {
         
+        $upload_path = __DIR__ . '/../../public/files/pictures/';
+        $image_uploader =  new ImageUploader('image', $upload_path);
+
         $title = isset($_POST['post_title']) ? trim($_POST['post_title']) : "";
         $slug = make_slug($title);
         $content = isset($_POST['post_content']) ? trim($_POST['post_content']) : "";
@@ -248,14 +305,38 @@ class PostApp extends BaseApp
                 
             } else {
               
-                $this->postEvent->setPostId($post_id);
-                $this->postEvent->setPostTitle($title);
-                $this->postEvent->setPostSlug($slug);
-                $this->postEvent->setPostContent($content);
-                $this->postEvent->setMetaDesc($meta_desc);
-                $this->postEvent->setMetaKeys($meta_keys);
-                $this->postEvent->setPublish($post_status);
-                $this->postEvent->setComment($comment_status);
+                if ($image_uploader -> isImageUploaded()) {
+
+                  $this->postEvent->setPostId($post_id);
+                  $this->postEvent->setTopics($category);
+                  $this->postEvent->setPostAuthor($this->postEvent->isPostAuthor());
+                  $this->postEvent->setPostTitle($title);
+                  $this->postEvent->setPostSlug($slug);
+                  $this->postEvent->setPostContent($content);
+                  $this->postEvent->setMetaDesc($meta_desc);
+                  $this->postEvent->setMetaKeys($meta_keys);
+                  $this->postEvent->setPublish($post_status);
+                  $this->postEvent->setComment($comment_status);
+                  
+                } else {
+
+                  $newFileName = $image_uploader -> renameImage();
+                  $uploadImagePost = $image_uploader -> uploadImage('post', $newFileName, 770, 400,  'crop');
+
+                  $this->postEvent->setPostId($post_id);
+                  $this->postEvent->setPostImage($newFileName);
+                  $this->postEvent->setTopics($category);
+                  $this->postEvent->setPostAuthor($this->postEvent->isPostAuthor());
+                  $this->postEvent->setPostTitle($title);
+                  $this->postEvent->setPostSlug($slug);
+                  $this->postEvent->setPostContent($content);
+                  $this->postEvent->setMetaDesc($meta_desc);
+                  $this->postEvent->setMetaKeys($meta_keys);
+                  $this->postEvent->setPublish($post_status);
+                  $this->postEvent->setComment($comment_status);
+
+                }
+                
                 $this->postEvent->modifyPost();
                 direct_page('index.php?load=posts&status=postUpdated', 200);
                 
@@ -277,7 +358,7 @@ class PostApp extends BaseApp
         $this->view->set('pageTitle', $this->getPageTitle());
         $this->view->set('formAction', $this->getFormAction());
         $this->view->set('postData', $data_post);
-        $this->view->set('topics', $topics->setCheckBoxTopic($getPost['comment_status']));
+        $this->view->set('topics', $topics->setCheckBoxTopic($getPost['ID']));
         $this->view->set('postStatus', $this->postEvent->postStatusDropDown($getPost['post_status']));
         $this->view->set('commentStatus', $this->postEvent->commentStatusDropDown($getPost['comment_status']));
         $this->view->set('csrfToken', csrf_generate_token('csrfToken'));

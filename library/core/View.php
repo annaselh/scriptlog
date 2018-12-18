@@ -48,6 +48,7 @@ class View
   public function __construct($eventPath, $uiPath, $modulePath, $file = null)
   {
     
+    // make sure event path in admin directory
     if ($eventPath == 'admin') {
       $this->dir = APP_ROOT . APP_ADMIN . DS . $uiPath . DS .$modulePath . DS;
     }
@@ -55,17 +56,37 @@ class View
     if (!is_null($file)) $this->file = $file;
     
   }
-   
+  
+  /**
+   * Set view
+   * 
+   * @param string $key
+   * @param string $value
+   * 
+   */
   public function set($key, $value)
   {
      $this->data[$key] = $value;
   }
   
+  /**
+   * Get view
+   * 
+   * @param string $key
+   * 
+   */
   public function get($key)
   {
      return $this->data[$key];
   }
   
+  /**
+   * render
+   * output view or content
+   * 
+   * @method mixed rendr()
+   * 
+   */
   public function render()
   {
      
@@ -87,7 +108,7 @@ class View
         
         $this->errors = LogError::setStatusCode(http_response_code());
         $this->errors = LogError::newMessage($e);
-        $this->errors = LogError::customErrorMessage();
+        $this->errors = LogError::customErrorMessage('admin');
         
     } 
     

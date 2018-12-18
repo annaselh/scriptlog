@@ -124,7 +124,9 @@ endif;
 
 <div class="form-group">
 <label>Content (required)</label>
-<textarea class="form-control" id="sl" name="post_content" rows="10" maxlength="100000" required>
+<textarea class="textarea" placeholder="Place some text here"
+style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" 
+name="post_content"  maxlength="10000" required>
 <?=(isset($pageData['post_content'])) ? $pageData['post_content'] : ""; ?>
 <?=(isset($formData['post_content'])) ? htmlspecialchars($formData['post_content'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>

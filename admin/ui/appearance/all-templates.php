@@ -56,7 +56,7 @@
                <div class="box-header with-border">
                 <h3 class="box-title">
               <?=(isset($themesTotal)) ? $themesTotal : 0; ?> 
-               plugin<?=($themesTotal != 1) ? 's' : ''; ?>
+               theme<?=($themesTotal != 1) ? 's' : ''; ?>
                in Total  
               </h3>
                </div>

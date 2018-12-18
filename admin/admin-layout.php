@@ -20,7 +20,7 @@ function admin_header($stylePath, $breadCrumbs, $allowedQuery)
    
         echo 'Error: 400 Bad Request';
         
-  } elseif (empty($breadCrumbs) || !in_array($breadCrumbs, $allowedQuery)) {
+  } elseif ((empty($breadCrumbs)) || (!in_array($breadCrumbs, $allowedQuery))) {
   
         echo 'Error: 404 Not Found';
        
@@ -49,11 +49,8 @@ function admin_header($stylePath, $breadCrumbs, $allowedQuery)
   <link rel="stylesheet" href="<?= $stylePath; ?>/assets/dist/css/skins/scriptlog-skin.css">
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   <link rel="stylesheet" href="<?= $stylePath; ?>/assets/dist/css/ie10-viewport-bug-workaround.css">
- 
-<!-- wysiwyg editor-->
-<script src="<?= $stylePath; ?>/wysiwyg/tiny_mce/jquery.tinymce.min.js"></script>
-<script src="<?= $stylePath; ?>/wysiwyg/tiny_mce/tinymce.min.js" ></script>
-<script src="<?= $stylePath; ?>/wysiwyg/tiny_mce/tinysc.js"></script>
+   <!-- wysiwyg editor-->
+  <link rel="stylesheet" href="<?= $stylePath; ?>/assets/components/wysihtml5/bootstrap3-wysihtml5.min.css">
 
   
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -90,7 +87,7 @@ function admin_footer($stylePath)
     </div>
     <!-- Default to the left -->
     <strong>Thank you for creating with 
-    <a href="https://scriptlog.kartatopia.com">Scriptlog</a>
+    <a href="https://scriptlog.web.id" targer="_blank" title="Personal Blogware Platform">Scriptlog</a>
      <?php echo APP_VERSION; ?></strong>
   </footer>
   
@@ -126,7 +123,9 @@ function admin_footer($stylePath)
 <!-- Validate Image -->
 <script src="<?= $stylePath; ?>/assets/dist/js/imagevalidation.js"></script>
 <script src="<?= $stylePath; ?>/assets/dist/js/imagesizechecker.js"></script>
-<!-- page script -->
+<!-- Bootstrap WYSIHTML5 -->
+<script src="<?= $stylePath; ?>/assets/components/wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<!-- data-table script -->
 <script>
 $(document).ready(function(){
 	$('#scriptlog-table').DataTable({
@@ -140,6 +139,13 @@ $(document).ready(function(){
 
    });
 });
+</script>
+<!-- Text Editor -->
+<script>
+  $(function () {
+    //bootstrap WYSIHTML5 - text editor
+    $('.textarea').wysihtml5()
+  })
 </script>
 </body>
 </html>

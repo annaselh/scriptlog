@@ -6,12 +6,12 @@
  * @package  SCRIPTLOG
  * @author   Maoelana Noermoehammad 
  * @license  https://opensource.org/licenses/MIT MIT License
- * @link     https://scriptlog.kartatopia.com
+ * @link     https://scriptlog.web.id
  * 
  */
-if (file_exists(__DIR__ . '/../config.php')) {
+if (file_exists(__DIR__ . '/../config.sample.php')) {
     
-    include __DIR__ . '/../library/main.php';
+    include __DIR__ . '/../library/main-dev.php';
     require __DIR__ . '/authorizer.php';
 
 } else {

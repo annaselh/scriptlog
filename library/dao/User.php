@@ -34,8 +34,10 @@ class User extends Dao
  {
     
     $sql = "SELECT ID, user_login,
-				user_email, user_fullname,
-				user_level, user_session
+				   user_email, 
+                   user_fullname,
+				   user_level, 
+                   user_session
 		   FROM users ORDER BY '$orderBy' DESC";
      
      $this->setSQL($sql);
@@ -69,8 +71,12 @@ class User extends Dao
  {
    $cleanId = $this->filteringId($sanitize, $userId, 'sql');
    
-   $sql = "SELECT ID, user_login, user_email, user_level, user_fullname, user_url, 
-           user_session FROM users WHERE ID = :ID";
+   $sql = "SELECT ID, user_login, user_email, 
+                  user_level, user_fullname, 
+                  user_url, 
+                  user_registered,
+                  user_session 
+           FROM users WHERE ID = :ID";
    
    $this->setSQL($sql);
    
@@ -101,8 +107,12 @@ class User extends Dao
  public function getUserByEmail($user_email, $fetchMode = null)
  {
      
-   $sql = "SELECT ID, user_login, user_email, user_level, 
-           user_fullname, user_url, user_session 
+   $sql = "SELECT ID, user_login, user_email, 
+                  user_level, 
+                  user_fullname, 
+                  user_url, 
+                  user_registered, 
+                  user_session 
            FROM users WHERE user_email = :user_email LIMIT 1";
    
    $this->setSQL($sql);

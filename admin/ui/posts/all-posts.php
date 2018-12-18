@@ -86,7 +86,7 @@
                     <tr>
                        <td><?= $no; ?></td>
                        <td><?= htmlspecialchars($post['post_title']); ?></td>
-                       <td><?= htmlspecialchars($post['author']); ?></td>
+                       <td><?= htmlspecialchars($post['user_login']); ?></td>
                        <td><?= htmlspecialchars(make_date($post['post_date'])); ?></td>
                       
                        <td>

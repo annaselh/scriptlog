@@ -249,6 +249,7 @@ class Dispatcher
   
   /**
    * allowed path
+   * Checking whether URI requested match the rules and allowed to be executed
    * 
    * @param string $theme_dir
    * @param array $path

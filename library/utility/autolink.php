@@ -5,6 +5,7 @@
  * @link http://www.couchcode.com/php/auto-link-function/
  * @param string $text
  * @return mixed
+ * 
  */
 function autolink($text) {
     $pattern = '/(((http[s]?:\/\/(.+(:.+)?@)?)|(www\.))[a-z0-9](([-a-z0-9]+\.)*\.[a-z]{2,})?\/?[a-z0-9.,_\/~#&=:;%+!?-]+)/is';

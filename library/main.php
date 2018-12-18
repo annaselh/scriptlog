@@ -39,10 +39,6 @@ if (!defined('APP_PROTOCOL')) define('APP_PROTOCOL', strpos(strtolower($_SERVER[
 
 if (!defined('APP_HOSTNAME')) define('APP_HOSTNAME', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null);
 
-if (!defined('SCRIPTLOG_START_TIME')) define('SCRIPTLOG_START_TIME', microtime(true));
-
-if (!defined('SCRIPTLOG_START_MEMORY')) define('SCRIPTLOG_START_MEMORY', memory_get_usage());
-
 if (file_exists(APP_ROOT.'config.php')) {
     
    $config = require __DIR__ . '/../config.php';
@@ -90,7 +86,7 @@ foreach ($files_dir_iterator as $file) {
 if (is_dir(APP_ROOT . APP_LIBRARY) && is_file(APP_ROOT . APP_LIBRARY . DS . 'Scriptloader.php')) {
  
     require __DIR__ . DS . 'Scriptloader.php';
-        
+      
 }
 
 // load all libraries 
@@ -165,7 +161,7 @@ Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
  * @var $postFeeds used by rss feed functionality
  * @var $sanitizer used by sanitize functionality
  * @var $userDao, $validator, $authenticator --
- * these collection of objects or instances of class that will used for login
+ * these are collection of objects or instances of classes that will used for login
  * 
  */
 $searchPost = new SearchSeeker($dbc);

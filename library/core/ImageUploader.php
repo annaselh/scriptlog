@@ -16,40 +16,40 @@ class ImageUploader
   * 
   * @var string
   */
- protected $file_name;
+ public $file_name;
  
  /**
   * File location
   * @var string
   */
- protected $file_location;
+ public $file_location;
  
  /**
   * File Type 
   * @var string
   */
- protected $file_type;
+ public $file_type;
  
  /**
-  * Fole size
+  * File size
   *
   * @var string
   */
- protected $file_size;
+ public $file_size;
  
  /**
   * File error
   *
   * @var string
   */
- protected $file_error;
+ public $file_error;
  
  /**
   * Path destination
   * 
   * @var string
   */
- protected $path_destination;
+ public $path_destination;
  
  /**
   * File basename
@@ -113,11 +113,11 @@ class ImageUploader
   */
  public function __construct($key, $path)
  {
-   $this->file_location = isset($_FILES[$key]['tmp_name']) ? $_FILES[$key]['tmp_name'] : "";
-   $this->file_type = isset($_FILES[$key]['type']) ? $_FILES[$key]['type'] : "";
-   $this->file_name = isset($_FILES[$key]['name']) ? $_FILES[$key]['name'] : "";
-   $this->file_size = isset($_FILES[$key]['size']) ? $_FILES[$key]['size'] : "";
-   $this->file_error = isset($_FILES[$key]['error']) ? $_FILES[$key]['error'] : "";
+   $this->file_location = $_FILES[$key]['tmp_name'];
+   $this->file_type = $_FILES[$key]['type'];
+   $this->file_name = $_FILES[$key]['name'];
+   $this->file_size = $_FILES[$key]['size'];
+   $this->file_error = $_FILES[$key]['error'];
    
    $this->path_destination = $path;
    
@@ -237,6 +237,11 @@ class ImageUploader
         
         $canUpload = false;
         throw new UploadException("destination folder is not writable");
+
+    } elseif ($tempName === false) {
+
+        $canUpload = false;
+        throw new UploadException("There is no picture uploaded");
 
     } elseif ($this->file_error === 1) {
        
@@ -444,8 +449,15 @@ protected function saveImagePost($file_name, $width, $height, $mode)
  
  public function isImageUploaded()
  {
-     $isUploaded = (empty($this->file_location) || empty($this->file_basename));
-     return $isUploaded;
+     $imageUploaded = true;
+
+     if (empty($this->file_location) || empty($this->file_basename)) {
+
+        $imageUploaded = false;
+     }
+
+     return $imageUploaded;
+     
  }
  
  public function uploadImage($uploadType, $file_name, $width, $height, $mode)

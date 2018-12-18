@@ -73,7 +73,9 @@ endif;
 
 <div class="form-group">
 <label>Description </label>
-<textarea class="form-control" id="sl" name="theme_description" rows="10" maxlength="1000" >
+<textarea class="textarea" placeholder="Place some text here"  
+style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"  
+name="theme_description"  maxlength="1000" >
 <?=(isset($themeData['theme_desc'])) ? $themeData['theme_desc'] : ""; ?>
 <?=(isset($formData['theme_description'])) ? htmlspecialchars($formData['theme_description'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>
@@ -95,10 +97,9 @@ endif;
  if(!empty($themeData['ID'])) :
 ?>
 <a href="javascript:deleteTheme('<?=(isset($themeData['ID']) ? $themeData['ID'] : 0); ?>', '<?=(isset($themeData['theme_title']) ? $themeData['theme_title'] : ""); ?>')"
-	title="Delete Theme" class="btn btn-danger pull-right"> <i
-					class="fa fa-exclamation-circle fa-fw"></i> Delete
+title="Delete Theme" class="btn btn-danger pull-right"> <i
+class="fa fa-exclamation-circle fa-fw"></i> Delete
 </a>
-
 <?php 
  endif;
 ?>

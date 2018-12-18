@@ -29,3 +29,23 @@ return [
 
 **************************************************************************************/
 
+return [
+
+    'db' => [
+        
+        'host' => 'localhost',
+        'user' => 'root',
+        'pass' => 'kartatopia',
+        'name' => 'blogware'
+
+    ],
+
+    'app' => [
+
+        'url'   => 'http://localhost/scriptlog/',
+        'email' => 'admin@scriptlog.web.id',
+        'key'   => 'T3KTV-YT7PB-XJXJD-GV3K8'
+         
+    ]
+
+];

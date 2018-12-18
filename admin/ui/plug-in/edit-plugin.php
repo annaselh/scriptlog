@@ -71,7 +71,9 @@ endif;
 
 <div class="form-group">
 <label>Description (required)</label>
-<textarea class="form-control" id="sl" name="description" rows="10" maxlength="1000" >
+<textarea class="textarea" placeholder="Place some text here"
+style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" 
+name="description"  maxlength="1000" >
 <?=(isset($pluginData['plugin_desc'])) ? $pluginData['plugin_desc'] : ""; ?>
 <?=(isset($formData['description'])) ? htmlspecialchars($formData['description'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>

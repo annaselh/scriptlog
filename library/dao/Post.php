@@ -29,27 +29,43 @@ public function __construct()
  * @param string $orderBy
  * @param string $author
  * @return boolean|array|object
+ * 
  */
 public function findPosts($orderBy = 'ID', $author = null)
 {
     if (!is_null($author)) {
         
-        $sql = "SELECT p.ID, p.post_image, p.post_author,
-                p.post_date, p.post_modified, p.post_title, p.post_slug,
-                p.post_content, p.post_status, p.post_type, u.user_login
-  				FROM posts AS p
-  				INNER JOIN users AS u ON p.post_author = u.ID
-  				WHERE p.post_author = :author
-  				AND p.post_type = 'blog'
-  				ORDER BY p.{$orderBy} DESC";
+        $sql = "SELECT p.ID, 
+                p.post_image, 
+                p.post_author,
+                p.post_date, 
+                p.post_modified, 
+                p.post_title, 
+                p.post_slug,
+                p.post_content, 
+                p.post_status, 
+                p.post_type, 
+                u.user_login
+  			FROM posts AS p
+  			INNER JOIN users AS u ON p.post_author = u.ID
+  			WHERE p.post_author = :author
+  			AND p.post_type = 'blog'
+  			ORDER BY p.{$orderBy} DESC";
           
         $data = array(':author' => $author);
 
     } else {
         
-        $sql = "SELECT p.ID, p.post_image, p.post_author,
-                p.post_date, p.post_modified, p.post_title,
-                p.post_slug, p.post_content, p.post_status, p.post_type, 
+        $sql = "SELECT p.ID, 
+                p.post_image, 
+                p.post_author,
+                p.post_date, 
+                p.post_modified, 
+                p.post_title,
+                p.post_slug, 
+                p.post_content, 
+                p.post_status, 
+                p.post_type, 
                 u.user_login
   		    FROM
                  posts AS p
@@ -84,32 +100,48 @@ public function findPosts($orderBy = 'ID', $author = null)
 public function findPost($id, $sanitize, $author = null)
 {
     
-   $sanitized_id = $this->filteringId($sanitize, $id, 'sql');
+   $idsanitized = $this->filteringId($sanitize, $id, 'sql');
     
    if (!empty($author)) {
         
-        $sql = "SELECT ID, post_image, post_author,
-  	  		  post_date, post_modified, post_title,
-  	  		  post_slug, post_content, post_summary, 
-              post_keyword, post_status,
-  	  		  post_type, comment_status
+        $sql = "SELECT ID, 
+              post_image, 
+              post_author,
+  	  		  post_date, 
+              post_modified, 
+              post_title,
+  	  		  post_slug, 
+              post_content, 
+              post_summary, 
+              post_keyword, 
+              post_status,
+  	  		  post_type, 
+              comment_status
   	  		  FROM posts
   	  		  WHERE ID = :ID AND post_author = :author
   			  AND post_type = 'blog'";
         
-        $data = array(':ID' => $sanitized_id, ':author' => $author);
+        $data = array(':ID' => $idsanitized, ':author' => $author);
         
    } else {
         
-       $sql = "SELECT ID, post_image, post_author,
-  	  		  post_date, post_modified, post_title,
-  	  		  post_slug, post_content, post_summary, post_keyword, 
+       $sql = "SELECT ID, 
+              post_image, 
+              post_author,
+  	  		  post_date, 
+              post_modified, 
+              post_title,
+  	  		  post_slug, 
+              post_content, 
+              post_summary, 
+              post_keyword, 
               post_status,
-  	  		  post_type, comment_status
+  	  		  post_type, 
+              comment_status
   	  		  FROM posts
   	  		  WHERE ID = :ID AND post_type = 'blog'";
         
-       $data = array(':ID' => $sanitized_id);
+       $data = array(':ID' => $idsanitized);
         
   }
     
@@ -359,7 +391,7 @@ public function updatePost($sanitize, $bind, $ID, $topicId)
   $post_id = $this->findColumn([$cleanId]);
   
   // delete post_topic
-  $stmt2 = $this->delete("post_topic", "ID = {$post_id['ID']}");
+  $stmt2 = $this->deleteRecord("post_topic", "ID = {$post_id['ID']}");
   	  
   if (is_array($topicId)) {
   	     
@@ -392,7 +424,7 @@ public function updatePost($sanitize, $bind, $ID, $topicId)
 public function deletePost($id, $sanitize)
 { 
  $idsanitized = $this->filteringId($sanitize, $id, 'sql');
- $stmt = $this->delete("posts", "ID = {$idsanitized}"); 	  
+ $stmt = $this->deleteRecord("posts", "ID = {$idsanitized}"); 	  
 }
 
 /**
@@ -404,10 +436,10 @@ public function deletePost($id, $sanitize)
  */
 public function checkPostId($id, $sanitizing)
 {
-  $cleanId = $this->filteringId($sanitizing, $id, 'sql');
   $sql = "SELECT ID FROM posts WHERE ID = ? AND post_type = 'blog'";
+  $idsanitized = $this->filteringId($sanitizing, $id, 'sql');
   $this->setSQL($sql);
-  $stmt = $this->checkCountValue([$cleanId]);
+  $stmt = $this->checkCountValue([$idsanitized]);
   return($stmt > 0); 		
 }
 
@@ -463,6 +495,7 @@ public function dropDownCommentStatus($selected = "")
  */
 public function totalPostRecords($data = null)
 {
+
   $sql = "SELECT ID FROM posts";
     
   $this->setSQL($sql);

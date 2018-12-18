@@ -9,6 +9,6 @@
  * @version  1.0
  * 
  */
-require __DIR__ . '/library/main.php'; 
+require __DIR__ . '/library/main-dev.php'; 
 
 route_request();

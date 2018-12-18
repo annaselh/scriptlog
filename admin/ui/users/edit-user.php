@@ -52,21 +52,33 @@ echo "Error saving data. Please try again." . $saveError;
 <?php 
 endif;
 ?>
+
 <form method="post" action="index.php?load=users&action=<?=(isset($formAction)) ? $formAction : null; ?>&userId=<?=(isset($userData['ID'])) ? $userData['ID'] : 0; ?>&sessionId=<?=(isset($sessionId)) ? $sessionId : md5(get_ip_address()); ?>" role="form">
 <input type="hidden" name="session_id" value="<?=(isset($userData['user_session'])) ? $userData['user_session'] : md5(get_ip_address()); ?>" />
 <input type="hidden" name="user_id" value="<?=(isset($userData['ID'])) ? $userData['ID'] : 0; ?>" />
 <div class="box-body">
 
+<?php
+if(isset($userData['user_registered'])) :
+?>
+<div class="form-group">
+<label>Registered</label>
+<?= read_datetime($userData['user_registered']); ?>
+</div>
+<?php 
+endif;
+?>
+
 <div class="form-group">
 <label>Username (required)</label>
 <input type="text" class="form-control" name="user_login" placeholder="Enter username" value="<?=(isset($formData['user_login'])) ? htmlspecialchars($formData['user_login'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 <?=(isset($userData['user_login'])) ? htmlspecialchars($userData['user_login']) : ""; ?>" 
-  required <?=(isset($userData['user_login']) && $userData['user_login'] !== '') ? 'disabled="disabled"' : ""; ?>>
+  required <?=(isset($userData['user_login']) && $userData['user_login'] !== '') ? "disabled" : ""; ?>>
 </div>
 
 <div class="form-group">
 <label>Fullname</label>
-<input type="text" class="form-control" name="user_fullname" placeholder="Enter fullname" value="<?=(isset($userData['user_fullname'])) ? htmlspecialchars($userData['user_fullname']) : ""; ?>
+<input type="text" class="form-control" name="user_fullname" placeholder="Enter real name" value="<?=(isset($userData['user_fullname'])) ? htmlspecialchars($userData['user_fullname']) : ""; ?>
 <?=(isset($formData['user_fullname'])) ? htmlspecialchars($formData['user_fullname'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : "";  ?>" >
 </div>
 
@@ -76,6 +88,7 @@ endif;
 <?=(isset($formData['user_email'])) ? htmlspecialchars($formData['user_email'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" 
   required>
 </div>
+
 <div class="form-group">
 <label>Password (required)</label>
 <input type="password" class="form-control" name="user_pass" placeholder="Enter password" maxlength="50" autocomplete="off">
@@ -84,7 +97,7 @@ endif;
 <?php if(!empty($userData['user_email'])) :?>
 <div class="form-group">
 <label>confirm Password (required)</label>
-<input type="password" class="form-control" name="user_pass" placeholder="Confirm password" maxlength="50" autocomplete="off">
+<input type="password" class="form-control" name="user_pass2" placeholder="Confirm password" maxlength="50" autocomplete="off">
 </div>
 <?php  endif; ?>
 
@@ -95,7 +108,7 @@ endif;
 </div>
 
 <div class="form-group">
-<label>Role </label>
+<label>Role</label>
 <?=(isset($userRole)) ? $userRole : ""; ?>
 </div>
 
@@ -115,7 +128,7 @@ endif;
 
 <div class="box-footer">
 <input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">
-<input type="submit" class="btn btn-primary" name="userFormSubmit" value="<?=(isset($userData['ID']) && $userData != '') ? " Update Profile" : "Add New User"; ?>" >
+<input type="submit" class="btn btn-primary" name="userFormSubmit" value="<?=(isset($userData['ID']) && $userData['ID'] != '') ? "Update Profile" : "Add New User"; ?>" >
 </div>
 </form>
             

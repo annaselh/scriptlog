@@ -20,7 +20,11 @@ function delete_directory($dirname)
                             deleteDir( $dirname . '/' . $file );
                 }
             }
+            
             closedir( $dir_handle );
+            
             rmdir( $dirname );
+            
             return true;
+            
 }

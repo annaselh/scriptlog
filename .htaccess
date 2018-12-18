@@ -37,10 +37,10 @@ RewriteEngine On
 #RewriteRule ^/?$ "https\:\/\/yourdomain\.TLD\/" [R==301, L]
 
 # Ensure all front-end UI-UX files readable
-#RewriteCond %{REQUEST_FILENAME} !\.(ico|css|png|jpg|gif|js|eot|svg|ttf|woff|woff2)$ [NC]
-#RewriteRule ^public/.*$ index.php
-#RewriteCond %{REQUEST_FILENAME} !-d
-#RewriteCond %{REQUEST_FILENAME} !-f
-#RewriteCond %{REQUEST_FILENAME} !-l 
-#RewriteRule ^(.*)$ index.php [QSA,L]
-#</IfModule>
+RewriteCond %{REQUEST_FILENAME} !\.(ico|css|png|jpg|gif|js|eot|svg|ttf|woff|woff2)$ [NC]
+RewriteRule ^public/.*$ index.php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l 
+RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>

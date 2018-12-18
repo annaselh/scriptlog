@@ -74,7 +74,9 @@ endif;
 
 <div class="form-group">
 <label>Description</label>
-<textarea class="form-control" name="setting_desc" rows="3" maxlength="500" >
+<textarea class="textarea" placeholder="Place some text here"
+style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" 
+name="setting_desc"  maxlength="500" >
 <?=(isset($postData['setting_desc'])) ? $postData['setting_desc'] : ""; ?>
 <?=(isset($formData['setting_desc'])) ? htmlspecialchars($formData['setting_desc'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>

@@ -25,7 +25,7 @@ function install_database_table($link, $user_login, $user_pass, $user_email, $ke
 global $protocol, $server_host;
 
 $tableUser = "CREATE TABLE IF NOT EXISTS users (
-ID BIGINT(20) unsigned NOT NULL AUTO_INCREMENT,
+ID BIGINT(20) unsigned NOT NULL auto_increment,
 user_login VARCHAR(60) NOT NULL,
 user_email VARCHAR(100) NOT NULL,
 user_pass VARCHAR(255) NOT NULL,
@@ -53,12 +53,12 @@ FOREIGN KEY (user_id) REFERENCES users(ID)
 
 $tablePost = "CREATE TABLE IF NOT EXISTS posts (
 ID bigint(20) unsigned NOT NULL auto_increment,
-post_image varchar(512) DEFAULT NULL,
-post_author bigint(20) unsigned NOT NULL DEFAULT 0,
+media_id bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+post_author bigint(20) UNSIGNED NOT NULL DEFAULT '0',
 post_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 post_modified datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-post_title varchar(255) NOT NULL,
-post_slug varchar(255) NOT NULL,
+post_title text NOT NULL,
+post_slug tinytext NOT NULL,
 post_content longtext NOT NULL,
 post_summary tinytext DEFAULT '',
 post_keyword text DEFAULT '',
@@ -66,9 +66,32 @@ post_status varchar(20) NOT NULL DEFAULT 'publish',
 post_type varchar(120) NOT NULL DEFAULT 'blog',
 comment_status varchar(20) NOT NULL DEFAULT 'open',
 PRIMARY KEY (ID),
-FOREIGN KEY (post_author) REFERENCES users(ID)
+FOREIGN KEY (post_author) REFERENCES users(ID),
+FOREIGN KEY (media_id) REFERENCES media(ID)
 )Engine=InnoDB DEFAULT CHARSET=utf8mb4";
     
+$tableMedia = "CREATE TABLE IF NOT EXISTS media(
+ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+media_filename VARCHAR(200) DEFAULT NULL,
+media_caption VARCHAR(200) DEFAULT NULL,
+media_type VARCHAR(20) NOT NULL,
+media_target VARCHAR(20) NOT NULL DEFAULT 'blog',
+media_user VARCHAR(20) NOT NULL,
+media_access VARCHAR(10) NOT NULL DEFAULT 'public',
+media_status INT(11) NOT NULL DEFAULT '0',
+PRIMARY KEY (ID)
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
+
+$tableMediaMeta = "CREATE TABLE IF NOT EXISTS mediameta(
+ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+media_id BIGINT(20) UNSIGNED NOT NULL DEFAULT '0',
+meta_key VARCHAR(255) NOT NULL,
+meta_value LONGTEXT DEFAULT NULL,
+PRIMARY KEY (ID),
+KEY media_id(media_id),
+KEY meta_key(meta_key(191))
+)Engine=InnoDB DEFAULT CHARSET=utf8mb4";
+
 $tableTopic = "CREATE TABLE IF NOT EXISTS topics(
 ID bigint(20) unsigned NOT NULL auto_increment,
 topic_title varchar(255) NOT NULL,
@@ -168,32 +191,33 @@ $saveTheme   = "INSERT INTO themes (theme_title, theme_desc, theme_designer, the
 
 // Users  
 $date_registered = date("Y-m-d H:i:s");
-$user_session = md5(microtime());
-$shield_pass = password_hash(base64_encode(hash('sha384', $user_pass, true)), PASSWORD_DEFAULT);
-$user_level = 'administrator';
+$user_session    = md5(microtime());
+$shield_pass     = password_hash(base64_encode(hash('sha384', $user_pass, true)), PASSWORD_DEFAULT);
+$user_level      = 'administrator';
 
 // Theme 
-$theme_title = "Bootstrap Blog";
-$theme_desc = "Ondrej Svestka create this beautiful responsive blog theme and we are really love to use it as our default theme";
-$theme_designer = "Ondrej Svestka";
-$theme_directory = "themes".DIRECTORY_SEPARATOR."bootstrapious";
-$theme_status = "Y";
+$theme_title     = "Bootstrap Blog";
+$theme_desc      = "Ondrej Svestka create this beautiful responsive blog theme and we are really love to use it as our default theme";
+$theme_designer  = "Ondrej Svestka";
+$theme_directory = "themes/bootstrapious";
+$theme_status    = "Y";
 
-// Setting name1 --> app key
-$setting1 = "app_key";
-// Setting name2 --> app url
-$setting2 = "app_url";
-// app url content
-$url = $protocol.'://'.$server_host.dirname(dirname($_SERVER['PHP_SELF'])).DIRECTORY_SEPARATOR;
+// setting App Key
+$setting_name_key = "app_key";
 
-# create users table
+// Setting App URL
+$setting_name_url  = "app_url";
+$setting_value_url = $protocol.'://'.$server_host.dirname(dirname($_SERVER['PHP_SELF'])).DIRECTORY_SEPARATOR;
+
+#create users table
 if ($link instanceof mysqli)  
 
 $createUser = $link -> query($tableUser);
 
-# save administrator
+#save administrator
 $createAdmin = $link ->prepare($saveAdmin);
-$createAdmin -> bind_param("ssssss", $user_login, $user_email, $shield_pass, $user_level, $date_registered, $user_session);
+$createAdmin -> bind_param("ssssss", $user_login, 
+$user_email, $shield_pass, $user_level, $date_registered, $user_session);
 $createAdmin -> execute();
 
 if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
@@ -207,18 +231,20 @@ if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
     $createReply = $link -> query($tableReply);
     $createMenu = $link -> query($tableMenu);
     $createMenuChild = $link -> query($tableMenuChild);
+    $createMedia = $link -> query($tableMedia);
+    $createMediaMeta = $link -> query($tableMediaMeta);
     $createPlugin = $link -> query($tablePlugin);
     $createSetting = $link -> query($tableSetting);
     $createTheme = $link -> query($tableTheme);
     
-    // insert setting app key
+    // insert configuration - setting app key
     $recordAppKey = $link -> prepare($saveAppKey);
-    $recordAppKey -> bind_param('ss', $setting1, $key);
+    $recordAppKey -> bind_param('ss', $setting_name_key, $key);
     $recordAppKey -> execute();
 
-    // insert setting app url
+    // insert configuration - setting app url
     $recordAppURL = $link -> prepare($saveAppURL);
-    $recordAppURL -> bind_param('ss', $setting2, $url);
+    $recordAppURL -> bind_param('ss', $setting_name_url, $setting_value_url);
     $recordAppURL -> execute();
     
     // insert default theme
@@ -247,51 +273,50 @@ if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
 function write_config_file($host, $user, $password, $database, $email, $key)
 {
 
-  global $protocol, $server_host;
+global $protocol, $server_host;
 
-  $url = $protocol.'://'.$server_host.dirname(dirname($_SERVER['PHP_SELF'])).DIRECTORY_SEPARATOR;
+$link = mysqli_connect($host, $user, $password, $database);
 
-  $link = mysqli_connect($host, $user, $password, $database);
-
-  if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
+if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
    
-     $getAppKey = "SELECT ID, setting_name, setting_value FROM settings 
-                   WHERE setting_value = '$key'";
+   $getAppKey = "SELECT ID, setting_name, setting_value FROM settings 
+                 WHERE setting_value = '$key'";
    
-     $row = mysqli_fetch_assoc(mysqli_query($link, $getAppKey));
+   $row = mysqli_fetch_assoc(mysqli_query($link, $getAppKey));
 
-     if ($row['setting_name'] == 'app_key') {
+   $app_key = generate_license(substr($row['setting_value']));
 
-        $app_key = generate_license(substr($row['setting_value']));
+   $updateAppKey = "UPDATE settings SET setting_value = '$app_key'
+                    WHERE setting_name = 'app_key' 
+                    AND ID = {$row['ID']} LIMIT 1";
 
-        $updateAppKey = "UPDATE settings SET setting_value = '$app_key'
-                         WHERE setting_name = 'app_key' AND ID = {$row['ID']} LIMIT 1";
-
-        mysqli_query($link, $updateAppKey);
-        mysqli_close($link);
-
+    mysqli_query($link, $updateAppKey);
+    mysqli_close($link);
+    
     $configFile = '<?php  
     
     return ['."
                     
             'db' => [
+
                   'host' => '".addslashes($host)."',
                   'user' => '".addslashes($user)."',
                   'pass' => '".addslashes($password)."',
                   'name' => '".addslashes($database)."'
-                  ],
+                  
+                ],
         
             'app' => [
-                   'url'   => '".addslashes($url)."',
+
+                   'url'   => '".addslashes($protocol.'://'.$server_host.dirname(dirname($_SERVER['PHP_SELF'])).DIRECTORY_SEPARATOR)."',
                    'email' => '".addslashes($email)."',
                    'key'   => '".addslashes($app_key)."'
-                   ]
+                   
+                ]
 
         ];";
-   
-   }
-    
-   if (isset($_SESSION['token'])) {
+     
+    if (isset($_SESSION['token'])) {
 
         file_put_contents(__DIR__ . '/../../config.php', $configFile);
         
@@ -482,9 +507,9 @@ function purge_installation()
             $clean_installation = '<?php ';
      
             file_put_contents(__DIR__ . '/../index.php', $clean_installation);
-     
+
             unset($_SESSION['token']);
-            
+     
             $_SESSION = array();
      
             session_destroy();

@@ -41,6 +41,9 @@ class UserApp extends BaseApp
         if ($_GET['status'] == 'userDeleted') array_push($status, "User deleted");
     }
     
+     
+    $this->setView('all-users');
+    
     if (!$checkError) {
        
         $this->view->set('errors', $errors);
@@ -51,9 +54,8 @@ class UserApp extends BaseApp
        
         $this->view->set('status', $status);
         
-    } 
-    
-    $this->setView('all-users');
+    }
+
     $this->setPageTitle('Users');
     $this->view->set('pageTitle', $this->getPageTitle());
     $this->view->set('usersTotal', $this->userEvent->totalUsers());
@@ -70,7 +72,7 @@ class UserApp extends BaseApp
    * @param object $sanitize
    * 
    */
-  public function showProfile($id, $sanitize)
+  public function showProfile($id)
   {
     $errors = array();
     $status = array();
@@ -88,18 +90,6 @@ class UserApp extends BaseApp
         if ($_GET['status'] == 'userDeleted') array_push($status, "User deleted");
     }
     
-    if (!$checkError) {
-       
-        $this->view->set('errors', $errors);
-    
-    }
-    
-    if ($checkStatus) {
-       
-        $this->view->set('status', $status);
-        
-    }
-
     if (!$getUser = $this->userEvent->grabUser($id)) {
         
         direct_page('index.php?load=users&error=userNotFound', 404);
@@ -114,6 +104,7 @@ class UserApp extends BaseApp
         'user_level' => $getUser['user_level'],
         'user_fullname' => $getUser['user_fullname'],
         'user_url' => $getUser['user_url'],
+        'user_registered' => $getUser['user_registered'],
         'user_session' => $getUser['user_session']
         
     );
@@ -126,6 +117,18 @@ class UserApp extends BaseApp
     $this->view->set('userData', $data_user);
     $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
 
+    if (!$checkError) {
+       
+        $this->view->set('errors', $errors);
+    
+    }
+    
+    if ($checkStatus) {
+       
+        $this->view->set('status', $status);
+        
+    }
+    
     return $this->view->render();
 
   }
@@ -309,62 +312,53 @@ class UserApp extends BaseApp
     
     $data_user = array(
         
-        'ID' => $getUser['ID'],
-        'user_login' => $getUser['user_login'],
-        'user_email' => $getUser['user_email'],
-        'user_level' => $getUser['user_level'],
+        'ID'            => (int)$getUser['ID'],
+        'user_login'    => $getUser['user_login'],
+        'user_email'    => $getUser['user_email'],
+        'user_level'    => $getUser['user_level'],
         'user_fullname' => $getUser['user_fullname'],
-        'user_url' => $getUser['user_url'],
-        'user_session' => $getUser['user_session']
+        'user_url'      => $getUser['user_url'],
+        'user_registered' => $getUser['user_registered'],
+        'user_session'  => $getUser['user_session']
         
     );
     
     if (isset($_POST['userFormSubmit'])) {
         
-        $user_login = filter_input(INPUT_POST, 'user_login', FILTER_SANITIZE_STRING);
-        $user_fullname = filter_input(INPUT_POST, 'user_fullname', FILTER_SANITIZE_STRING);
+        $user_fullname = isset($_POST['user_fullname']) ? filter_var($_POST['user_fullname'], FILTER_SANITIZE_STRING) : "";
         $user_email = isset($_POST['user_email']) ? filter_var($_POST['user_email'], FILTER_SANITIZE_EMAIL) : "";
-        $user_pass = isset($_POST['user_pass']) ? trim($_POST['user_pass']) : "";
-        $user_url = filter_input(INPUT_POST, 'user_url', FILTER_SANITIZE_URL);
+        $user_pass = isset($_POST['user_pass']) ? prevent_injection($_POST['user_pass']) : "";
+        $confirm = isset($_POST['user_pass2']) ? prevent_injection($_POST['user_pass2']) : "";
+        $user_url = isset($_POST['user_url']) ? filter_var($_POST['user_url'], FILTER_SANITIZE_URL) : "";
         $user_level = isset($_POST['user_level']) ? trim($_POST['user_level']) : "";
         $user_id = isset($_POST['user_id']) ? abs((int)$_POST['user_id']) : 0;
         
-      try {
+    try {
       
-          if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
+        if (!csrf_check_token('csrfToken', $_POST, 60*10)) {
               
-              header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
-              throw new AppException("Sorry, unpleasant attempt detected!");
+            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+            throw new AppException("Sorry, unpleasant attempt detected!");
               
-          }
+        }
 
-          if (!empty($user_pass)) {
+        if (!empty($user_pass)) {
 
             if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,50}$/', $user_pass)) {
                
                 $checkError = false;
                 array_push($errors, "The Password may contain letter and numbers, at least one number and one letter, any of these characters !@#$%");
 
+            } elseif ($user_pass != $confirm) {
+
+                $checkError = false;
+                array_push($errors, "Password should both be equal");
+
             }
             
-          }
+        }
 
-          if (!empty($user_url)) {
-             
-            if ($user_url !== '#') {
-
-                if (!url_validation($user_url)) {
-                
-                    $checkError = false;
-                    array_push($errors, "Please enter a valid URL");
-                    
-                }
-                
-            }
-            
-         }
-        
-         if (!empty($user_fullname)) {
+        if (!empty($user_fullname)) {
             
             if (!preg_match('/^[A-Z \'.-]{2,90}$/i', $user_fullname)) {
                 
@@ -373,19 +367,8 @@ class UserApp extends BaseApp
                 
             }
             
-         }
+        }
 
-         if ($user_id == 1) {
-
-            if ($this->userEvent->isUserLevel() == 'administrator') {
-
-                $checkError = false;
-                array_push($errors, "Sorry, administrator is your legitimate privilege");
-
-            }
-            
-         }
- 
          if (!$checkError) {
             
               $this->setView('edit-user');
@@ -402,18 +385,26 @@ class UserApp extends BaseApp
               
               $this->userEvent->setUserEmail($user_email);
               $this->userEvent->setUserFullname($user_fullname);
-              $this->userEvent->setUserUrl($user_url);
+              $this->userEvent->setUserUrl(add_http($user_url));
               $this->userEvent->setUserId($user_id);
-              $this->userEvent->setUserLevel($user_level);
+
+              if (($user_id == 1) && ($this->userEvent->isUserLevel() == 'administrator')) {
+
+                  $this->userEvent->setUserLevel($getUser['user_level']);
+
+              } else {
+
+                  $this->userEvent->setUserLevel($user_level);
+
+              }
               
               if (!empty($user_pass)) {
                       
                 $this->userEvent->setUserPass($user_pass);
-
+                
               }
 
               $this->userEvent->modifyUser();
-
               direct_page('index.php?load=users&status=userUpdated', 200);
                       
           }
@@ -434,7 +425,17 @@ class UserApp extends BaseApp
         $this->view->set('pageTitle', $this->getPageTitle());
         $this->view->set('formAction', $this->getFormAction());
         $this->view->set('userData', $data_user);
-        $this->view->set('userRole', $this->userEvent->userLevelDropDown($data_user['user_level']));
+
+        if ($getUser['ID'] == 1 && $this->userEvent->isUserLevel() == 'administrator') {
+
+            $this->view->set('userRole', $this->userEvent->isUserLevel());
+
+        } else {
+
+            $this->view->set('userRole', $this->userEvent->userLevelDropDown($getUser['user_level']));
+
+        }
+        
         $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
         
     }
@@ -445,6 +446,7 @@ class UserApp extends BaseApp
 
   public function updateProfile($id)
   {
+
     $errors = array();
     $checkError = true;
 
@@ -452,13 +454,26 @@ class UserApp extends BaseApp
         direct_page('index.php?load=users&error=userNotFound', 404);
     }
 
+    $data_user = array(
+        
+        'ID' => (int)$getProfile['ID'],
+        'user_login' => $getProfile['user_login'],
+        'user_email' => $getProfile['user_email'],
+        'user_level' => $getProfile['user_level'],
+        'user_fullname' => $getProfile['user_fullname'],
+        'user_url' => $getProfile['user_url'],
+        'user_registered' => $getProfile['user_registered'],
+        'user_session' => $getProfile['user_session']
+        
+    );
+
     if(isset($_POST['userFormSubmit'])) {
 
-        $user_login = filter_input('INPUT_POST', 'user_login', FILTER_SANITIZE_STRING);
-        $user_fullname = filter_input('INPUT_POST', 'user_fullname', FILTER_SANITIZE_STRING);
+        $user_fullname = isset($_POST['user_fullname']) ? filter_var($_POST['user_fullname'],  FILTER_SANITIZE_STRING) : "";
         $user_email = isset($_POST['user_email']) ? filter_var($_POST['user_email'], FILTER_SANITIZE_EMAIL) : "";
         $user_pass = isset($_POST['user_pass']) ? prevent_injection($_POST['user_pass']) : "";
-        $user_url = filter_input('INPUT_POST', 'user_url', FILTER_SANITIZE_URL);
+        $confirm = isset($_POST['user_pass2']) ? prevent_injection($_POST['user_pass2']) : "";
+        $user_url = isset($_POST['user_url']) ? filter_var($_POST['user_url'], FILTER_SANITIZE_URL) : "";
         $user_id = isset($_POST['user_id']) ? abs((int)$_POST['user_id']) : 0;
 
         try {
@@ -475,11 +490,19 @@ class UserApp extends BaseApp
                 if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,50}$/', $user_pass)) {
                    
                     $checkError = false;
-                    array_push($errors, "The Password may contain letter and numbers, at least one number and one letter, any of these characters !@#$%");
+                    array_push($errors, 
+                              "The Password may contain letter and numbers, 
+                              at least one number and one letter, 
+                              any of these characters !@#$%");
     
+                } elseif ($user_pass != $confirm) {
+
+                    $checkError = false;
+                    array_push($errors, "Password should both be equal");
+
                 }
                 
-              }
+            }
     
             if (!empty($user_url)) {
                  
@@ -507,12 +530,57 @@ class UserApp extends BaseApp
 
             }
 
+            if (!$checkError) {
+
+                $this->setView('edit-myprofile');
+                $this->setPageTitle('Profile');
+                $this->setFormAction('editUser');
+                $this->view->set('pageTitle', $this->getPageTitle());
+                $this->view->set('formAction', $this->getFormAction());
+                $this->view->set('errors', $errors);
+                $this->view->set('userData', $data_user);
+                $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
+
+            } else {
+
+                $this->userEvent->setUserEmail($user_email);
+                $this->userEvent->setUserFullname($user_fullname);
+                $this->userEvent->setUserUrl(add_http($user_url));
+                $this->userEvent->setUserId($user_id);
+
+                if(!empty($user_pass)) {
+
+                  $this->userEvent->setUserPass($user_pass);
+
+                }
+
+                $this->userEvent->modifyUser();
+                direct_page('index.php?load=users&status=userUpdated', 200);
+
+            }
             
         } catch (AppException $e) {
-            //throw $th;
+            
+            LogError::setStatusCode(http_response_code());
+            LogError::newMessage($e);
+            LogError::customErrorMessage('admin');
+
         }
 
+    } else {
+
+        $this->setView('edit-myprofile');
+        $this->setPageTitle('Profile');
+        $this->setFormAction('editUser');
+        $this->view->set('pageTitle', $this->getPageTitle());
+        $this->view->set('formAction', $this->getFormAction());
+        $this->view->set('userData', $data_user);
+        $this->view->set('csrfToken', csrf_generate_token('csrfToken'));
+
     }
+
+    return $this->view->render();
+    
   }
 
   /**

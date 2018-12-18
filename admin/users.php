@@ -10,16 +10,25 @@ switch ($action) {
     
     case 'newUser':
     
-      if ($authenticator -> userAccessControl('users') === true) {
+      if ($authenticator -> userAccessControl('users') === false) {
 
           direct_page('index.php?load=users&error=userNotFound', 404);
 
       } else {
 
-        if ($userId == 0) {
-           
-            $userApp -> insert();
-            
+        if (gettype($userId) !== "integer") {
+
+           header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+           throw new AppException("invalid ID date type!");
+
+        } else {
+
+            if ($userId == 0) {
+
+                $userApp -> insert();
+
+            }
+
         }
 
       }
@@ -28,32 +37,40 @@ switch ($action) {
         
     case 'editUser':
         
+        if (gettype($userId) !== "integer") {
+
+            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
+            throw new AppException("Invalid ID data type!");
+
+        }
+
         if ($userDao -> checkUserId($userId, $sanitizer)) {
             
             if($authenticator -> userAccessControl('users') == false) {
-                
-                $userApp -> updateProfile($userId);
-
+    
+                $userApp -> updateProfile($user_id);
+    
             } else {
-
-                $userApp -> update($id);
+    
+                $userApp -> update($userId);
+    
             }
-        
+            
         } elseif ($userDao -> checkUserSession($sessionId) == false) {
-
+    
             direct_page('index.php?load=users&error=userNotFound', 404);
+                
+        } else {
             
-        }  else {
-        
             direct_page('index.php?load=users&error=userNotFound', 404);
-            
+                
         }
-        
+
         break;
         
     case 'deleteUser':
         
-        if($authenticator -> userAccessControl('users') === true) {
+        if($authenticator -> userAccessControl('users') === false) {
 
             direct_page('index.php?load=users&error=userNotFound', 404);
 
@@ -67,9 +84,9 @@ switch ($action) {
                 
     default:
         
-        if($authenticator -> userAccessControl('users') === true) {
+        if($authenticator -> userAccessControl('users') === false) {
 
-            $userApp -> showProfile($user_id, $sanitizer);
+            $userApp -> showProfile($user_id);
 
         } else {
 

@@ -34,8 +34,12 @@ class Topic extends Dao
    */
   public function findTopics($orderBy = 'ID')
   {
-    $sql = "SELECT ID, topic_title, topic_slug, topic_status
-    FROM topics ORDER BY :orderBy DESC";
+    $sql = "SELECT ID, 
+            topic_title, 
+            topic_slug, 
+            topic_status
+            FROM topics 
+            ORDER BY :orderBy DESC";
 
     $this->setSQL($sql);
     $topics = $this->findAll([':orderBy' => $orderBy]);
@@ -173,12 +177,14 @@ class Topic extends Dao
   */
  public function getPostTopic($topicId, $postId)
  {
-     $sql = "SELECT ID FROM post_topic
-             WHERE ID = :ID AND postID = :postID";
+     $sql = "SELECT topic_id 
+             FROM post_topic
+             WHERE topic_id = :topic_id 
+             AND post_id = :post_id";
      
      $this->setSQL($sql);
      
-     $post_topic = $this->findRow(['ID' => $topicId, 'postID' => $postId]);
+     $post_topic = $this->findRow(['topic_id' => $topicId, 'post_id' => $postId]);
      
      if (empty($post_topic)) return false;
      
@@ -196,27 +202,27 @@ class Topic extends Dao
   */
  public function setCheckBoxTopic($postId = '', $checked = null)
  {
-   	  	     
- if (is_null($checked)) {
-     $checked = "checked='checked'";
- }
+                  
+   if (is_null($checked)) {
+       $checked = "checked='checked'";
+    }
       
- $html = array();
- 
- $html[] = '<div class="form-group">';
- $html[] = '<label>Category : </label>';
+  $html = array();
+  $html[] = '<div class="form-group">';
+  $html[] = '<label>Category : </label>';
 
- $items = $this->findTopics();
+  $items = null;
+  $items = $this->findTopics();
  
- if (empty($postId)) {
+  if (empty($postId)) {
        
-     if ($items) {
+     if (is_array($items)) {
          
          foreach ($items as $i => $item) {
              
              if (isset($_POST['catID'])) {
                  
-                 if (in_array($item['ID'], $_POST['catID'], true)) {
+                 if (in_array($item['ID'], $_POST['catID'])) {
                      
                      $checked = "checked='checked'";
                      
@@ -227,41 +233,51 @@ class Topic extends Dao
                  }
                  
              }
-             
-            $html[] = '<label class="checkbox-inline">';
+            
+            $html[] = '<div class="checkbox">';
+            $html[] = '<label>';
             $html[] = '<input type="checkbox" name="catID[]" value="'.$item['ID'].'"'.$checked.'>'.$item['topic_title'];
             $html[] = '</label>';
+            $html[] = '</div>';
              
          }
          
      } else {
          
-         $html[] = '<label class="checkbox-inline">';
+         $html[] = '<div class="checkbox">';
+         $html[] = '<label>';
          $html[] = '<input type="checkbox" name="catID" value="0" checked>Uncategorized';
          $html[] = '</label>';
+         $html[] = '</div>';
          
      }
     
     
  } else {
      
-     foreach ($items as $i => $item) {
+     if (is_array($items)) {
+
+        foreach ($items as $item) {
          
-      $post_topic = $this->getPostTopic($item['ID'], $postId);
-         
-      if ($post_topic['ID'] == $item['ID']) {
-        
-        $checked="checked='checked'";
-      
-      } else {
-       
-        $checked = null;
-      }
-         
-         $html[] = '<label class="checkbox-inline">';
-         $html[] = '<input type="checkbox" name="catID[]" value="'.$item['ID'].'"'.$checked.'>'.$item['topic_title'];
-         $html[] = '</label>';
-         
+            $post_topic = $this->getPostTopic($item['ID'], $postId);
+               
+            if ($post_topic['topic_id'] == $item['ID']) {
+              
+              $checked="checked='checked'";
+            
+            } else {
+             
+              $checked = null;
+            }
+               
+               $html[] = '<div class="checkbox">';
+               $html[] = '<label>';
+               $html[] = '<input type="checkbox" name="catID[]" value="'.$item['ID'].'"'.$checked.'>'.$item['topic_title'];
+               $html[] = '</label>';
+               $html[] = '</div>';
+               
+           }
+
      }
      
  }
