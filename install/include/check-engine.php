@@ -116,6 +116,20 @@ function check_browser_version()
 }
 
 /**
+ * get browser version
+ * 
+ */
+function get_browser_Version()
+{
+  $browser =  new Browser();
+
+  if($browser -> getName()) {
+      return $browser->getVersion();
+  }
+
+}
+
+/**
  * Checking Web Server
  */
 function check_web_server()

@@ -2,7 +2,7 @@
 /**
  * Load engine function
  * 
- * @param string $directory
+ * @param array $directory
  * 
  */
 function load_engine($directory = array())

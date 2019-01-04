@@ -5,6 +5,7 @@
  * pada back end website/administrator
  * 
  * @author Lukmanul Hakim
+ * 
  */
 
 class Pagination
@@ -131,5 +132,7 @@ class Pagination
 		$page_error .= '<script type="text/javascript">function leave() {  window.location = "javascript:history.go(-1)";} setTimeout("leave()", 3640);</script>';
 		
 		return  $page_error;
+
 	}
+	
 }

@@ -6,7 +6,7 @@ try {
 
     if (isset($_GET['load']) && $_GET['load'] != '') {
      
-        $load = htmlentities(strip_tags(strtolower($_GET['load'])), ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8');
+        $load = htmlentities(strip_tags(strtolower(basename($_GET['load']))), ENT_QUOTES|ENT_SUBSTITUTE, 'UTF-8');
         $load = filter_var($load, FILTER_SANITIZE_URL);
         
         // checking if the string contains parent directory
@@ -35,7 +35,7 @@ try {
         
     } else {
         
-        include __DIR__ . '/' . $load.'.php';
+        include __DIR__ . DS . $load .'.php';
         
     }
     

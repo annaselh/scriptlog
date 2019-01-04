@@ -1,37 +1,63 @@
-<?php 
+<?php
 /**
- * Dashboard class
- *
- * @package   SCRIPTLOG
- * @author    M.Noermoehammad
- * @license   MIT
- * @version   1.0
- * @since     Since Release 1.0
- *
+ * Abstract Class Dashboard implement BoardInterface
+ * 
+ * @package  SCRIPTLOG
+ * @author   M.Noermoehammad
+ * @license  MIT
+ * @version  1.0
+ * 
  */
-class Dashboard
+abstract class Dashboard implements BoardInterface
 {
-  
- private $posts;
 
- private $users;
- 
- public function getPosts(Post $post, $orderBy = null, $author = null)
+/**
+ * View
+ * 
+ * @var string
+ * 
+ */
+ protected $view;
+
+/**
+ * Page title
+ * 
+ * @var string
+ * 
+ */
+ protected $pageTitle;
+
+/**
+ * set view
+ * Initialize an instance of Class View
+ * 
+ * @method setView()
+ * @param string $viewName
+ * 
+ */
+ public function setView($viewName)
  {
-   
-   $this->posts = $post;
-   
-   $posts = $this->posts->findPosts($orderBy, $author);
-
-   $totalPost = $this->posts->totalPostRecords();
-   
-   return array('posts' => $posts, 'totalPost' => $totalPost);
-
+   $this->view = new View('admin', 'ui', 'dashboard', $viewName);
  }
 
- public function getUsers(User $users)
+/**
+ * Set page title
+ * 
+ * @param string $pageTitle
+ * 
+ */
+ public function setPageTitle($pageTitle)
  {
-     
+   $this->pageTitle = $pageTitle;
  }
- 
+
+ public function getPageTitle()
+ {
+   return $this->pageTitle;
+ }
+
+ abstract protected function listItems();
+
+ abstract protected function detailItem($id);
+
 }

@@ -14,7 +14,7 @@
  */
 
  #date_default_timezone_set("Asia/Jakarta");
-ini_set("memory_limit", "128K");
+ini_set("memory_limit", "1M");
 #ini_set("session.cookie_secure", "True");  //secure
 #ini_set("session.cookie_httponly", "True"); // httpOnly
 #header("Content-Security-Policy: default-src https:; font-src 'unsafe-inline' data: https:; form-action 'self' https://kartatopia.com;img-src data: https:; child-src https:; object-src 'self' www.google-analytics.com ajax.googleapis.com platform-api.sharethis.com kartatopia-studio.disqus.com; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;");
@@ -22,7 +22,7 @@ ini_set("memory_limit", "128K");
 $key = '5c12IpTl0g!@#';
 $checkIncKey = sha1(mt_rand(1, 1000).$key);
 $protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https';
-$hostname = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+$hostname = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
 
 define('DS', DIRECTORY_SEPARATOR);
 define('APP_TITLE', 'Scriptlog');
@@ -54,7 +54,7 @@ if (file_exists(APP_ROOT . 'config.sample.php')) {
 
     $config = require __DIR__ . '/../config.sample.php';
     
-}
+} 
 
 // call functions in folder utility
 $function_directory = new RecursiveDirectoryIterator(__DIR__ . DS .'utility'. DS, FilesystemIterator::FOLLOW_SYMLINKS);

@@ -122,6 +122,7 @@ if($level == 'administrator' || $level == 'manager') :
           <ul class="treeview-menu">
             <li><a href="<?= $url.'index.php?load=templates'; ?>">Themes</a></li>
             <li><a href="<?= $url.'index.php?load=menu'; ?>">Menu</a></li>
+            <li><a href="<?= $url.'index.php?load=menu-child'; ?>">Sub Menu</a></li>
           </ul>
         </li>
 <?php 

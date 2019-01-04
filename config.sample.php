@@ -1,6 +1,7 @@
-<?php
+<?php 
+##################### CONFIGURATION FILE #################################
 
-/************************************************************************************
+/*************************************************************************
 
 return [
 
@@ -19,33 +20,33 @@ return [
 
     'app' => [
 
-         'url'   => 'URL',            # Application URL
-         'email' => 'email address',  # Email address (administrator's email)
-         'key'   => 'license key'     # Application license key
+         'url'   => 'http://your-server-name',  # your server name
+         'email' => 'email address',            # administrator's email
+         'key'   => 'application key'           # Application key
 
     ]
     
 ];
 
-**************************************************************************************/
+**************************************************************************/
 
 return [
-
+                    
     'db' => [
-        
-        'host' => 'localhost',
-        'user' => 'root',
-        'pass' => 'kartatopia',
-        'name' => 'blogware'
 
-    ],
+          'host' => 'localhost',
+          'user' => 'root',
+          'pass' => 'kartatopia',
+          'name' => 'blogware'
+          
+        ],
 
     'app' => [
 
-        'url'   => 'http://localhost/scriptlog/',
-        'email' => 'admin@scriptlog.web.id',
-        'key'   => 'T3KTV-YT7PB-XJXJD-GV3K8'
-         
-    ]
+           'url'   => 'http://localhost/scriptlog/',
+           'email' => 'scriptlog@yandex.com',
+           'key'   => 'MLJQY-BV6WX-KCFXE-HY8CQ'
+           
+        ]
 
 ];

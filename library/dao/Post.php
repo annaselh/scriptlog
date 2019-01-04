@@ -36,7 +36,7 @@ public function findPosts($orderBy = 'ID', $author = null)
     if (!is_null($author)) {
         
         $sql = "SELECT p.ID, 
-                p.post_image, 
+                p.media_id, 
                 p.post_author,
                 p.post_date, 
                 p.post_modified, 
@@ -57,7 +57,7 @@ public function findPosts($orderBy = 'ID', $author = null)
     } else {
         
         $sql = "SELECT p.ID, 
-                p.post_image, 
+                p.media_id, 
                 p.post_author,
                 p.post_date, 
                 p.post_modified, 
@@ -105,7 +105,7 @@ public function findPost($id, $sanitize, $author = null)
    if (!empty($author)) {
         
         $sql = "SELECT ID, 
-              post_image, 
+              media_id, 
               post_author,
   	  		  post_date, 
               post_modified, 
@@ -126,7 +126,7 @@ public function findPost($id, $sanitize, $author = null)
    } else {
         
        $sql = "SELECT ID, 
-              post_image, 
+              media_id, 
               post_author,
   	  		  post_date, 
               post_modified, 
@@ -165,7 +165,7 @@ public function findPost($id, $sanitize, $author = null)
  */
 public function showPostById($id, $sanitize)
 {
-    $sql = "SELECT p.ID, p.post_image, p.post_author,
+    $sql = "SELECT p.ID, p.media_id, p.post_author,
                 p.post_date, p.post_modified, p.post_title,
                 p.post_slug, p.post_content, p.post_summary, p.post_keyword, 
                 p.post_status, p.post_type, p.comment_status, u.user_login
@@ -195,7 +195,7 @@ public function showPostById($id, $sanitize)
 public function showPostBySlug($slug)
 {
   
-  $sql = "SELECT p.ID, p.post_image, p.post_author,
+  $sql = "SELECT p.ID, p.media_id, p.post_author,
                  p.post_date, p.post_modified, p.post_title,
                  p.post_slug, p.post_content, p.post_summary, p.post_keyword, 
                  p.post_status, p.post_type, p.comment_status, u.user_login
@@ -231,7 +231,7 @@ public function showPostsPublished(Paginator $perPage, $sanitize)
     
     $this->linkPosts->set_total($stmt -> rowCount());
     
-    $sql = "SELECT p.ID, p.post_image, p.post_author,
+    $sql = "SELECT p.ID, p.media_id, p.post_author,
                      p.post_date, p.post_modified, p.post_title,
                      p.post_slug, p.post_content, p.post_summary, p.post_keyword,
                      p.post_type, p.post_status, u.user_login
@@ -262,7 +262,7 @@ public function showPostsPublished(Paginator $perPage, $sanitize)
 public function showRelatedPosts($post_title)
 {
   
-  $sql = "SELECT ID, post_image, post_author, post_date, post_modified, 
+  $sql = "SELECT ID, media_id, post_author, post_date, post_modified, 
                  post_title, post_slug, post_content, MATCH(post_title, post_content) 
                  AGAINST(?) AS score
           FROM posts WHERE MATCH(post_title, post_content) AGAINTS(?)
@@ -287,11 +287,11 @@ public function showRelatedPosts($post_title)
 public function createPost($bind, $topicId)
 {
   
- if (!empty($bind['post_image'])) {
+ if (!empty($bind['media_id'])) {
   		
   	// insert into posts
    $stmt = $this->create("posts", [
-       'post_image' => $bind['post_image'],
+       'media_id' => $bind['media_id'],
        'post_author' => $bind['post_author'],
        'post_date' => $bind['post_date'],
        'post_title' => $bind['post_title'],
@@ -355,10 +355,10 @@ public function updatePost($sanitize, $bind, $ID, $topicId)
         
  $cleanId = $this->filteringId($sanitize, $ID, 'sql');
 
- if (!empty($bind['post_image'])) {
+ if (!empty($bind['media_id'])) {
   	  	
   	$stmt = $this->modify("posts", [
-  	    'post_image' => $bind['post_image'],
+  	    'media_id' => $bind['media_id'],
   	    'post_author' => $bind['post_author'],
   	    'post_modified' => $bind['post_modified'],
   	    'post_title' => $bind['post_title'],

@@ -77,7 +77,7 @@ endif;
 <textarea class="textarea" placeholder="Place some text here"
 style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" 
 name="setting_desc"  maxlength="500" >
-<?=(isset($postData['setting_desc'])) ? $postData['setting_desc'] : ""; ?>
+<?=(isset($settingData['setting_desc'])) ? $settingData['setting_desc'] : ""; ?>
 <?=(isset($formData['setting_desc'])) ? htmlspecialchars($formData['setting_desc'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 </textarea>
 </div>
@@ -87,7 +87,7 @@ name="setting_desc"  maxlength="500" >
 
 <div class="box-footer">
 <input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">  
-<input type="submit" name="configFormSubmit" class="btn btn-primary" value="<?=(isset($settingData['ID']) && $settingData['ID'] != '') ? "Update" : "Add New Topic" ?>">
+<input type="submit" name="configFormSubmit" class="btn btn-primary" value="<?=(isset($settingData['ID']) && $settingData['ID'] != '') ? "Update" : "Add New Setting" ?>">
 </div>
 </form>
             

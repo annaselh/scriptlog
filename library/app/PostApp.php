@@ -50,7 +50,6 @@ class PostApp extends BaseApp
    
     $this->setView('all-posts');
     $this->setPageTitle('Posts');
-    $this->view->set('pageTitle', $this->getPageTitle());
     
     if (!$checkError) {
         $this->view->set('errors', $errors);
@@ -60,6 +59,7 @@ class PostApp extends BaseApp
         $this->view->set('status', $status);
     }
     
+    $this->view->set('pageTitle', $this->getPageTitle());
     $this->view->set('postsTotal', $this->postEvent->totalPosts());
     $this->view->set('posts', $this->postEvent->grabPosts());
     return $this->view->render();

@@ -68,8 +68,8 @@ class MenuChildApp extends BaseApp
 
       $child_label = (isset($_POST['child_label']) ? prevent_injection($_POST['child_label']) : "");
       $child_link = prevent_injection($_POST['child_link']);
-      $ascendent_id = (int)$_POST['parent'];
-      $descendent_id = (int)$_POST['child'];
+      $ascendent_id = (isset($_POST['parent']) ? (int)$_POST['parent'] : 0);
+      $descendent_id = (isset($_POST['child']) ? (int)$_POST['child'] : 0);
 
       try {
 
@@ -168,8 +168,8 @@ class MenuChildApp extends BaseApp
 
       $child_label = (isset($_POST['child_label']) ? prevent_injection($_POST['child_label']) : "");
       $child_link = prevent_injection($_POST['child_link']);
-      $ascendent_id = (int)$_POST['parent'];
-      $descendent_id = (int)$_POST['child'];
+      $ascendent_id = (isset($_POST['parent']) ? (int)$_POST['parent'] : 0);
+      $descendent_id = (isset($_POST['child']) ? (int)$_POST['child'] : 0);
       $child_id = abs((int)$_POST['child_id']);
       $child_sort = abs($_POST['child_sort']);
       $child_status = $_POST['child_status'];

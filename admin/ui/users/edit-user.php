@@ -70,7 +70,7 @@ endif;
 ?>
 
 <div class="form-group">
-<label>Username (required)</label>
+<label>Username <?=(isset($userData['user_login'])) ? "" : "(required)" ?></label>
 <input type="text" class="form-control" name="user_login" placeholder="Enter username" value="<?=(isset($formData['user_login'])) ? htmlspecialchars($formData['user_login'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>
 <?=(isset($userData['user_login'])) ? htmlspecialchars($userData['user_login']) : ""; ?>" 
   required <?=(isset($userData['user_login']) && $userData['user_login'] !== '') ? "disabled" : ""; ?>>

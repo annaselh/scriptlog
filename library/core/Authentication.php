@@ -12,17 +12,52 @@
 class Authentication
 {
 
+  /**
+   * user's ID
+   * 
+   * @var integer
+   * 
+   */
   private $user_id;
 
+  /**
+   * user session
+   * 
+   * @var mixed
+   * 
+   */
   private $user_session;
  
+  /**
+   * User DAO
+   * 
+   * @var object
+   * 
+   */
   private $userDao;
 
+  /**
+   * File Manager
+   * 
+   * @var string
+   * 
+   */
   private $fileManager;
 
+  /**
+   * User Token
+   * 
+   * @var object
+   */
   private $userToken;
 
+  /**
+   * Form validator
+   * @var object
+   */
   private $validator;
+
+  private $agent;
 
   public $user_email;
 
@@ -122,16 +157,20 @@ class Authentication
      $account_info = $this->findUserByEmail($email);
 
      $tokenizer = new Tokenizer();
-
-      $this->user_id = $_SESSION['user_id'] = $account_info['ID'];
-      $this->user_email = $_SESSION['user_email'] = $account_info['user_email'];
-      $this->user_level = $_SESSION['user_level'] = $account_info['user_level'];
-      $this->user_login = $_SESSION['user_login'] = $account_info['user_login'];
-      $this->user_fullname = $_SESSION['user_fullname'] = $account_info['user_fullname'];
-      $this->user_session = $_SESSION['user_session'] = generate_session_key($email, 13);
-
-      $_SESSION['agent'] = sha1($_SERVER['HTTP_USER_AGENT']);
      
+     $this->user_id = $_SESSION['user_id'] = $account_info['ID'];
+     $this->user_email = $_SESSION['user_email'] = $account_info['user_email'];
+     $this->user_level = $_SESSION['user_level'] = $account_info['user_level'];
+     $this->user_login = $_SESSION['user_login'] = $account_info['user_login'];
+     $this->user_fullname = $_SESSION['user_fullname'] = $account_info['user_fullname'];
+     $this->user_session = $_SESSION['user_session'] = generate_session_key($email, 13);
+     
+      $_SESSION['agent'] = sha1(
+                         $_SERVER['HTTP_ACCEPT_CHARSET'].
+                         $_SERVER['HTTP_ACCEPT_ENCODING'].
+                         $_SERVER['HTTP_ACCEPT_LANGUAGE'].
+                         $_SERVER['HTTP_USER_AGENT']);
+
       if ($remember_me == true) {
            
            setcookie("cookie_user_email", $email, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
@@ -160,7 +199,7 @@ class Authentication
            }
 
            $bind = ['user_id' => $account_info['ID'], 'pwd_hash' => $hashed_password, 
-                    'selector_hash' => $hashed_selector, 'expired_date' => $expired_date];
+                   'selector_hash' => $hashed_selector, 'expired_date' => $expired_date];
 
            $newUserToken = $this->userToken->createUserToken($bind);
 
@@ -195,7 +234,9 @@ public function logout()
     unset($_SESSION['user_session']);
     unset($_SESSION['user_level']);
   
-  	session_destroy();
+    $_SESSION = array();
+    session_destroy();
+    session_regenerate_id();
     
     $this->removeCookies();
     
@@ -323,7 +364,7 @@ public function activateUserAccount($key)
  * @param string $control
  * 
  */
-public function userAccessControl($control = '')
+public function userAccessControl($control = 'dashboard')
 {
 
     switch ($control) {
@@ -359,8 +400,9 @@ public function userAccessControl($control = '')
 
         default:
           
-            if($this->accessLevel() != 'administrator' && $this->accessLevel() != 'manager' && $this->accessLevel() != 'editor'        && 
-               $this->accessLevel() != 'author' && $this->accessLevel() != 'manager') {
+            if($this->accessLevel() != 'administrator' && $this->accessLevel() != 'manager' 
+               && $this->accessLevel() != 'editor' && $this->accessLevel() != 'author' 
+               && $this->accessLevel() != 'contributor') {
 
               return false;
 

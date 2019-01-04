@@ -115,36 +115,65 @@ class UserEvent
    $this->user_login = $user_login;
  }
  
+ /**
+  * Set user email
+  * @param string $user_email
+  *
+  */
  public function setUserEmail($user_email)
  {
    $this->user_email = $user_email;
  }
  
+/**
+ * Set user password
+ * @param string $user_pass
+ */
  public function setUserPass($user_pass)
  {
    $this->user_pass = $user_pass;
  }
  
+/**
+ * Set user level
+ * @param string $user_level
+ */
  public function setUserLevel($user_level)
  {
    $this->user_level = $user_level;
  }
- 
+
+/**
+ * Set user fullname
+ * @param string $user_fullname
+ */
  public function setUserFullname($user_fullname)
  {
    $this->user_fullname = $user_fullname;
  }
- 
+
+/**
+ * Set user website - url
+ * @param string $user_url
+ */
  public function setUserUrl($user_url)
  {
    $this->user_url = $user_url;
  }
- 
+
+/**
+ * Set user activation key
+ * @param string $activation_key
+ */
  public function setUserActivationKey($activation_key)
  {
    $this->user_activation_key = $activation_key;
  }
  
+/**
+ * Set user session
+ * @param string $user_session
+ */
  public function setUserSession($user_session)
  {
    $this->user_session = $user_session;

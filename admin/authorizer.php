@@ -25,6 +25,7 @@ if (!empty($_SESSION['user_id'])) {
     $isPasswordVerified = false;
     $isSelectorVerified = false;
     $isExpiredDateVerified = false;
+    $isAgentVerified = false;
 
     // retrieve user token info
     $token_info = $authenticator -> findTokenByUserEmail($_COOKIE['cookie_user_email'], 0);
@@ -41,7 +42,20 @@ if (!empty($_SESSION['user_id'])) {
         $isExpiredDateVerified = true;
     }
 
-    if (!empty($token_info['ID']) && $isPasswordVerified && $isSelectorVerified && $isExpiredDateVerified) {
+    if ((isset($_SESSION['agent'])) 
+       || ($_SESSION['agent'] == sha1($_SERVER['HTTP_ACCEPT_CHARSET'].
+                                      $_SERVER['HTTP_ACCEPT_ENCODING'].
+                                      $_SERVER['HTTP_ACCEPT_LANGUAGE'].
+                                      $_SERVER['HTTP_USER_AGENT']))) {
+	
+        $isAgentVerified = true;
+         
+    }
+
+    if (!empty($token_info['ID']) && $isPasswordVerified 
+        && $isSelectorVerified 
+        && $isExpiredDateVerified
+        && $isAgentVerified) {
 
         $isUserLoggedIn = true;
 

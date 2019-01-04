@@ -81,7 +81,7 @@ class Dispatcher
               if (is_dir($theme_dir)) {
   
                  include($theme_dir.'header.php');
-                 include($theme_dir.$action . '.php' );
+                 include($theme_dir. basename($action.'.php'));
                  include($theme_dir.'footer.php');
                  
               }
@@ -137,7 +137,7 @@ class Dispatcher
 
     if (isset($path[$args])) {
 
-      return $path[$args];
+      return basename($path[$args]);
 
     } else {
        

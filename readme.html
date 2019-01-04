@@ -3,7 +3,7 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Scriptlog Read Me</title>
+<title>Scriptlog ReadMe</title>
 <link rel="shortcut icon" href="favicon.ico">
 <style type="text/css">
 body {
@@ -29,8 +29,8 @@ width: 600px;
 
 code {
 white-space:pre;
-border: 1px solid #ddd;
-margin: 20px;
+border: 2px solid #ddd;
+margin: 5px;
 display: block;
 padding: 10px;
 }
@@ -45,7 +45,7 @@ padding: 10px;
 <b>Your personal blogware platform!</b>
 
 <p>Scriptlog is free and open source PHP blog software. We're refactoring our legacy blog code.
-Make it more simple, modular, fast and lightweight blogging system. Scriptlog runs on PHP 5.6 or higher and uses MySQL.
+Make it more simple, modular, fast and lightweight personal blogging system. Scriptlog runs on PHP 5.6 or higher and uses MySQL.
 <br /><br />
 For developers, it offers DAO(Data Access Object), Library, Function, and View management. 
 Plus others features like URI Routing, Cache, Plugins and more!. If you are new the world of OOP - then this system is for you.
@@ -123,6 +123,7 @@ Scriptlog may <i>not</i> work properly in your host environment.</p>
 <li>library/</li>
 <li>public/</li>
 <li>config.sample.php</li>
+<li>.htaccess</li>
 <li>index.php</li>
 <li>license.txt</li>
 <li>readme.html</li>                
@@ -149,7 +150,38 @@ how to createt this, ask your host.</p>
 You should enter all database connection details and administrator account.
 These informations will help you through process to set up a <em>config.php</em> file.</p>
 
-<p>if some reason this does not work, don't worry. Open up <em>config.sample.php</em></p>
+<p>if some reason this does not work, don't worry. Open up <em>config.sample.php</em> with text editor  
+and change the following line:</p>
+<code>
+  return [
+
+    'db' => [
+        
+         'host' => 'hostname', # database's hostname
+         'user' => 'username', # database's username
+         'pass' => 'password', # database's password
+         'name' => 'dbname'    # database's name
+
+      ],
+
+    'app' => [
+
+         'url'   => 'http://yourservername',  # your server-name
+         'email' => 'email address',          # administrator's email 
+         'key'   => 'application key'         # optional
+     ]
+
+  ];
+
+</code>
+
+<p>fill in your database connection details, your server name and administrator's email.<br>
+Save the file as <em>config.php</em> and upload it.</p>
+
+<p>Open <em>install/</em> in your browser. Once the configuration file is set up, 
+the installer will set up the tables needed for your blog. If there is an error, 
+double-check your <em>config.php</em> file, and try again. </p>
+
 
 <b>8) Remove the installation directory</b>
 <p>For security purpose, delete the <em>install</em> folder when you are finish.</p>
@@ -209,7 +241,9 @@ but a detailed commit message is enough.
 <p>Please follow these guidelines when contributing</p>
 
 <h2>Online Resources</h2>
-<p></p>
+<p>If you have any questions that aren't addressed in this document, 
+please take advantage of Scriptlog'numerous online resources:</p>
+
 
 <h2>Pass it on!</h2>
 <p>Scriptlog has no unlimited dollar marketing campaign or company sponsors, 

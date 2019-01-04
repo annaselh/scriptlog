@@ -1,6 +1,6 @@
 <?php 
 /**
- * Abstract Class BaseApp
+ * Abstract Class BaseApp implements AppInterface
  *
  * @package   SCRIPTLOG
  * @abstract  BaseApp Class
@@ -46,22 +46,53 @@ abstract class BaseApp implements AppInterface
     return $this->pageTitle;
   }
   
+  /**
+   * set form action
+   * 
+   * @param string $formAction
+   */
   public function setFormAction($formAction)
   {
     $this->formAction = $formAction;
   }
   
+  /**
+   * get form action
+   * 
+   * @return string
+   * 
+   */
   public function getFormAction()
   {
     return $this->formAction;
   }
   
+  /**
+   * abstract method list items
+   * 
+   * @method  listItems()
+   * @abstract 
+   * 
+   */
   abstract protected function listItems();
   
+  /**
+   * abstract method insert
+   * 
+   * @method insert()
+   * @abstract 
+   * 
+   */
   abstract protected function insert();
-  
+ 
+/**
+ * 
+ * @abstract @method update update()
+ * @param integer $id
+ * 
+ */
   abstract protected function update($id);
   
   abstract protected function remove($id);
   
-} // End of abstract class BaseApp
+} 
