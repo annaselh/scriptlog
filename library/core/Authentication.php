@@ -3,6 +3,7 @@
  * Authentication Class
  *
  * @package   SCRIPTLOG
+ * @category  library\core\Authentication
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
@@ -53,12 +54,25 @@ class Authentication
 
   /**
    * Form validator
+   * 
    * @var object
    */
   private $validator;
 
+  /**
+   * User Agent
+   * 
+   * @var string
+   * 
+   */
   private $agent;
 
+  /**
+   * User's Email
+   * 
+   * @var string
+   * 
+   */
   public $user_email;
 
   public $user_login;
@@ -165,7 +179,7 @@ class Authentication
      $this->user_fullname = $_SESSION['user_fullname'] = $account_info['user_fullname'];
      $this->user_session = $_SESSION['user_session'] = generate_session_key($email, 13);
      
-      $_SESSION['agent'] = sha1(
+     $this->agent = $_SESSION['agent'] = sha1(
                          $_SERVER['HTTP_ACCEPT_CHARSET'].
                          $_SERVER['HTTP_ACCEPT_ENCODING'].
                          $_SERVER['HTTP_ACCEPT_LANGUAGE'].
@@ -233,6 +247,7 @@ public function logout()
     unset($_SESSION['user_fullname']);
     unset($_SESSION['user_session']);
     unset($_SESSION['user_level']);
+    unset($_SESSION['agent']);
   
     $_SESSION = array();
     session_destroy();

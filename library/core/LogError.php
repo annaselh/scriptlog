@@ -4,6 +4,7 @@
  * Error Handling and Logging
  * 
  * @package   SCRIPTLOG
+ * @category  library\core\LogError
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

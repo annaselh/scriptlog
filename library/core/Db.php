@@ -1,9 +1,11 @@
 <?php 
 /**
- * Db Class
- * Implements dbInterface
+ * Class Db implements DbInterface
+ * This Class DB uses PDO-MySQL functionality 
+ * and it's methods implemented from DbInterface
  * 
  * @package   SCRIPTLOG
+ * @category  library\core\Db
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
@@ -24,7 +26,11 @@ class Db implements DbInterface
   * @var string
   */
  private $error;
- 
+
+/**
+ * Initializing an object property and method
+ * 
+ */
  public function __construct($values, $options)
  {
      $this->setDbConnection($values, $options);

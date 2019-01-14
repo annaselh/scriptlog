@@ -1,11 +1,16 @@
 <?php
 /**
  * BoardInterface Interface
+ * giving dashboard application interface 
+ * to set page title and handle dashboard's view.
+ * This class inherent to Class Dashboard
  * 
- * @category  Interface for dashboard based on user previlege
  * @package   SCRIPTLOG
+ * @category  library\core\BoardInterface
  * @author    M.Noermoehammad
  * @license   MIT
+ * @version   1.0
+ * @since     Since Release 1.0
  * 
  */
 interface BoardInterface

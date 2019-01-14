@@ -244,7 +244,13 @@ class Dispatcher
    */
   private function invokeTheme()
   {
-    return $this->theme->loadTheme('Y');
+    
+    if($this->theme->totalThemeRecords() > 0) {
+       
+      return $this->theme->loadTheme('Y');
+
+    } 
+    
   }
   
   /**

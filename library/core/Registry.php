@@ -3,6 +3,7 @@
  * Registry Class
  * 
  * @package   SCRIPTLOG
+ * @category  library\core\Registry
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
@@ -36,21 +37,40 @@ class Registry
 /**
  * set
  * 
- * @method set()
+ * @method public set()
  * @static
  * @param string $key
  * @param string $value
+ * 
  */
  public static function set($key, $value)
  {
    self::$data[$key] = $value;
  }
  
+/**
+ * set All
+ * 
+ * @method public setAll()
+ * @static
+ * @param array $key
+ * 
+ */
  public static function setAll(array $key = array()) 
  {
    self::$data = $key;
  }
  
+/**
+ * Is key set
+ * Checking whether key set or not
+ * 
+ * @method public isKeySet()
+ * @static
+ * @param string $key
+ * @return array
+ * 
+ */
  public static function isKeySet($key)
  {
    return (isset(self::$data[$key]));  

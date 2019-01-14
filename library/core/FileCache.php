@@ -3,6 +3,7 @@
  * FileCache Class extends Cache Class
  * 
  * @package  SCRIPTLOG
+ * @category library\core\FileCache
  * @author   Contributors
  * @license  MIT
  * @version  1.0

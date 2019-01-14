@@ -3,8 +3,10 @@
  * IException interface
  * 
  * @package  SCRIPTLOG
- * @link https://stackoverflow.com/questions/628408/custom-exception-messages-best-practices
- * @link https://secure.php.net/manual/en/language.exceptions.php#91159
+ * @category library\core\IException
+ * @link     https://stackoverflow.com/questions/628408/custom-exception-messages-best-practices
+ * @link     https://secure.php.net/manual/en/language.exceptions.php#91159
+ * @version  1.0
  * 
  */
 interface IException

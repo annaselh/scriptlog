@@ -1,11 +1,9 @@
 <?php 
 /**
- * Widget class extends Dao
- * Handle widget functionality 
- * such as next and previous post, list of topics on sidebar
- * and recent posts
+ * Class Widget extends Dao
  * 
  * @package   SCRIPTLOG
+ * @category  library\dao\Widget
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

@@ -2,9 +2,11 @@
 /**
  * PHP Pagination Class
  *
- * @author David Carr - dave@daveismyname.com - http://www.daveismyname.com
- * @version 1.0
- * @date October 20, 2012
+ * @package  SCRIPTLOG
+ * @category library\core\Paginator
+ * @author   David Carr - dave@daveismyname.com - http://www.daveismyname.com
+ * @version  1.0
+ * @since    October 20, 2012
  * 
  */
 class Paginator 

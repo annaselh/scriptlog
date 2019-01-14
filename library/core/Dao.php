@@ -4,6 +4,7 @@
  * Data Access Object
  * 
  * @package   SCRIPTLOG
+ * @category  library\core\Dao
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

@@ -21,8 +21,6 @@ ini_set("memory_limit", "1M");
 
 $key = '5c12IpTl0g!@#';
 $checkIncKey = sha1(mt_rand(1, 1000).$key);
-$protocol = strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https';
-$hostname = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
 
 define('DS', DIRECTORY_SEPARATOR);
 define('APP_TITLE', 'Scriptlog');
@@ -38,9 +36,9 @@ if (!defined('APP_ROOT')) define('APP_ROOT', dirname(dirname(__FILE__)) . DS);
 
 if (!defined('PHP_EOL')) define('PHP_EOL', strtoupper(substr(PHP_OS, 0, 3) == 'WIN') ? "\r\n" : "\n");
 
-if (!defined('APP_PROTOCOL')) define('APP_PROTOCOL', $protocol);
+if (!defined('APP_PROTOCOL')) define('APP_PROTOCOL', strpos(strtolower($_SERVER['SERVER_PROTOCOL']),'https') === false ? 'http' : 'https');
 
-if (!defined('APP_HOSTNAME')) define('APP_HOSTNAME', $hostname);
+if (!defined('APP_HOSTNAME')) define('APP_HOSTNAME', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']);
 
 if (APP_DEVELOPMENT === true) {
 
@@ -53,7 +51,7 @@ if (APP_DEVELOPMENT === true) {
 if (file_exists(APP_ROOT . 'config.sample.php')) {
 
     $config = require __DIR__ . '/../config.sample.php';
-    
+
 } 
 
 // call functions in folder utility
@@ -165,7 +163,7 @@ Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
  * these are collection of objects or instances of classes that will used for login
  * 
  */
-$searchPost = new SearchSeeker($dbc);
+$searchPost = new SearchFinder($dbc);
 $frontPaginator = new Paginator(10, 'p');
 $postFeeds = new RssFeed($dbc);
 $sanitizer = new Sanitize();
@@ -174,8 +172,8 @@ $userToken = new UserToken();
 $validator = new FormValidator();
 $authenticator = new Authentication($userDao, $userToken, $validator);
 
-//$bones = new Bones();
-//$request = new RequestHandler($bones);
+# $bones = new Bones();
+# $request = new RequestHandler($bones);
 
 # set_exception_handler('LogError::exceptionHandler');
 # set_error_handler('LogError::errorHandler');

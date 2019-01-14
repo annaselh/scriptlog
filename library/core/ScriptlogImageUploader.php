@@ -3,6 +3,7 @@
  * Class ScriptlogImageUploader extends Class ScriptlogUploader
  * 
  * @package  SCRIPTLOG
+ * @category library\core\ScriptlogImageUploader
  * @author   M.Noermoehammad
  * @license  MIT
  * 
@@ -23,7 +24,9 @@ class ScriptlogImageUploader extends ScriptlogUploader
   protected $deleteOriginal;
 
   /**
+   * Suffix
    * 
+   * @var string
    */
   protected $suffix;
 

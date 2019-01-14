@@ -1,9 +1,11 @@
 <?php
 /**
- * Cache Class
+ * Abstract Class Cache
+ * Abstract it functionality to read cache, write cache, and remove cache
  * 
  * @package  SCRIPTLOG
- * @abstract Cache Class
+ * @category library\core\Cache
+ * @abstract Class Cache
  * @author   Contributors
  * @license  MIT
  * @version  1.0

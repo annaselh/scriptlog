@@ -4,6 +4,8 @@
  * Utitlize Cookies for authorization and authentication
  *
  * @package   SCRIPTLOG
+ * @category  library\core\Tokenizer
+ * @author    Contributors
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
@@ -12,6 +14,14 @@
 class  Tokenizer
 {
 
+/**
+ * Create token
+ * 
+ * @method public createToken()
+ * @param integer|number $length
+ * @return string
+ * 
+ */
   public function createToken($length)
   {
      $token = "";

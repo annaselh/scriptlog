@@ -4,6 +4,7 @@
  * Send e-mail via mail php function  
  * 
  * @package   SCRIPTLOG
+ * @category  library\core\Mailer
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

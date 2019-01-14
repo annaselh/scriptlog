@@ -48,7 +48,7 @@ class View
   public function __construct($eventPath, $uiPath, $modulePath, $file = null)
   {
     
-    // make sure event path in admin directory
+    // make sure event path for administrator in admin folder
     if ($eventPath == 'admin') {
       $this->dir = APP_ROOT . APP_ADMIN . DS . $uiPath . DS .$modulePath . DS;
     }
@@ -84,7 +84,7 @@ class View
    * render
    * output view or content
    * 
-   * @method mixed rendr()
+   * @method public render()
    * 
    */
   public function render()
@@ -99,7 +99,7 @@ class View
         
         extract($this->data);
         ob_start();
-        require($this->dir.$this->file.'.php');
+        require $this->dir.$this->file.'.php';
         $render = ob_get_contents();
         ob_end_clean();
         echo $render;

@@ -2,6 +2,8 @@
 /**
  * application key function
  * 
+ * @return string
+ * 
  */
 function app_key()
 {

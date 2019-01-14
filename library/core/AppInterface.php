@@ -3,6 +3,7 @@
  * AppInterface Interface
  *
  * @package   SCRIPTLOG
+ * @category  library\core\AppInterface
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

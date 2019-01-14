@@ -4,9 +4,11 @@
  * This class designed to handle file uploaded 
  * 
  * @package  SCRIPTLOG
+ * @category library\core\ScriptlogUploader
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0
+ * @since    Since Release 1.0
  * 
  */
 class ScriptlogUploader
@@ -320,6 +322,7 @@ class ScriptlogUploader
    * 
    * @param string $filename
    * @param string $type
+   * 
    */
   protected function checkType($filename, $type)
   {

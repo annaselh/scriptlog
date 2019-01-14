@@ -10,9 +10,9 @@
  * @license  MIT
  * 
  */
-if (file_exists(__DIR__ . '/../config.sample.php')) {
+if (file_exists(__DIR__ . '/../config.php')) {
     
-    include __DIR__ . '/../library/main-dev.php';
+    include __DIR__ . '/../library/main.php';
     require 'authorizer.php';
 
 } else {

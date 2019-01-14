@@ -3,9 +3,11 @@
  * Abstract Class Dashboard implement BoardInterface
  * 
  * @package  SCRIPTLOG
+ * @category library\core\Dashboard
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0
+ * @since    Since Release 1.0
  * 
  */
 abstract class Dashboard implements BoardInterface

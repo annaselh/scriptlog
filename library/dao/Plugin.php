@@ -1,10 +1,9 @@
 <?php  
 /**
- * Plugin class extends Dao
- * insert, update, delete
- * and select records from plugin table
+ * Plugin class extends Plugin
  *
  * @package   SCRIPTLOG
+ * @category  library\dao\Plugin
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

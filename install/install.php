@@ -56,7 +56,6 @@ if($setup != 'install') {
 
 } else {
 
-    
   if($link instanceof mysqli) {
 
      if($link->connect_errno) {
@@ -104,7 +103,7 @@ if($setup != 'install') {
 
     if(!is_writable(__DIR__ . '/index.php')) {
 
-        $errors['errorInstall'] = '';
+        $errors['errorInstall'] = 'Permission denied. Directory installation is not writable';
 
     }
 
@@ -202,7 +201,7 @@ if($setup != 'install') {
       You should enter your administrator account details. 
     </div>
     
-    <form method="post" action="<?php echo $install_path; ?>" class="needs-validation" novalidate>
+    <form method="post" action="<?= $install_path.'install.php'; ?>" class="needs-validation" novalidate>
                
       <h4 class="mb-3">Administrator Account</h4>
 

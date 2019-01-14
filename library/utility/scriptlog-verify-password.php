@@ -8,7 +8,7 @@
  */
 function scriptlog_verify_password($user_input, $stored)
 {
-    
- return password_verify(base64_encode(hash('sha384', $user_input, true)), $stored);
+
+  return password_verify(base64_encode(hash('sha384', $user_input, true)), $stored);
     
 }

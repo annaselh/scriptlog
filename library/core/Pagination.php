@@ -4,10 +4,11 @@
  * digunakan untuk paging
  * pada back end website/administrator
  * 
- * @author Lukmanul Hakim
+ * @package  SCRIPTLOG
+ * @category library\core\Pagination
+ * @author   Lukmanul Hakim - Bukulokomedia.com
  * 
  */
-
 class Pagination
 {
 	/**

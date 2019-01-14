@@ -1,10 +1,9 @@
 <?php 
 /**
  * Menu Child class extends Dao
- * insert, update, delete
- * and select records from menu_child table
  *
  * @package   SCRIPTLOG
+ * @category  library\dao\MenuChild
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

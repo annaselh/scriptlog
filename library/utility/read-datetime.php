@@ -5,6 +5,7 @@
  * 
  * @param string $datetime
  * @return string
+ * 
  */
 function read_datetime($datetime)
 {

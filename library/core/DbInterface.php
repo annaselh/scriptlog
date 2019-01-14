@@ -5,6 +5,7 @@
  * that any database adapter will need.
  *
  * @package   SCRIPTLOG
+ * @category  library\core\DbInterface
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

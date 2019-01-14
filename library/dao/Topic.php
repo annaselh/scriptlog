@@ -1,10 +1,9 @@
 <?php 
 /**
  * Topic class extends Dao
- * insert, update, delete and 
- * select records from topics table
  *
  * @package   SCRIPTLOG
+ * @category  library\dao\Topic
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

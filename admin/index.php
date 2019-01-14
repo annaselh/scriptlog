@@ -9,9 +9,9 @@
  * @link     https://scriptlog.web.id
  * 
  */
-if (file_exists(__DIR__ . '/../config.sample.php')) {
+if (file_exists(__DIR__ . '/../config.php')) {
     
-    include __DIR__ . '/../library/main-dev.php';
+    include __DIR__ . '/../library/main.php';
     require __DIR__ . '/authorizer.php';
 
 } else {

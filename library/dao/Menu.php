@@ -1,10 +1,9 @@
 <?php 
 /**
- * Menu class extends Dao
- * insert, update, delete
- * and select records from menu table
+ * Class Menu extends Dao 
  *
  * @package   SCRIPTLOG
+ * @category  library\dao\Menu
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
@@ -15,7 +14,6 @@ class Menu extends Dao
 {
  
 /**
- * Constructor
  * 
  */
  public function __construct()
@@ -23,15 +21,13 @@ class Menu extends Dao
 	parent::__construct();	
  }
 
- /**
-  * Find list of menus
-  * getting array of rows
-  * 
-  * @param integer $position
-  * @param integer $limit
-  * @param string $orderBy
-  * @return boolean|array|object
-  */
+/**
+ * Find all menus
+ * 
+ * @method public findMenus()
+ * @param integer $orderBy
+ * 
+ */
  public function findMenus($orderBy = 'ID')
  {
     $sql = "SELECT ID, menu_label, menu_link, menu_sort, menu_status
@@ -183,11 +179,12 @@ class Menu extends Dao
   
  }
 
- /**
-  * @method menuExists()
-  * @param string $menu_label
-  *
-  */
+/**
+ * Menu parent does exists or not
+ * 
+ * @method public menuExists()
+ * @param string $menu_label
+ */
  public function menuExists($menu_label)
  {
    $sql = "SELECT COUNT(ID) FROM menu WHERE menu_label = ?";

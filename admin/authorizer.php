@@ -3,8 +3,8 @@
  * File authorizer.php
  * checking whether session or cookies exists or not
  * 
- * @category File
  * @package  SCRIPTLOG
+ * @category admin\authorizer
  * @author   Contributors
  * @license  https://opensource.org/licenses/MIT MIT License
  * 

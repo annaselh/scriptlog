@@ -1,10 +1,9 @@
 <?php 
 /**
  * PostTopic class extends Model
- * Interacting with database to insert, update,
- * delete and select records from table post_topic
  * 
  * @package   SCRIPTLOG
+ * @category  library\dao\PostTopic
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

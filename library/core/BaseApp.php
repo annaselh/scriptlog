@@ -3,6 +3,7 @@
  * Abstract Class BaseApp implements AppInterface
  *
  * @package   SCRIPTLOG
+ * @category  library\core\BaseApp
  * @abstract  BaseApp Class
  * @author    M.Noermoehammad
  * @license   MIT
@@ -79,20 +80,28 @@ abstract class BaseApp implements AppInterface
   /**
    * abstract method insert
    * 
-   * @method insert()
+   * @method protected insert()
    * @abstract 
    * 
    */
   abstract protected function insert();
  
 /**
+ * Abstract method update
  * 
- * @abstract @method update update()
+ * @abstract @method protected update()
  * @param integer $id
  * 
  */
   abstract protected function update($id);
-  
+
+/**
+ * Abstract method remove
+ * 
+ * @abstract @method protected remove()
+ * @param integer $id
+ * 
+ */
   abstract protected function remove($id);
   
 } 

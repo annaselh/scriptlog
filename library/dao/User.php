@@ -458,8 +458,33 @@ class User extends Dao
         
         $row = $this->findRow([':user_email' => $email]);
         
-        if (scriptlog_verify_password($password, $row['user_pass'])) {
-            return true;
+        $expected = crypt($password, $row['user_pass']);
+        $correct = crypt($password, $row['user_pass']);
+
+        if(!function_exists('hash_equals')) {
+
+            if(timing_safe_equals($expected, $correct) == 0) {
+
+                if(scriptlog_verify_password($password, $row['user_pass'])) {
+
+                    return true;
+
+                }
+
+            }
+
+        } else {
+
+            if(hash_equals($expected, $correct)) {
+
+                if(scriptlog_verify_password($password, $row['user_pass'])) {
+
+                    return true;
+
+                }
+
+            }
+            
         }
         
     }

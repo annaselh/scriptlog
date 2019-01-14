@@ -3,6 +3,7 @@
  * RssFeed Class
  *
  * @package   SCRIPTLOG
+ * @category  library\core\RssFeed
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
@@ -11,17 +12,44 @@
  */
 class RssFeed
 {
+/**
+ * Database connection
+ * 
+ * @var string
+ * 
+ */
  private $dbc;
- 
+
+/**
+ * Error
+ * 
+ * @var string
+ * 
+ */
  private $error;
  
+/**
+ * Initialize an object properties
+ * Constructor
+ * 
+ * @param string $dbc
+ * 
+ */
  public function __construct($dbc)
  {
   $this->dbc = $dbc;
  }
  
+/**
+ * Get posts records from database
+ * 
+ * @method protected getPostFeed()
+ * @return array
+ * 
+ */
  protected function getPostFeed()
  {
+
    $postFeed = array();
    
    $sql = "SELECT p.ID, p.post_image, p.post_author,
@@ -45,11 +73,27 @@ class RssFeed
           
  }
  
+/**
+ * Set File XML
+ * 
+ * @param string $filename
+ * @param string $mode
+ * @return mixed
+ * 
+ */
  public function setFileXML($filename, $mode)
  {
    return fopen($filename, $mode);
  }
  
+/**
+ * Generate Feeds
+ * 
+ * @param string $title
+ * @param string $link
+ * @param string $description
+ * 
+ */
  public function generatePostFeed($title, $link, $description)
  {
    $dataPosts = $this->getPostFeed();

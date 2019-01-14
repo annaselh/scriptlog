@@ -3,10 +3,11 @@
  * FrontContent Class extends ContentGateway Class
  * 
  * @package  SCRIPTLOG
+ * @category library\core\FrontContent
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0
- * 
+ * @since    Since Release 1.0
  */
 class FrontContent extends ContentGateway
 {

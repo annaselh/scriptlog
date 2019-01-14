@@ -3,6 +3,7 @@
  * CommentEvent Class
  *
  * @package   SCRIPTLOG
+ * @category  library\event\CommentEvent
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0.0

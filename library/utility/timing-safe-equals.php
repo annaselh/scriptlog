@@ -9,17 +9,18 @@
  */
 function timing_safe_equals($safe, $user)
 {
+    $safe .= chr(0);
+    $user .= chr(0);
+
     $safeLen = strlen($safe);
     $userLen = strlen($user);
     
-    if ($userLen != $safeLen) {
-        return false;
-    }
-    
-    $result = 0;
+    $result = $safeLen - $userLen;
     
     for ($i = 0; $i < $userLen; $i++) {
-        $result |= (ord($safe[$i]) ^ ord($user[$i]));
+
+      $result |= (ord($safe[$i % $safeLen]) ^ ord($user[$i])); 
+        
     }
     
     // They are only identical strings if $result is exactly 0...

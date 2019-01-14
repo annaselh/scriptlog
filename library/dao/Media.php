@@ -3,17 +3,32 @@
  * Class Media extends Dao
  * 
  * @package  SCRIPTLOG
+ * @category library\dao\Media
  * @author   M.Noermoehammad
+ * @license  MIT
+ * @version  1.0
+ * @since    Since Release 1.0
  * 
  */
 class Media extends Dao
 {
-  
+
+/**
+ * 
+ */
 public function __construct()
 {
     parent::__construct();
 }
 
+/**
+ * Find All Media
+ * 
+ * @method public findAllMedia()
+ * @param integer $ID
+ * @return array
+ * 
+ */
 public function findAllMedia($orderBy = 'ID')
 {
 
@@ -38,6 +53,15 @@ public function findAllMedia($orderBy = 'ID')
   
 }
 
+/**
+ * Find media by Id
+ * 
+ * @method public findMediaById()
+ * @param integer $mediaId
+ * @param object $sanitize
+ * @param string $fetchMode
+ * 
+ */
 public function findMediaById($mediaId, $sanitize, $fetchMode = null)
 {
   $idsanitized = $this->filteringId($sanitize, $mediaId, 'sql');
@@ -71,6 +95,9 @@ public function findMediaById($mediaId, $sanitize, $fetchMode = null)
 
 }
 
+/**
+ * 
+ */
 public function findMediaByType($type, $fetchMode = null)
 {
   $sql = "SELECT ID,

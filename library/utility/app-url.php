@@ -2,7 +2,7 @@
 /**
  * Application URL Function
  * 
- * @return array
+ * @return string
  * 
  */
 function app_url()

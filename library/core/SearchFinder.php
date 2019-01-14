@@ -1,39 +1,91 @@
 <?php 
 /**
- * SearchSeeker Class
- * Searching keyword from 
- * search functionality form
+ * Class SearchFinder
+ * Searching keyword from search functionality form
  *
  * @package   SCRIPTLOG
+ * @category  library\core\SearchFinder
  * @author    Maoelana Noermoehammad
  * @license   MIT
  * @version   1.0
  * @since     Since Release 1.0
  *
  */
-class SearchSeeker
+class SearchFinder
 {
- 
+
+/**
+ * Database connection
+ * 
+ * @var string
+ * 
+ */
  private $dbc;
  
+/**
+ * Errors
+ * 
+ * @var string
+ * 
+ */
  private $errors;
- 
+
+/**
+ * SQL
+ * 
+ * @var string
+ * 
+ */
  public $sql;
  
+/**
+ * Results from SQL Query
+ * 
+ * @var string
+ * 
+ */
  public $results;
  
+/**
+ * Bind data
+ * 
+ * @var string
+ * 
+ */
  public $bind;
- 
+
+/**
+ * Initialize object properties and method
+ * and an instance of database connection
+ * 
+ * @param string $dbc
+ * 
+ */
  public function __construct($dbc)
  {
   $this->dbc = $dbc;
  }
  
+/**
+ * Clean Up
+ * 
+ * @param array $bind
+ * @return array
+ * 
+ */
  public function cleanUp($bind)
  {
   return $bind;
  }
- 
+
+/**
+ * Binding statement
+ * 
+ * @param string $sql
+ * @param string $bind
+ * @return bool
+ * 
+ */
  public function bindStatement($sql, $bind = "")
  {
   $this->sql = $sql;
@@ -71,6 +123,14 @@ class SearchSeeker
   
  }
  
+/**
+ * Set Query
+ * 
+ * @param string $sql
+ * @param bool $bind
+ * @return bool
+ * 
+ */
  public function setQuery($sql, $bind = false)
  {
   $this->errors = '';
@@ -98,6 +158,13 @@ class SearchSeeker
   
  }
  
+/**
+ * Searching Post especially blog post
+ * 
+ * @param string $data
+ * @return mixed
+ * 
+ */
  public function searchPost($data)
  {
     
@@ -105,14 +172,15 @@ class SearchSeeker
      
  	$this->sql = "SELECT 
                      ID,
-                     post_author, date_created, 
+                     post_author, post_created, post_modified, 
                      post_title, post_slug, 
                      post_content, post_status, 
                      post_type
                  FROM 
                     posts
                  WHERE 
-                    post_title LIKE :keyword1 OR post_content LIKE :keyword2
+                    post_title LIKE :keyword1 
+					OR post_content LIKE :keyword2
                     AND post_status = 'publish' AND post_type = 'blog' ";
  	             
  	

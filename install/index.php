@@ -29,7 +29,7 @@ if (file_exists(__DIR__ . '/../config.php')) {
 
      if($link->connect_errno) {
 
-       $errors['errorSetup'] = 'Faild to connect to MySQL ('.$link->connect_errno . ') '.$link->connect_error;
+       $errors['errorSetup'] = 'Faild to connect to MySQL ('.$link -> connect_errno . ') '.$link -> connect_error;
 
      }
      
@@ -104,7 +104,7 @@ if ($install != 'install') {
         
         $link = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
         
-        if ($link -> connect_errno) {
+        if ($link->connect_errno) {
 
             $errors['errorSetup'] = 'Failed to connect to MySQL: (' . $link->connect_errno . ') '.$link->connect_error;
 
@@ -243,7 +243,7 @@ if ($install != 'install') {
             You should enter your database connection details and administrator account. 
           </div>
           
-          <form method="post" action="<?php echo $installation_path; ?>" class="needs-validation" novalidate>
+          <form method="post" action="<?= $installation_path; ?>" class="needs-validation" novalidate>
           
             <h4 class="mb-3">Database Settings</h4>
 

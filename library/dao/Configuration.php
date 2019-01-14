@@ -1,8 +1,9 @@
 <?php 
 /**
- * Configuration Class
+ * Class Configuration extends Dao
  * 
  * @package   SCRIPTLOG
+ * @category  library\dao\Configuration
  * @author    Maoelana Noermoehammad
  * @license   MIT
  * @version   1.0
@@ -23,6 +24,10 @@ public function __construct()
 }
 
 /**
+ * Create configuration
+ * 
+ * @method public createConfig()
+ * @param array $bind
  * 
  */
 public function createConfig($bind)
@@ -37,6 +42,12 @@ public function createConfig($bind)
 }
 
 /**
+ * Update configuration
+ * 
+ * @method public updateConfig()
+ * @param object $sanitize
+ * @param array $bind
+ * @param integer $ID
  * 
  */
 public function updateConfig($sanitize, $bind, $ID)
@@ -52,6 +63,13 @@ public function updateConfig($sanitize, $bind, $ID)
 
 }
 
+/**
+ * Delete config
+ * 
+ * @method public deleteConfig()
+ * @param integer $ID
+ * 
+ */
 public function deleteConfig($ID, $sanitize)
 {
   $cleanId = $this->filteringId($sanitize, $ID, 'sql');
@@ -61,6 +79,11 @@ public function deleteConfig($ID, $sanitize)
 }
 
 /**
+ * Find configurations
+ * 
+ * @method public findConfigs()
+ * @param integer $orderBy -- default order by ID
+ * @return array
  * 
  */
 public function findConfigs($orderBy = 'ID')
@@ -79,6 +102,12 @@ public function findConfigs($orderBy = 'ID')
 }
 
 /**
+ * Find Configuration
+ * 
+ * @method public findConfig()
+ * @param integer $id
+ * @param object $sanitize
+ * @return array
  * 
  */
 public function findConfig($id, $sanitize)
@@ -100,6 +129,11 @@ public function findConfig($id, $sanitize)
 }
 
 /**
+ * Check configuration Id
+ * 
+ * @method public checkConfigId()
+ * @param integer $id
+ * @param object $sanitize
  * 
  */
 public function checkConfigId($id, $sanitize)
@@ -112,6 +146,7 @@ public function checkConfigId($id, $sanitize)
 }
 
 /**
+ * Checking to setup
  * 
  */
 public function checkToSetup()
@@ -123,7 +158,7 @@ public function checkToSetup()
 }
 
 /**
- * 
+ * Total Config records
  */
 public function totalConfigRecords($data = null)
 {

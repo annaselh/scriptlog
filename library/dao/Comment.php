@@ -1,32 +1,34 @@
 <?php 
 /**
- * Comment class extends Dao
- * insert, update, delete
- * and select records from comment table
- *
- * @package   SCRIPTLOG
- * @author    M.Noermoehammad
- * @license   MIT
- * @version   1.0
- * @since     Since Release 1.0
- *
+ * Class Comment extends Dao
+ * 
+ * @package  SCRIPTLOG
+ * @category library\dao\Comment
+ * @author   M.Noermoehammad
+ * @license  MIT
+ * @version  1.0
+ * @since    Since Release 1.0
+ * 
  */
 class Comment extends Dao
 {
-    
+
+/**
+ * 
+ */
  public function __construct()
  {
    parent::__construct();
-   
  }
  
- /**
-  * Retreive all comments records
-  * from comments table
-  * 
-  * @param string $orderBy
-  * @return boolean|array|object
-  */
+/**
+ * Find Comments
+ * 
+ * @method public findComments()
+ * @param integer|string $orderBy -- default order By Id
+ * @return array
+ * 
+ */
  public function findComments($orderBy = 'ID')
  {
    $sql = "SELECT c.ID, c.comment_post_id, c.comment_author_name,  
@@ -44,6 +46,15 @@ class Comment extends Dao
    
  }
  
+/**
+ * Find Comment
+ * 
+ * @method public findComment()
+ * @param integer|number $id
+ * @param object $sanitize
+ * @return array
+ * 
+ */
  public function findComment($id, $sanitize)
  {
    $id_sanitized = $this->filteringId($sanitize, $id, 'sql');
@@ -62,6 +73,13 @@ class Comment extends Dao
    
  }
  
+/**
+ * Add Comment
+ * 
+ * @method public addComment()
+ * @param array $bind
+ * 
+ */
  public function addComment($bind)
  {
     
@@ -75,6 +93,15 @@ class Comment extends Dao
     
  }
  
+/**
+ * Update Comment
+ * 
+ * @method public updateComment()
+ * @param object $sanitize
+ * @param array $bind
+ * @param integer $ID
+ * 
+ */
  public function updateComment($sanitize, $bind, $ID)
  {
    
@@ -87,12 +114,28 @@ class Comment extends Dao
    
  }
  
+/**
+ * Delete comment
+ * 
+ * @method public deleteComment()
+ * @param integer $ID
+ * 
+ */
  public function deleteComment($id, $sanitize)
  {
    $idsanitized = $this->filteringId($sanitize, $id, 'sql');
    $stmt = $this->deleteRecord("comments", "`ID` = {$idsanitized}");
  }
  
+/**
+ * Check comment Id
+ * 
+ * @method public checkCommentId()
+ * @param integer $id
+ * @param object $sanitize
+ * @return integer|numeric
+ * 
+ */
  public function checkCommentId($id, $sanitize)
  {
    $sql = "SELECT ID FROM comments WHERE ID = ?";
@@ -102,6 +145,14 @@ class Comment extends Dao
    return $stmt > 0;
  }
  
+/**
+ * Drop down comment status
+ * 
+ * @method public dropDownCommentStatement($selected)
+ * @param string $selected
+ * @return mixed
+ * 
+ */
  public function dropDownCommentStatement($selected = '')
  {
      $name = 'comment_status';

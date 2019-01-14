@@ -6,6 +6,7 @@
  * @param string $date
  * @param string $format
  * @return string
+ * 
  */
 function human_readable_datetime($date, $format)
 {

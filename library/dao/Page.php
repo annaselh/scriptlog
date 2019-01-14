@@ -1,10 +1,9 @@
 <?php  
 /**
  * Page class extends Dao
- * insert, update, delete
- * and select records from users table
- *
+ * 
  * @package   SCRIPTLOG
+ * @category  library\dao\Page
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

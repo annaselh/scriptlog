@@ -4,12 +4,15 @@
  * This class provides a way to retain get parameters but also edit 
  * or add onto them. 
  * 
+ * @package SCRIPTLOG
+ * @category library\core\Paths
  * @source PHP.Net PHP parse_url
  * @link   https://secure.php.net/manual/en/function.parse-url.php#121392
  * 
  */
 class Paths
 {
+  
  private $url;
 
  public function __construct($url)

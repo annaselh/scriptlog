@@ -3,6 +3,8 @@
  * sanitize.class.php
  * Sanitizing  input and output
  * 
+ * @package    SCRIPTLOG
+ * @category   library\core\Sanitize
  * @author     Khairu a.k.a wenkhairu
  * @copyright  wenkhairu
  *

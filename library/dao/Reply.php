@@ -1,10 +1,9 @@
 <?php 
 /**
  * Reply class extends Dao
- * insert, update, delete
- * and select records from comment table
  *
  * @package   SCRIPTLOG
+ * @category  library\dao\Reply
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

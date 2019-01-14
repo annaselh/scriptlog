@@ -1,10 +1,9 @@
 <?php
 /**
  * Post class extends Dao
- * insert, update, delete
- * and select records from posts table
  *
  * @package   SCRIPTLOG
+ * @category  library\dao\Post
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

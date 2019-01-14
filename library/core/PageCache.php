@@ -2,8 +2,10 @@
 /**
  * Page Cache Class
  * 
- * @author jason
- * @link http://www.xeweb.net/2011/11/03/simple-php-caching-improved/
+ * @package  SCRIPTLOG
+ * @category library\core\PageCache
+ * @author   jason
+ * @link     http://www.xeweb.net/2011/11/03/simple-php-caching-improved/
  *
  */
 class PageCache

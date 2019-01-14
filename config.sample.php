@@ -45,7 +45,7 @@ return [
 
            'url'   => 'http://localhost/scriptlog/',
            'email' => 'scriptlog@yandex.com',
-           'key'   => 'MLJQY-BV6WX-KCFXE-HY8CQ'
+           'key'   => ''
            
         ]
 

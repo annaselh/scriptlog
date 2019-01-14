@@ -41,14 +41,17 @@ if (!defined('APP_HOSTNAME')) define('APP_HOSTNAME', isset($_SERVER['HTTP_HOST']
 
 if (file_exists(APP_ROOT.'config.php')) {
     
-   $config = require __DIR__ . '/../config.php';
-   
-} else {
+    $config = require __DIR__ . '/../config.php';
     
-    if (is_dir(APP_ROOT . 'install'))
+ } else {
+     
+    if (is_dir(APP_ROOT . 'install')) {
+
         header("Location: ".APP_PROTOCOL."://".APP_HOSTNAME.dirname($_SERVER['PHP_SELF']).DS.'install');
         exit();
-        
+         
+    }
+         
 }
 
 // call functions in directory library/utility
@@ -143,7 +146,7 @@ $rules = array(
     'search'   => "(?'search'[\w\-]+)"
     
 );
-
+ 
 // an instantiation of Database connection
 $dbc = DbFactory::connect([
     'mysql:host='.$config['db']['host'].';dbname='.$config['db']['name'],
@@ -164,7 +167,7 @@ Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
  * these are collection of objects or instances of classes that will used for login
  * 
  */
-$searchPost = new SearchSeeker($dbc);
+$searchPost = new SearchFinder($dbc);
 $frontPaginator = new Paginator(10, 'p');
 $postFeeds = new RssFeed($dbc);
 $sanitizer = new Sanitize();

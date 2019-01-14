@@ -4,6 +4,7 @@
  * Generating image thumbnail
  * 
  * @package  SCRIPTLOG
+ * @category library\core\ScriptlogImageThumbnail
  * @author   M.Noermoehammad
  * 
  */
@@ -140,6 +141,7 @@ class ScriptlogImageThumbnail
 
   public function generateImageThumb()
   {
+      
    if($this->canProcess && $this->originalWidth != 0) {
      
      $this->measureSize($this->originalWidth, $this->originalHeight);
@@ -170,9 +172,9 @@ class ScriptlogImageThumbnail
 		);
         
       if (in_array ( $mime, $mimetypes )) {
-			$this->_canProcess = true;
+			$this->canProcess = true;
 			// ekstrak karakter setelah 'image/
-			$this->_imageType = substr ( $mime, 6 );
+			$this->imageType = substr ( $mime, 6 );
       }
         
   }
