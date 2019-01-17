@@ -34,17 +34,17 @@ return [
                     
     'db' => [
 
-          'host' => 'localhost',
-          'user' => 'root',
-          'pass' => 'kartatopia',
-          'name' => 'blogware'
+          'host' => '',
+          'user' => '',
+          'pass' => '',
+          'name' => ''
           
         ],
 
     'app' => [
 
-           'url'   => 'http://localhost/scriptlog/',
-           'email' => 'scriptlog@yandex.com',
+           'url'   => '',
+           'email' => '',
            'key'   => ''
            
         ]

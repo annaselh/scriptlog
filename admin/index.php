@@ -11,7 +11,7 @@
  */
 if (file_exists(__DIR__ . '/../config.php')) {
     
-    include __DIR__ . '/../library/main.php';
+    include __DIR__ . '/../lib/main.php';
     require __DIR__ . '/authorizer.php';
 
 } else {

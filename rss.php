@@ -5,5 +5,5 @@
  * generating rss feeds with xml format
  * 
  */
-require __DIR__ . 'library/main.php';
+require __DIR__ . '/lib/main.php';
 

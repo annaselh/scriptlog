@@ -11,7 +11,7 @@
  */
 if (file_exists(__DIR__ . '/../config.php')) {
     
-  include(dirname(dirname(__FILE__)).'/library/main.php');
+  include(dirname(dirname(__FILE__)).'/lib/main.php');
 
 } else {
 
