@@ -46,6 +46,12 @@ class TopicEvent
    */
   private $topicDao;
 
+/**
+ * Form Validator
+ * 
+ * @var object
+ * 
+ */
   private $validator;
 
   private $sanitizer;

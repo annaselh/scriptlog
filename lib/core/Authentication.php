@@ -75,14 +75,42 @@ class Authentication
    */
   public $user_email;
 
+  /**
+   * Username for login
+   * 
+   * @var string
+   * 
+   */
   public $user_login;
 
+  /**
+   * user nicename
+   * 
+   * @var string
+   * 
+   */
   public $user_fullname;
 
+  /**
+   * user level
+   * 
+   * @var string
+   * 
+   */
   public $user_level;
 
+  /**
+   * Constant COOKIE_EXPIRE
+   * 
+   * @var const|numeric
+   * 
+   */
   const COOKIE_EXPIRE =  2592000;  // default 1 month
 
+  /**
+   * Constant COOKIE_PATH
+   * 
+   */
   const COOKIE_PATH = "/";  //Available in whole domain
  
   /**
@@ -152,12 +180,14 @@ class Authentication
 
  }
  
- /**
-  * Login
-  * @param array $values
-  * @return boolean
-  */
- public function login($values)
+/**
+ * Login
+ * 
+ * @method public login()
+ * @param array $values
+ * 
+ */
+ public function login(array $values)
  {
     
      $email = $values['user_email'];

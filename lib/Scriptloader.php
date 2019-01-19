@@ -1,10 +1,10 @@
 <?php
 /**
- * Class Scriptload
+ * Class Scriptloader
  * Load all class files in any directories selected
  * 
  * @package     SCRIPTLOG
- * @category    description
+ * @category    library\Scriptloader 
  * @author      M.Noermoehammad 
  * @license     MIT
  * @version     1.0

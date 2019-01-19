@@ -1,11 +1,9 @@
 <?php
 /**
  * main-dev.php
- * Initialize main engine 
- * Define constants, object instantiated
+ * Initialize main engine, define constants, and object instantiated
  * include functions needed by application
  * 
- * @category development main engine file
  * @package  SCRIPTLOG
  * @author   M.Noermoehammad
  * @license  MIT
@@ -13,11 +11,11 @@
  * 
  */
 
- #date_default_timezone_set("Asia/Jakarta");
+# date_default_timezone_set("Asia/Jakarta");
 ini_set("memory_limit", "1M");
-#ini_set("session.cookie_secure", "True");  //secure
-#ini_set("session.cookie_httponly", "True"); // httpOnly
-#header("Content-Security-Policy: default-src https:; font-src 'unsafe-inline' data: https:; form-action 'self' https://kartatopia.com;img-src data: https:; child-src https:; object-src 'self' www.google-analytics.com ajax.googleapis.com platform-api.sharethis.com kartatopia-studio.disqus.com; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;");
+# ini_set("session.cookie_secure", "True");  //secure
+# ini_set("session.cookie_httponly", "True"); // httpOnly
+# header("Content-Security-Policy: default-src https:; font-src 'unsafe-inline' data: https:; form-action 'self' https://kartatopia.com;img-src data: https:; child-src https:; object-src 'self' www.google-analytics.com ajax.googleapis.com platform-api.sharethis.com kartatopia-studio.disqus.com; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;");
 
 $key = '5c12IpTl0g!@#';
 $checkIncKey = sha1(mt_rand(1, 1000).$key);
@@ -160,8 +158,7 @@ Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
  * @var $postFeeds used by rss feed functionality
  * @var $sanitizer used by sanitize functionality
  * @var $userDao, $validator, $authenticator --
- * these are collection of objects or instances of classes that will used for login
- * 
+ * these are collection of objects or instances of classes that will be used for login
  */
 $searchPost = new SearchFinder($dbc);
 $frontPaginator = new Paginator(10, 'p');
@@ -172,6 +169,7 @@ $userToken = new UserToken();
 $validator = new FormValidator();
 $authenticator = new Authentication($userDao, $userToken, $validator);
 
+// These line (175 and 176) are experimental code. You do not need it.
 # $bones = new Bones();
 # $request = new RequestHandler($bones);
 

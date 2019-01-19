@@ -1,12 +1,11 @@
 <?php
 /**
  * Main.php file
- * Initialize main engine 
- * Define constants, object instantiated
+ * Initialize main engine, define constants, and object instantiated
  * include functions needed by application
  * 
- * @category production main engine file 
  * @package  SCRIPTLOG
+ * @category library\main.php file
  * @author   M.Noermoehammad
  * @license  https://opensource.org/licenses/MIT MIT License
  * @version  1.0
@@ -14,10 +13,10 @@
  * 
  */
 
-#date_default_timezone_set("Asia/Jakarta");
-#ini_set("session.cookie_secure", "True");  // cookie_secure
-#ini_set("session.cookie_httponly", "True"); // cookie_httpOnly
-#header("Content-Security-Policy: default-src https:; font-src 'unsafe-inline' data: https:; form-action 'self' https://yourdomain.com;img-src data: https:; child-src https:; object-src 'self' www.google-analytics.com ajax.googleapis.com platform-api.sharethis.com yourusername.disqus.com; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;");
+# date_default_timezone_set("Asia/Jakarta");
+# ini_set("session.cookie_secure", "True");  // cookie_secure
+# ini_set("session.cookie_httponly", "True"); // cookie_httpOnly
+# header("Content-Security-Policy: default-src https:; font-src 'unsafe-inline' data: https:; form-action 'self' https://yourdomain.com;img-src data: https:; child-src https:; object-src 'self' www.google-analytics.com ajax.googleapis.com platform-api.sharethis.com yourusername.disqus.com; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;");
 
 $key = '5c12IpTl0g!@#';
 $checkIncKey = sha1(mt_rand(1, 1000).$key);
@@ -164,8 +163,7 @@ Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
  * @var $postFeeds used by rss feed functionality
  * @var $sanitizer used by sanitize functionality
  * @var $userDao, $validator, $authenticator --
- * these are collection of objects or instances of classes that will used for login
- * 
+ * these are collection of objects or instances of classes that will be used for login
  */
 $searchPost = new SearchFinder($dbc);
 $frontPaginator = new Paginator(10, 'p');

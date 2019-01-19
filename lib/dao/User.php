@@ -366,8 +366,10 @@ class User extends Dao
  {
   
   $name = 'user_level';
-  $levels = array('manager'=>'Manager', 'editor' => 'Editor', 
-           'author'=>'Author', 'contributor'=>'Contributor');
+  $levels = array('manager'=>'Manager', 
+                  'editor' => 'Editor', 
+                  'author'=>'Author', 
+                  'contributor'=>'Contributor');
   
   if ($selected != '') {
       $selected = $selected;
@@ -441,13 +443,15 @@ class User extends Dao
      return($stmt > 0);
  }
 
- /**
-  * Checking password
-  * 
-  * @param string $email
-  * @param string $password
-  * @return boolean
-  */
+/**
+ * Checking user password
+ * 
+ * @method public checkUserPassword()
+ * @param string $email
+ * @param string $password
+ * @return bool
+ * 
+ */
  public function checkUserPassword($email, $password)
  {
     $sql = "SELECT user_pass FROM users WHERE user_email = :user_email LIMIT 1";

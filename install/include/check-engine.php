@@ -147,7 +147,7 @@ function check_web_server()
  */
 function check_main_dir()
 {
-    if (is_dir(APP_PATH) && is_file(APP_PATH . '../library/main.php')) {
+    if (is_dir(APP_PATH) && is_file(APP_PATH . '../lib/main.php')) {
         
        return true;
        
@@ -164,7 +164,7 @@ function check_main_dir()
  */
 function check_loader()
 {
-    if (is_dir(APP_PATH) && is_file(APP_PATH . '../library/Scriptloader.php')) {
+    if (is_dir(APP_PATH) && is_file(APP_PATH . '../lib/Scriptloader.php')) {
         
      return true;
      
@@ -228,11 +228,11 @@ function check_cache_dir()
 }
 
 /**
- * Checking Library Plugin Directory. It is writeable or not
+ * Checking lib Plugin Directory. It is writeable or not
  */
 function check_plugin_dir()
 {
-    if (is_dir(APP_PATH) && is_dir(APP_PATH . '../library/plugins') && is_writable(APP_PATH . '../library/plugins')) {
+    if (is_dir(APP_PATH) && is_dir(APP_PATH . '../lib/plugins') && is_writable(APP_PATH . '../lib/plugins')) {
         
         return true;
         

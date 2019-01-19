@@ -1,7 +1,16 @@
 <?php
 /**
+ * collection of function uses MySQL Improved (MySQLi) extension
+ * 
+ * @package  SCRIPTLOG
+ * @category library\utility
+ * @author   M.Noermoehammad
+ * @license  MIT
+ * @version  1.0
  * 
  */
+
+// database connection 
 function db_connect($host, $user, $passwd, $dbname)
 {
 
@@ -22,6 +31,7 @@ function db_close($connection)
  return mysqli_close($connection);
 }
 
+// query table name
 function table_exists($connection, $table, $counter = 0)
 {
   if ($connection) {

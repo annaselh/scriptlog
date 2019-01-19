@@ -201,7 +201,6 @@ if ($link -> insert_id && $createAdmin -> affected_rows > 0) {
 function write_config_file($protocol, $server_name, $host, $user, $password, $database, $email, $key)
 {
 
-
 $link = mysqli_connect($host, $user, $password, $database);
 
 if (isset($_SESSION['install']) && $_SESSION['install'] == true) {

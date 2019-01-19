@@ -12,13 +12,16 @@
  */
 if (file_exists(__DIR__ . '/../config.php')) {
     
-    include __DIR__ . '/../library/main.php';
-    require 'authorizer.php';
+    include __DIR__ . '/../lib/main.php';
+    require __DIR__ . '/authorizer.php';
 
 } else {
 
-  header("Location: ../install");
-  exit();
+    include __DIR__ . '/../lib/main-dev.php';
+    require __DIR__ . '/authorizer.php';
+  
+  //header("Location: ../install");
+  //exit();
   
 }
 

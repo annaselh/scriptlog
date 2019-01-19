@@ -2,9 +2,9 @@
 /**
  * File index.php
  * 
- * @category File
  * @package  SCRIPTLOG
- * @author   Maoelana Noermoehammad 
+ * @category admin\index.php
+ * @author   M.Noermoehammad 
  * @license  https://opensource.org/licenses/MIT MIT License
  * @link     https://scriptlog.web.id
  * 
@@ -16,8 +16,10 @@ if (file_exists(__DIR__ . '/../config.php')) {
 
 } else {
 
-    header("Location: ../install");
-    exit();
+    include __DIR__ . '/../lib/main-dev.php';
+    require __DIR__ . '/authorizer.php';
+    //header("Location: ../install");
+    //exit();
        
 }
 

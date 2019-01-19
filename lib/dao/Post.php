@@ -104,18 +104,18 @@ public function findPost($id, $sanitize, $author = null)
    if (!empty($author)) {
         
         $sql = "SELECT ID, 
-              media_id, 
-              post_author,
-  	  		  post_date, 
-              post_modified, 
-              post_title,
-  	  		  post_slug, 
-              post_content, 
-              post_summary, 
-              post_keyword, 
-              post_status,
-  	  		  post_type, 
-              comment_status
+                  media_id, 
+                  post_author,
+  	  		      post_date, 
+                  post_modified, 
+                  post_title,
+  	  		      post_slug, 
+                  post_content, 
+                  post_summary, 
+                  post_keyword, 
+                  post_status,
+  	  		      post_type, 
+                  comment_status
   	  		  FROM posts
   	  		  WHERE ID = :ID AND post_author = :author
   			  AND post_type = 'blog'";
