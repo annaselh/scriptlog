@@ -90,6 +90,7 @@ class PostEvent
    * Post DAO
    * 
    * @var object
+   * 
    */
   private $postDao;
 
@@ -104,6 +105,7 @@ class PostEvent
    * Sanitizer
    * 
    * @var object
+   * 
    */
   private $sanitizer;
 
@@ -113,6 +115,7 @@ class PostEvent
    * @param object $postDao
    * @param object $validator
    * @param object $sanitizer
+   * 
    */
   public function __construct(Post $postDao, FormValidator $validator, Sanitize $sanitizer)
   {

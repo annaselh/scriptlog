@@ -88,7 +88,9 @@ class Uploader
 
 	/**
 	 * Checking file uploaded
+	 * 
 	 * @return boolean
+	 * 
 	 */
 	private function readyToUpload()
 	{

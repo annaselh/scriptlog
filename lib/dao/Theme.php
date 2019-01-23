@@ -179,7 +179,7 @@ class Theme extends Dao
    * 
    * @method totalThemeRecords()
    * @param array $data
-   * @return boolean
+   * @return numeric|integer
    * 
    */
   public function totalThemeRecords($data = null)

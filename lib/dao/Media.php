@@ -59,10 +59,10 @@ public function findAllMedia($orderBy = 'ID')
  * @method public findMediaById()
  * @param integer $mediaId
  * @param object $sanitize
- * @param string $fetchMode
+ * @param string $fetchMode default  null
  * 
  */
-public function findMediaById($mediaId, $sanitize, $fetchMode = null)
+public function findMediaById($mediaId, $sanitize)
 {
   $idsanitized = $this->filteringId($sanitize, $mediaId, 'sql');
 
@@ -79,15 +79,7 @@ public function findMediaById($mediaId, $sanitize, $fetchMode = null)
 
   $this->setSQL($sql);
 
-  if(is_null($fetchMode)) {
-
-    $mediaDetails = $this->findRow([$idsanitized]);
-
-  } else {
-
-    $mediaDetails = $this->findRow([$idsanitized], $fetchMode);
-
-  }
+  $mediaDetails = $this->findRow([$idsanitized]);
 
   if(empty($mediaDetails)) return false;
 
@@ -99,9 +91,11 @@ public function findMediaById($mediaId, $sanitize, $fetchMode = null)
  * Find media by media format type
  * 
  * @method public findMediaByType()
- * @param string $fetchMode
+ * @param string $type
+ * @param string $fetchMode default null
+ * 
  */
-public function findMediaByType($type, $fetchMode = null)
+public function findMediaByType($type)
 {
   $sql = "SELECT ID,
             media_filename,
@@ -117,15 +111,7 @@ public function findMediaByType($type, $fetchMode = null)
 
   $this->setSQL($sql);
   
-  if(is_null($fetchMode)) {
-
-     $mediaDetails = $this->findRow([':media_type' => $type]);
-
-  } else {
-
-     $mediaDetails = $this->findRow([':media_type' => $type], $fetchMode);
-
-  }
+  $mediaDetails = $this->findRow([':media_type' => $type]);
 
   if(empty($mediaDetails)) return false;
 
@@ -242,7 +228,7 @@ public function deleteMedia($ID, $sanitize)
 }
 
 /**
- * Check ID's Media
+ * Check media's Id
  * 
  * @method public checkMediaId()
  * @param integer|numeric $id
@@ -262,11 +248,60 @@ public function checkMediaId($id, $sanitize)
 }
 
 /**
+ * drop down media type
+ * set media type
+ * 
+ * @param string $selected
+ * @return string
+ * 
+ */
+public function dropDownMediaType($selected = "")
+{
+
+ $name = 'media_type';
+
+ $media_type = array('audio' => 'Audio', 'document' => 'Document', 'picture' => 'Picture', 'video' => 'Video');
+
+ if($selected != '') {
+    
+    $selected = $selected;
+
+ }
+
+ return dropdown($name, $media_type, $selected);
+
+}
+
+/**
+ * drop down media target
+ * set media target
+ * 
+ * @param string $selected
+ * @return string
+ * 
+ */
+public function dropDownMediTarget($selected = "")
+{
+ $name = 'media_target';
+
+ $media_target = array('album' => 'Album', 'blog' => 'Blog', 'download' => 'Download', 'page' => 'Page');
+
+ if($selected != '') {
+
+    $selected = $selected;
+
+ }
+
+ return dropdown($name, $media_target, $selected);
+
+}
+
+/**
  * Total media records
  * 
  * @method public totalMediaRecords()
  * @param array $data = null
- * @return numeric
+ * @return integer|numeric
  * 
  */
 public function totalMediaRecords($data = null)

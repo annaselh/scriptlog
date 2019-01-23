@@ -27,7 +27,7 @@ define('APP_VERSION', '1.0');
 define('APP_ADMIN', 'admin');
 define('APP_PUBLIC', 'public');
 define('APP_LIBRARY', 'lib');
-define('APP_DEVELOPMENT', TRUE);
+define('APP_DEVELOPMENT', true);
 define('SCRIPTLOG', $checkIncKey);
 
 if (!defined('APP_ROOT')) define('APP_ROOT', dirname(dirname(__FILE__)) . DS);

@@ -4,9 +4,9 @@
  * checking whether session or cookies exists or not
  * 
  * @package  SCRIPTLOG
- * @category admin\authorizer
- * @author   Contributors
- * @license  https://opensource.org/licenses/MIT MIT License
+ * @category admin\authorizer.php file
+ * @author   Vincy vincy@gmail.com
+ * @link     https://phppot.com/php/secure-remember-me-for-login-using-php-session-and-cookies/
  * 
  */
 $current_date = date("Y-m-d H:i:s", time()); 

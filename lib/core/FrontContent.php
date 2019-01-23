@@ -1,6 +1,6 @@
 <?php
 /**
- * FrontContent Class extends ContentGateway Class
+ * Class FrontContent extends Class ContentGateway
  * 
  * @package  SCRIPTLOG
  * @category library\core\FrontContent

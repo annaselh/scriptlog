@@ -3,6 +3,7 @@
  * ImageUploaderException Class
  *
  * @package   SCRIPTLOG
+ * @category  library\core\UploadException
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

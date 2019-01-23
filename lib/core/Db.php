@@ -43,6 +43,7 @@ class Db implements DbInterface
   */
  public function setDbConnection($values = [], $options = [])
  {
+     
    try {
        
       $dsn = $values[0];

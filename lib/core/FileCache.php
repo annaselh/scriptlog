@@ -1,6 +1,6 @@
 <?php
 /**
- * FileCache Class extends Cache Class
+ * Class FIleCache
  * 
  * @package  SCRIPTLOG
  * @category library\core\FileCache

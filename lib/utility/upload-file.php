@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Upload file
+ * 
+ * @param string $filename
+ * 
+ */
 function upload_file($file_name)
 {
     // picture directory

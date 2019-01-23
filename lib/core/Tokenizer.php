@@ -5,11 +5,9 @@
  *
  * @package   SCRIPTLOG
  * @category  library\core\Tokenizer
- * @author    Contributors
- * @license   MIT
- * @version   1.0
- * @since     Since Release 1.0
- *
+ * @author    Vincy vincy@gmail.com
+ * @link      https://phppot.com/php/secure-remember-me-for-login-using-php-session-and-cookies/
+ * 
  */
 class  Tokenizer
 {

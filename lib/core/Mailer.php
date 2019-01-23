@@ -1,6 +1,6 @@
 <?php 
 /**
- * Mailer Class
+ * Class Mailer
  * Send e-mail via mail php function  
  * 
  * @package   SCRIPTLOG

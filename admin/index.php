@@ -16,10 +16,8 @@ if (file_exists(__DIR__ . '/../config.php')) {
 
 } else {
 
-    include __DIR__ . '/../lib/main-dev.php';
-    require __DIR__ . '/authorizer.php';
-    //header("Location: ../install");
-    //exit();
+    header("Location: ../install");
+    exit();
        
 }
 

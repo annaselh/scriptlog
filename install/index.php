@@ -2,11 +2,12 @@
 /**
  * File index.php 
  * 
- * @category  installation file index.php
  * @package   SCRIPTLOG INSTALLATION
+ * @category  install\index.php file
  * @author    M.Noermoehammad
  * @license   MIT
- * @version   1.0
+ * @version   0.1
+ * @since     Since Release 1.0
  * 
  */
 require dirname(__FILE__) . '/include/settings.php';
@@ -20,30 +21,30 @@ if (file_exists(__DIR__ . '/../config.php')) {
 
   $set_config = require __DIR__ . '/../config.php';
 
-  $link = make_connection($set_config['db']['host'], 
+  $dbconnect = make_connection($set_config['db']['host'], 
           $set_config['db']['user'], 
           $set_config['db']['pass'], 
           $set_config['db']['name']);
   
-  if($link instanceof mysqli) {
+  if($dbconnect instanceof mysqli) {
 
-     if($link->connect_errno) {
+     if($dbconnect -> connect_errno) {
 
-       $errors['errorSetup'] = 'Faild to connect to MySQL ('.$link -> connect_errno . ') '.$link -> connect_error;
+       $errors['errorSetup'] = 'Faild to connect to MySQL ('.$dbconnect -> connect_errno . ') '.$dbconnect -> connect_error;
 
      }
      
   }
 
 // check if database table exists or not
-if((check_dbtable($link, 'users') == true) || (check_dbtable($link, 'user_token') == true)
-|| (check_dbtable($link, 'topics') == true) || (check_dbtable($link, 'themes') == true)
-|| (check_dbtable($link, 'settings') == true) || (check_dbtable($link, 'posts') == true)
-|| (check_dbtable($link, 'post_topic') == true) || (check_dbtable($link, 'plugin') == true)
-|| (check_dbtable($link, 'menu_child') == true) || (check_dbtable($link, 'menu') == true)
-|| (check_dbtable($link, 'mediameta') == true) || (check_dbtable($link, 'media') == true)
-|| (check_dbtable($link, 'comments') == true) 
-|| (check_dbtable($link, 'comment_reply') == true)) {
+if((check_dbtable($dbconnect, 'users') == true) || (check_dbtable($dbconnect, 'user_token') == true)
+|| (check_dbtable($dbconnect, 'topics') == true) || (check_dbtable($dbconnect, 'themes') == true)
+|| (check_dbtable($dbconnect, 'settings') == true) || (check_dbtable($dbconnect, 'posts') == true)
+|| (check_dbtable($dbconnect, 'post_topic') == true) || (check_dbtable($dbconnect, 'plugin') == true)
+|| (check_dbtable($dbconnect, 'menu_child') == true) || (check_dbtable($dbconnect, 'menu') == true)
+|| (check_dbtable($dbconnect, 'mediameta') == true) || (check_dbtable($dbconnect, 'media') == true)
+|| (check_dbtable($dbconnect, 'comments') == true) 
+|| (check_dbtable($dbconnect, 'comment_reply') == true)) {
 
   $create_db = $protocol . '://' . $server_host . dirname($_SERVER['PHP_SELF']) . DIRECTORY_SEPARATOR .'install.php';
 
@@ -100,17 +101,7 @@ if ($install != 'install') {
         
         $errors['errorSetup'] = "database: requires name, hostname, user and password";
         
-    } else {
-        
-        $link = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-        
-        if ($link->connect_errno) {
-
-            $errors['errorSetup'] = 'Failed to connect to MySQL: (' . $link->connect_errno . ') '.$link->connect_error;
-
-        }
-            
-    }
+    } 
     
     if(ctype_alnum($username) && (mb_strlen($username) > 0) && (mb_strlen($username) <= 32)) {
       
@@ -139,16 +130,26 @@ if ($install != 'install') {
     } elseif (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,50}$/', $password)) {
 
         $errors['errorSetup'] = 'Admin password may contain letter and numbers, at least one number and one letter, any of these characters !@#$%';
+
     }
     
     if (!is_writable(__DIR__ . '/index.php')) {
-
+       
        $errors['errorSetup'] = 'Permission denied. Directory installation is not writable';
        
     }
 
     if (empty($errors['errorSetup']) == true) {
         
+        $link = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
+        
+        if ($link -> connect_errno) {
+
+          $errors['errorSetup'] = 'Failed to connect to MySQL: (' . 
+                                  $link -> connect_errno . ') ' . $link -> connect_error;
+
+        }
+
         $completed = true;
         
         $length = 16;
@@ -224,19 +225,15 @@ if ($install != 'install') {
         
         <div class="col-md-8 order-md-1">
         <?php 
-        if (count($errors) && !empty($errors['errorChecking']) === true) :
+        if (isset($errors['errorSetup']) && (!$completed)):
         ?>
-         <div class="alert alert-danger" role="alert">
-          Scriptlog may not work correctly with your environment
+         <div class="alert alert-danger"  role="alert">
+         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+         </button>
+         <?= $errors['errorSetup']; ?>
         </div>
         <?php 
-        elseif (isset($errors['errorSetup']) && (!$completed)) :
-        ?>
-         <div class="alert alert-danger" role="alert">
-        <?= $errors['errorSetup']; ?>
-         </div>
-        <?php 
-        else:
+          endif;
         ?>
           <div class="alert alert-success" role="alert">
             We are going to use this information to create a config.php file. 
@@ -319,11 +316,7 @@ if ($install != 'install') {
      <input type="hidden" name="setup" value="install">
      <button class="btn btn-success btn-lg btn-block" type="submit">Install</button>
     </form>
-
-    <?php 
-      endif;
-    ?>
-        
+    
   </div>
 
   </div>

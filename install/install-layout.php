@@ -176,7 +176,7 @@ function get_sisfo()
                   endforeach;
                   
                 ?>
-                   <small class="<?=(isset($browser_failed)) ? $browser_failed : 'text-success'; ?>"><?=(isset($browser_failed)) ? $errors['errorChecking'] = 'Please upgrade your browser' : check_browser(). ' ' .get_browser_version(); ?></small>
+                   <small class="<?=(isset($browser_failed)) ? $browser_failed : 'text-success'; ?>"><?=(isset($browser_failed)) ? $errors['errorChecking'] = 'Browser is not supported' : check_browser(). ' ' .get_browser_version(); ?></small>
                 </div>
                 <span class="<?=(isset($browser_failed)) ? $browser_failed : 'text-success'; ?>"><i class="<?=(isset($fabrowser_close)) ? $fabrowser_close : 'fa fa-check fa-lg'; ?> ?>"></i></span>
              

@@ -6,6 +6,7 @@
  * @param string $origin
  * @param string $timespan
  * @return boolean
+ * 
  */
 function csrf_check_token($key, $origin, $timespan = null)
 {
@@ -27,6 +28,7 @@ function csrf_check_token($key, $origin, $timespan = null)
  * 
  * @param string $key
  * @return string
+ * 
  */
 function csrf_generate_token($key)
 {

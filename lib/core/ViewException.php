@@ -3,6 +3,7 @@
  * ViewException Class
  *
  * @package   SCRIPTLOG
+ * @category  library\core\ViewException
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

@@ -1,6 +1,6 @@
 <?php
 /**
- * ContentGateway Class
+ * Class ContentGateway
  * 
  * @package  SCRIPTLOG
  * @category library\core\ContentGateway

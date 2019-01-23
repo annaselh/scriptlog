@@ -159,6 +159,10 @@ public function checkToSetup()
 
 /**
  * Total Config records
+ * 
+ * @param mixed $data
+ * @return integer|numeric
+ * 
  */
 public function totalConfigRecords($data = null)
 {

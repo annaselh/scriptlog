@@ -189,7 +189,7 @@ class Dao
   *
   * @param array $data
   * @throws DbException
-  * @return numeric
+  * @return integer|numeric
   *
   */
  protected function checkCountValue($data = null)
@@ -276,16 +276,15 @@ class Dao
    return $this->dbc->dbLastInsertId();
  }
  
- /**
-  * Filtering Id
-  * Sanitizing server request $_GET
-  * 
-  * @param Sanitize $sanitize
-  * @param string|integer $str
-  * @param string|integer $type
-  * @throws Exception
-  * @return mixed 
-  */
+/**
+ * Filtering Id passed by HTTP request
+ *  
+ * @param object $sanitize
+ * @param string $str
+ * @param string $type
+ * @return 
+ * 
+ */
  protected function filteringId(Sanitize $sanitize, $str, $type)
  {
 

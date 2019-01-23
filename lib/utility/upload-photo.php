@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Upload photo
+ * 
+ */
 function upload_photo($file_name, $width, $height, $mode, $folder)
 {
     

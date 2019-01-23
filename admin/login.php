@@ -4,10 +4,12 @@
  * login functionality 
  * to access control panel or administrator page
  * 
- * @category file
  * @package  SCRIPTLOG
+ * @category admin\login.php file
  * @author   M.Noermoehammad
  * @license  MIT
+ * @version  1.0
+ * @since    Since Release 1.0
  * 
  */
 if (file_exists(__DIR__ . '/../config.php')) {
@@ -17,11 +19,8 @@ if (file_exists(__DIR__ . '/../config.php')) {
 
 } else {
 
-    include __DIR__ . '/../lib/main-dev.php';
-    require __DIR__ . '/authorizer.php';
-  
-  //header("Location: ../install");
-  //exit();
+   header("Location: ../install");
+   exit();
   
 }
 

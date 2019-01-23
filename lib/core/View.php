@@ -3,6 +3,7 @@
  * View Class
  *
  * @package   SCRIPTLOG
+ * @category  library\core\View
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

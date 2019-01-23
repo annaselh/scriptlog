@@ -310,7 +310,7 @@ class Topic extends Dao
   * Total topic records
   * 
   * @param array $data
-  * @return boolean
+  * @return numeric
   *
   */
  public function totalTopicRecords($data = null)

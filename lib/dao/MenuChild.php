@@ -13,12 +13,23 @@
 class MenuChild extends Dao
 {
 
+/**
+ * 
+ */
  public function __construct()
  {
     parent::__construct();
     
  }
- 
+
+/**
+ * Retrieve all menuchilds record
+ * 
+ * @method public findMenuChilds()
+ * @param mixed $orderBy
+ * @return array
+ * 
+ */
  public function findMenuChilds($orderBy = 'ID')
  {
     
@@ -39,6 +50,15 @@ class MenuChild extends Dao
    
  }
  
+/**
+ * Retrieve menuChild record by Id
+ * 
+ * @method public findMenuChild()
+ * @param integer|numeric $id
+ * @param object $sanitize
+ * @return array
+ * 
+ */
  public function findMenuChild($id, $sanitize)
  {
    $sql = "SELECT mc.ID, mc.menu_child_label, mc.menu_child_link, 
@@ -60,6 +80,14 @@ class MenuChild extends Dao
    
  }
  
+/**
+ * Find sort menu by Ascending Sortable
+ * 
+ * @param integer|numeric $id
+ * @param object $sanitize
+ * @return array
+ * 
+ */
  public function findAscMenu($id, $sanitize)
  {
    $sql = "SELECT menu_id FROM menu_child WHERE ID = ?";
@@ -70,6 +98,13 @@ class MenuChild extends Dao
    return $ascendentMenu;
  }
 
+/**
+ * Insert new menu child record
+ * 
+ * @method public insertMenuChild()
+ * @param array $bind
+ * 
+ */
  public function insertMenuChild($bind)
  {
      
@@ -93,6 +128,15 @@ class MenuChild extends Dao
   
  }
  
+/**
+ * Updating an exist menu child record
+ * 
+ * @method public updateMenuChild()
+ * @param object $sanitize
+ * @param array $bind
+ * @param integer $ID
+ * 
+ */
  public function updateMenuChild($sanitize, $bind, $ID)
  {
    
@@ -108,6 +152,14 @@ class MenuChild extends Dao
 
  }
  
+/**
+ * Activate menu child
+ * 
+ * @method public activateMenuChild()
+ * @param integer $id
+ * @param object $sanitize
+ * 
+ */
  public function activateMenuChild($id, $sanitize)
  {
    $idsanitized = $this->filteringId($sanitize, $id, 'sql');

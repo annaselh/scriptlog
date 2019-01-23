@@ -249,11 +249,14 @@ class Menu extends Dao
    
  }
 
- /**
-  * Total Menus
-  * @param mixed $data
-  * @return numeric
-  */
+/**
+ * Total menu records
+ * 
+ * @method public totalMenuRecords()
+ * @param array $data = null
+ * @return integer|numeric
+ * 
+ */
  public function totalMenuRecords($data = null)
  {
    $sql = "SELECT ID FROM menu";

@@ -2,13 +2,13 @@
 /**
  * BoardInterface Interface
  * giving dashboard application interface to set page title and handle dashboard's view.
- * This class inherent to Class Dashboard
+ * This class inherented to Class Dashboard
  * 
  * @package   SCRIPTLOG
  * @category  library\core\BoardInterface
  * @author    M.Noermoehammad
  * @license   MIT
- * @version   1.0
+ * @version   0.1
  * @since     Since Release 1.0
  * 
  */

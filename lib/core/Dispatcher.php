@@ -1,12 +1,13 @@
 <?php
 /**
- * Dispatcher Class
+ * Class Dispatcher
  * 
  * @package  SCRIPTLOG
+ * @category library\core\Dispatcher
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0
- * @since    Since Release 1.0
+ * @since    Since Release 0.1
  * 
  */
 class Dispatcher

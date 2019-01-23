@@ -443,10 +443,12 @@ public function checkPostId($id, $sanitizing)
 }
 
 /**
+ * Drop down post status
  * set post status
  * 
  * @param string $selected
  * @return string
+ * 
  */
 public function dropDownPostStatus($selected = "")
 {
@@ -467,9 +469,11 @@ public function dropDownPostStatus($selected = "")
 
 /**
  * Drop down Comment Status
+ * set comment status
  * 
  * @param string $name
- * return string
+ * @return string
+ * 
  */
 public function dropDownCommentStatus($selected = "")
 {
@@ -490,7 +494,8 @@ public function dropDownCommentStatus($selected = "")
  * Total posts records
  * 
  * @param array $data
- * @return boolean
+ * @return numeric
+ * 
  */
 public function totalPostRecords($data = null)
 {

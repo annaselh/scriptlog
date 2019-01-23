@@ -5,10 +5,13 @@
  * 
  * @param string $slug
  * @return string|mixed
+ * 
  */
 function make_slug($slug)
 {
     
+    $slug = strip_tags($slug);
+
     // replace non letter or digits by -
     $slug = preg_replace( '~[^\\pL\d]+~u', '-', $slug);
     
