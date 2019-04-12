@@ -103,10 +103,10 @@ class PostApp extends BaseApp
     if (isset($_POST['postFormSubmit'])) {
         
        $file_location = isset($_FILES['image']['tmp_name']) ? $_FILES['image']['tmp_name'] : '';
- 	   $file_type = isset($_FILES['image']['type']) ? $_FILES['image']['type'] : '';
- 	   $file_name = isset($_FILES['image']['name']) ? $_FILES['image']['name'] : '';
- 	   $file_size = isset($_FILES['image']['size']) ? $_FILES['image']['size'] : '';
- 	   $file_error = isset($_FILES['image']['error']) ? $_FILES['image']['error'] : '';
+ 	     $file_type = isset($_FILES['image']['type']) ? $_FILES['image']['type'] : '';
+ 	     $file_name = isset($_FILES['image']['name']) ? $_FILES['image']['name'] : '';
+ 	     $file_size = isset($_FILES['image']['size']) ? $_FILES['image']['size'] : '';
+ 	     $file_error = isset($_FILES['image']['error']) ? $_FILES['image']['error'] : '';
        
        $path = __DIR__ . '/../../public/files/pictures/';
        $path_thumb = __DIR__ . '/../../public/files/pictures/thumbs/';
@@ -136,9 +136,6 @@ class PostApp extends BaseApp
             
         );
 
-        
-        
-        
        }
 
       try {

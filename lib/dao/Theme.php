@@ -151,6 +151,34 @@ class Theme extends Dao
   }
 
   /**
+   * Is theme active or not
+   * 
+   * @param string $theme_title
+   * @return boolen|string
+   * 
+   */
+  public function isThemeActived($theme_title)
+  {
+    
+    if($this->themeExists($theme_title) == true) {
+
+       $sql = "SELECT theme_status FROM themes WHERE theme_title = ?";
+       $this->setSQL($sql);
+       $is_actived = $this->findColumn([$theme_title]);
+
+       if(empty($is_actived)) return false;
+
+       return $is_actived;
+
+    } else {
+
+       return false;
+
+    }
+
+  }
+
+  /**
    * Activate theme function
    * 
    * @method mixed activateTheme()

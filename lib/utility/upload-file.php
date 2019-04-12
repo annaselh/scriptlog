@@ -3,23 +3,18 @@
  * Upload file
  * 
  * @param string $filename
+ * @param string $folder
  * 
  */
-function upload_file($file_name)
+function upload_file($field_name, $folder)
 {
-    // picture directory
-    $upload_path = __DIR__ . '/../../public/files/docs/';
-    $file_uploaded = $upload_path . $file_name;
-    $file_size = $_FILES['fdoc']['size'];
-    
-    if ($file_size < 524867) {
-        
-        move_uploaded_file($_FILES['fdoc']['tmp_name'], $file_uploaded);
-        
-    } else {
-        
-        throw new Exception("Your file is too big !. Maximum file size :" . format_size_unit(524867));
-        
-    }
+
+ if (!is_dir(__DIR__ . '/../../public/files/docs/'.$folder . DS)) {
+
+    $file_path = mkdir(__DIR__ . '/../../public/files/docs/'.$folder.DS);
+
+ }
+
+ move_uploaded_file($_FILES[$field_name]['tmp_name'], $file_path);
     
 }

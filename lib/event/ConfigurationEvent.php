@@ -1,8 +1,9 @@
 <?php
 /**
- * ConfigurationEvent Class
+ * Class ConfigurationEvent
  *
  * @package   SCRIPTLOG
+ * @category  library\event\ConfigurationEvent
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

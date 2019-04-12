@@ -6,6 +6,7 @@
  * @param string $safe The internal (safe) value to be checked
  * @param string $user The user submitted (unsafe) value
  * @return boolean True if the two strings are identical.
+ * 
  */
 function timing_safe_equals($safe, $user)
 {

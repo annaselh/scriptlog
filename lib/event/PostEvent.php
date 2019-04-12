@@ -407,7 +407,7 @@ class PostEvent
     $this->validator->sanitize($this->postId, 'int');
     
     if (!$data_post = $this->postDao->findPost($this->postId, $this->sanitizer)) {
-       direct_page('index.php?module=posts&error=postNotFound', 404); 
+       direct_page('index.php?load=posts&error=postNotFound', 404); 
     }
     
     $post_image = $data_post['post_image'];
@@ -475,7 +475,8 @@ class PostEvent
    * Total posts records
    * 
    * @param array $data
-   * @return boolean
+   * @return integer
+   * 
    */
   public function totalPosts($data = null)
   {

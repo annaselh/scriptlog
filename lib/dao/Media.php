@@ -59,7 +59,6 @@ public function findAllMedia($orderBy = 'ID')
  * @method public findMediaById()
  * @param integer $mediaId
  * @param object $sanitize
- * @param string $fetchMode default  null
  * 
  */
 public function findMediaById($mediaId, $sanitize)
@@ -92,19 +91,19 @@ public function findMediaById($mediaId, $sanitize)
  * 
  * @method public findMediaByType()
  * @param string $type
- * @param string $fetchMode default null
+ * @return array
  * 
  */
 public function findMediaByType($type)
 {
   $sql = "SELECT ID,
-            media_filename,
-            media_caption,
-            media_type, 
-            media_target,
-            media_user,
-            media_access,
-            media_status
+                 media_filename,
+                 media_caption,
+                 media_type, 
+                 media_target,
+                 media_user,
+                 media_access,
+                 media_status
           FROM media
           WHERE media_type = :media_type 
           AND media_status = '1'";
@@ -126,7 +125,7 @@ public function findMediaByType($type)
  * @param string $name
  * 
  */
-public function addMedia($bind)
+public function createMedia($bind)
 {
   
   $stmt = $this->create("media", [
@@ -223,8 +222,16 @@ public function updateMedia($sanitize, $bind, $ID)
  */
 public function deleteMedia($ID, $sanitize)
 {
+  
   $id_sanitized = $this->filteringId($sanitize, $ID, 'sql');
   $stmt = $this->deleteRecord("media", "ID = {$id_sanitized}");
+
+  if($stmt) {
+
+     $stmt2 = $this->deleteRecord("mediameta", "media_id = {$id_sanitized}");
+
+  }
+
 }
 
 /**
@@ -273,6 +280,30 @@ public function dropDownMediaType($selected = "")
 }
 
 /**
+ * drop down media access
+ * set media access
+ * 
+ * @param string $selected
+ * @return string
+ * 
+ */
+public function dropDownMediaAccess($selected = "")
+{
+  $name = 'media_access';
+
+  $media_access = array('public' => 'Public', 'private' => 'Private');
+
+  if($selected != '') {
+    
+    $selected = $selected;
+
+  }
+
+  return dropdown($name, $media_access, $selected);
+
+}
+
+/**
  * drop down media target
  * set media target
  * 
@@ -280,7 +311,7 @@ public function dropDownMediaType($selected = "")
  * @return string
  * 
  */
-public function dropDownMediTarget($selected = "")
+public function dropDownMediaTarget($selected = "")
 {
  $name = 'media_target';
 
@@ -293,6 +324,29 @@ public function dropDownMediTarget($selected = "")
  }
 
  return dropdown($name, $media_target, $selected);
+
+}
+
+/**
+ * Drop down media status
+ * 
+ * @param int $selected
+ * @return int
+ * 
+ */
+public function dropDownMediaStatus($selected = "")
+{
+  $name = 'media_status';
+
+  $media_status = array('Enabled', 'Disabled');
+
+  if ($selected) {
+
+     $selected = $selected;
+
+  }
+
+  return dropdown($name, $media_status, $selected);
 
 }
 

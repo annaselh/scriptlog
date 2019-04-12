@@ -29,14 +29,6 @@ class Dispatcher
   private $errors;
 
   /**
-   * theme
-   * 
-   * @var string
-   * 
-   */
-  private $theme;
-
-  /**
    * Constructor
    * Registry route and Initialize an instantiate of theme
    */
@@ -47,8 +39,6 @@ class Dispatcher
         $this->route = Registry::get('route');
 
      }
-
-     $this->theme = new Theme();
 
   }
 
@@ -81,10 +71,10 @@ class Dispatcher
              
               if (is_dir($theme_dir)) {
   
-                 include($theme_dir.'header.php');
-                 include($theme_dir. basename($action.'.php'));
-                 include($theme_dir.'footer.php');
-                 
+                 call_theme_header();
+                 call_theme_content($action);
+                 call_theme_footer();
+
               }
   
              // avoid the 404 message 
@@ -156,6 +146,7 @@ class Dispatcher
    */
   public function findRequestParam()
   {
+    
     $parameters = [];
 
     foreach ($this->route as $key => $value) {
@@ -204,6 +195,7 @@ class Dispatcher
    */
   protected function requestPath()
   {
+    
     $request_uri = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
     $script_name = explode('/', trim($_SERVER['SCRIPT_NAME'], '/'));
     $parts = array_diff_assoc($request_uri, $script_name);
@@ -245,13 +237,7 @@ class Dispatcher
    */
   private function invokeTheme()
   {
-    
-    if($this->theme->totalThemeRecords() > 0) {
-       
-      return $this->theme->loadTheme('Y');
-
-    } 
-    
+    return theme_identifier();
   }
   
   /**

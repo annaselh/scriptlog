@@ -3,7 +3,7 @@
  * App Info Function
  * Retrieving site setting info
  * 
- * @category function -- utility
+ * @category function
  * @package  SCRIPTLOG
  * 
  * @return array[][]
@@ -11,6 +11,7 @@
  */
 function app_info()
 {
+
  $configurations = new Configuration();
  $app_info = array();
  $results = $configurations -> findConfigs();

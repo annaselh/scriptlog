@@ -2,32 +2,44 @@
 /**
  * Upload photo
  * 
+ * @package SCRIPTLOG FUNCTIONS
+ * @category lib\upload-photo.php
+ * @param string $file_name
+ * @param integer $width
+ * @param integer $height
+ * @param string $mode
+ * 
  */
-function upload_photo($file_name, $width, $height, $mode, $folder)
+function upload_photo($field_name, $width, $height, $mode, $folder)
 {
     
     // picture directory
-    $upload_path = __DIR__ . '/../../public/files/pictures/'.$folder . '/';
-    $upload_path_thumb = __DIR__ .  '/../../public/files/pictures/'.$folder.'/thumbs/';
-    $file_uploaded = $upload_path . $file_name;
-    $file_type = $_FILES['image']['type'];
-    $file_size = $_FILES['image']['size'];
+    if(!is_dir(__DIR__ . '/../../public/files/pictures/'.$folder . DS)) {
+
+        $upload_path = mkdir(__DIR__ . '/../../public/files/pictures/'.$folder . DS);
+
+        $upload_path_thumb = mkdir(__DIR__ .  '/../../public/files/pictures/'.$folder. DS . 'thumbs' . DS);
+        
+    }
+    
+    $file_uploaded = $upload_path . $_FILES[$field_name]['name'];
+    $file_type = $_FILES[$field_name]['type'];
+    $file_size = $_FILES[$field_name]['size'];
     
     // save picture from resources
     
-    if ($file_size > 52000) {
+    if ($file_size > 524867) {
         
-        move_uploaded_file($_FILES['image']['tmp_name'], $file_uploaded);
+        move_uploaded_file($_FILES[$field_name]['tmp_name'], $file_uploaded);
         
         // resize picture
         $resizeImage = new Resize($file_uploaded);
         $resizeImage ->resizeImage($width, $height, $mode);
         $resizeImage ->saveImage($file_uploaded, 100);
-        
-        
+               
     } else {
         
-        move_uploaded_file($_FILES['image']['tmp_name'], $file_uploaded);
+        move_uploaded_file($_FILES[$field_name]['tmp_name'], $file_uploaded);
         
     }
     

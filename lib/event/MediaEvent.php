@@ -96,7 +96,7 @@ class MediaEvent
  private $sanitizer;
 
 /**
- * Initialize an intanciates of object properties or method
+ * Initialize an intanciates of class properties or method
  * 
  * @param object $mediaDao
  * @param object $validator
@@ -222,6 +222,13 @@ class MediaEvent
    return $this->mediaDao->findMediaById($id, $this->sanitizer);
  }
 
+/**
+ * Add media
+ * create new media record
+ * 
+ * @return mixed
+ * 
+ */
  public function addMedia()
  {
 
@@ -229,7 +236,7 @@ class MediaEvent
    $this->validator->sanitize($this->media_filename, 'string');
    $this->validator->sanitize($this->media_user, 'string');
    
-   return $this->mediaDao([
+   return $this->mediaDao->createMedia([
      'media_filename' => $this->media_filename,
      'media_caption' => $this->media_caption,
      'media_type' => $this->media_type,
@@ -241,6 +248,12 @@ class MediaEvent
   
  }
 
+/**
+ * Updating media record
+ * 
+ * @return object
+ * 
+ */
  public function modifyMedia()
  {
 
@@ -269,13 +282,153 @@ class MediaEvent
 
  }
 
+/**
+ * Removes media record
+ * if there is a file inside media directory, delete it
+ * 
+ * @return object
+ * 
+ */
  public function removeMedia()
  {
+
    $this->validator->sanitize($this->mediaId, 'int');
 
    if(!$data_media = $this->mediaDao->findMediaById($this->mediaId, $this->sanitizer)) {
       direct_page('index.php?load=media&error=mediaNotFound', 404);
    }
+
+   $filename = $data_media['media_filename'];
+   $filetype = $data_media['media_type'];
+
+   if($filename !== '') {
+
+      switch ($filetype) {
+
+        case 'audio':
+
+          if(is_readable(__DIR__ . '/../public/files/audio/'.$filename)) {
+
+             unlink(__DIR__ . '/../public/files/audio/'.$filename);
+
+          }
+
+          break;
+
+        case 'document':
+
+          if(is_readable(__DIR__ . '/../public/files/docs/'.$filename)) {
+
+             unlink(__DIR__ . '/../public/files/docs/'.$filename);
+
+          } 
+
+          break;
+
+        case 'video':
+
+          if(is_readable(__DIR__ . '/../public/files/video/'.$filename)) {
+
+          }
+
+          break;
+
+        default:
+          
+         # default delete file image
+
+          if(is_readable(__DIR__ . '/../public/files/pictures/'.$filename)) {
+            
+            unlink(__DIR__ . '/../public/files/pictures/'.$filename);
+            unlink(__DIR__ . '/../public/files/pictures/thumbs/thumbs_'.$filename);
+            
+          }
+
+          break;
+
+      }
+
+      return $this->mediaDao->deleteMedia($this->mediaId, $this->sanitizer);
+
+   }
+
+ }
+
+/**
+ * Drop down menu media type
+ * 
+ * @param string $selected
+ * @return string
+ * 
+ */
+ public function mediaTypeDropDown($selected = "")
+ {
+   return $this->mediaDao->dropDownMediaType($selected);
+ }
+
+/**
+ * Drop down media target
+ * 
+ * @param string $selected
+ * @return string
+ * 
+ */
+ public function mediaTargetDropDown($selected = "")
+ {
+   return $this->mediaDao->dropDownMediaTarget($selected);
+ }
+
+/**
+ * Drop down media access
+ * 
+ * @param string $selected
+ * @return string
+ * 
+ */
+ public function mediaAccessDropDown($selected = "")
+ {
+   return $this->mediaDao->dropDownMediaAccess($selected);
+ }
+
+/**
+ * Drop down media status
+ * 
+ * @param string $selected
+ * @return string
+ * 
+ */
+ public function mediaStatusDropDown($selected = "")
+ {
+   return $this->dropDownMediaStatus($selected);
+ }
+
+/**
+ * Checking if user session available return it
+ * 
+ * @return string
+ * 
+ */
+ public function isMediaUser()
+ {
+
+  if (isset($_SESSION['user_level'])) {
+
+    return $_SESSION['user_level'];
+
+  }
+  
+ }
+
+/**
+ * Total media libray on database record
+ * 
+ * @param array $data default value = null
+ * @return integer|number
+ * 
+ */
+ public function totalMedia($data = null)
+ {
+   return $this->mediaDao->totalMediaRecords($data);
  }
 
 }

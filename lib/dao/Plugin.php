@@ -12,6 +12,7 @@
  */
 class Plugin extends Dao
 {
+
   protected $accessLevel;
   
   public function __construct()
@@ -26,6 +27,7 @@ class Plugin extends Dao
    * @param integer $limit
    * @param string $orderBy
    * @return boolean|array|object
+   * 
    */
   public function getPlugins($orderBy = 'ID')
   {
@@ -51,6 +53,7 @@ class Plugin extends Dao
    * @param integer $id
    * @param integer $sanitize
    * @return boolean|array|object
+   * 
    */
   public function getPlugin($id, $sanitize)
   {
@@ -73,6 +76,7 @@ class Plugin extends Dao
    * Insert new plugin
    * 
    * @param array $bind
+   * 
    */
   public function insertPlugin($bind)
   {
@@ -111,6 +115,7 @@ class Plugin extends Dao
    * 
    * @param integer $id
    * @param array $bind
+   * 
    */
   public function updatePlugin($sanitize, $bind, $ID)
   {
@@ -130,6 +135,7 @@ class Plugin extends Dao
    * Activate plugin
    * 
    * @param integer $id
+   * 
    */
   public function activatePlugin($id, $sanitize)
   {
@@ -141,6 +147,7 @@ class Plugin extends Dao
    * Deactivate plugin
    * 
    * @param integer $id
+   * 
    */
   public function deactivatePlugin($id, $sanitize)
   {
@@ -166,6 +173,7 @@ class Plugin extends Dao
    * @param integer $id
    * @param object $sanitize
    * @return numeric
+   * 
    */
   public function checkPluginId($id,$sanitize)
   {
@@ -181,6 +189,7 @@ class Plugin extends Dao
    * 
    * @param string $plugin_name
    * @return boolean
+   * 
    */
   public function isPluginActived($plugin_name)
   {
@@ -207,6 +216,7 @@ class Plugin extends Dao
    * 
    * @param UserEvent $userEvent
    * @return string
+   * 
    */
   public function setMenuPlugin($user_level, $plugin_level)
   {
@@ -245,6 +255,7 @@ class Plugin extends Dao
    * 
    * @param string $selected
    * @return string
+   * 
    */
   public function dropDownPluginLevel($selected = '')
   {
@@ -278,6 +289,7 @@ class Plugin extends Dao
    * Set private plugin
    * 
    * @return boolean|array|object
+   * 
    */
   public function setPlugins($plugin_level)
   {
@@ -301,6 +313,7 @@ class Plugin extends Dao
    * 
    * @param string $plugin_name
    * @return boolean
+   * 
    */
   public function pluginExists($plugin_name)
   {

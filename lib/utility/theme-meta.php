@@ -54,6 +54,7 @@ function theme_meta()
   
 }
 
+// function title tag
 function title_tag($title)
 {
     print<<<_HTML_
@@ -64,6 +65,7 @@ _HTML_;
 
 }
 
+// function tag meta
 function meta_tag()
 {
   print<<<_HTML_

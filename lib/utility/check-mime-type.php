@@ -9,7 +9,9 @@
  */
 function check_mime_type(array $accepted_type, array $tmp_name)
 {
-    
+
+ $mime_type = false;
+
  $file_info = new finfo(FILEINFO_MIME_TYPE);
  $file_content = file_get_contents($tmp_name);
  $mime_type = $file_info -> buffer($file_content);
@@ -18,10 +20,13 @@ function check_mime_type(array $accepted_type, array $tmp_name)
 
  if(false === $extension) {
 
-    return false;
+    $mime_type = false;
 
+ } else {
+
+    $mime_type = true;
  }
 
- return true;
+ return $mime_type;
 
 }

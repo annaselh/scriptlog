@@ -6,7 +6,7 @@
  * @category  library\event\CommentEvent
  * @author    M.Noermoehammad
  * @license   MIT
- * @version   1.0.0
+ * @version   1.0
  * @since     Since Release 1.0
  *
  */

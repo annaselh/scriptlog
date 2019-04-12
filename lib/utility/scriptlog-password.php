@@ -6,6 +6,7 @@
  * @param string $password
  * @param integer $id
  * @return string
+ * 
  */
 function scriptlog_password($password)
 {

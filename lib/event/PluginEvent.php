@@ -55,14 +55,33 @@ class PluginEvent
   
   /**
    * Sort
+   * 
    * @var string
    */
   private $sort;
 
+/**
+ * Plugin DAO
+ * 
+ * @var object
+ * 
+ */
   private $pluginDao;
 
+/**
+ * Validator
+ * 
+ * @var object
+ * 
+ */
   private $validator;
 
+/**
+ * Sanitize
+ * 
+ * @var object
+ * 
+ */
   private $sanitize;
   
   /**
@@ -71,6 +90,7 @@ class PluginEvent
    * @param object $pluginDao
    * @param object $validator
    * @param object $sanitize
+   * 
    */
   public function __construct(Plugin $pluginDao, FormValidator $validator, Sanitize $sanitize)
   {
@@ -161,6 +181,7 @@ class PluginEvent
 
   public function activateInstalledPlugin()
   {
+
     $this->validator->sanitize($this->plugin_id, 'int');
 
     if(!($data_plugin = $this->pluginDao->getPlugin($this->plugin_id, $this->sanitize))) {
@@ -170,10 +191,12 @@ class PluginEvent
     $sql_path = '../library/plugins/'.$data_plugin['plugin_name'].'sql';
 
     if(file_exists($sql_path)) {
+
       $sql_contents = file_get_contents($sql_path);
       $sql_contents = explode(";", $sql_contents);
       
       foreach($sql_contents as $sql) {
+
         $result = '';
         $result = $this->pluginDao->setSQL($sql);
 
@@ -213,6 +236,7 @@ class PluginEvent
 
   public function removePlugin()
   {
+    
     $this->validator->sanitize($this->plugin_id, 'int');
 
     if (!$data_plugin = $this->pluginDao->getPlugin($this->plugin_id, $this->sanitize)) {

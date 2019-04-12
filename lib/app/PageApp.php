@@ -64,6 +64,7 @@ class PageApp extends BaseApp
  
  public function insert()
  {
+     
   $errors = array();
   $checkError = true;
   

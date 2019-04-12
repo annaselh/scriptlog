@@ -1,8 +1,14 @@
 <?php
+
+use Page;
+use Sanitize;
+use FormValidator;
+use ImageUploader;
 /**
- * PageEvent Class
+ * Class PageEvent
  *
  * @package   SCRIPTLOG
+ * @category  library\event\PageEvent
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
@@ -12,69 +18,193 @@
 
 class PageEvent
 {
+  /**
+   * page's ID
+   * 
+   * @var integer
+   * 
+   */
   private $pageId;
-    
+ 
+  /**
+   * Author
+   * 
+   * @var string
+   * 
+   */
   private $author;
-    
+
+  /**
+   * page's title
+   * 
+   * @var string
+   * 
+   */
   private $title;
-    
+
+  /**
+   * Slug
+   * property of URL SEO friendly
+   * 
+   * @var slug
+   * 
+   */
   private $slug;
-    
+
+  /**
+   * Content
+   * 
+   * @var string
+   * 
+   */
   private $content;
-      
+
+  /**
+   * Meta description
+   * 
+   * @var string
+   * 
+   */
   private $meta_desc;
-    
+
+  /**
+   * Meta keywords
+   * 
+   * @var string
+   * 
+   */
   private $meta_key;
-    
+ 
+  /**
+   * Page's status
+   * 
+   * @var string
+   * 
+   */
   private $page_status;
-  
+
+  /**
+   * Post type
+   * 
+   * @var string
+   * 
+   */
   private $post_type;
-    
+
+  /**
+   * Comment's status
+   * 
+   * @var string
+   * 
+   */
   private $comment_status;
 
+  /**
+   * Page DAO
+   * 
+   * @var object
+   * 
+   */
   private $pageDao;
 
+  /**
+   * Form Validator
+   * 
+   * @var object
+   * 
+   */
   private $validator;
 
+  /**
+   * Sanitizer
+   * 
+   * @var object
+   * 
+   */
   private $sanitizer;
-  
+ 
+  /**
+   * Initialize or instanstiate of class propertis
+   */
   public function __construct(Page $pageDao, FormValidator $validator, Sanitize $sanitizer)
   {
     $this->pageDao = $pageDao;
     $this->validator = $validator;
     $this->sanitizer = $sanitizer;
   }
-  
+
+  /**
+   * set page id
+   * 
+   * @param integer $pageId
+   * 
+   */
   public function setPageId($pageId)
   {
    $this->pageId = $pageId;
   }
-  
+
+  /**
+   * set page title
+   * 
+   * @param string $title
+   * 
+   */
   public function setPageTitle($title)
   {
     $this->title = $title;
   }
-  
+
+  /**
+   * set page slug
+   * 
+   * @param string $slug
+   * 
+   */
   public function setPageSlug($slug)
   {
     $this->slug = make_slug($slug);
   }
   
+/**
+ * set page content
+ * 
+ * @param string $content
+ * 
+ */
   public function setPageContent($content)
   {
     $this->content = prevent_injection($content);
   }
-  
+
+  /**
+   * set meta description
+   * 
+   * @param string $meta_desc
+   * 
+   */
   public function setMetaDesc($meta_desc)
   {
     $this->meta_desc = $meta_desc;
   }
-  
+
+  /**
+   * set meta keywords
+   * 
+   * @param string $meta_keys
+   * 
+   */
   public function setMetaKeys($meta_keys)
   {
     $this->meta_key = $meta_keys;
   }
   
+  /**
+   * set page status
+   * 
+   * @param string $page_status
+   * 
+   */
   public function setPublish($page_status)
   {
     $this->page_status = $page_status;

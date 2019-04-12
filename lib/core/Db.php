@@ -178,9 +178,9 @@ class Db implements DbInterface
            $stmt->bindValue(":$key", $value);
        }
        
-       $stmt -> execute();
+       $stmt->execute();
        
-       return $stmt -> rowCount();
+       return $stmt->rowCount();
        
    } catch (DbException $e) {
        
@@ -212,7 +212,7 @@ class Db implements DbInterface
         }
         
         $stmt = $this->dbc->prepare($sql);
-        return $stmt -> execute();
+        return $stmt->execute();
         
     } catch (DbException $e) {
         
