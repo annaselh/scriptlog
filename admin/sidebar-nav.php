@@ -52,6 +52,31 @@ endif;
 ?>
 
 <?php 
+if ($level == 'administrator' || $level == 'manager' || $level == 'editor' 
+    || $level == 'author' || $level == 'contributor') : ?>
+
+        <li <?=($module == 'media') ? 'class="treeview active"' : 'class="treeview"'; ?>>
+          <a href="<?= $url.'index.php?load=medialib'; ?>"><i class="fa fa-image"></i> 
+          <span>Media</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          
+          <ul class="treeview-menu">
+
+            <li><a href="<?= $url.'index.php?load=medialib'; ?>">Library</a></li>
+            <li><a href="<?= $url.'index.php?load=medialib&action=newMedia&mediaId=0'; ?>">Add New</a></li>
+            
+          </ul>
+
+        </li>
+
+<?php 
+endif; 
+?>
+
+<?php 
 if ($level == 'administrator' || $level == 'manager' || $level == 'editor' || $level == 'author') :
 ?>
         <li <?=($module == 'comments') ? 'class="active"' : 'class=""'; ?>>

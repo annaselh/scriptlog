@@ -329,6 +329,8 @@ class MediaEvent
 
           if(is_readable(__DIR__ . '/../public/files/video/'.$filename)) {
 
+            unlink(__DIR__ . '/../public/files/video/'.$filename);
+            
           }
 
           break;

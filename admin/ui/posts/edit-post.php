@@ -89,7 +89,7 @@ else :
 ?>
 <br><img src="<?php echo $imageThumb; ?>" class="img-responsive pad"><br> 
 <label>change picture :</label> 
-<input type="file" name="image" id="file" onchange="loadFile(event)"  maxlength="512" />
+<input type="file" name="image" id="file" onchange="loadFile(event)"  maxlength="512" >
 <img id="output" class="img-responsive pad" />
 <p class="help-block">Maximum file size: <?= format_size_unit(697856); ?></p>
 <?php 
@@ -99,7 +99,7 @@ endif;
 <?php else : ?>
 <div class="form-group">
 <label>Upload Picture :</label> 
-<input type="file" name="image" id="file" onchange="loadFile(event)"  maxlength="512" />
+<input type="file" name="image" id="file" onchange="loadFile(event)"  maxlength="512" >
 <img id="output" class="img-responsive pad" />
 <p class="help-block">Maximum file size: <?= format_size_unit(697856); ?></p>
 </div>

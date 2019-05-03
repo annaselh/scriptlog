@@ -41,8 +41,9 @@ $stylePath = $config['app']['url'] . APP_ADMIN;
 // Current URL
 $currentURL = APP_PROTOCOL . '://'. APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . DS;
 // Allowed query
-$allowedQuery = array('dashboard', 'posts', 'pages', 'topics', 'comments', 'templates', 
-                       'menu', 'menu-child', 'users', 'settings', 'plugins', 'logout');    
+$allowedQuery = array('dashboard', 'posts', 'medialib',
+                      'pages', 'topics', 'comments', 'templates', 
+                      'menu', 'menu-child', 'users', 'settings', 'plugins', 'logout');    
 // retrieve plugin actived -- for administrator
 $plugin_navigation = setplugin($user_level, 'private');
 
