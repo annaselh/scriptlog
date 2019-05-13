@@ -1,9 +1,4 @@
 <?php
-
-use Page;
-use Sanitize;
-use FormValidator;
-use ImageUploader;
 /**
  * Class PageEvent
  *

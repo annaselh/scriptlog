@@ -51,22 +51,34 @@ echo "Error saving data. Please try again." . $saveError;
 endif;
 ?>
 
-<form method="post" action="index.php?load=media&action=<?=(isset($formAction)) ? $formAction : null; ?>&themeId=0" 
-  role="form" onsubmit="return(mandatoryThemeUpload());" enctype="multipart/form-data" autocomplete="off" >
+<form method="post" action="index.php?load=media&action=<?=(isset($formAction)) ? $formAction : null; ?>&mediaId=0" 
+  role="form" enctype="multipart/form-data" autocomplete="off" >
    
 <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
 <div class="box-body">
 <div class="form-group">
-<label>Upload Theme (required)</label>
-<input type="file"  name="zip_file" id="themeUploaded" accept="application/zip,application/octet-stream,application/x-zip,application/x-zip-compressed" required>
-<p class="help-block">If you have a theme in a .zip format, you may install it by uploading it here.</p>
+<label>Select file  (required)</label>
+<input type="file"  name="zip_file" id="mediaUploaded" accept="application/zip,application/octet-stream,application/x-zip,application/x-zip-compressed" required>
+<p class="help-block">Maximum upload file size: <?= format_size_unit(697856); ?>.</p>
 </div>
 
+<div class="form-group">
+<label>Caption </label>
+<input type="text" class="form-control" name="media_caption" placeholder="media caption" value="
+<?=(isset($mediaData['media_caption'])) ? htmlspecialchars($pluginData['media_caption']) : ""; ?>
+<?=(isset($formData['media_caption'])) ? htmlspecialchars($formData['media_caption'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" >
+</div>
+
+<div class="form-group">
+<label>Media type</label>
+<?=(isset($mediaType)) ? $mediaType : ""; ?>
+</div>
+<!-- media type -->
 </div>
 <!-- /.box-body -->
 <div class="box-footer">
 <input type="hidden" name="csrfToken" value="<?=(isset($csrfToken)) ? $csrfToken : ""; ?>">  
-<input type="submit" name="mediaFormSubmit" class="btn btn-primary" value="Install Now">
+<input type="submit" name="mediaFormSubmit" class="btn btn-primary" value="Upload">
 
 </div>
 </form>
@@ -82,7 +94,7 @@ endif;
 </div>
 <!-- /.content-wrapper -->
 <script type="text/javascript">
-document.getElementById('themeUploaded').addEventListener('change', checkFile, false);
+document.getElementById('mediaUploaded').addEventListener('change', checkFile, false);
 
 function checkFile(e) {
 

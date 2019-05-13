@@ -69,10 +69,10 @@
                 <tr>
                   <th>#</th>
                   <th>Filename</th>
-                  <th>Caption</th>
-                  <th>Level</th>
-                  <th>Edit</th>
+                  <th>Date</th>
                   <th>Status</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>

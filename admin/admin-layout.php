@@ -28,7 +28,7 @@ function admin_header($stylePath, $breadCrumbs, $allowedQuery)
        
   } else {
       
-      echo $breadCrumbs;
+      cp_tag_title($breadCrumbs);
       
   }
        

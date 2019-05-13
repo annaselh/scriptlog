@@ -7,7 +7,7 @@
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   0.1
- * @since     Since Release 1.0
+ * @since     Since Release 0.1
  * 
  */
 require dirname(__FILE__) . '/include/settings.php';

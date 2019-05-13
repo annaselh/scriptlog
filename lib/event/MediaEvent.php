@@ -401,7 +401,7 @@ class MediaEvent
  */
  public function mediaStatusDropDown($selected = "")
  {
-   return $this->dropDownMediaStatus($selected);
+   return $this->mediaDao->dropDownMediaStatus($selected);
  }
 
 /**
