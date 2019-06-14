@@ -15,7 +15,7 @@ function current_url()
    
    $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'] ;
    
-   return $scheme."://".$host.dirname($_SERVER['PHP_SELF']) . DIRECTORY_SEPARATOR;
+   return $scheme."://".$host.dirname($_SERVER['PHP_SELF']) . "/";
 
 }
 
@@ -420,15 +420,11 @@ function purge_installation()
         
     }
 
-    $disabled = $_SERVER['DOCUMENT_ROOT'].'/'.substr(bin2hex($bytes), 0, $length).'.log';
+    $disabled = APP_PATH . substr(bin2hex($bytes), 0, $length).'.log';
 
-    if (!is_writable($_SERVER['DOCUMENT_ROOT'])) {
+    if (is_writable(APP_PATH)) {
 
-        trigger_error("Permission denied. Web root is not writable.", E_USER_ERROR);
-
-    } else {
-
-        if (rename(__DIR__ . '/../index.php', $disabled)) {
+        if(rename(__DIR__ . '/../index.php', $disabled)) {
 
             $clean_installation = '<?php ';
      
@@ -440,9 +436,9 @@ function purge_installation()
      
             session_destroy();
             
-         }
-
-    }
+        }
+        
+    } 
 
   }
     
