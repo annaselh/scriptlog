@@ -90,6 +90,7 @@ class PostApp extends BaseApp
    * 
    * {@inheritDoc}
    * @see BaseApp::insert()
+   * 
    */
   public function insert()
   {
@@ -273,6 +274,7 @@ class PostApp extends BaseApp
    * 
    * {@inheritDoc}
    * @see BaseApp::update()
+   * 
    */
   public function update($id)
   {

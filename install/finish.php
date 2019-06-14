@@ -13,15 +13,15 @@ require dirname(__FILE__) . '/include/settings.php';
 require dirname(__FILE__) . '/include/setup.php';
 require dirname(__FILE__) . '/install-layout.php';
 
-$installation_path = preg_replace("/\/index\.php.*$/i", "", current_url());
+$current_path = preg_replace("/\/index\.php.*$/i", "", current_url());
 
-install_header($installation_path, $protocol, $server_host);
+install_header($current_path, $protocol, $server_host);
 
 ?>
 
 <div class="container">
      <div class="py-5 text-center">
-        <img class="d-block mx-auto mb-4" src="<?= $installation_path; ?>assets/img/icon612x612.png" alt="Scriptlog Installation Completed" width="72" height="72">
+        <img class="d-block mx-auto mb-4" src="<?= $current_path; ?>assets/img/icon612x612.png" alt="Scriptlog Installation Completed" width="72" height="72">
         <h2>Scriptlog</h2>
         <?php 
         
@@ -59,4 +59,4 @@ install_header($installation_path, $protocol, $server_host);
 <?php
 
 if (isset($_SESSION['token'])) purge_installation();
-install_footer($installation_path, $protocol, $server_host);
+install_footer($current_path, $protocol, $server_host);

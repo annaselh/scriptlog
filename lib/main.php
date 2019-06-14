@@ -53,7 +53,7 @@ if (file_exists(APP_ROOT.'config.php')) {
          
 }
 
-// call functions in directory library/utility
+#================================== call functions in directory lib/utility ===========================================
 $function_directory = new RecursiveDirectoryIterator(__DIR__ . DS .'utility'. DS, FilesystemIterator::FOLLOW_SYMLINKS);
 $filter_iterator = new RecursiveCallbackFilterIterator($function_directory, function ($current, $key, $iterator){
     
@@ -83,6 +83,8 @@ foreach ($files_dir_iterator as $file) {
     include $file -> getPathname();
     
 }
+
+#====================End of call functions in directory lib/utility=====================================================
 
 // check if loader is exists
 if (is_dir(APP_ROOT . APP_LIBRARY) && is_file(APP_ROOT . APP_LIBRARY . DS . 'Scriptloader.php')) {
@@ -161,7 +163,9 @@ Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
  * @var $postFeeds used by rss feed functionality
  * @var $sanitizer used by sanitize functionality
  * @var $userDao, $validator, $authenticator --
- * these are collection of objects or instances of classes that will be used for login
+ * these are collection of objects or instances of classes 
+ * that will be run by the system.
+ * 
  */
 $searchPost = new SearchFinder($dbc);
 $frontPaginator = new Paginator(10, 'p');

@@ -51,29 +51,62 @@ echo "Error saving data. Please try again." . $saveError;
 endif;
 ?>
 
-<form method="post" action="index.php?load=media&action=<?=(isset($formAction)) ? $formAction : null; ?>&mediaId=0" 
+<form method="post" action="index.php?load=medialib&action=<?=(isset($formAction)) ? $formAction : null; ?>&mediaId=0" 
   role="form" enctype="multipart/form-data" autocomplete="off" >
    
 <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
 <div class="box-body">
 <div class="form-group">
 <label>Select file  (required)</label>
-<input type="file"  name="zip_file" id="mediaUploaded" accept="application/zip,application/octet-stream,application/x-zip,application/x-zip-compressed" required>
+<input type="file"  name="media" id="mediaUploaded" accept="application/zip,application/octet-stream,application/x-zip,application/x-zip-compressed" required>
 <p class="help-block">Maximum upload file size: <?= format_size_unit(697856); ?>.</p>
 </div>
 
 <div class="form-group">
 <label>Caption </label>
-<input type="text" class="form-control" name="media_caption" placeholder="media caption" value="
+<input type="text" class="form-control" name="media_caption" placeholder="type media caption" value="
 <?=(isset($mediaData['media_caption'])) ? htmlspecialchars($pluginData['media_caption']) : ""; ?>
 <?=(isset($formData['media_caption'])) ? htmlspecialchars($formData['media_caption'], ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8") : ""; ?>" >
 </div>
 
 <div class="form-group">
-<label>Media type</label>
-<?=(isset($mediaType)) ? $mediaType : ""; ?>
+<label>Media will be shown on</label>
+<?=(isset($mediaTarget)) ? $mediaTarget : ""; ?>
 </div>
-<!-- media type -->
+<!-- media target -->
+
+<div class="form-group">
+<label>Access</label>
+<?=(isset($mediaAccess)) ? $mediaAccess : ""; ?>
+</div>
+<!-- media access -->
+
+<?php if(isset($mediaData['media_status'])) : ?>
+
+<div class="form-group">
+<label>Actived</label>
+<div class="radio">
+<label>
+<input type="radio" name="media_status" id="optionsRadios1" value="Y" 
+<?=(isset($mediaData['media_status']) && $mediaData['media_status'] === 'Y') ? 'checked="checked"' : "";  ?>
+<?=(isset($formData['media_status']) && $formData['media_status'] === 'Y') ? 'checked="checked"' : "" ?>>
+   Yes
+ </label>
+</div>
+
+<div class="radio">
+<label>
+<input type="radio" name="media_status" id="optionsRadios1" value="N" 
+<?=(isset($mediaData['media_status']) && $mediaData['media_status'] === 'N') ? 'checked="checked"' : ""; ?>
+<?=(isset($formData['media_status']) && $formData['media_status'] == 'N') ? 'checked="checked"' : ""; ?>>
+   No
+ </label>
+</div>
+
+</div>
+
+<?php endif; ?>
+
 </div>
 <!-- /.box-body -->
 <div class="box-footer">
@@ -94,24 +127,5 @@ endif;
 </div>
 <!-- /.content-wrapper -->
 <script type="text/javascript">
-document.getElementById('mediaUploaded').addEventListener('change', checkFile, false);
 
-function checkFile(e) {
-
-    var file_list = e.target.files;
-
-    for (var i = 0, file; file = file_list[i]; i++) {
-        var sFileName = file.name;
-        var sFileExtension = sFileName.split('.')[sFileName.split('.').length - 1].toLowerCase();
-        var iFileSize = file.size;
-        var iConvert = (file.size / 10485760).toFixed(2);
-
-        if (!(sFileExtension === "zip") || iFileSize > 10485760) {
-            txt = "File type : " + sFileExtension + "\n\n";
-            txt += "Size: " + iConvert + " MB \n\n";
-            txt += "Please make sure your file is in .zip format and less than <?= format_size_unit(10485760); ?>.\n\n";
-            alert(txt);
-        }
-    }
-}
 </script>

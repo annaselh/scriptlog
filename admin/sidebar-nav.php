@@ -55,7 +55,7 @@ endif;
 if ($level == 'administrator' || $level == 'manager' || $level == 'editor' 
     || $level == 'author' || $level == 'contributor') : ?>
 
-        <li <?=($module == 'media') ? 'class="treeview active"' : 'class="treeview"'; ?>>
+        <li <?=($module == 'medialib') ? 'class="treeview active"' : 'class="treeview"'; ?>>
           <a href="<?= $url.'index.php?load=medialib'; ?>"><i class="fa fa-image"></i> 
           <span>Media</span>
             <span class="pull-right-container">

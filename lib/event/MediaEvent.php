@@ -80,6 +80,22 @@ class MediaEvent
  private $mediaDao;
 
 /**
+ * Media metadata key
+ * 
+ * @var string
+ * 
+ */
+ private $media_key;
+
+/**
+ * Media metadata value
+ * 
+ * @var string
+ * 
+ */
+ private $media_value;
+
+/**
  * Validator
  * 
  * @var object
@@ -199,6 +215,28 @@ class MediaEvent
  }
 
 /**
+ * Set media metadata key
+ * 
+ * @param string $key
+ * 
+ */
+ public function setMediaKey($key)
+ {
+   $this->media_key = $key;
+ }
+
+/**
+ * Set media metadata value
+ * 
+ * @param string $value
+ * 
+ */
+ public function setMediaValue($value)
+ {
+   $this->media_value = $value;
+ }
+
+/**
  * Grab all media
  * retrieve all media records
  * 
@@ -246,6 +284,25 @@ class MediaEvent
      'media_status' => $this->media_status
    ]);
   
+ }
+
+/**
+ * Add media meta
+ * 
+ * @return mixed
+ */
+ public function addMediaMeta()
+ {
+   $this->validator->sanitize($this->mediaId, 'int');
+   $this->validator->sanitize($this->media_key, 'string');
+   $this->validator->sanitize($this->media_value, 'string');
+
+   return $this->mediaDao->createMediaMeta([
+     'media_id' => $this->mediaId,
+     'media_key' => $this->media_key,
+     'media_value' => $this->media_value
+   ]);
+
  }
 
 /**
@@ -354,18 +411,6 @@ class MediaEvent
 
    }
 
- }
-
-/**
- * Drop down menu media type
- * 
- * @param string $selected
- * @return string
- * 
- */
- public function mediaTypeDropDown($selected = "")
- {
-   return $this->mediaDao->dropDownMediaType($selected);
  }
 
 /**

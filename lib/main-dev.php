@@ -156,7 +156,9 @@ Registry::setAll(array('dbc' => $dbc, 'route' => $rules));
  * @var $postFeeds used by rss feed functionality
  * @var $sanitizer used by sanitize functionality
  * @var $userDao, $validator, $authenticator --
- * these are collection of objects or instances of classes that will be used for login
+ * these are collection of objects or instances of classes 
+ * that will be run by the system
+ * 
  */
 $searchPost = new SearchFinder($dbc);
 $frontPaginator = new Paginator(10, 'p');

@@ -27,8 +27,8 @@ try {
         
     }
     
-    if (!is_readable(dirname(dirname(__FILE__)) .DS. APP_ADMIN .DS."{$load}.php") 
-        || empty($load) || !in_array($load, $allowedQuery, true)) {
+    if ((!is_readable(dirname(dirname(__FILE__)) .DS. APP_ADMIN .DS."{$load}.php")) 
+        || (empty($load)) || (!in_array($load, $allowedQuery, true))) {
         
         header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
         throw new AppException("404 - Page requested not found");

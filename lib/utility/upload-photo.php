@@ -14,11 +14,20 @@ function upload_photo($field_name, $width, $height, $mode, $folder)
 {
     
     // picture directory
-    if(!is_dir(__DIR__ . '/../../public/files/pictures/'.$folder . DS)) {
+    if(!is_dir('../../public/files/pictures/'.$folder . DIRECTORY_SEPARATOR)) {
 
-        $upload_path = mkdir(__DIR__ . '/../../public/files/pictures/'.$folder . DS);
+        if(!is_writable('../../public/files/pictures/'.$folder . DIRECTORY_SEPARATOR)) {
 
-        $upload_path_thumb = mkdir(__DIR__ .  '/../../public/files/pictures/'.$folder. DS . 'thumbs' . DS);
+            scriptlog_error('Directory destination is not writable', E_NOTICE);
+
+        } else {
+
+
+           $upload_path = mkdir('../../public/files/pictures/'.$folder . DIRECTORY_SEPARATOR);
+
+           $upload_path_thumb = mkdir('../../public/files/pictures/'.$folder. DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR);
+        
+        }
         
     }
     
@@ -69,7 +78,7 @@ function upload_photo($field_name, $width, $height, $mode, $folder)
     
     // set picture's size
     $set_width = 320;
-    $set_height = ($set_width/$source_width) * $source_height;
+    $set_height = (($set_width/$source_width) * $source_height);
     
     // process
     $img_processed = imagecreatetruecolor($set_width, $set_height);

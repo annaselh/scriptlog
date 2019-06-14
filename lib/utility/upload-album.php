@@ -10,7 +10,7 @@
 function upload_album($file_name, $width, $height, $mode)
 {
     // picture directory
-    $upload_path = __DIR__ . '/../../public/files/pictures/album/';
+    $upload_path = __DIR__ . '/../../public/files/pictures/';
     $file_destination = $upload_path . $file_name;
     
     // save picture from resources

@@ -11,7 +11,7 @@ function install_header($stylePath, $protocol, $server_host)
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Scriptlog Installation">
-    <link rel="Shorcut Icon" href="<?= $protocol . "://" . $server_host.dirname(dirname($_SERVER['PHP_SELF'])); ?>/favicon.ico">
+    <link rel="Shorcut Icon" href=" ../favicon.ico">
 
     <title>Scriptlog Installation</title>
 
@@ -55,10 +55,10 @@ function install_footer($stylePath, $protocol, $server_host)
         </p>
         
 <ul class="list-inline">
-          <li class="list-inline-item"><a href="<?= $protocol . "://" . $server_host.dirname(dirname($_SERVER['PHP_SELF'])); ?>/license.txt" target="_blank" title="license.txt" >License</a></li>
+          <li class="list-inline-item"><a href="../license.txt" target="_blank" title="license.txt" >License</a></li>
           <li class="list-inline-item"><a href="#"><?= 'Memory used: <strong>'. convert_memory_used(memory_get_usage()).'</strong>'; ?></a></li>
           <li class="list-inline-item"><a href="#"><?= 'Execution time: <strong>'.$time = (microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"]). ' seconds</strong>'; ?></a></li>
-          <li class="list-inline-item"><a href="<?= $protocol . "://" . $server_host.dirname(dirname($_SERVER['PHP_SELF'])); ?>/readme.html" target="_blank" title="readme.html">ReadMe</a></li>
+          <li class="list-inline-item"><a href="../readme.html" target="_blank" title="readme.html">ReadMe</a></li>
         </ul>
       </footer>
 </div>
@@ -190,7 +190,7 @@ function get_sisfo()
                  $server_name = $web_server['WebServer'];
                  $server_version = $web_server['Version'];
                  
-                 $serverList = array('Apache', 'Litespeed', 'nginx');
+                 $serverList = array('Apache', 'LiteSpeed', 'nginx');
                  
                  foreach ($serverList as $server) :
 
@@ -408,7 +408,7 @@ function required_settings()
 
 function check_mod_rewrite()
 {
-  if (check_modrewrite() == true) :
+  if (true == check_modrewrite()) :
     $mode_rewrite_passed = 'text-success';
     $mode_rewrite_check = 'fa fa-check fa-lg';
 

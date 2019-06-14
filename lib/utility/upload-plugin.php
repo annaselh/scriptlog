@@ -20,7 +20,7 @@ function upload_plugin($file_name, $file_location, $max_filesize, array $blackli
   $rename_file = rename_file(sha1(rand(000000, 999999) . $file_basename));
   $slug = make_slug($file_basename);
   $fileNameUnique = $slug . "-" . $rename_file . "-scriptlog" . $file_extension;
-  $pathFile = '../library/plugins/'.$fileNameUnique;
+  $pathFile = '../lib/plugins/'.$fileNameUnique;
 
   $finfo = new finfo(FILEINFO_MIME_TYPE);
   $file_content = file_get_contents($file_location);
@@ -63,7 +63,7 @@ function upload_plugin($file_name, $file_location, $max_filesize, array $blackli
 
   move_uploaded_file($file_location, $pathFile);
 
-  if (file_exists("../library/plugins/$fileNameUnique")) {
+  if (file_exists("../lib/plugins/$fileNameUnique")) {
 
     $archive = new PclZip($pathFile);
     $archive -> extract(PCLZIP_OPT_PATH, '../library/plugins/');

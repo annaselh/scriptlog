@@ -122,7 +122,7 @@ public function findMediaByType($type)
  * Add new media
  * 
  * @method public addMedia()
- * @param string $name
+ * @param string|array $bind
  * 
  */
 public function createMedia($bind)
@@ -130,29 +130,37 @@ public function createMedia($bind)
   
   $stmt = $this->create("media", [
 
-      'media_filename' => $bind['filename'],
-      'media_caption'  => $bind['caption'],
-      'media_type'     => $bind['type'],
-      'media_target'   => $bind['target'],
-      'media_user'     => $bind['user'],
-      'media_access'   => $bind['access'],
-      'media_status'   => $bind['status']
+      'media_filename' => $bind['media_filename'],
+      'media_caption'  => $bind['media_caption'],
+      'media_type'     => $bind['media_type'],
+      'media_target'   => $bind['media_target'],
+      'media_user'     => $bind['media_user'],
+      'media_access'   => $bind['media_access'],
+      'media_status'   => $bind['media_status']
 
   ]);
 
-  $media_id = $this->lastId();
+  return $this->lastId();
 
-  if($media_id) {
+}
 
-    $stmt2 = $this->create("mediameta", [
+/**
+ * Add new media meta
+ * 
+ * @param integer $mediaId
+ * @param string|array $bind
+ * 
+ */
+public function createMediaMeta($bind)
+{
 
-        'media_id'   => $media_id,
-        'meta_key'   => $bind['meta_key'],
-        'meta_value' => $bind['meta_value']
+  $stmt = $this->create("mediameta", [
 
-    ]);
+     'media_id' => $bind['media_id'],
+     'meta_key' => $bind['meta_key'],
+     'meta_value' => $bind['meta_value']
 
-  }
+  ]);
 
 }
 
@@ -174,11 +182,11 @@ public function updateMedia($sanitize, $bind, $ID)
 
      $stmt = $this->modify("media", [
         
-         'media_filename' => $bind['filename'],
-         'media_caption'  => $bind['caption'],
-         'media_target'   => $bind['target'],
-         'media_access'   => $bind['access'],
-         'media_status'   => $bind['status']
+         'media_filename' => $bind['media_filename'],
+         'media_caption'  => $bind['media_caption'],
+         'media_target'   => $bind['media_target'],
+         'media_access'   => $bind['media_access'],
+         'media_status'   => $bind['media_status']
 
      ], "ID = {$id_sanitized}");
 
@@ -186,10 +194,10 @@ public function updateMedia($sanitize, $bind, $ID)
     
      $stmt = $this->modify("media", [
         
-        'media_caption' => $bind['caption'],
-        'media_target'  => $bind['target'],
-        'media_access'  => $bind['access'],
-        'media_status'  => $bind['status']
+        'media_caption' => $bind['cmedia_aption'],
+        'media_target'  => $bind['media_target'],
+        'media_access'  => $bind['media_access'],
+        'media_status'  => $bind['media_status']
 
      ], "ID = {$id_sanitized}");
 
@@ -255,31 +263,6 @@ public function checkMediaId($id, $sanitize)
 }
 
 /**
- * drop down media type
- * set media type
- * 
- * @param string $selected
- * @return string
- * 
- */
-public function dropDownMediaType($selected = "")
-{
-
- $name = 'media_type';
-
- $media_type = array('audio' => 'Audio', 'document' => 'Document', 'picture' => 'Picture', 'video' => 'Video');
-
- if($selected != '') {
-    
-    $selected = $selected;
-
- }
-
- return dropdown($name, $media_type, $selected);
-
-}
-
-/**
  * drop down media access
  * set media access
  * 
@@ -315,7 +298,7 @@ public function dropDownMediaTarget($selected = "")
 {
  $name = 'media_target';
 
- $media_target = array('album' => 'Album', 'blog' => 'Blog', 'download' => 'Download', 'page' => 'Page');
+ $media_target = array('blog' => 'Blog', 'download' => 'Download', 'gallery' => 'Gallery', 'page' => 'Page');
 
  if($selected != '') {
 

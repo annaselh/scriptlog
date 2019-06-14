@@ -7,7 +7,7 @@
  * @return bool
  * 
  */
-function check_mime_type(array $accepted_type, array $tmp_name)
+function check_mime_type($accepted_type, $tmp_name)
 {
 
  $mime_type = false;

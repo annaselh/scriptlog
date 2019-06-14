@@ -9,9 +9,9 @@
 function upload_file($field_name, $folder)
 {
 
- if (!is_dir(__DIR__ . '/../../public/files/docs/'.$folder . DS)) {
+ if (!is_dir('../../public/files/docs/'.$folder . DS)) {
 
-    $file_path = mkdir(__DIR__ . '/../../public/files/docs/'.$folder.DS);
+    $file_path = mkdir('../../public/files/docs/'.$folder.DS);
 
  }
 

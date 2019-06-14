@@ -28,9 +28,9 @@ if (file_exists(__DIR__ . '/../config.php')) {
   
   if($dbconnect instanceof mysqli) {
 
-     if($dbconnect -> connect_errno) {
+     if($dbconnect->connect_errno) {
 
-       $errors['errorSetup'] = 'Faild to connect to MySQL ('.$dbconnect -> connect_errno . ') '.$dbconnect -> connect_error;
+       $errors['errorSetup'] = "Faild to connect to MySQL " . $dbconnect->connect_error;
 
      }
      
@@ -59,33 +59,29 @@ if((check_dbtable($dbconnect, 'users') == true) || (check_dbtable($dbconnect, 'u
 
 } else {
 
-$installation_path = preg_replace("/\/index\.php.*$/i", "", current_url());
+  $current_path = preg_replace("/\/index\.php.*$/i", "", current_url());
 
-install_header($installation_path, $protocol, $server_host);
+  $installation_path = $protocol . '://' . $server_host . dirname($_SERVER['PHP_SELF']) . DIRECTORY_SEPARATOR;
 
-$clean_setup = array();
+  $clean_setup = array();
 
-$completed = false;
+  $completed = false;
 
-$install = isset($_POST['setup']) ? stripcslashes($_POST['setup']) : '';
+  $install = isset($_POST['setup']) ? stripcslashes($_POST['setup']) : '';
 
 if ($install != 'install') {
     
     if (version_compare(PHP_VERSION, '5.6', '>=')) {
-        
         clearstatcache();
-        
     } else {
-        
         clearstatcache(true);
-        
     }
     
     $_SESSION['install'] = false;
-    
+
     header($installation_path);
     
-} else {
+  } else {
     
     $dbhost = isset($_POST['db_host']) ? $_POST['db_host'] : "";
     $dbname = filter_input(INPUT_POST, 'db_name', FILTER_SANITIZE_STRING);
@@ -139,14 +135,13 @@ if ($install != 'install') {
        
     }
 
-    if (empty($errors['errorSetup']) == true) {
+    if (empty($errors['errorSetup']) === true) {
         
         $link = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
         
-        if ($link -> connect_errno) {
+        if ($link->connect_errno) {
 
-          $errors['errorSetup'] = 'Failed to connect to MySQL: (' . 
-                                  $link -> connect_errno . ') ' . $link -> connect_error;
+          $errors['errorSetup'] = " Failed to connect to MySQL: " . $link->connect_error;
 
         }
 
@@ -174,7 +169,7 @@ if ($install != 'install') {
         
         $_SESSION['token'] = $key;
         
-        if (check_mysql_version($link, "5.6.0")) {
+        if (check_mysql_version($link, "5.5")) {
 
           install_database_table($link, $protocol, $server_host, $clean_setup['username'], $password, $email, $key);
         
@@ -187,6 +182,8 @@ if ($install != 'install') {
     }
     
 }
+
+install_header($current_path, $protocol, $server_host);
 
 ?>
 
@@ -323,6 +320,8 @@ if ($install != 'install') {
 
 <?php
 
-install_footer($installation_path, $protocol, $server_host);
+install_footer($current_path, $protocol, $server_host);
+
+ob_end_flush();
 
 }

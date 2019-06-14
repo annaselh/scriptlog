@@ -134,11 +134,15 @@ function get_browser_Version()
  */
 function check_web_server()
 {
-  $get_web_server = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : "";
+  $get_web_server = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : $_SERVER['SERVER_NAME'];
   
-  $slice = explode('/', $get_web_server);
+  $slice = explode("/", $get_web_server);
   
-  return (array('WebServer'=>$slice[0], 'Version'=>$slice[1]));
+  $webServer = isset($slice[0]) ? $slice[0] : '';
+  
+  $version = isset($slice[1]) ? $slice[1] : '';
+
+  return (array('WebServer'=>$webServer, 'Version'=>$version));
   
 }
 
@@ -421,7 +425,7 @@ function check_modrewrite()
        
     }
 
-  } elseif ((check_web_server()['WebServer'] == 'Litespeed')) {
+  } elseif ((check_web_server()['WebServer'] == 'LiteSpeed')) {
       
     if(in_array('mod_rewrite', $apache_modules)) {
         return true;

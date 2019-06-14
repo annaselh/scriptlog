@@ -95,10 +95,13 @@ class TopicEvent
   
   public function addTopic()
   {
+    
     $this->validator->sanitize($this->topic_title, 'string');
+
     return $this->topicDao->createTopic([
         'topic_title' => $this->topic_title, 
         'topic_slug' => $this->topic_slug]);
+        
   }
   
   public function modifyTopic()

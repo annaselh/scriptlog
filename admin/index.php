@@ -49,7 +49,7 @@ $plugin_navigation = setplugin($user_level, 'private');
 
 require 'admin-layout.php';
 admin_header($stylePath, $breadCrumbs, $allowedQuery);
-require 'navigation.php';
+//require 'navigation.php';
 require 'request.php';
 admin_footer($currentURL);
 ob_end_flush();

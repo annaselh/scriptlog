@@ -244,6 +244,7 @@ class PluginApp extends BaseApp
           $this->pluginEvent->setPluginDescription($plugin_desc);
           $this->pluginEvent->setPluginLevel($plugin_level);
           $this->pluginEvent->addPlugin();
+          
           direct_page("index.php?load=plugins&status=pluginInstalled", 200);
           
         }

@@ -9,7 +9,7 @@ $mediaLib = new MediaApp($mediaEvent);
 
 switch ($action) {
 
-    case 'newMedia':
+    case ActionConst::NEWMEDIA:
 
        if ($mediaId == 0) {
 
@@ -23,7 +23,21 @@ switch ($action) {
 
        break;
 
-    case 'deleteMedia':
+    case ActionConst::EDITMEDIA:
+
+       if ($mediaDao -> checkMediaId($mediaId, $sanitizer)) {
+
+           $mediaLib -> update($mediaId);
+
+       } else {
+
+           direct_page('index.php?load=medialib&error=mediaNotFound', 404);
+            
+       } 
+
+       break;
+
+    case ActionConst::DELETEMEDIA:
 
          $mediaLib -> remove($mediaId);
          

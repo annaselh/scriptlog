@@ -9,6 +9,8 @@
  * @version   1.0
  * 
  */
+ini_set('display_errors',1);
+error_reporting(-1);
 define('APP_PATH', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 define('APP_INC', 'include');
 
@@ -28,3 +30,5 @@ if (!isset($_SESSION)) {
 }
 
 $errors = array();
+
+ob_start();
