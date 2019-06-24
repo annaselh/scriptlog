@@ -20,6 +20,7 @@
 
 $key = '5c12IpTl0g!@#';
 $checkIncKey = sha1(mt_rand(1, 1000).$key);
+$config = null;
 
 define('DS', DIRECTORY_SEPARATOR);
 define('APP_TITLE', 'Scriptlog');

@@ -210,7 +210,7 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
    
    $row = mysqli_fetch_assoc(mysqli_query($link, $getAppKey));
 
-   $app_key = generate_license(substr($row['setting_value']));
+   $app_key = generate_license(substr($row['setting_value'], 0, 8));
 
    $updateAppKey = "UPDATE settings SET setting_value = '$app_key'
                     WHERE setting_name = 'app_key' 
