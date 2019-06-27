@@ -140,17 +140,8 @@ class Scriptloader
   */
  public function runLoader()
  {
-     
-    if (version_compare(PHP_VERSION, '5.6', '>=')) {
-
-       if (version_compare(PHP_VERSION, '7.0', '>=')) {
-
-         spl_autoload_register(null, false);
-         spl_autoload_register(array('Scriptloader', 'loadLibrary'));
-
-       }
-
-    }
+    spl_autoload_register(null, false);
+    spl_autoload_register(array('Scriptloader', 'loadLibrary'));
 
  }
  
