@@ -9,7 +9,7 @@ $menuChildApp = new MenuChildApp($menuChildEvent);
     
     switch ($action) {
     
-        case 'newSubmenu':
+        case ActionConst::NEWSUBMENU:
             # Add New Menu
             if ($subMenuId == 0) {
     
@@ -19,7 +19,7 @@ $menuChildApp = new MenuChildApp($menuChildEvent);
     
             break;
         
-        case 'editSubmenu':
+        case ActionConst::EDITSUBMENU:
     
             if ($menuChildDao -> checkMenuChildId($subMenuId, $sanitizer)) {
     
@@ -33,7 +33,7 @@ $menuChildApp = new MenuChildApp($menuChildEvent);
     
             break;
     
-        case 'deleteSubmenu':
+        case ActionConst::DELETESUBMENU:
     
             $menuChildApp -> remove($menuId);
     

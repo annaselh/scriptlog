@@ -9,7 +9,7 @@ $menuApp = new MenuApp($menuEvent);
     
     switch ($action) {
     
-        case 'newMenu':
+        case ActionConst::NEWMENU:
             # Add New Menu
             if ($menuId == 0) {
     
@@ -19,7 +19,7 @@ $menuApp = new MenuApp($menuEvent);
     
             break;
         
-        case 'editMenu':
+        case ActionConst::EDITMENU:
     
             if ($menuDao -> checkMenuId($menuId, $sanitizer)) {
     
@@ -33,7 +33,7 @@ $menuApp = new MenuApp($menuEvent);
     
             break;
     
-        case 'deleteMenu':
+        case ActionConst::DELETEMENU:
     
             $menuApp -> remove($menuId);
     

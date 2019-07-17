@@ -36,20 +36,24 @@ $user_session = isset($_COOKIE['cookie_user_session']) ? $_COOKIE['cookie_user_s
     
 // BreadCrumbs
 $breadCrumbs = isset($_GET['load']) ? htmlentities(strip_tags($_GET['load'])) : http_response_code();
+
 // StylePath
 $stylePath = $config['app']['url'] . APP_ADMIN;
+
 // Current URL
 $currentURL = APP_PROTOCOL . '://'. APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . DS;
+
 // Allowed query
 $allowedQuery = array('dashboard', 'posts', 'medialib',
                       'pages', 'topics', 'comments', 'templates', 
                       'menu', 'menu-child', 'users', 'settings', 'plugins', 'logout');    
-// retrieve plugin actived -- for administrator
+
+                      // retrieve plugin actived -- for administrator
 $plugin_navigation = setplugin($user_level, 'private');
 
 require 'admin-layout.php';
 admin_header($stylePath, $breadCrumbs, $allowedQuery);
-//require 'navigation.php';
+require 'navigation.php';
 require 'request.php';
 admin_footer($currentURL);
 ob_end_flush();

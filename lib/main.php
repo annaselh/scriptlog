@@ -134,8 +134,6 @@ load_engine($library);
 
  ******************************************************/
 
-#=====================================================
-
 $rules = array(
     
     'home'     => "/",                               
@@ -146,7 +144,9 @@ $rules = array(
     'search'   => "(?'search'[\w\-]+)"
     
 );
- 
+
+#==================== END OF RULES ======================
+
 // an instantiation of Database connection
 $dbc = DbFactory::connect([
     'mysql:host='.$config['db']['host'].';dbname='.$config['db']['name'],

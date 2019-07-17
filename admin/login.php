@@ -142,14 +142,14 @@ if (!empty($loginFormSubmitted)) {
 
   <?php 	
   
-  if (isset($_GET['status']) && $_GET['status'] == 'ganti') {
+  if (isset($_GET['status']) && $_GET['status'] == 'changed') {
   
      echo '<div class="alert alert-info alert-dismissable">
-      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Kata sandi sudah di' . $_GET['status'] . '. Silahkan masuk!</div>';
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>The password has been ' . htmlspecialchars($_GET['status']) . '. Please enter with your new password!</div>';
   
-  }elseif (isset($_GET['status']) && $_GET['status'] == 'aktif')
+  }elseif (isset($_GET['status']) && $_GET['status'] == 'actived')
   {
-    echo '<div class="alert alert-info alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>Akun sudah di' . $_GET['status'] . 'kan. Silahkan masuk!</div>';
+    echo '<div class="alert alert-info alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>The account has been ' . htmlspecialchars($_GET['status']) . '. Pleas log in with your email and password!</div>';
   }
   
   ?>

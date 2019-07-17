@@ -133,11 +133,13 @@ class Scriptloader
      
  }
  
- /**
-  * Loader
-  * load all library path selected
-  * spl_autoload_register
-  */
+/**
+ * running loader to load all classes needed by the system
+ * @method public runLoader()
+ * @uses Scriptloader::loadLibrary 
+ * @uses SPL Autoload Register
+ * 
+ */
  public function runLoader()
  {
     spl_autoload_register(null, false);

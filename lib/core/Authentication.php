@@ -157,10 +157,12 @@ class Authentication
       
   }
 
- /**
-  * Checking access level
-  * @return boolean
-  */
+/**
+ * Checking access level
+ * 
+ * @return boolean 
+ * 
+ */
  public function accessLevel()
  {
    
@@ -217,7 +219,7 @@ class Authentication
 
       if ($remember_me == true) {
            
-           setcookie("cookie_user_email", $email, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
+           setcookie("cookie_user_email", $this->user_email, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
            setcookie("cookie_user_login", $this->user_login, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
            setcookie("cookie_user_level", $this->user_level, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
            setcookie("cookie_user_fullname", $this->user_fullname, time() + self::COOKIE_EXPIRE, self::COOKIE_PATH);
@@ -386,6 +388,7 @@ public function removeCookies()
  * user activation
  * 
  * @param string $keys
+ * 
  */
 public function activateUserAccount($key)
 {
@@ -395,7 +398,7 @@ public function activateUserAccount($key)
 
   } else {
 
-    $actived = APP_PROTOCOL . '://' . APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . '/login.php?status=active';
+    $actived = APP_PROTOCOL . '://' . APP_HOSTNAME . dirname($_SERVER['PHP_SELF']) . '/login.php?status=actived';
     header("Location: $actived");
     exit();
     

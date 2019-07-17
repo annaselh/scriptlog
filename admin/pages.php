@@ -9,7 +9,7 @@ $pageApp = new PageApp($pageEvent);
 
 switch ($action) {
     
-    case 'newPage':
+    case ActionConst::NEWPAGE:
     
         if ($pageId == 0) {
             
@@ -19,7 +19,7 @@ switch ($action) {
         
         break;
     
-    case 'editPage':
+    case ActionConst::EDITPAGE:
         
         if ($pageDao -> checkPageId($pageId, $sanitizer)) {
             
@@ -29,9 +29,10 @@ switch ($action) {
             
             
         }
+
         break;
         
-    case 'deletePage':
+    case ActionConst::DELETEPAGE:
         
         $pageApp -> remove($pageId);
         

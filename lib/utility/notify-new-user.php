@@ -6,6 +6,7 @@
  * @param string $subject
  * @param string $content
  * @return boolean
+ * 
  */
 function notify_new_user($recipient, $user_email, $user_pass)
 {

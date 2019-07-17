@@ -9,7 +9,7 @@ $topicApp = new TopicApp($topicEvent);
 
 switch ($action) {
     
-    case 'newTopic':
+    case ActionConst::NEWTOPIC:
         
         if ($topicId == 0) {
             $topicApp -> insert();
@@ -17,7 +17,7 @@ switch ($action) {
         
         break;
         
-    case 'editTopic':
+    case ActionConst::EDITTOPIC:
         
         if ($topicDao -> checkTopicId($topicId, $sanitizer)) {
             
@@ -31,7 +31,7 @@ switch ($action) {
         
         break;
         
-    case 'deleteTopic':
+    case ActionConst::DELETETOPIC:
         
         $topicApp -> remove($topicId);
         
@@ -44,4 +44,3 @@ switch ($action) {
         break;
         
 }
-

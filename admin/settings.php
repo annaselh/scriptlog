@@ -9,7 +9,7 @@ $configApp = new ConfigurationApp($configEvent);
 
 switch ($action) {
 
-    case 'newConfig':
+    case ActionConst::NEWCONFIG:
 
         if($settingId == 0) {
 
@@ -19,7 +19,7 @@ switch ($action) {
 
         break;
 
-    case 'editConfig':
+    case ActionConst::EDITCONFIG:
         
         # edit configuration
         if ($configDao -> checkConfigId($settingId, $sanitizer)) {
@@ -34,11 +34,10 @@ switch ($action) {
 
         break;
 
-    case 'deleteConfig':
+    case ActionConst::DELETECONFIG:
       
         // delete setting
         
-
         break;
     
     default:

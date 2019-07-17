@@ -84,6 +84,13 @@ function table_exists($link, $table, $counter = 0)
 
 }
 
+/**
+ * function check_dbtable
+ * 
+ * @param string $link
+ * @param string $table
+ * 
+ */
 function check_dbtable($link, $table)
 {
   $install = false;
@@ -210,7 +217,7 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
    
    $row = mysqli_fetch_assoc(mysqli_query($link, $getAppKey));
 
-   $app_key = generate_license(substr($row['setting_value'], 0, 8));
+   $app_key = generate_license(substr($row['setting_value'], 0, 5));
 
    $updateAppKey = "UPDATE settings SET setting_value = '$app_key'
                     WHERE setting_name = 'app_key' 
@@ -333,7 +340,7 @@ function generate_license($suffix = null)
     
   }
   
-  $tokens = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  $tokens = 'ABCDEFGHJKLMNPQRSTUVWXYZ1234567890';
   $license_string = '';
     
   // Build Default License String
@@ -360,8 +367,8 @@ function generate_license($suffix = null)
         
         } else {
             
-            $long = sprintf("%u\n", ip2long($suffix),true);
-            
+            $long = sprintf("%u\n", ip2long($suffix), true);
+
             if($suffix === long2ip($long) ) {
                 
                 $license_string .= '-'.strtoupper(base_convert($long,10,36));

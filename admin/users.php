@@ -8,9 +8,9 @@ $userApp = new UserApp($userEvent);
 
 switch ($action) {
     
-    case 'newUser':
+    case ActionConst::NEWUSER:
     
-      if ($authenticator -> userAccessControl('users') === false) {
+      if (false === $authenticator -> userAccessControl('users')) {
 
           direct_page('index.php?load=users&error=userNotFound', 404);
 
@@ -19,7 +19,7 @@ switch ($action) {
         if (gettype($userId) !== "integer") {
 
            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
-           throw new AppException("invalid ID date type!");
+           throw new AppException("invalid ID data type!");
 
         } else {
 
@@ -35,7 +35,7 @@ switch ($action) {
         
       break;
         
-    case 'editUser':
+    case ActionConst::EDITUSER:
         
         if (gettype($userId) !== "integer") {
 
@@ -46,7 +46,7 @@ switch ($action) {
 
         if ($userDao -> checkUserId($userId, $sanitizer)) {
             
-            if($authenticator -> userAccessControl('users') == false) {
+            if(false === $authenticator -> userAccessControl('users')) {
     
                 $userApp -> updateProfile($user_id);
     
@@ -56,7 +56,7 @@ switch ($action) {
     
             }
             
-        } elseif ($userDao -> checkUserSession($sessionId) == false) {
+        } elseif (false === $userDao -> checkUserSession($sessionId)) {
     
             direct_page('index.php?load=users&error=userNotFound', 404);
                 
@@ -68,9 +68,9 @@ switch ($action) {
 
         break;
         
-    case 'deleteUser':
+    case ActionConst::DELETEUSER:
         
-        if($authenticator -> userAccessControl('users') === false) {
+        if(false === $authenticator -> userAccessControl('users')) {
 
             direct_page('index.php?load=users&error=userNotFound', 404);
 
@@ -84,7 +84,7 @@ switch ($action) {
                 
     default:
         
-        if($authenticator -> userAccessControl('users') === false) {
+        if(false === $authenticator -> userAccessControl('users')) {
 
             $userApp -> showProfile($user_id);
 
@@ -97,5 +97,3 @@ switch ($action) {
         break;
         
 }
-
-

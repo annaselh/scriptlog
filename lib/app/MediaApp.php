@@ -229,7 +229,8 @@ public function insert()
          if($media_id) {
             
            $this->mediaEvent->setMediaId($media_id);
-           $this->mediaEvent->setMediaKey();
+           $this->mediaEvent->setMediaKey($new_filename);
+           $this->mediaEvent->setMediaValue($media_metavalue);
             
          }
 

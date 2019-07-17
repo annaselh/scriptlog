@@ -72,9 +72,13 @@ if((check_dbtable($dbconnect, 'users') == true) || (check_dbtable($dbconnect, 'u
 if ($install != 'install') {
     
     if (version_compare(PHP_VERSION, '5.6', '>=')) {
+
         clearstatcache();
+
     } else {
+
         clearstatcache(true);
+        
     }
     
     $_SESSION['install'] = false;
@@ -98,7 +102,15 @@ if ($install != 'install') {
         $errors['errorSetup'] = "database: requires name, hostname, user and password";
         
     } 
-    
+
+    $link = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
+        
+    if ($link->connect_errno) {
+
+        $errors['errorSetup'] = " Failed to connect to MySQL: " . $link->connect_error;
+
+    }
+
     if(ctype_alnum($username) && (mb_strlen($username) > 0) && (mb_strlen($username) <= 32)) {
       
        $clean_setup['username'] = $username;
@@ -135,16 +147,68 @@ if ($install != 'install') {
        
     }
 
+    if (false === check_php_version()) {
+
+       $errors['errorSetup'] = 'Requires PHP 5.6 or newer';
+
+    }
+
+    if (true === check_pcre_utf8()) {
+
+       $errors['errorSetup'] = 'PCRE has not been compiled with UTF-8 or Unicode property support';
+
+    }
+
+    if (false === check_spl_enabled('spl_autoload_register')) {
+
+        $errors['errorSetup'] = 'spl autoload register is either not loaded or compiled in';
+
+    }
+
+    if (false === check_filter_enabled()) {
+
+       $errors['errorSetup'] = 'The filter extension is either not loaded or compiled in';
+
+    }
+
+    if (false === check_iconv_enabled()) {
+
+       $errors['errorSetup'] = 'The Iconv extension is not loaded';
+
+    }
+
+    if (true === check_character_type()) {
+
+       $errors['errorSetup'] = 'The ctype extension is overloading PHP\'s native string functions';
+
+    } 
+
+    if (false === check_gd_enabled()) {
+       
+       $errors['errorSetup'] = 'requires GD v2 for the image manipulation';
+
+    }
+
+    if (false === check_pdo_mysql()) {
+
+       $errors['errorSetup'] = 'requires PDO MySQL enabled';
+
+    }
+
+    if (false === check_mysqli_enabled()) {
+
+       $errors['errorSetup'] = 'requires MySQLi enabled';
+       
+    }
+
+    if (false === check_uri_determination()) {
+
+      $errors['errorSetup'] = 'Neither $_SERVER[REQUEST_URI], $_SERVER[PHP_SELF] or $_SERVER[PATH_INFO] is available';
+
+    }
+
     if (empty($errors['errorSetup']) === true) {
         
-        $link = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-        
-        if ($link->connect_errno) {
-
-          $errors['errorSetup'] = " Failed to connect to MySQL: " . $link->connect_error;
-
-        }
-
         $completed = true;
         
         $length = 16;
@@ -324,4 +388,4 @@ install_footer($current_path, $protocol, $server_host);
 
 ob_end_flush();
 
-}
+} 

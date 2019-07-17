@@ -9,7 +9,7 @@ $postApp = new PostApp($postEvent);
 
 switch ($action) {
     
-    case 'newPost':
+    case ActionConst::NEWPOST:
         
         if ($postId == 0) {
             
@@ -19,7 +19,7 @@ switch ($action) {
         
         break;
         
-    case 'editPost':
+    case ActionConst::EDITPOST:
         
         if ($postDao -> checkPostId($postId, $sanitizer)) {
         
@@ -33,7 +33,7 @@ switch ($action) {
         
         break;
         
-    case 'deletePost':
+    case ActionConst::DELETEPOST:
         
         $postApp -> remove($postId);
         

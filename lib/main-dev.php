@@ -129,8 +129,6 @@ load_engine($library);
 
  *******************************************************/
 
-#========================================================
-
 $rules = array(
     'home'     => "/",                               
     'category' => "/category/(?'category'[\w\-]+)",
@@ -139,6 +137,8 @@ $rules = array(
     'single'   => "/post/(?'id'\d+)/(?'post'[\w\-]+)",
     'search'   => "(?'search'[\w\-]+)"
 );
+
+#==================== END OF RULES ======================
 
 // an instantiation of Database connection
 $dbc = DbFactory::connect(['mysql:host='.$config['db']['host'].';dbname='.$config['db']['name'],

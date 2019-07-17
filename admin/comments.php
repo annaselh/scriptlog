@@ -9,7 +9,7 @@ $commentApp = new CommentApp($commentEvent);
     
     switch ($action) {
         
-        case 'editComment':
+        case ActionConst::EDITCOMMENT:
         
             if ($commentDao -> checkCommentId($commentId, $sanitizer)) {
                 
@@ -23,7 +23,7 @@ $commentApp = new CommentApp($commentEvent);
             
             break;
      
-        case 'deleteComment':
+        case ActionConst::DELETECOMMENT:
             
             $commentApp -> remove($commentId);
             

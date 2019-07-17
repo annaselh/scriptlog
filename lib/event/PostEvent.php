@@ -245,7 +245,8 @@ class PostEvent
    * @param number $limit
    * @param string $orderBy
    * @param null $author
-   * @return boolean|array|object
+   * @return boolean|array|object 
+   * 
    */
   public function grabPosts($orderBy = 'ID', $author = null)
   {

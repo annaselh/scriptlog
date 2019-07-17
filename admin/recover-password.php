@@ -5,6 +5,7 @@
  * @category  recovering user password
  * @package   SCRIPTLOG
  * @author    M.Noermoehammad
+ * 
  */
 if (file_exists(__DIR__ . '/../config.php')) {
     
@@ -36,32 +37,39 @@ if (empty($recoverFormSubmitted) == false) {
     $password = isset($_POST['pass1']) ? prevent_injection($_POST['pass1']) : "";
     $confirmPass = isset($_POST['pass2']) ? prevent_injection($_POST['pass2']) : "";
 
-    if (empty($password) || empty($confirmPass)) {
+    $badCSRF = true;
+
+    if (!isset($_POST['csrf']) || !isset($_SESSION['CSRF']) || empty($_POST['csrf'])
+        || $_POST['csrf'] !== $_SESSION['CSRF']) {
+      
+        $errors['errorMessage'] = "Sorry, there was a security issue";
+        $badCSRF = true;
+  
+    } elseif (empty($password) || empty($confirmPass)) {
 
        $errors['errorMessage'] = "All column must be filled";
 
-    } else {
+    } elseif (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,50}$/', $password)) {
 
-       if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,50}$/', $password)) {
+      $errors['errorMessage'] = "The password may contain letter and numbers, at least one number and one letter, any of these characters !@#$%";
 
-          $errors['errorMessage'] = "The password may contain letter and numbers, at least one number and one letter, any of these characters !@#$%";
+   } elseif (strlen($password) < 8) {
 
-       } elseif (strlen($password) < 8) {
+      $errors['errorMessage'] = "The Password must consist of least 8 characters";
 
-          $errors['errorMessage'] = "The Password must consist of least 8 characters";
+   } elseif ($password !== $confirmPass) {
 
-       } elseif ($password !== $confirmPass) {
+     $errors['errorMessage'] = "The Password does not match";
 
-         $errors['errorMessage'] = "The Password does not match";
+   } else {
 
-       }
+      $badCSRF = false;
+      unset($_SESSION['CSRF']);
+      $authenticator -> updateNewPassword($password, $user['ID']);
+      direct_page('login.php?status=changed', 200);
 
-    }
+   }
 
-    if (empty($errors['errorMessage']) === true) {
-      $authenticator -> updateNewPassword($password, $user['ID']);           
-    }
-    
 }
 
 ?>

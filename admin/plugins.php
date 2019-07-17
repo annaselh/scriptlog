@@ -9,7 +9,7 @@ $pluginApp = new PluginApp($pluginEvent);
 
 switch ($action) {
 
-    case 'installPlugin':
+    case ActionConst::INSTALLPLUGIN:
         
         if ($pluginId == 0) {
             
@@ -23,19 +23,19 @@ switch ($action) {
 
         break;
     
-    case 'activatePlugin':
+    case ActionConst::ACTIVATEPLUGIN:
         
         $pluginApp -> enablePlugin($pluginId);
 
         break;
 
-    case 'deactivatePlugin':
+    case ActionConst::DEACTIVATEPLUGIN:
         
         $pluginApp -> disablePlugin($pluginId);
 
         break;
 
-    case 'newPlugin':
+    case ActionConst::NEWPLUGIN:
        
        if ($pluginId == 0) {
 
@@ -49,7 +49,7 @@ switch ($action) {
 
        break;
 
-    case 'editPlugin':
+    case ActionConst::EDITPLUGIN:
        
        if ($pluginDao -> checkPluginId($pluginId, $sanitizer)) {
 
@@ -63,7 +63,7 @@ switch ($action) {
 
        break;
 
-    case 'deletePlugin':
+    case ActionConst::DELETEPLUGIN:
        
         $pluginApp -> remove($pluginId);
 

@@ -11,7 +11,7 @@
  */
 if (file_exists(__DIR__ . '/../config.php')) {
     
-  include(dirname(dirname(__FILE__)).'/library/main.php');
+  include(dirname(dirname(__FILE__)).'/lib/main.php');
   
 } else {
   
@@ -20,11 +20,11 @@ if (file_exists(__DIR__ . '/../config.php')) {
   
 }
 
-$userActivationKey = isset($_GET['key']) ? trim($_GET['key']) : '';
+$userActivationKey = isset($_GET['key']) ? htmlspecialchars(strip_tags(trim($_GET['key']))) : '';
 
 if (empty($userActivationKey)) {
 
-  // activation key not found
+  // activation key not found direct page to web root
   direct_page();
 
 } else {

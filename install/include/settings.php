@@ -23,6 +23,12 @@ if (file_exists(APP_PATH . APP_INC . '/vendor/autoload.php')) {
     
 }
 
+if (!ini_get('date.timezone')) {
+
+  date_default_timezone_set('GMT');
+
+}
+
 if (!isset($_SESSION)) {
     
   session_start();

@@ -115,7 +115,7 @@ function get_sisfo()
                 endif;
                 
                 ?>
-                <small class="<?=(isset($php_passed)) ? $php_passed : 'text-danger'; ?>"><?=(isset($php_passed)) ? PHP_VERSION : $errors['errorChecking'] = 'Requires PHP 5.4 or newer'; ?></small>
+                <small class="<?=(isset($php_passed)) ? $php_passed : 'text-danger'; ?>"><?=(isset($php_passed)) ? PHP_VERSION : $errors['errorChecking'] = 'Requires PHP 5.6 or newer'; ?></small>
               </div>
               <span class="<?=(isset($php_passed)) ? $php_passed : 'text-danger'; ?>"><i class="<?=(isset($php_checked)) ? $php_checked : 'fa fa-close fa-lg'; ?>"></i></span>
                
@@ -316,7 +316,7 @@ function required_settings()
                 
           ?>
 
-    <small class="<?=(isset($ctype_failed)) ? $ctype_failed : 'text-success'; ?>"><?=(isset($ctype_failed)) ? $errors['errorChecking'] = 'The ctype extension is is overloading PHP\'s native string functions' : 'Pass' ; ?></small>
+    <small class="<?=(isset($ctype_failed)) ? $ctype_failed : 'text-success'; ?>"><?=(isset($ctype_failed)) ? $errors['errorChecking'] = 'The ctype extension is overloading PHP\'s native string functions' : 'Pass' ; ?></small>
     </div>
     <span class="<?=(isset($ctype_failed)) ? $ctype_failed : 'text-success' ; ?>"><i class="<?=(isset($ctype_close)) ?  $ctype_close : 'fa fa-check fa-lg'; ?>"></i></span>
             
@@ -395,7 +395,7 @@ function required_settings()
                 
           ?>
                 
-      <small class="<?=(isset($uri_passed)) ? $uri_passed : 'text-danger'; ?>"><?=(isset($uri_passed)) ?  'Pass' : $errors['errorChecking'] = 'Neither $_SERVER[REQUEST_uri], $_SERVER[PHP_SELF] or $_SERVER[PATH_INFO] is available' ; ?></small>
+      <small class="<?=(isset($uri_passed)) ? $uri_passed : 'text-danger'; ?>"><?=(isset($uri_passed)) ?  'Pass' : $errors['errorChecking'] = 'Neither $_SERVER[REQUEST_URI], $_SERVER[PHP_SELF] or $_SERVER[PATH_INFO] is available' ; ?></small>
       </div>
       <span class="<?=(isset($uri_passed)) ? $uri_passed : 'text-danger' ; ?>"><i class="<?=(isset($uri_check)) ?  $uri_check : 'fa fa-close fa-lg'; ?>"></i></span>
             
@@ -553,5 +553,5 @@ function check_dir_file()
   </ul>
 
 <?php
-}
 
+}

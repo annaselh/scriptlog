@@ -82,33 +82,24 @@ function check_browser_version()
 {
  $browser = new Browser();
  
- if ($browser-> getName() == 'Chrome') {
+ if (($browser-> getName() == 'Chrome') && ($browser -> getVersion() < 65)) {
      
-     if ($browser->getVersion() < 65)
-         
          return true;
      
- } elseif ($browser-> getName() == 'Firefox') {
+ } elseif (($browser-> getName() == 'Firefox') && ($browser -> getVersion() < 56.0)) {
      
-     if ($browser->getVersion() < 56.0)
          return true;
          
- } elseif ($browser->getName() == 'Opera') {
-     
-     if ($browser->getVersion() < 52.0) 
-         
+ } elseif (($browser->getName() == 'Opera') && ($browser -> getVersion() < 52.0)) {
+        
          return true;
 
- } elseif ($browser->getName() == 'Vivaldi') {
-     
-     if ($browser->getVersion() < 1.14)
-         
+ } elseif (($browser->getName() == 'Vivaldi') && ($browser -> getVersion() < 1.14)) {
+          
          return true;
      
- } elseif ($browser->getName() == 'Internet Explorer') {
+ } elseif (($browser->getName() == 'Internet Explorer') && ($browser -> getVersion() < 11)) {
      
-     if ($browser->getVersion() < 11) 
-         
          return true;
      
  }
@@ -249,7 +240,7 @@ function check_plugin_dir()
 }
 
 /**
- * Check PCRE UTF-8
+ * Checking PCRE UTF-8
  */
 function check_pcre_utf8()
 {

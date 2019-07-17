@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * cp_tag_title function
+ * print control panel page title
+ * 
+ */
 function cp_tag_title($value) 
 {
     switch($value) {

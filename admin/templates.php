@@ -9,7 +9,7 @@ $themeApp = new ThemeApp($themeEvent);
 
 switch ($action) {
 
-    case 'newTheme':
+    case ActionConst::NEWTHEME:
         
         if ($themeId == 0) {
             
@@ -19,7 +19,7 @@ switch ($action) {
 
         break;
 
-    case 'installTheme' :
+    case ActionConst::INSTALLTHEME:
         
         if ($themeId == 0) {
 
@@ -29,7 +29,7 @@ switch ($action) {
 
         break;
 
-    case 'editTheme':
+    case ActionConst::EDITTHEME:
 
         if ($themeDao -> checkThemeId($themeId, $sanitizer)) {
             
@@ -43,14 +43,14 @@ switch ($action) {
     
         break;
 
-    case 'deleteTheme':
+    case ActionConst::DELETETHEME:
 
        $themeApp -> remove($themeId);
 
     default:
+
         # show list of all themes
         $themeApp -> listItems();
         break;
 
 }
-
