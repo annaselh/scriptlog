@@ -1,20 +1,15 @@
 <?php
 /**
- * check integer function
+ * Function check_integer
  * 
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
  * @param integer $input
+ * @see https://www.php.net/manual/en/function.is-int.php#82857
  * @return boolean
  * 
  */
 function check_integer($input)
 {
-    if (!ctype_digit(strval($input))) {
-        
-        return false;
-        
-    } else {
-        
-        return true;
-    }
-    
+    return (ctype_digit(strval($input)));
 }

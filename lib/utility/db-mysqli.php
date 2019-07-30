@@ -2,8 +2,8 @@
 /**
  * collection of function uses MySQL Improved (MySQLi) extension
  * 
- * @package  SCRIPTLOG
- * @category library\utility
+ * @package  SCRIPTLOG/LIB/UTILITY
+ * @category function
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0

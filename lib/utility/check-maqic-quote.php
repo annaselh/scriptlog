@@ -1,6 +1,10 @@
 <?php
 /**
- * check magic_quote function
+ * Function check_magic_quote
+ * 
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
+ * 
  */
 function check_magic_quote()
 {

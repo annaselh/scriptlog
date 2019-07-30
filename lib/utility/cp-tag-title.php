@@ -3,6 +3,10 @@
  * cp_tag_title function
  * print control panel page title
  * 
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
+ * @param string $value
+ * 
  */
 function cp_tag_title($value) 
 {

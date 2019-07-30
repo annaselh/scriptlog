@@ -6,7 +6,7 @@
  * @package  SCRIPTLOG
  * @category admin\authorizer.php file
  * @author   Vincy vincy@gmail.com
- * @link     https://phppot.com/php/secure-remember-me-for-login-using-php-session-and-cookies/
+ * @see     https://phppot.com/php/secure-remember-me-for-login-using-php-session-and-cookies/
  * 
  */
 $current_date = date("Y-m-d H:i:s", time()); 

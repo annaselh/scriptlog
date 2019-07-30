@@ -3,17 +3,37 @@
  * Scriptlog Error Function
  * Generates user-level error/warning/notice message
  * 
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
+ * @see https://www.php.net/manual/en/function.trigger-error.php#118794
  * @param string $message
  * @param string $level
+ * 
  */
-function scriptlog_error($message, $level = E_USER_NOTICE)
+function scriptlog_error($error_message, $error_type = E_USER_NOTICE, $context = 1)
 {
-   $caller = next(debug_backtrace());
-   
-   trigger_error($message.' in '.$caller['function'].' function called from '.$caller['file'].' on line '.$caller['line'].' '."\n error handler", $level);
-   
+  
+  $stack = debug_backtrace();
+
+    for ($i = 0; $i < $context; $i++) {
+
+        if (false === ($frame = next($stack))) break;
+
+        $error_message .= " in: " . $frame['function'] . '() function called from: ' . $frame['file'] . ' on line ' . $frame['line'] .' '."\n ";
+
+    }
+
+    return trigger_error($error_message, $error_type);
+  
 }
 
+/**
+ * Function scriptlog_shutdown_fatal
+ * 
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
+ * 
+ */
 function scriptlog_shutdown_fatal()
 {
  
@@ -71,6 +91,14 @@ function scriptlog_shutdown_fatal()
 
 }
 
+/**
+ * Function scriptlog_format_error
+ * 
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
+ * @return string
+ * 
+ */
 function scriptlog_format_error($datetime, $errno, $errstr, $errfile, $errline)
 {
   $trace = print_r(debug_backtrace(false), true);
@@ -109,6 +137,14 @@ function scriptlog_format_error($datetime, $errno, $errstr, $errfile, $errline)
 
 }
 
+/**
+ * Function scriptlog_error_mail
+ * 
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
+ * @return bool
+ * 
+ */
 function scriptlog_error_mail($errorMsg, $MsgType, $destination, $headers)
 {
   if ($MsgType === 1) {

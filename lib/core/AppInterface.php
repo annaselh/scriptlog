@@ -2,8 +2,8 @@
 /**
  * AppInterface Interface
  *
- * @package   SCRIPTLOG
- * @category  library\core\AppInterface
+ * @category  Core Class
+ * @package   SCRIPTLOG/LIB/CORE/AppInterface
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

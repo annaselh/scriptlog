@@ -1,8 +1,10 @@
 <?php
 /**
- * Add Http Function
- * add http prefix to URL when missing
+ * Function add_http
+ * add http prefix to URL when it missing
  *  
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
  * @param string $url
  * @return string
  * 

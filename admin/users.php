@@ -16,7 +16,7 @@ switch ($action) {
 
       } else {
 
-        if (gettype($userId) !== "integer") {
+        if ((!check_integer($userId)) && (gettype($userId) !== "integer")) {
 
            header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
            throw new AppException("invalid ID data type!");
@@ -37,7 +37,7 @@ switch ($action) {
         
     case ActionConst::EDITUSER:
         
-        if (gettype($userId) !== "integer") {
+        if ((!check_integer($userId)) && (gettype($userId) !== "integer")) {
 
             header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request");
             throw new AppException("Invalid ID data type!");

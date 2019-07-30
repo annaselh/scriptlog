@@ -68,7 +68,7 @@ if (!empty($loginFormSubmitted)) {
     $badCSRF = false;
     unset($_SESSION['CSRF']);
 
-    if ($authenticator -> validateUserAccount($user_email, $user_pass) === true) {
+    if (true === $authenticator -> validateUserAccount($user_email, $user_pass)) {
         $isAuthenticated = true;
     }
   

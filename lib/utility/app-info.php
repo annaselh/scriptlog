@@ -1,11 +1,10 @@
 <?php
 /**
- * App Info Function
+ * Function app_info
  * Retrieving site setting info
  * 
  * @category function
- * @package  SCRIPTLOG
- * 
+ * @package  SCRIPTLOG/LIB/UTILITY
  * @return array[][]
  * 
  */

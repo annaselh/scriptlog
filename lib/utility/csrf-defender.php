@@ -2,6 +2,8 @@
 /**
  * CSRF Check Token Function
  * 
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
  * @param string $key
  * @param string $origin
  * @param string $timespan
@@ -26,6 +28,8 @@ function csrf_check_token($key, $origin, $timespan = null)
 /**
  * CSRF Generate Token Function
  * 
+ * @category function
+ * @package  SCRIPTLOG/LIB/UTILITY
  * @param string $key
  * @return string
  * 

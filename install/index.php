@@ -211,7 +211,7 @@ if ($install != 'install') {
         
         $completed = true;
         
-        $length = 16;
+        $length = 32;
 
         $_SESSION['install'] = true;
         

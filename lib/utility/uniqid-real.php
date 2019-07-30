@@ -6,6 +6,7 @@
  * @param number $length
  * @throws Exception
  * @return string
+ * 
  */
 function uniqid_real($length = 13)
 {

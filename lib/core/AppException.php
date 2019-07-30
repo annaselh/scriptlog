@@ -2,8 +2,8 @@
 /**
  * AppException Class extends CoreException
  * 
- * @package  SCRIPTLOG
- * @category library\core\AppException
+ * @category Core Class
+ * @package  SCRIPTLOG/LIB/CORE/AppException
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0

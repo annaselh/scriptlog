@@ -290,6 +290,7 @@ class MediaEvent
  * Add media meta
  * 
  * @return mixed
+ * 
  */
  public function addMediaMeta()
  {

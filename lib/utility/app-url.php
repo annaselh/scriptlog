@@ -1,7 +1,10 @@
 <?php
 /**
- * Application URL Function
+ * Function app_url
+ * Retrieving URL configuration from database
  * 
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
  * @return string
  * 
  */

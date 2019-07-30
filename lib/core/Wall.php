@@ -21,7 +21,7 @@ class Wall extends Dashboard
  */
  public function listItems()
  {
-   if(access_level() === true) {
+   if(true === is_non_administrator()) {
 
      $this->welcomeUser('Hello '.$_SESSION['user_fullname']);
 

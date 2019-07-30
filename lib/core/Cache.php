@@ -3,8 +3,8 @@
  * Abstract Class Cache
  * Abstract it functionality to read cache, write cache, and remove cache
  * 
- * @package  SCRIPTLOG
- * @category library\core\Cache
+ * @category Core Class
+ * @package  SCRIPTLOG/LIB/CORE/Cache
  * @abstract Class Cache
  * @author   Contributors
  * @license  MIT

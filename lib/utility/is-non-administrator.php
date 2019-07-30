@@ -1,11 +1,14 @@
 <?php
 /**
- * Access level function
+ * is_non_administrator function
+ * Class Wall will use this class to check user's access level
  * 
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
  * @return string
  * 
  */
-function access_level()
+function is_non_administrator()
 {
   $user_level = false;
 
@@ -16,7 +19,7 @@ function access_level()
 
   $accessLevel = $authenticator -> accessLevel();
 
-  if(($accessLevel != 'administrator') && ($accessLevel != 'manager')) {
+  if(($accessLevel != 'administrator')) {
      
      $user_level = true;
 

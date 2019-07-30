@@ -1,8 +1,10 @@
 <?php
 /**
- * Autolink function 
+ * Function autolink
  * 
- * @link http://www.couchcode.com/php/auto-link-function/
+ * @category function
+ * @package SCRIPTLOG/LIB/UTILITY
+ * @see http://www.couchcode.com/php/auto-link-function/
  * @param string $text
  * @return mixed
  * 

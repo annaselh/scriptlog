@@ -58,7 +58,7 @@ class Dispatcher
 
       $theme_dir = APP_ROOT.APP_PUBLIC.DS.$themeActived['theme_directory'].DS;
 
-      if ($this->allowedPath(['/', '//', 'post', 'page', 'blog', 'category', 'contact']) === false) {
+      if (false === $this->allowedPath(['/', '//', 'post', 'page', 'blog', 'category', 'contact'])) {
 
         // nothing is found so handle the error page 404
         $this->errorNotFound($theme_dir);
