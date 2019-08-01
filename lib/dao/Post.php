@@ -2,8 +2,8 @@
 /**
  * Post class extends Dao
  *
- * @package   SCRIPTLOG
- * @category  library\dao\Post
+ * @package   SCRIPTLOG/LIB/DAO/Post
+ * @category  Dao Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

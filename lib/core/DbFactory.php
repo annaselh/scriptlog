@@ -2,8 +2,8 @@
 /**
  * DbFactory Class
  *  
- * @package   SCRIPTLOG
- * @category  library\core\DbFactory
+ * @package   SCRIPTLOG/LIB/CORE/DbFactory
+ * @category  Core Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

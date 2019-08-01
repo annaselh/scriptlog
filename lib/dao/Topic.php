@@ -2,8 +2,8 @@
 /**
  * Topic class extends Dao
  *
- * @package   SCRIPTLOG
- * @category  library\dao\Topic
+ * @package   SCRIPTLOG/LIB/DAO/Topic
+ * @category  Dao Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

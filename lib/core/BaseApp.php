@@ -2,8 +2,8 @@
 /**
  * Abstract Class BaseApp implements AppInterface
  *
- * @category  Core Class
  * @package   SCRIPTLOG/LIB/CORE/BaseApp
+ * @category  Core Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

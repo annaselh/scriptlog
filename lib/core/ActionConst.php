@@ -4,8 +4,8 @@
  * 
  * The collection of actions constant 
  * 
+ * @package SCRIPTLOG/LIB/CORE/ActionConst
  * @category Core Class
- * @package  SCRIPTLOG/LIB/CORE/ActionConst
  * 
  */
 class ActionConst

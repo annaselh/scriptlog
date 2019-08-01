@@ -4,6 +4,8 @@
  * this will generate token for user reset password 
  * that send random string to user
  * 
+ * @category Function
+ * @package  SCRIPTLOG/LIB/EVENT
  * @param number $length
  */
 function generate_token($length = 20)

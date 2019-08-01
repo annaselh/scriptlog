@@ -2,8 +2,8 @@
 /**
  * Page class extends Dao
  * 
- * @package   SCRIPTLOG
- * @category  library\dao\Page
+ * @package   SCRIPTLOG/LIB/DAO/Page
+ * @category  Dao Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

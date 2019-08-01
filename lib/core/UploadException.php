@@ -2,8 +2,8 @@
 /**
  * ImageUploaderException Class
  *
- * @package   SCRIPTLOG
- * @category  library\core\UploadException
+ * @package   SCRIPTLOG/LIB/CORE/UploadException
+ * @category  Core Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

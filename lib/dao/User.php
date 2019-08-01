@@ -4,7 +4,8 @@
  * insert, update, delete 
  * and select records from users table
  *
- * @package   SCRIPTLOG
+ * @package   SCRIPTLOG/LIB/DAO/User
+ * @category  Dao Class
  * @author    Maoelana Noermoehammad
  * @license   MIT
  * @version   1.0

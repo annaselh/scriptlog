@@ -2,7 +2,8 @@
 /**
  * ReplyEvent Class
  * 
- * @package SCRIPTLOG
+ * @package  SCRIPTLOG/LIB/EVENT/ReplyEvent
+ * @category Event Class
  * @author  M.Noermoehammad 
  * @license MIT
  * @version 1.0.0

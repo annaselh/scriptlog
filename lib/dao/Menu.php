@@ -2,8 +2,8 @@
 /**
  * Class Menu extends Dao 
  *
- * @package   SCRIPTLOG
- * @category  library\dao\Menu
+ * @package   SCRIPTLOG/LIB/DAO/Menu
+ * @category  Dao Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

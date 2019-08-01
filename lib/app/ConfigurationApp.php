@@ -2,8 +2,8 @@
 /**
  * Class ConfigurationApp extends BaseApp
  *
- * @package   SCRIPTLOG
- * @category  library\app\ConfigurationApp
+ * @package   SCRIPTLOG/LIB/APP/ConfigurationApp
+ * @category  App Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

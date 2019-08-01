@@ -5,8 +5,8 @@
  * Copyright (c) 2011 Thibaut Despoulain <http://bkcore.com/blog/code/nocsrf-php-class.html>
  * Licensed under the MIT license <http://www.opensource.org/licenses/mit-license.php>
  *
- * @package  SCRIPTLOG
- * @category library\core\NoCSRF
+ * @package  SCRIPTLOG/LIB/CORE/NoCSRF
+ * @category Core Class
  * @author   Thibaut Despoulain <http://bkcore.com>
  * @version  1.0
  * 

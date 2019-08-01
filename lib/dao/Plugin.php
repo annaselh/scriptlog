@@ -2,8 +2,8 @@
 /**
  * Plugin class extends Plugin
  *
- * @package   SCRIPTLOG
- * @category  library\dao\Plugin
+ * @package   SCRIPTLOG/LIB/DAO/Plugin
+ * @category  Dao Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

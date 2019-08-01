@@ -2,8 +2,8 @@
 /**
  * Class PageApp extends BaseApp
  *
- * @package   SCRIPTLOG
- * @category  library\app\PageApp
+ * @package   SCRIPTLOG/LIB/APP/PageApp
+ * @category  App Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

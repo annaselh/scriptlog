@@ -2,8 +2,8 @@
 /**
  * ImageUploader Class
  *
- * @package   SCRIPTLOG
- * @category  library\core\ImageUploader
+ * @package   SCRIPTLOG/LIB/CORE/ImageUploader
+ * @category  Core Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

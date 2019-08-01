@@ -2,6 +2,8 @@
 /**
  * Escape output function
  * 
+ * @category Function
+ * @package  SCRIPTLOG/LIB/UTILITY
  * @param string $value
  * @param string $type
  * 

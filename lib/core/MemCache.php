@@ -2,8 +2,8 @@
 /**
  * MemCache Class extends Cache Class
  * 
- * @package  SCRIPTLOG
- * @category library\core\MemCache
+ * @package  SCRIPTLOG/LIB/CORE/MemCache
+ * @category Core Class
  * @author   Contributors
  * @license  MIT
  * @version  1.0

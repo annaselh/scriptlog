@@ -2,8 +2,8 @@
 /**
  * Authentication Class
  *
- * @category  Core Class
  * @package   SCRIPTLOG/LIB/CORE/Authentication
+ * @category  Core Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

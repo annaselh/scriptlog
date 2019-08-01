@@ -3,6 +3,9 @@
  * Human Readable Datetime Function
  * Convert datetime field MySQL Database to human readable string
  * 
+ * 
+ * @category Function
+ * @package  SCRIPTLOG/LIB/EVENT
  * @param string $date
  * @param string $format
  * @return string

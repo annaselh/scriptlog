@@ -2,8 +2,8 @@
 /**
  * Class Media extends Dao
  * 
- * @package  SCRIPTLOG
- * @category library\dao\Media
+ * @package  SCRIPTLOG/LIB/DAO/Media
+ * @category Dao Class
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0

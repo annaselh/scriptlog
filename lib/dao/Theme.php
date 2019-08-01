@@ -2,8 +2,8 @@
 /**
  * Theme class extends Dao
  *
- * @package   SCRIPTLOG
- * @category  library\dao\Theme
+ * @package   SCRIPTLOG/LIB/DAO/Theme
+ * @category  Dao Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

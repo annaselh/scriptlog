@@ -2,8 +2,8 @@
 /**
  * Class FrontException extends CoreException
  * 
- * @package  SCRIPTLOG
- * @category library\core\FrontException
+ * @package  SCRIPTLOG/LIB/CORE/FrontException
+ * @category Core Class
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0

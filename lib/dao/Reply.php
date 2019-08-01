@@ -2,8 +2,8 @@
 /**
  * Reply class extends Dao
  *
- * @package   SCRIPTLOG
- * @category  library\dao\Reply
+ * @package   SCRIPTLOG/LIB/DAO/Reply
+ * @category  Dao Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

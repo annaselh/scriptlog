@@ -2,8 +2,8 @@
 /**
  * CommentEvent Class
  *
- * @package   SCRIPTLOG
- * @category  library\event\CommentEvent
+ * @package   SCRIPTLOG/LIB/EVENT/CommentEvent
+ * @category  Event Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

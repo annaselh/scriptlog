@@ -3,6 +3,8 @@
  * Find Request Function
  * find request URI path
  * 
+ * @category Function
+ * @package  SCRIPTLOG/LIB/EVENT
  * @return array
  * 
  */

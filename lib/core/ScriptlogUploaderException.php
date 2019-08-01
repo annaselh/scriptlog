@@ -2,8 +2,8 @@
 /**
  * ScriptlogUploderException extends CoreException
  * 
- * @package  SCRIPTLOG
- * @category library\core\ScriptlogUploaderException
+ * @package  SCRIPTLOG/LIB/CORE/ScriptlogUploaderException
+ * @category Core Class
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0

@@ -3,8 +3,8 @@
  * Dao Class
  * Data Access Object
  * 
- * @package   SCRIPTLOG
- * @category  library\core\Dao
+ * @package   SCRIPTLOG/LIB/CORE/Dao
+ * @category  Core Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

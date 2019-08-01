@@ -2,8 +2,8 @@
 /**
  * Class TopicApp extends  BaseApp
  *
- * @package   SCRIPTLOG
- * @category  library\app\TopicApp
+ * @package   SCRIPTLOG/LIB/APP/TopicApp
+ * @category  App Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

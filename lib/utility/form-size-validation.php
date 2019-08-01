@@ -2,6 +2,8 @@
 /**
  * Form size value validation function
  * 
+ * @category  Function
+ * @package   SCRIPTLOG/LIB/UTILITY
  * @param string $form_fields
  */
 function form_size_validation($form_fields)

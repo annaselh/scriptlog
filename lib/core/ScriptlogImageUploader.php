@@ -2,8 +2,8 @@
 /**
  * Class ScriptlogImageUploader extends Class ScriptlogUploader
  * 
- * @package  SCRIPTLOG
- * @category library\core\ScriptlogImageUploader
+ * @package  SCRIPTLOG/LIB/CORE/ScriptlogImageUploader
+ * @category Core Class
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0

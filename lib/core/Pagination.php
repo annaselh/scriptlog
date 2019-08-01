@@ -2,11 +2,11 @@
 /**
  * Pagination class
  * digunakan untuk paging
- * pada back end website/administrator
  * 
- * @package  SCRIPTLOG
- * @category library\core\Pagination
- * @author   Lukmanul Hakim - Bukulokomedia.com
+ * 
+ * @package  SCRIPTLOG/LIB/CORE/Pagination
+ * @category Core Class
+ * @author   Lukmanul Hakim - Bukulokomedia 
  * 
  */
 class Pagination

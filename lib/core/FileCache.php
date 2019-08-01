@@ -2,8 +2,8 @@
 /**
  * Class FIleCache
  * 
- * @package  SCRIPTLOG
- * @category library\core\FileCache
+ * @package  SCRIPTLOG/LIB/CORE/FileCache
+ * @category Core Class
  * @author   Contributors
  * @license  MIT
  * @version  1.0

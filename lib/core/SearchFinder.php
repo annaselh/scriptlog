@@ -3,8 +3,8 @@
  * Class SearchFinder
  * Searching keyword from search functionality form
  *
- * @package   SCRIPTLOG
- * @category  library\core\SearchFinder
+ * @package   SCRIPTLOG/LIB/CORE/SearchFinder
+ * @category  Core Class
  * @author    Maoelana Noermoehammad
  * @license   MIT
  * @version   1.0

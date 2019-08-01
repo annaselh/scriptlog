@@ -2,8 +2,9 @@
 /**
  * Facebook graph protocol function
  * 
- * @package  SCRIPTLOG
- * @author   Maoelana Noermoehammad
+ * @category Function
+ * @package  SCRIPTLOG/LIB/UTILITY
+ * @author   M.Noermoehammad
  * 
  */
 function fbgraph_protocol($locale, $site_name, $id, $post_image, $title, $desc, $type, $post_url, $width, $height)

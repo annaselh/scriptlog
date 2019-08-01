@@ -2,8 +2,8 @@
 /**
  * Page Cache Class
  * 
- * @package  SCRIPTLOG
- * @category library\core\PageCache
+ * @package  SCRIPTLOG/LIB/CORE/PageCache
+ * @category Core Class
  * @author   jason
  * @link     http://www.xeweb.net/2011/11/03/simple-php-caching-improved/
  *

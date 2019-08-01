@@ -2,7 +2,8 @@
 /**
  * UserEvent Class
  *
- * @package   SCRIPTLOG
+ * @package   SCRIPTLOG/LIB/EVENT/User
+ * @category  Event Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

@@ -2,6 +2,8 @@
 /**
  * Direct Page Function
  * 
+ * @category Function
+ * @package  SCRIPTLOG/LIB/UTILITY
  * @param string $page
  * @param number $http_status_code default null
  * 

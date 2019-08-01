@@ -3,6 +3,8 @@
  * Theme dir function
  * checking which theme actived and select it
  * 
+ * @category Function
+ * @package  SCRIPTLOG/LIB/UTILITY
  * @return mixed
  * 
  */

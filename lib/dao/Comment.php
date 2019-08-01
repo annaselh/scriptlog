@@ -2,8 +2,8 @@
 /**
  * Class Comment extends Dao
  * 
- * @package  SCRIPTLOG
- * @category library\dao\Comment
+ * @package  SCRIPTLOG/LIB/DAO/Comment
+ * @category Dao Class
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0

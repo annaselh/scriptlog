@@ -2,8 +2,8 @@
 /**
  * Class Wall extends Dashboard
  * 
- * @package  SCRIPTLOG
- * @category library\core\Wall
+ * @package  SCRIPTLOG/LIB/CORE/Wall
+ * @category Core Class
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0

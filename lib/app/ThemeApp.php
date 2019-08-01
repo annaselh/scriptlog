@@ -2,8 +2,8 @@
 /**
  * Class ThemeApp extends BaseApp
  * 
- * @package  SCRIPTLOG
- * @category library\app\ThemeApp
+ * @package  SCRIPTLOG/LIB/APP/ThemeApp
+ * @category App Class
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0.0

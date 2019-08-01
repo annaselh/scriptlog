@@ -2,8 +2,8 @@
 /**
  * Class Widget extends Dao
  * 
- * @package   SCRIPTLOG
- * @category  library\dao\Widget
+ * @package   SCRIPTLOG/LIB/DAO/Widget
+ * @category  Dao Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

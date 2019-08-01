@@ -2,8 +2,8 @@
 /**
  * CacheException Class extends CoreException Class
  * 
- * @package  SCRIPTLOG
- * @category library\core\CacheException
+ * @package  SCRIPTLOG/LIB/CORE/CacheException
+ * @category Core Class
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0

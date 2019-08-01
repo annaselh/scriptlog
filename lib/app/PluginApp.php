@@ -2,8 +2,8 @@
 /**
  * Class PluginApp extends BaseApp
  * 
- * @package  SCRIPTLOG
- * @category library\app\PluginApp
+ * @package  SCRIPTLOG/LIB/APP/PluginApp
+ * @category App Class
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0.0

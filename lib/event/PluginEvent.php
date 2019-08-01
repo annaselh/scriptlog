@@ -2,7 +2,8 @@
 /**
  * PluginEvent Class
  *
- * @package   SCRIPTLOG
+ * @package   SCRIPTLOG/LIB/EVENT/PluginEvent
+ * @category  Event Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

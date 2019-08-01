@@ -2,8 +2,8 @@
 /**
  * Class CommentApp extends BaseApp
  *
- * @package   SCRIPTLOG
- * @category  library\core\CommentApp
+ * @package   SCRIPTLOG/LIB/APP/CommentApp
+ * @category  App Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

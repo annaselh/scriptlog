@@ -2,6 +2,8 @@
 /**
  * Generate Session Key Function
  * 
+ * @category Function
+ * @package  SCRIPTLOG/LIB/EVENT
  * @param string $value
  * @return string
  */

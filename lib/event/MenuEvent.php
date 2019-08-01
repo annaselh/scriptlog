@@ -2,7 +2,8 @@
 /**
  * Menu Event Class
  * 
- * @package SCRIPTLOG
+ * @package SCRIPTLOG/LIB/EVENT/MenuEvent
+ * @category Event Class
  * @author  M.Noermoehammad
  * @license MIT
  * @version 1.0

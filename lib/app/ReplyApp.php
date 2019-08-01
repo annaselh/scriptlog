@@ -2,8 +2,8 @@
 /**
  * Class ReplyApp extends Class BaseApp
  * 
- * @package  SCRIPTLOG
- * @category library\app\ReplyApp
+ * @package  SCRIPTLOG/LIB/ReplyApp
+ * @category App Class
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0

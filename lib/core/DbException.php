@@ -2,8 +2,8 @@
 /**
  * DbException class extends Abstract Class CoreException
  *
- * @package   SCRIPTLOG
- * @category  library\core\DbException
+ * @package   SCRIPTLOG/LIB/CORE/DbException
+ * @category  Core Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

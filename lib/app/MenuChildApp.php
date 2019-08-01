@@ -2,8 +2,8 @@
 /**
  * Class MenuChildApp extends BaseApp
  * 
- * @package  SCRIPTLOG
- * @category library\app\MenuChildApp
+ * @package  SCRIPTLOG/LIB/APP/MenuChildApp
+ * @category App Class
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0

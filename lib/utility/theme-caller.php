@@ -2,8 +2,8 @@
 /**
  * Theme Caller
  * 
- * @package  SCRIPTLOG UTILITY
  * @category functions
+ * @package  SCRIPTLOG/LIB/UTILITY
  * @author   M.Noermoehammad
  * @license  MIT
  * 

@@ -3,8 +3,8 @@
  * Class Mailer
  * Send e-mail via mail php function  
  * 
- * @package   SCRIPTLOG
- * @category  library\core\Mailer
+ * @package   SCRIPTLOG/LIB/CORE/Mailer
+ * @category  Core Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

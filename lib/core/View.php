@@ -2,8 +2,8 @@
 /**
  * View Class
  *
- * @package   SCRIPTLOG
- * @category  library\core\View
+ * @package   SCRIPTLOG/LIB/CORE/View
+ * @category  Core Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

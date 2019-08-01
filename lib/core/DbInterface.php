@@ -4,8 +4,8 @@
  * Describe the functionality
  * that any database adapter will need.
  *
- * @package   SCRIPTLOG
- * @category  library\core\DbInterface
+ * @package   SCRIPTLOG/LIB/CORE/DbInterface
+ * @category  Core Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

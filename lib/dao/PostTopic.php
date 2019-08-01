@@ -2,8 +2,8 @@
 /**
  * PostTopic class extends Model
  * 
- * @package   SCRIPTLOG
- * @category  library\dao\PostTopic
+ * @package   SCRIPTLOG/LIB/DAO/PostTopic
+ * @category  Dao Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

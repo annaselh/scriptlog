@@ -3,8 +3,8 @@
  * Class APC extends Cache
  * This is APC Cache functionality to handle APC implemented by system caches
  * 
- * @category Core Class
  * @package  SCRIPTLOG/LIB/CORE/APC
+ * @category Core Class
  * @author   Contributors
  * @license  MIT
  * @version  1.0

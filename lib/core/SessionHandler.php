@@ -2,7 +2,8 @@
 /**
  * SessionHandler Class
  * 
- * @package  SCRIPTLOG
+ * @package  SCRIPTLOG/LIB/CORE/SessionHandler
+ * @category Core Class
  * @author   M.Noermoehammad
  * @license  MIT
  * 

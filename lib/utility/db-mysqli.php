@@ -2,8 +2,8 @@
 /**
  * collection of function uses MySQL Improved (MySQLi) extension
  * 
- * @package  SCRIPTLOG/LIB/UTILITY
  * @category function
+ * @package  SCRIPTLOG/LIB/UTILITY
  * @author   M.Noermoehammad
  * @license  MIT
  * @version  1.0
@@ -31,7 +31,7 @@ function db_close($connection)
  return mysqli_close($connection);
 }
 
-// query table name
+// query table name 
 function table_exists($connection, $table, $counter = 0)
 {
   if ($connection) {

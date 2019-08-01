@@ -2,6 +2,12 @@
 /**
  * Class MediaEvent
  * 
+ * @package  SCRIPTLOG/LIB/EVENT/MediaEvent
+ * @category Event Class
+ * @author   M.Noermoehammad
+ * @license  MIT
+ * @version  1.0
+ * @since    Since Release 1.0
  * 
  */
 class MediaEvent

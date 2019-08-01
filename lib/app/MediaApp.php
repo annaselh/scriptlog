@@ -2,8 +2,8 @@
 /**
  * Class MediaApp
  * 
- * @package  SCRIPTLOG LIBRARY
- * @category lib\app\MediaApp
+ * @package  SCRIPTLOG/LIB/APP/MediaApp
+ * @category App Class
  * @author   M.Noermoehammad 
  * @license  MIT
  * @version  1.0

@@ -2,8 +2,8 @@
 /**
  * Registry Class
  * 
- * @package   SCRIPTLOG
- * @category  library\core\Registry
+ * @package   SCRIPTLOG/LIB/CORE/Registry
+ * @category  Core Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0

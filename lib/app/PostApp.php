@@ -2,8 +2,8 @@
 /**
  * Class PostApp extends BaseApp
  *
- * @package   SCRIPTLOG
- * @category  library\app\PostApp
+ * @package   SCRIPTLOG/LIB/APP/PostApp
+ * @category  App Class
  * @author    M.Noermoehammad
  * @license   MIT
  * @version   1.0
