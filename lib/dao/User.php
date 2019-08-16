@@ -59,15 +59,16 @@ class User extends Dao
      
  }
 
- /**
-  * getUserByID
-  * fetch single value by ID
-  * 
-  * @param integer $userId
-  * @param object $sanitize
-  * @param static $fetchMode
-  * @return boolean|array|object
-  */
+/**
+ * getUserById
+ * fetch single value of record by ID
+ * 
+ * @param integer $userId
+ * @param object $sanitize
+ * @param static $fetchMode = null
+ * @return boolean|array|object
+ * 
+ */
  public function getUserById($userId, $sanitize, $fetchMode = null)
  {
    $cleanId = $this->filteringId($sanitize, $userId, 'sql');

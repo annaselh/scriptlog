@@ -84,24 +84,28 @@ function check_browser_version()
  
  if (($browser-> getName() == 'Chrome') && ($browser -> getVersion() < 65)) {
      
-         return true;
+    return true;
      
  } elseif (($browser-> getName() == 'Firefox') && ($browser -> getVersion() < 56.0)) {
      
-         return true;
+    return true;
          
  } elseif (($browser->getName() == 'Opera') && ($browser -> getVersion() < 52.0)) {
         
-         return true;
+    return true;
 
  } elseif (($browser->getName() == 'Vivaldi') && ($browser -> getVersion() < 1.14)) {
           
-         return true;
+    return true;
      
  } elseif (($browser->getName() == 'Internet Explorer') && ($browser -> getVersion() < 11)) {
      
-         return true;
+    return true;
      
+ } else {
+
+    return false;
+    
  }
 
 }

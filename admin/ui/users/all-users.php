@@ -92,9 +92,13 @@
                        <td><?= htmlspecialchars($user['user_level']); ?></td>
                        <td>
                        <?php
-                         $edit_user = 'users&action=editUser&userId='.(int)$user['ID'].'&sessionId='.$user['user_session'];
+                         
+                         $users_data = array(
+                           "users", "editUser", "{$user['ID']}"
+                         );
+
                        ?>
-                       <a href="<?= escape_output($edit_user, 'url')['link']; ?>" class="btn btn-warning">
+                       <a href="<?=escape_output("index.php",$users_data, 'href', ['users', 'editUser', $user['ID'], $user['user_session']])['link']; ?>" class="btn btn-warning">
                        <i class="fa fa-pencil fa-fw"></i> Edit</a>
                        </td>
                        <td>
@@ -137,7 +141,7 @@
   {
 	  if (confirm("Are you sure want to delete User '" + name + "'"))
 	  {
-	  	window.location.href = 'index.php?load=users&action=deleteUser&userId=' + id;
+	  	window.location.href = 'index.php?load=users&action=deleteUser&Id=' + id;
 	  }
   }
 </script>

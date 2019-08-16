@@ -53,7 +53,7 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="<?=($user_level != 'administrator' && $user_level != 'manager') ? "index.php?load=users" : "index.php?load=users&action=editUser&userId={$user_id}&sessionId={$user_session}"  ?>" 
+                  <a href="<?=($user_level != 'administrator' && $user_level != 'manager') ? "index.php?load=users" : "index.php?load=users&action=editUser&userId={$user_id}&sessionId={$user_session}"; ?>" 
                   class="btn btn-default btn-flat"><i class="fa fa-user fa-fw"></i>Profile</a>
                 </div>
                 <div class="pull-right">
@@ -71,6 +71,6 @@
     </nav>
   </header>
   
-  <?php 
-   echo sidebar_navigation($breadCrumbs, $currentURL, $user_level);
-  ?>
+<?php 
+  echo sidebar_navigation($breadCrumbs, $currentURL, $user_level);
+?>

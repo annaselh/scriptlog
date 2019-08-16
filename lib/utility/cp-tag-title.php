@@ -30,9 +30,33 @@ function cp_tag_title($value)
 
              break;
 
+         case 'menu':
+
+             echo 'Menu';
+
+             break;
+
+         case 'menu-child':
+
+             echo 'Sub Menu';
+
+             break;
+
          case 'pages':
 
              echo 'Pages';
+
+             break;
+
+         case 'plugins':
+
+             echo 'Plugins';
+
+             break;
+
+         case 'users':
+
+             echo 'Users';
 
              break;
 

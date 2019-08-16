@@ -35,7 +35,7 @@ $user_login = isset($_COOKIE['cookie_user_login']) ? $_COOKIE['cookie_user_login
 $user_session = isset($_COOKIE['cookie_user_session']) ? $_COOKIE['cookie_user_session'] : $_SESSION['user_session'];
     
 // BreadCrumbs
-$breadCrumbs = isset($_GET['load']) ? htmlentities(strip_tags($_GET['load'])) : http_response_code();
+$breadCrumbs = isset($_GET['load']) ? htmlentities(strip_tags($_GET['load']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : http_response_code();
 
 // StylePath
 $stylePath = $config['app']['url'] . APP_ADMIN;
