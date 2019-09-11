@@ -5,7 +5,7 @@
  * source into the html request
  * 
  * @category Function
- * @package  SCRIPTLOG/LIB/EVENT
+ * @package  SCRIPTLOG/LIB/UTILITY
  * @link  https://secure.php.net/manual/en/function.base64-encode.php
  * @param string $filename
  * @param string $filetype

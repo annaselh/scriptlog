@@ -5,8 +5,10 @@
  * that send random string to user
  * 
  * @category Function
- * @package  SCRIPTLOG/LIB/EVENT
+ * @package  SCRIPTLOG/LIB/UTILITY
  * @param number $length
+ * @return string
+ * 
  */
 function generate_token($length = 20)
 {

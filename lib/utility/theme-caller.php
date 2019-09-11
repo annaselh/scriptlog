@@ -6,6 +6,7 @@
  * @package  SCRIPTLOG/LIB/UTILITY
  * @author   M.Noermoehammad
  * @license  MIT
+ * @version  1.0
  * 
  */
 

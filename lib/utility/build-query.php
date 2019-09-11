@@ -1,6 +1,13 @@
 <?php
 /**
  * Function build query
+ * 
+ * @category Function
+ * @package  SCRIPTLOG/LIB/UTILITY
+ * @param string $base
+ * @param array $query_data
+ * @return string
+ * 
  */
 function build_query($base, $query_data)
 {

@@ -94,7 +94,7 @@
                        <?php
                          
                          $users_data = array(
-                           "users", "editUser", "{$user['ID']}"
+                           "users", "editUser", $user['ID']
                          );
 
                        ?>

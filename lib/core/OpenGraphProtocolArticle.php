@@ -7,6 +7,7 @@
  * @author Niall Kennedy <niall@niallkennedy.com>
  * @version 1.3
  * @copyright Public Domain
+ * 
  */
 class OpenGraphProtocolArticle extends OpenGraphProtocolObject {
 	/**

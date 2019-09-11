@@ -11,7 +11,7 @@
  * 
  */
 
-# date_default_timezone_set("Asia/Jakarta");
+# date_default_timezone_set("GMT");
 ini_set("memory_limit", "1M");
 # ini_set("session.cookie_secure", "True");  //secure
 # ini_set("session.cookie_httponly", "True"); // httpOnly
@@ -28,6 +28,7 @@ define('APP_ADMIN', 'admin');
 define('APP_PUBLIC', 'public');
 define('APP_LIBRARY', 'lib');
 define('APP_DEVELOPMENT', true);
+define('APP_CACHE', false);
 define('SCRIPTLOG', $checkIncKey);
 
 if (!defined('APP_ROOT')) define('APP_ROOT', dirname(dirname(__FILE__)) . DS);
@@ -38,7 +39,7 @@ if (!defined('APP_PROTOCOL')) define('APP_PROTOCOL', strpos(strtolower($_SERVER[
 
 if (!defined('APP_HOSTNAME')) define('APP_HOSTNAME', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']);
 
-if (APP_DEVELOPMENT === true) {
+if (true === APP_DEVELOPMENT) {
 
     if (!defined('SCRIPTLOG_START_TIME')) define('SCRIPTLOG_START_TIME', microtime(true));
 

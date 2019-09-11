@@ -13,7 +13,7 @@
  * 
  */
 
-# date_default_timezone_set("Asia/Jakarta");
+# date_default_timezone_set("GMT");
 # ini_set("session.cookie_secure", "True");  // cookie_secure
 # ini_set("session.cookie_httponly", "True"); // cookie_httpOnly
 # header("Content-Security-Policy: default-src https:; font-src 'unsafe-inline' data: https:; form-action 'self' https://yourdomain.com;img-src data: https:; child-src https:; object-src 'self' www.google-analytics.com ajax.googleapis.com platform-api.sharethis.com yourusername.disqus.com; script-src 'unsafe-inline' https:; style-src 'unsafe-inline' https:;");
@@ -29,6 +29,7 @@ define('APP_VERSION', '1.0');
 define('APP_ADMIN', 'admin');
 define('APP_PUBLIC', 'public');
 define('APP_LIBRARY', 'lib');
+define('APP_CACHE', false);
 define('SCRIPTLOG', $checkIncKey);
 
 if (!defined('APP_ROOT')) define('APP_ROOT', dirname(dirname(__FILE__)) . DS);

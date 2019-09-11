@@ -4,7 +4,7 @@
  * checking whether session or cookies exists or not
  * 
  * @package  SCRIPTLOG
- * @category admin\authorizer.php file
+ * @category checking whether cookies or session exists or not
  * @author   Vincy vincy@gmail.com
  * @see     https://phppot.com/php/secure-remember-me-for-login-using-php-session-and-cookies/
  * 

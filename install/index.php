@@ -121,7 +121,7 @@ if ($install != 'install') {
 
     }
 
-    if ((!filter_var($email, FILTER_VALIDATE_EMAIL))) {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         
         $errors['errorSetup'] = 'Please enter a valid email address';
         
@@ -236,10 +236,12 @@ if ($install != 'install') {
         if (check_mysql_version($link, "5.5")) {
 
           install_database_table($link, $protocol, $server_host, $clean_setup['username'], $password, $email, $key);
-        
-          write_config_file($protocol, $server_host, $dbhost, $dbuser, $dbpass, $dbname, $email, $key);
-        
-          header("Location:".$protocol."://".$server_host.dirname($_SERVER['PHP_SELF']).DIRECTORY_SEPARATOR."finish.php?status=success&token={$key}");
+
+          if (true === write_config_file($protocol, $server_host, $dbhost, $dbuser, $dbpass, $dbname, $email, $key)) {
+
+            header("Location:".$protocol."://".$server_host.dirname($_SERVER['PHP_SELF']).DIRECTORY_SEPARATOR."finish.php?status=success&token={$key}");
+
+          }
         
         }
         

@@ -35,7 +35,7 @@ $user_login = isset($_COOKIE['cookie_user_login']) ? $_COOKIE['cookie_user_login
 $user_session = isset($_COOKIE['cookie_user_session']) ? $_COOKIE['cookie_user_session'] : $_SESSION['user_session'];
     
 // BreadCrumbs
-$breadCrumbs = isset($_GET['load']) ? htmlentities(strip_tags($_GET['load']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : http_response_code();
+$breadCrumbs = isset($_GET['load']) ? htmlentities(sanitize_urls($_GET['load']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : http_response_code();
 
 // StylePath
 $stylePath = $config['app']['url'] . APP_ADMIN;
@@ -51,10 +51,10 @@ $allowedQuery = array('dashboard', 'posts', 'medialib',
                       // retrieve plugin actived -- for administrator
 $plugin_navigation = setplugin($user_level, 'private');
 
-require 'admin-layout.php';
+include 'admin-layout.php';
 admin_header($stylePath, $breadCrumbs, $allowedQuery);
-require 'navigation.php';
-require 'request.php';
+include 'navigation.php';
+include 'request.php';
 admin_footer($currentURL);
 ob_end_flush();
     

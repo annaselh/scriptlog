@@ -210,6 +210,8 @@ function write_config_file($protocol, $server_name, $host, $user, $password, $da
 
 $link = mysqli_connect($host, $user, $password, $database);
 
+$configuration = false;
+
 if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
    
    $getAppKey = "SELECT ID, setting_name, setting_value FROM settings 
@@ -253,9 +255,13 @@ if (isset($_SESSION['install']) && $_SESSION['install'] == true) {
 
         file_put_contents(__DIR__ . '/../../config.php', $configFile);
         
+        $configuration = true;
+
     }
       
  }
+
+ return $configuration;
 
 }
 

@@ -6,7 +6,7 @@
  * @package SCRIPTLOG/LIB/UTILITY
  * @see http://www.couchcode.com/php/auto-link-function/
  * @param string $text
- * @return mixed
+ * @return string
  * 
  */
 function autolink($text) {

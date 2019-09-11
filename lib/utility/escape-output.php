@@ -20,9 +20,9 @@ function escape_output($base, $query_data, $type, $string_encoded = array())
       if (!empty($string_encoded)) {
 
          $load = (is_array($string_encoded) && array_key_exists(0, $string_encoded)) ? rawurlencode($string_encoded[0]) : '';
-         $action = (is_array($string_encoded) && array_key_exists(1, $string_encoded)) ? rawurlencode($string_encoded[1]) : '';
-         $id = (is_array($string_encoded) && array_key_exists(2, $string_encoded)) ? rawurlencode($string_encoded[2]) : '';
-         $user_session = (is_array($string_encoded) && array_key_exists(3, $string_encoded)) ? rawurlencode($string_encoded[3]) : '';
+         $action = (is_array($string_encoded) && array_key_exists(1, $string_encoded)) ? urlencode($string_encoded[1]) : '';
+         $id = (is_array($string_encoded) && array_key_exists(2, $string_encoded)) ? urlencode($string_encoded[2]) : '';
+         $user_session = (is_array($string_encoded) && array_key_exists(3, $string_encoded)) ? urlencode($string_encoded[3]) : '';
  
          if ($load === 'users') {
 

@@ -60,6 +60,7 @@ function table_exists($connection, $table, $counter = 0)
 // check whether database table does exist 
 function check_table($connection, $dbname)
 {
+  
   $install = false;
 
   if(!table_exists($link, $table)) {
@@ -76,3 +77,13 @@ function check_table($connection, $dbname)
 
 }
 
+// 
+function db_query($connection, $query_type, $table_name, $SQL)
+{
+  if (mysqli_query($connection, $SQL)) {
+
+     print("$query_type query for $table_name - success");
+
+  }
+
+}

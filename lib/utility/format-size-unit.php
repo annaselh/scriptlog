@@ -6,6 +6,7 @@
  * @package   SCRIPTLOG/LIB/UTILITY
  * @param number $bytes
  * @return string
+ * 
  */
 function format_size_unit($bytes)
 {
